@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>hip</id>
+	<name>HIP (Human Intracerebral EEG Platform)</name>
+	<description><![CDATA[]]></description>
+	<version>0.0.1</version>
+	<author>CHUV</author>
+	<namespace>HIP</namespace>
+	<category>tools</category>
+	<website>https://dev.thehip.app/</website>
+	<repository type="git">https://github.com/HIP-infrastructure/hip</repository>
+	<screenshot small-thumbnail="https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png">https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png</screenshot>
+	<dependencies>
+		<nextcloud min-version="19" max-version="21" />
+	</dependencies>
+
+	<navigations>
+		<navigation>
+			<name>HIP</name>
+			<route>hip.page.index</route>
+		</navigation>
+	</navigations>
+</info>
