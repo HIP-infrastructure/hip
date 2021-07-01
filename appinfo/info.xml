@@ -8,7 +8,7 @@
 	<author>CHUV</author>
 	<namespace>HIP</namespace>
 	<category>tools</category>
-	<website>https://dev.thehip.app/</website>
+	<website>https://thehip.app/</website>
 	<repository type="git">https://github.com/HIP-infrastructure/hip</repository>
 	<screenshot small-thumbnail="https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png">https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png</screenshot>
 	<dependencies>
