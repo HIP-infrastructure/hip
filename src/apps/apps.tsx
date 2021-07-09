@@ -2,19 +2,20 @@ import { SlideMenu } from "primereact/slidemenu";
 import { Button } from "primereact/button";
 import { useRef, useState, useEffect, useContext } from "react";
 import useSWR, { mutate } from "swr";
+import WebdavForm from "../UI/webdavLoginForm";
+import { Dialog } from "primereact/dialog";
 
 import brainstormLogo from "../assets/brainstorm__logo.png";
 import {
   Container,
-  API_SERVERS,
   ContainerType,
+  API_SERVERS,
   AppContainer,
   uniq,
   ContainerState,
-  fetcher,
   API_GATEWAY,
 } from "../sessions/session";
-import { ServerContext, IServer } from "../context/appProvider";
+import { useAppStore, UserCredentials } from "../context/appProvider";
 import "./apps.css";
 
 const items = [
@@ -28,23 +29,41 @@ const items = [
   },
 ];
 
-const startServer = async (): Promise<Response> => {
-  const id = uniq("server");
-  const url = `${API_SERVERS}/${id}/start`;
-  const server = fetch(url);
-  server.then(() => mutate(API_SERVERS));
-
-  return server;
-};
 
 const Apps = () => {
   const menu = useRef<SlideMenu>(null);
   const [startingServer, setStartingServer] = useState<Container | null>();
+  const [showWedavForm, setShowWedavForm] = useState(false);
 
   const {
     visible: [visible, setVisible],
     selected: [selected, setSelected],
-  } = useContext<IServer>(ServerContext);
+    user: [user, setUser],
+    containers,
+  } = useAppStore();
+
+  const createServer = (user: UserCredentials) => {
+    const id = uniq("server");
+    const url = `${API_SERVERS}/${id}/start/${user.uid}/${user.password}`;
+    const server = fetch(url);
+    server.then(() => mutate(API_SERVERS));
+
+    return server;
+  };
+
+  useEffect(() => {
+    if (user?.password && user.src === "app") {
+      setShowWedavForm(false);
+      createServer(user)
+        .then((r) => r.json())
+        .then((response) => {
+          const server: Container = response.data;
+          setStartingServer(server);
+          setSelected(server);
+          setVisible(true);
+        });
+    }
+  }, [user]);
 
   const startApp = async (
     server?: Container | null,
@@ -56,16 +75,7 @@ const Apps = () => {
     fetch(url).then(() => mutate(API_GATEWAY));
   };
 
-  const { data, error } = useSWR<{ data: Container[]; error: Error }>(
-    API_SERVERS,
-    fetcher,
-    {
-      refreshInterval: 3 * 1000,
-    }
-  );
-
   useEffect(() => {
-    const containers = data?.data;
     const container = containers?.find((c) => {
       return c.id === startingServer?.id && c.state === ContainerState.RUNNING;
     });
@@ -74,27 +84,28 @@ const Apps = () => {
       setStartingServer(null);
       setSelected(container);
     }
-  }, [data, startingServer, setStartingServer, setSelected]);
+  }, [containers, startingServer, setStartingServer, setSelected]);
 
-  const containers = data?.data;
   const servers =
     containers
-      ?.filter((container) => container.type === ContainerType.SERVER)
-      .map((s) => ({
+      .filter(
+        (container: Container) => container.type === ContainerType.SERVER
+      )
+      .map((s: Container) => ({
         ...s,
         apps: (containers as AppContainer[]).filter((a) => a.parentId === s.id),
       })) || [];
 
   const menuItems =
     [
-      ...servers?.map((server) => {
+      ...servers?.map((server: Container) => {
         const brainstorm = server.apps.find(
           (a) => server.id === a.parentId && a.app === "brainstorm"
         );
         return {
           label: brainstorm
-            ? `View in ${server.name}`
-            : `Create in ${server.name}`,
+            ? `View in #${server.name}`
+            : `Create in #${server.name}`,
           icon: brainstorm ? "pi pi-eye" : "pi pi-clone",
           disabled: server.state !== ContainerState.RUNNING,
           command: () => {
@@ -112,58 +123,58 @@ const Apps = () => {
       {
         separator: true,
       },
-      // {
-      //   label: `Create in new session`,
-      //   icon: "pi pi-clone",
-      //   command: () => {
-      //     startServer()
-      //       .then((r) => r.json())
-      //       .then((response) => {
-      //         const server: Container = response.data;
-      //         setStartingServer(server);
-      //         setSelected(server);
-      //         setVisible(true);
-      //       });
-      //   },
-      // },
+      {
+        label: `Create in new session`,
+        icon: "pi pi-clone",
+        command: () => {
+          setShowWedavForm(true);
+        },
+      },
     ] || [];
 
   return (
     <div>
       <Dialog
-      <section
-        className="apps__header"
-        title="Apps are launched inside a session"
+        header="Data access"
+        visible={showWedavForm}
+        onHide={() => setShowWedavForm(false)}
       >
-        <h2>Applications</h2>
-      </section>
-      <section className="apps__launchpad">
-        {items.map((app) => (
-          <div key={`${app.name}`}>
-            <div className="apps__card">
-              <img src={app.icon} alt="" />
-              <div className="apps__name">{app.name}</div>
+        <WebdavForm src={'app'}/>
+      </Dialog>
+      <main className="apps p-shadow-5">
+        <section
+          className="apps__header"
+          title="Apps are launched inside a session"
+        >
+          <h2>Applications</h2>
+        </section>
+        <section className="apps__launchpad">
+          {items.map((app) => (
+            <div key={`${app.name}`}>
+              <div className="apps__card">
+                <img src={app.icon} alt="" />
+                <div className="apps__name">{app.name}</div>
+              </div>
+              <div className="apps__actions">
+                <SlideMenu
+                  ref={menu}
+                  model={menuItems}
+                  popup
+                  viewportHeight={220}
+                  menuWidth={175}
+                ></SlideMenu>
+                <Button
+                  type="button"
+                  className="p-button-sm p-button-outlined"
+                  icon="pi pi-ellipsis-v"
+                  label="Actions"
+                  onClick={(event) => menu?.current?.toggle(event)}
+                ></Button>
+              </div>
             </div>
-            <div className="apps__actions">
-              <SlideMenu
-                ref={menu}
-                model={menuItems}
-                popup
-                viewportHeight={220}
-                menuWidth={175}
-              ></SlideMenu>
-              <Button
-                type="button"
-                className="p-button-sm p-button-outlined"
-                icon="pi pi-ellipsis-v"
-                label="Actions"
-                onClick={(event) => menu?.current?.toggle(event)}
-              ></Button>
-            </div>
-          </div>
-        ))}
-      </section>
-    </main>
+          ))}
+        </section>
+      </main>
     </div>
   );
 };

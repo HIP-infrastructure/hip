@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { ServerContext, IServer } from "../context/appProvider";
+import { useAppStore, IAppState } from "../context/appProvider";
 
 // import { classNames } from "primereact/utils";
 interface UserData {
@@ -10,11 +10,11 @@ interface UserData {
   password: string;
 }
 
-const WebdavForm = () => {
+const WebdavForm = ({ src }: { src: string }) => {
   // const [formData, setFormData] = useState({});
   const {
     user: [user, setUser],
-  } = React.useContext<IServer>(ServerContext);
+  } = useAppStore();
 
   const formik = useFormik({
     initialValues: {
@@ -39,8 +39,7 @@ const WebdavForm = () => {
     onSubmit: (data: UserData) => {
       console.log("onSubmit");
       // setFormData(data);
-      setUser({ ...user, password: data.password });
-      console.log(JSON.stringify(data));
+      setUser({ ...user, password: data.password, src });
 
       //formik.resetForm();
     },
@@ -93,7 +92,12 @@ const WebdavForm = () => {
             />
           </div>
         </div>
-        <Button type="submit" label="Submit" className="p-mt-2" />
+        <Button
+          type="submit"
+          label="Submit"
+          className="p-mt-2"
+          style={{ float: "right" }}
+        />
       </form>
     </>
   );

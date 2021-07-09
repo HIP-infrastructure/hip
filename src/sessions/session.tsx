@@ -6,9 +6,8 @@ import { Sidebar } from "primereact/sidebar";
 import useSWR, { mutate } from "swr";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
-  ServerContext,
+  useAppStore,
   UserCredentials,
-  IServer,
 } from "../context/appProvider";
 import "./sessions.css";
 import WebdavForm from "../UI/webdavLoginForm";
@@ -76,35 +75,32 @@ const ConditionalWrapper = ({
 
 const Server = () => {
   const toast = useRef(null);
+  const error = {};
   const sessionFullscreen = useRef<HTMLIFrameElement>(null);
   const sidebarSessionFullscreen = useRef<HTMLIFrameElement>(null);
   const {
     visible: [visible, setVisible],
     selected: [selected, setSelected],
     user: [user, setUser],
-  } = useContext<IServer>(ServerContext);
+    containers,
+  } = useAppStore();
   const [fullscreen, setFullscreen] = useState(false);
   const [showWedavForm, setShowWedavForm] = useState(false);
-  const { data, error } = useSWR<{ data: Container[]; error: Error }>(
-    `${API_SERVERS}/${user?.uid}`,
-    fetcher,
-    { refreshInterval: 3 * 1000 }
-  );
 
   const createServer = (user: UserCredentials) => {
     const id = uniq("server");
     const url = `${API_SERVERS}/${id}/start/${user.uid}/${user.password}`;
     const server = fetch(url);
-    server.then(() => mutate(API_SERVERS));
+    server.then(() => mutate(`${API_SERVERS}/${user?.uid}`));
 
     return server;
   };
 
   useEffect(() => {
-    if (user?.password) {
+    if (user?.password && user.src === "session") {
+      setShowWedavForm(false)
       createServer(user);
-      setShowWedavForm(false);
-    } 
+    }
   }, [user]);
 
   const createApp = async (
@@ -113,18 +109,17 @@ const Server = () => {
   ): Promise<void> => {
     const aid = uniq("app");
     const url = `${API_SERVERS}/${server.id}/apps/${aid}/start/${name}`;
-    fetch(url).then(() => mutate(API_SERVERS));
+    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`));
   };
 
   const destroy = (id: string) => {
     const url = `${API_SERVERS}/${id}/destroy`;
-    fetch(url).then(() => mutate(API_SERVERS));
+    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`));
   };
 
-  const containers = data?.data;
   const servers = containers
-    ?.filter((container) => container.type === ContainerType.SERVER)
-    .map((s) => ({
+    ?.filter((container: Container) => container.type === ContainerType.SERVER)
+    .map((s: Container) => ({
       ...s,
       apps: (containers as AppContainer[]).filter((a) => a.parentId === s.id),
     }));
@@ -169,24 +164,19 @@ const Server = () => {
     }
   }, [visible]);
 
-  React.useEffect(() => {
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-  }, [setUser]);
-
   const setSidebarFullscreen = () => {
     sidebarSessionFullscreen?.current?.requestFullscreen();
-  };
-
-  const onHide = () => {
-    setShowWedavForm(false);
   };
 
   return (
     <div>
       <Toast ref={toast} />
-      <Dialog visible={showWedavForm} onHide={() => setShowWedavForm(false)}>
-        <WebdavForm></WebdavForm>
+      <Dialog
+        header="Data access"
+        visible={showWedavForm}
+        onHide={() => setShowWedavForm(false)}
+      >
+        <WebdavForm src={"session"} />
       </Dialog>
       <div>
         {fullscreen && (
@@ -262,6 +252,7 @@ const Server = () => {
                       </div>
                     </div>
                   ))}
+
                 {selected?.state === ContainerState.RUNNING &&
                   serverApps(selected)?.length === 0 && (
                     <Button

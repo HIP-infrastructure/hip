@@ -1,36 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container } from "../sessions/session";
+import useSWR, { mutate } from "swr";
+import { getCurrentUser } from "@nextcloud/auth";
 
-export const ServerContext = React.createContext<IServer>({} as IServer);
 export interface UserCredentials {
   uid: string;
   password: string;
   isAdmin: boolean;
+  displayName: string;
+  src?: string
 }
-export interface IServer {
+export interface IAppState {
   visible: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   selected: [
     Container | null,
     React.Dispatch<React.SetStateAction<Container | null>>
   ];
   user: [
-    UserCredentials | undefined,
-    React.Dispatch<React.SetStateAction<UserCredentials | undefined>>
+    UserCredentials | null,
+    React.Dispatch<React.SetStateAction<UserCredentials | null>>
+  ];
+  containers: [
+    Container[] | null,
+    React.Dispatch<React.SetStateAction<Container[] | null>>
   ];
 }
 
-export const AppProvider = ({ children }: { children: JSX.Element }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [selected, setSelected] = React.useState<Container | null>(null);
-  const [user, setUser] = React.useState<UserCredentials>();
+export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`;
+export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`;
 
-  const server: IServer = {
-    visible: [visible, setVisible],
-    selected: [selected, setSelected],
-    user: [user, setUser],
-  };
+export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-  return (
-    <ServerContext.Provider value={server}>{children}</ServerContext.Provider>
+export const AppContext = React.createContext<IAppState>({} as IAppState);
+
+export const AppStoreProvider = ({ children }: { children: JSX.Element }) => {
+  const [visible, setVisible] = useState(false);
+  const [selected, setSelected] = useState<Container | null>(null);
+  const [user, setUser] = useState<UserCredentials>();
+
+  React.useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+  }, []);
+
+  const {
+    data,
+    error,
+  } = useSWR<{ data: Container[]; error: Error }>(
+    () => `${API_SERVERS}/${user?.uid}`,
+    fetcher,
+    { refreshInterval: 3 * 1000 }
   );
+
+  const value: IAppState = React.useMemo(
+    () => ({
+      visible: [visible, setVisible],
+      selected: [selected, setSelected],
+      user: [user, setUser],
+      containers: data?.data || [],
+    }),
+    [visible, setVisible, selected, setSelected, user, setUser, data]
+  );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
+
+export const useAppStore = (): IAppState => {
+  const context = React.useContext(AppContext);
+  if (!context) {
+    throw new Error("Wrap AppProvider!");
+  }
+
+  return context;
 };

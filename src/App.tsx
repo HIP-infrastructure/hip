@@ -1,26 +1,27 @@
 import { InputSwitch } from "primereact/inputswitch";
 import { TabMenu } from "primereact/tabmenu";
-import Spaces from './spaces/spaces'
-import './App.css'
+import Spaces from "./spaces/spaces";
+import "./App.css";
+import { AppStoreProvider } from "./context/appProvider";
 
 const items = [
   {
-    label: 'Personal',
-    routerLink: '/personal',
+    label: "Personal",
+    routerLink: "/personal",
   },
   {
-    label: 'Collaborative',
+    label: "Collaborative",
     disabled: true
-
   },
   {
-    label: 'Public',
-    disabled: true
+    label: "Public",
+    disabled: true,
   },
 ];
 
-const Index = () => {
+const App = () => {
   return (
+    <AppStoreProvider>
       <main>
         <section>
           <nav className="nav-menu">
@@ -41,7 +42,8 @@ const Index = () => {
           <p>HIP 2021</p>
         </footer>
       </main>
+    </AppStoreProvider>
   );
 };
 
-export default Index;
+export default App;
