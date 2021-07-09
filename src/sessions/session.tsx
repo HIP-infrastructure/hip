@@ -4,15 +4,16 @@ import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
 import { Sidebar } from "primereact/sidebar";
 import useSWR, { mutate } from "swr";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ServerContext,
-  WebdavCredentials,
+  UserCredentials,
   IServer,
 } from "../context/appProvider";
 import "./sessions.css";
 import WebdavForm from "../UI/webdavLoginForm";
 import { Dialog } from "primereact/dialog";
+import { getCurrentUser } from "@nextcloud/auth";
 
 export interface Container {
   id: string;
@@ -80,19 +81,19 @@ const Server = () => {
   const {
     visible: [visible, setVisible],
     selected: [selected, setSelected],
-    webdav: [webdav],
+    user: [user, setUser],
   } = useContext<IServer>(ServerContext);
-  const [fullscreen, setFullscreen] = React.useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [showWedavForm, setShowWedavForm] = useState(false);
   const { data, error } = useSWR<{ data: Container[]; error: Error }>(
-    API_SERVERS,
+    `${API_SERVERS}/${user?.uid}`,
     fetcher,
     { refreshInterval: 3 * 1000 }
   );
-  const [showWedavForm, setShowWedavForm] = React.useState(false);
 
-  const createServer = (webdav: WebdavCredentials) => {
+  const createServer = (user: UserCredentials) => {
     const id = uniq("server");
-    const url = `${API_SERVERS}/${id}/start/${webdav.login}/${webdav.password}`;
+    const url = `${API_SERVERS}/${id}/start/${user.uid}/${user.password}`;
     const server = fetch(url);
     server.then(() => mutate(API_SERVERS));
 
@@ -100,11 +101,11 @@ const Server = () => {
   };
 
   useEffect(() => {
-    if (webdav) {
-      createServer(webdav);
+    if (user?.password) {
+      createServer(user);
       setShowWedavForm(false);
-    }
-  }, [webdav]);
+    } 
+  }, [user]);
 
   const createApp = async (
     server: Container,
@@ -167,6 +168,11 @@ const Server = () => {
       document.body.classList.remove("body-fixed");
     }
   }, [visible]);
+
+  React.useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+  }, [setUser]);
 
   const setSidebarFullscreen = () => {
     sidebarSessionFullscreen?.current?.requestFullscreen();
@@ -276,7 +282,7 @@ const Server = () => {
           className="sessions__header"
           title="A session is a remote server instance where you can launch apps"
         >
-          <h2>Sessions</h2>
+          <h2>{getCurrentUser().displayName}'s Sessions </h2>
           <Button
             className="p-button-sm"
             label="Create session"
@@ -352,7 +358,7 @@ const Server = () => {
                       onClick={(e: any) => confirm1(e, server.id)}
                     ></Button>
                     <Button
-                      title="Show"
+                      title="Open"
                       icon="pi pi-eye"
                       className="p-button-sm p-button-rounded p-button-primary "
                       disabled={server.state !== ContainerState.RUNNING}

@@ -17,11 +17,3 @@ body {
           monospace;
 }
 
-h2 {
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 0;
-  padding: 0.33em;
-  line-height: 30px;
-  color: var(--color-text-light);
-}

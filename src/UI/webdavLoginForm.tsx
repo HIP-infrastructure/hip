@@ -4,13 +4,16 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { ServerContext, IServer } from "../context/appProvider";
 
-
 // import { classNames } from "primereact/utils";
+interface UserData {
+  login: string;
+  password: string;
+}
 
 const WebdavForm = () => {
-  const [formData, setFormData] = useState({});
+  // const [formData, setFormData] = useState({});
   const {
-    webdav: [webdav, setWebdav]
+    user: [user, setUser],
   } = React.useContext<IServer>(ServerContext);
 
   const formik = useFormik({
@@ -33,10 +36,10 @@ const WebdavForm = () => {
     //   console.log(errors)
     //   return errors;
     // },
-    onSubmit: (data) => {
-        console.log('onSubmit')
-      setFormData(data);
-      setWebdav(data);
+    onSubmit: (data: UserData) => {
+      console.log("onSubmit");
+      // setFormData(data);
+      setUser({ ...user, password: data.password });
       console.log(JSON.stringify(data));
 
       //formik.resetForm();
