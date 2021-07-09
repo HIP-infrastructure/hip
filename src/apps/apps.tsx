@@ -129,7 +129,8 @@ const Apps = () => {
     ] || [];
 
   return (
-    <main className="apps">
+    <div>
+      <Dialog
       <section
         className="apps__header"
         title="Apps are launched inside a session"
@@ -163,6 +164,7 @@ const Apps = () => {
         ))}
       </section>
     </main>
+    </div>
   );
 };
 

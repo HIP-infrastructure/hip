@@ -140,7 +140,7 @@ const Server = () => {
   const confirm1 = (event: any, serverId: string) => {
     confirmPopup({
       target: event.currentTarget,
-      message: "Delete this container and all its applications?",
+      message: "Permanently remove this session and all its applications?",
       icon: "pi pi-exclamation-triangle",
       accept: () => destroy(serverId),
       reject: () => {},
@@ -223,7 +223,7 @@ const Server = () => {
           )}
           <div className="session__sidebar-info">
             <div className="session__sidebar-header">
-              <div className="session__sidebar-name">{selected?.name}</div>
+              <div className="session__sidebar-name">{`#${selected?.name}`}</div>
               <div className="session__sidebar_actions">
                 <Button
                   title="Go back to main window"
@@ -277,12 +277,12 @@ const Server = () => {
           </div>
         </div>
       </Sidebar>
-      <main className="sessions">
+      <main className="sessions p-shadow-5">
         <section
           className="sessions__header"
           title="A session is a remote server instance where you can launch apps"
         >
-          <h2>{getCurrentUser().displayName}'s Sessions </h2>
+          <h2>My Sessions</h2>
           <Button
             className="p-button-sm"
             label="Create session"
@@ -320,14 +320,14 @@ const Server = () => {
                   >
                     <div className="session__desktop_overlay">
                       <div className="session__desktop-text">
-                        <div className="session__name">{server.name}</div>
+                        <div className="session__name">{`#${server?.name}`}</div>
                         <div className="session__details">
                           <p>{server.state}</p>
                           <p>{server.error?.message}</p>
                           {server.apps.map((app) => (
-                            <div key={app.id}>
-                              <p className="session_details-app">
-                                {app.app}: {app.state}
+                            <div key={app.id} className="session_details-app">
+                              <p>
+                                <strong>{app.app}</strong>: {app.state}
                               </p>
                               <p>{app.error?.message}</p>
                             </div>

@@ -27,5 +27,5 @@ footer {
   text-align: center;
   padding: 0;
   margin: 0;
-  background: var(--bluegray-50);
+  background: rgb(235, 235, 235); /*var(--bluegray-50)*/;
 }

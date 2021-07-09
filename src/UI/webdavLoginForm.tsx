@@ -61,7 +61,7 @@ const WebdavForm = () => {
             style={{ width: "100px" }}
             //className={classNames({ "p-error": isFormFieldValid("login") })}
           >
-            Login*
+            Login *
           </label>
           <div className="p-col">
             <InputText
@@ -82,7 +82,7 @@ const WebdavForm = () => {
             className="p-col-fixed"
             style={{ width: "100px" }}
           >
-            Password
+            Password *
           </label>
           <div className="p-col">
             <InputText
