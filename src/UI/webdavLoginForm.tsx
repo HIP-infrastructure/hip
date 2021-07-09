@@ -1,0 +1,99 @@
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { ServerContext, IServer } from "../context/appProvider";
+
+
+// import { classNames } from "primereact/utils";
+
+const WebdavForm = () => {
+  const [formData, setFormData] = useState({});
+  const {
+    webdav: [webdav, setWebdav]
+  } = React.useContext<IServer>(ServerContext);
+
+  const formik = useFormik({
+    initialValues: {
+      login: "",
+      password: "",
+    },
+    // validate: (data) => {
+    //     console.log('validate')
+    //   let errors: { login: string | undefined, password: string | undefined } = { login: undefined, password: undefined };
+
+    //   if (!data.login) {
+    //     errors.login = "Login is required.";
+    //   }
+
+    //   if (!data.password) {
+    //     errors.password = "Password is required.";
+    //   }
+
+    //   console.log(errors)
+    //   return errors;
+    // },
+    onSubmit: (data) => {
+        console.log('onSubmit')
+      setFormData(data);
+      setWebdav(data);
+      console.log(JSON.stringify(data));
+
+      //formik.resetForm();
+    },
+  });
+
+  //   const isFormFieldValid = (name: string) => !!(formik.touched[name] && formik.errors[name]);
+  //   const getFormErrorMessage = (name: string) => {
+  //       return isFormFieldValid(name) && <small className="p-error">{formik.errors[name]}</small>;
+  //   };
+
+  return (
+    <>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="p-field p-grid">
+          <label
+            htmlFor="login"
+            className="p-col-fixed"
+            style={{ width: "100px" }}
+            //className={classNames({ "p-error": isFormFieldValid("login") })}
+          >
+            Login*
+          </label>
+          <div className="p-col">
+            <InputText
+              id="login"
+              name="login"
+              value={formik.values.login}
+              onChange={formik.handleChange}
+              autoFocus
+              // className={classNames({ "p-invalid": isFormFieldValid("login") })}
+            />
+          </div>
+
+          {/* {getFormErrorMessage("login")} */}
+        </div>
+        <div className="p-field p-grid">
+          <label
+            htmlFor="password"
+            className="p-col-fixed"
+            style={{ width: "100px" }}
+          >
+            Password
+          </label>
+          <div className="p-col">
+            <InputText
+              id="password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+            />
+          </div>
+        </div>
+        <Button type="submit" label="Submit" className="p-mt-2" />
+      </form>
+    </>
+  );
+};
+
+export default WebdavForm;

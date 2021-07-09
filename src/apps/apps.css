@@ -1,0 +1,46 @@
+.apps {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border: 1px solid var(--bluegray-200);
+    /* box-shadow: 2px 2px 5px var(--bluegray-100); */
+  }
+
+  .apps__header {
+    padding: 0 1em;
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--blue-800);
+  }
+
+  .apps__header h2 {
+    color: white;
+    font-size: 16px;
+  }
+
+  .apps__launchpad {
+    padding: 1em;
+    margin: auto;
+  }
+
+  .apps__card {
+    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid gray;
+  }
+
+  .apps__name {
+    margin-bottom: 4px;
+    z-index: 999;
+    font-size: medium;
+  }
+
+  .apps__actions {
+    margin-top: 4px;
+    text-align: right;
+  }

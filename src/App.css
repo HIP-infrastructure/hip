@@ -1,0 +1,31 @@
+section {
+  display: flex;
+}
+
+.nav-menu {
+  width: 200px;
+  padding: 1em;
+}
+
+.spaces {
+  flex: 1;
+  padding: 1em;
+  display: flex;
+}
+
+.spaces__nav {
+  margin-top: 1em;
+  margin-bottom: 3em;
+}
+
+
+footer {
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  background: var(--bluegray-50);
+}

@@ -1,0 +1,22 @@
+.activity {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border: 1px solid var(--bluegray-200);
+    /* box-shadow: 2px 2px 5px var(--bluegray-100); */
+  }
+
+  .activity__header {
+    padding: 0 1em;
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--surface-800);
+  }
+
+  .activity__header h2 {
+    color: white;
+    font-size: 16px;
+  }
