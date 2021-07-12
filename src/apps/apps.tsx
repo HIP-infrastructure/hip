@@ -42,9 +42,9 @@ const Apps = () => {
     containers,
   } = useAppStore();
 
-  const createServer = (user: UserCredentials) => {
+  const createServer = () => {
     const id = uniq("server");
-    const url = `${API_SERVERS}/${id}/start/${user.uid}/${user.password}`;
+    const url = `${API_SERVERS}/${id}/start/${user?.uid}`;
     const server = fetch(url);
     server.then(() => mutate(API_SERVERS));
 
@@ -54,7 +54,11 @@ const Apps = () => {
   useEffect(() => {
     if (user?.password && user.src === "app") {
       setShowWedavForm(false);
-      createServer(user)
+      if (selected) {
+        createApp(selected, user)
+        setVisible(true);
+      } else {
+        createServer()
         .then((r) => r.json())
         .then((response) => {
           const server: Container = response.data;
@@ -62,29 +66,33 @@ const Apps = () => {
           setSelected(server);
           setVisible(true);
         });
+      }
+
     }
   }, [user]);
-
-  const startApp = async (
-    server?: Container | null,
-    name: string = "brainstorm"
-  ): Promise<void> => {
-    if (!server) return;
-    const aid = uniq("app");
-    const url = `${API_GATEWAY}/remote-app/servers/${server.id}/apps/${aid}/start/${name}`;
-    fetch(url).then(() => mutate(API_GATEWAY));
-  };
 
   useEffect(() => {
     const container = containers?.find((c) => {
       return c.id === startingServer?.id && c.state === ContainerState.RUNNING;
     });
-    if (container) {
-      startApp(startingServer);
+    if (container && user) {
+      createApp(startingServer, user);
       setStartingServer(null);
       setSelected(container);
     }
-  }, [containers, startingServer, setStartingServer, setSelected]);
+  }, [user, containers, startingServer, setStartingServer, setSelected]);
+
+
+  const createApp = async (
+    server: Container,
+    user: UserCredentials,
+    name: string = "brainstorm"
+  ): Promise<void> => {
+    const aid = uniq("app");
+    const url = `${API_SERVERS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`;
+    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`));
+  };
+
 
   const servers =
     containers
@@ -104,7 +112,7 @@ const Apps = () => {
         );
         return {
           label: brainstorm
-            ? `View in #${server.name}`
+            ? `Open in #${server.name}`
             : `Create in #${server.name}`,
           icon: brainstorm ? "pi pi-eye" : "pi pi-clone",
           disabled: server.state !== ContainerState.RUNNING,
@@ -113,9 +121,8 @@ const Apps = () => {
               setSelected(server);
               setVisible(true);
             } else {
-              startApp(server);
               setSelected(server);
-              setVisible(true);
+              setShowWedavForm(true);
             }
           },
         };
@@ -124,7 +131,7 @@ const Apps = () => {
         separator: true,
       },
       {
-        label: `Create in new session`,
+        label: `Create a new session`,
         icon: "pi pi-clone",
         command: () => {
           setShowWedavForm(true);

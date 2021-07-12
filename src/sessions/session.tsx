@@ -1,172 +1,170 @@
-import { Button } from "primereact/button";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
-import { Toast } from "primereact/toast";
-import { Sidebar } from "primereact/sidebar";
-import useSWR, { mutate } from "swr";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-  useAppStore,
-  UserCredentials,
-} from "../context/appProvider";
-import "./sessions.css";
-import WebdavForm from "../UI/webdavLoginForm";
-import { Dialog } from "primereact/dialog";
-import { getCurrentUser } from "@nextcloud/auth";
+import { Button } from 'primereact/button'
+import { ProgressSpinner } from 'primereact/progressspinner'
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup'
+import { Toast } from 'primereact/toast'
+import { Sidebar } from 'primereact/sidebar'
+import useSWR, { mutate } from 'swr'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useAppStore, UserCredentials } from '../context/appProvider'
+import './sessions.css'
+import WebdavForm from '../UI/webdavLoginForm'
+import { Dialog } from 'primereact/dialog'
+import { getCurrentUser } from '@nextcloud/auth'
 
 export interface Container {
-  id: string;
-  name: string;
-  user: string;
-  url: string;
-  state: ContainerState;
-  error: Error | null;
-  type: ContainerType;
-  parentId?: string;
+  id: string
+  name: string
+  user: string
+  url: string
+  state: ContainerState
+  error: Error | null
+  type: ContainerType
+  parentId?: string
 }
 
-export type AppContainer = Container & ContainerOptions;
+export type AppContainer = Container & ContainerOptions
 
 export interface ContainerOptions {
-  app: string;
+  app: string
 }
 
 export enum ContainerState {
-  UNINITIALIZED = "uninitialized",
-  CREATED = "created",
-  LOADING = "loading",
-  RUNNING = "running",
-  STOPPING = "stopping",
-  EXITED = "exited",
-  DESTROYED = "destroyed",
+  UNINITIALIZED = 'uninitialized',
+  CREATED = 'created',
+  LOADING = 'loading',
+  RUNNING = 'running',
+  STOPPING = 'stopping',
+  EXITED = 'exited',
+  DESTROYED = 'destroyed',
 }
 
 export enum ContainerType {
-  SERVER = "server",
-  APP = "app",
+  SERVER = 'server',
+  APP = 'app',
 }
 
 export interface Error {
-  code: string;
-  message: string;
+  code: string
+  message: string
 }
 
-export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`;
-export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`;
-export const fetcher = (url: string) => fetch(url).then((r) => r.json());
-export const uniq = (type: string = "server") => {
-  const uniqid = `${type === "server" ? "session" : "app"}-${Date.now()
+export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
+export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`
+export const fetcher = (url: string) => fetch(url).then((r) => r.json())
+export const uniq = (type: string = 'server') => {
+  const uniqid = `${type === 'server' ? 'session' : 'app'}-${Date.now()
     .toString()
-    .slice(-3)}`;
+    .slice(-3)}`
 
-  return uniqid;
-};
-const xpraHTML5Parameters = "keyboard=false&sharing=yes&sound=no";
+  return uniqid
+}
+const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
 const ConditionalWrapper = ({
   condition,
   wrapper,
   children,
 }: {
-  condition: boolean;
-  wrapper: (children: JSX.Element) => JSX.Element;
-  children: JSX.Element;
-}): JSX.Element => (condition ? wrapper(children) : children);
+  condition: boolean
+  wrapper: (children: JSX.Element) => JSX.Element
+  children: JSX.Element
+}): JSX.Element => (condition ? wrapper(children) : children)
 
 const Server = () => {
-  const toast = useRef(null);
-  const error = {};
-  const sessionFullscreen = useRef<HTMLIFrameElement>(null);
-  const sidebarSessionFullscreen = useRef<HTMLIFrameElement>(null);
+  const toast = useRef(null)
+  const error = {}
+  const sessionFullscreen = useRef<HTMLIFrameElement>(null)
+  const sidebarSessionFullscreen = useRef<HTMLIFrameElement>(null)
   const {
     visible: [visible, setVisible],
     selected: [selected, setSelected],
     user: [user, setUser],
     containers,
-  } = useAppStore();
-  const [fullscreen, setFullscreen] = useState(false);
-  const [showWedavForm, setShowWedavForm] = useState(false);
+  } = useAppStore()
+  const [fullscreen, setFullscreen] = useState(false)
+  const [showWedavForm, setShowWedavForm] = useState(false)
 
-  const createServer = (user: UserCredentials) => {
-    const id = uniq("server");
-    const url = `${API_SERVERS}/${id}/start/${user.uid}/${user.password}`;
-    const server = fetch(url);
-    server.then(() => mutate(`${API_SERVERS}/${user?.uid}`));
+  const createServer = () => {
+    const id = uniq('server')
+    const url = `${API_SERVERS}/${id}/start/${user?.uid}`
+    const server = fetch(url)
+    server.then(() => mutate(`${API_SERVERS}/${user?.uid}`))
 
-    return server;
-  };
+    return server
+  }
 
   useEffect(() => {
-    if (user?.password && user.src === "session") {
+    if (user?.password && user.src === 'session') {
       setShowWedavForm(false)
-      createServer(user);
+      if (selected) createApp(selected, user)
     }
-  }, [user]);
+  }, [user])
 
   const createApp = async (
     server: Container,
-    name: string = "brainstorm"
+    user: UserCredentials,
+    name: string = 'brainstorm'
   ): Promise<void> => {
-    const aid = uniq("app");
-    const url = `${API_SERVERS}/${server.id}/apps/${aid}/start/${name}`;
-    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`));
-  };
+    const aid = uniq('app')
+    const url = `${API_SERVERS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`
+    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`))
+  }
 
   const destroy = (id: string) => {
-    const url = `${API_SERVERS}/${id}/destroy`;
-    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`));
-  };
+    const url = `${API_SERVERS}/${id}/destroy`
+    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`))
+  }
 
   const servers = containers
     ?.filter((container: Container) => container.type === ContainerType.SERVER)
     .map((s: Container) => ({
       ...s,
       apps: (containers as AppContainer[]).filter((a) => a.parentId === s.id),
-    }));
+    }))
 
   const serverApps = (server: Container) => {
     return (
       (containers as AppContainer[])?.filter(
         (a) => a.parentId === server?.id
       ) || null
-    );
-  };
+    )
+  }
 
   const confirm1 = (event: any, serverId: string) => {
     confirmPopup({
       target: event.currentTarget,
-      message: "Permanently remove this session and all its applications?",
-      icon: "pi pi-exclamation-triangle",
+      message: 'Permanently remove this session and all its applications?',
+      icon: 'pi pi-exclamation-triangle',
       accept: () => destroy(serverId),
       reject: () => {},
-    });
-  };
+    })
+  }
 
   React.useEffect(() => {
     if (fullscreen) {
       // const i = servers.map((s: any) => s.id).indexOf(selected.id);
       // const current = sessionFullscreen.current;
-      sessionFullscreen?.current?.requestFullscreen();
-      document.addEventListener("fullscreenchange", (event) => {
-        console.log(event);
+      sessionFullscreen?.current?.requestFullscreen()
+      document.addEventListener('fullscreenchange', (event) => {
+        console.log(event)
         if (!document.fullscreenElement) {
-          setFullscreen(false);
+          setFullscreen(false)
         }
-      });
+      })
     }
-  }, [fullscreen]);
+  }, [fullscreen])
 
   React.useEffect(() => {
     if (visible) {
-      document.body.classList.add("body-fixed");
+      document.body.classList.add('body-fixed')
     } else {
-      document.body.classList.remove("body-fixed");
+      document.body.classList.remove('body-fixed')
     }
-  }, [visible]);
+  }, [visible])
 
   const setSidebarFullscreen = () => {
-    sidebarSessionFullscreen?.current?.requestFullscreen();
-  };
+    sidebarSessionFullscreen?.current?.requestFullscreen()
+  }
 
   return (
     <div>
@@ -176,7 +174,7 @@ const Server = () => {
         visible={showWedavForm}
         onHide={() => setShowWedavForm(false)}
       >
-        <WebdavForm src={"session"} />
+        <WebdavForm src={'session'} />
       </Dialog>
       <div>
         {fullscreen && (
@@ -220,8 +218,8 @@ const Server = () => {
                   icon="pi pi-chevron-left"
                   className="p-button-sm p-button-rounded p-button-outlined p-button-secondary p-mr-2"
                   onClick={(e: any) => {
-                    setSelected(null);
-                    setVisible(false);
+                    setSelected(null)
+                    setVisible(false)
                   }}
                 ></Button>
                 <Button
@@ -234,7 +232,7 @@ const Server = () => {
                   }
                   onClick={() => {
                     // setSelected(server);
-                    setSidebarFullscreen();
+                    setSidebarFullscreen()
                   }}
                 ></Button>
               </div>
@@ -260,7 +258,7 @@ const Server = () => {
                       className="p-button-sm p-button-outlined"
                       icon="pi pi-clone"
                       label="Open Brainstorm"
-                      onClick={(event) => createApp(selected)}
+                      onClick={(event) => setShowWedavForm(true)}
                     ></Button>
                   )}
               </div>
@@ -277,14 +275,14 @@ const Server = () => {
           <Button
             className="p-button-sm"
             label="Create session"
-            onClick={() => setShowWedavForm(true)}
+            onClick={() => createServer()}
           ></Button>
         </section>
         <section className="sessions__browser">
           {!servers && !error && (
             <ProgressSpinner
               strokeWidth="4"
-              style={{ width: "24px", height: "24px" }}
+              style={{ width: '24px', height: '24px' }}
             ></ProgressSpinner>
           )}
           {error && <p>{error.message}</p>}
@@ -300,9 +298,9 @@ const Server = () => {
                         title="Open"
                         href={server.url}
                         onClick={(e) => {
-                          e.preventDefault();
-                          setSelected(server);
-                          setVisible(true);
+                          e.preventDefault()
+                          setSelected(server)
+                          setVisible(true)
                         }}
                       >
                         {children}
@@ -331,7 +329,7 @@ const Server = () => {
                           server.state === ContainerState.STOPPING) && (
                           <ProgressSpinner
                             strokeWidth="4"
-                            style={{ width: "24px", height: "24px" }}
+                            style={{ width: '24px', height: '24px' }}
                           ></ProgressSpinner>
                         )}
                       </div>
@@ -354,8 +352,8 @@ const Server = () => {
                       className="p-button-sm p-button-rounded p-button-primary "
                       disabled={server.state !== ContainerState.RUNNING}
                       onClick={() => {
-                        setSelected(server);
-                        setVisible(true);
+                        setSelected(server)
+                        setVisible(true)
                       }}
                     ></Button>
                   </div>
@@ -366,7 +364,7 @@ const Server = () => {
         </section>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Server;
+export default Server

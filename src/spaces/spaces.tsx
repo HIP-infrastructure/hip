@@ -13,6 +13,7 @@ const Spaces = () => {
       <div className="spaces__layout-top">
         <div className="services__sessions">
           <Session />
+
         </div>
         {/* <div className="services__files">
           <Files />

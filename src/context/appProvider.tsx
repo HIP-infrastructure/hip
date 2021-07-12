@@ -38,11 +38,13 @@ export const AppStoreProvider = ({ children }: { children: JSX.Element }) => {
   const [selected, setSelected] = useState<Container | null>(null);
   const [user, setUser] = useState<UserCredentials>();
 
+  // Fetch Nextcloud user
   React.useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
   }, []);
 
+  // Start polling containers fetch 
   const {
     data,
     error,
