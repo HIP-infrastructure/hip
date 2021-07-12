@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { API_GATEWAY } from "../sessions/session";
+import { API_GATEWAY } from "../sessions/sessions";
 import { TreeTable } from "primereact/treetable";
 import TreeNode from "primereact/components/treenode/TreeNode"
 import { Column } from "primereact/column";

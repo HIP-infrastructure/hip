@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container } from "../sessions/session";
+import { Container } from "../sessions/sessions";
 import useSWR, { mutate } from "swr";
 import { getCurrentUser } from "@nextcloud/auth";
 

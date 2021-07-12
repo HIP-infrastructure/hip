@@ -1,4 +1,4 @@
-import Session from "../sessions/session";
+import Sessions from "../sessions/sessions";
 import Apps from "../apps/apps";
 import Activity from "../activity/activity";
 import Files from "../files/files";
@@ -12,7 +12,7 @@ const Spaces = () => {
       </div>
       <div className="spaces__layout-top">
         <div className="services__sessions">
-          <Session />
+          <Sessions />
 
         </div>
         {/* <div className="services__files">

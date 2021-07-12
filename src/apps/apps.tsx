@@ -14,7 +14,7 @@ import {
   uniq,
   ContainerState,
   API_GATEWAY,
-} from "../sessions/session";
+} from "../sessions/sessions";
 import { useAppStore, UserCredentials } from "../context/appProvider";
 import "./apps.css";
 
