@@ -10,7 +10,7 @@ interface UserData {
   password: string;
 }
 
-const WebdavForm = ({ src }: { src: string }) => {
+const WebdavForm = ({ src }: { src: 'session' | 'app' }) => {
   // const [formData, setFormData] = useState({});
   const {
     user: [user, setUser],

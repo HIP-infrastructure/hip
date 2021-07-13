@@ -1,4 +1,3 @@
-import { InputSwitch } from "primereact/inputswitch";
 import { TabMenu } from "primereact/tabmenu";
 import Spaces from "./spaces/spaces";
 import "./App.css";
@@ -25,8 +24,6 @@ const App = () => {
       <main>
         <section>
           <nav className="nav-menu">
-            {/* <h5>Debug mode</h5>
-            <InputSwitch></InputSwitch> */}
           </nav>
           <div className="spaces">
             <div>

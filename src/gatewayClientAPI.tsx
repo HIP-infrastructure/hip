@@ -1,3 +1,5 @@
+import { mutate } from 'swr'
+
 export interface Container {
   id: string
   name: string
@@ -35,10 +37,16 @@ export interface Error {
   message: string
 }
 
+export interface UserCredentials {
+  uid: string
+  displayName: string | null
+  isAdmin: boolean
+  password?: string
+  src?: 'session' | 'app'
+}
+
 export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
 export const API_SESSIONS = `${API_GATEWAY}/remote-app/servers`
-
-export const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export const uniq = (type: string = 'session') => {
   const uniqid = `${type === 'session' ? 'session' : 'app'}-${Date.now()
@@ -48,9 +56,26 @@ export const uniq = (type: string = 'session') => {
   return uniqid
 }
 
+export const fetcher = (url: string) => fetch(url).then((r) => r.json())
+
 export const createSession = (userId: string): Promise<Container> => {
   const id = uniq('session')
   const url = `${API_SESSIONS}/${id}/start/${userId}`
 
-  return fetcher(url)
+  return fetch(url).then(() => mutate(`${API_SESSIONS}/${userId}`))
+}
+
+export const destroyAppsAndSession = (sessionId: string, userId: string) => {
+  const url = `${API_SESSIONS}/${sessionId}/destroy`
+  fetch(url).then(() => mutate(`${API_SESSIONS}/${userId}`))
+}
+
+export const createApp = async (
+  server: Container,
+  user: UserCredentials,
+  name: string = 'brainstorm'
+): Promise<void> => {
+  const aid = uniq('app')
+  const url = `${API_SESSIONS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`
+  fetch(url).then(() => mutate(`${API_SESSIONS}/${user?.uid}`))
 }

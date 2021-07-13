@@ -1,77 +1,73 @@
-import React, { useState } from "react";
-import { Container } from "../sessions/sessions";
-import useSWR, { mutate } from "swr";
-import { getCurrentUser } from "@nextcloud/auth";
+import React, { useState } from 'react';
+import useSWR from 'swr';
 
-export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
-export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`
+import { getCurrentUser } from '@nextcloud/auth';
 
-export interface UserCredentials {
-  uid: string;
-  password: string;
-  isAdmin: boolean;
-  displayName: string;
-  src?: string
-}
+import { API_SESSIONS, Container, UserCredentials } from '../gatewayClientAPI';
+
 export interface IAppState {
-  visible: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  selected: [
+  debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  currentSession: [
     Container | null,
     React.Dispatch<React.SetStateAction<Container | null>>
-  ];
+  ]
   user: [
     UserCredentials | null,
     React.Dispatch<React.SetStateAction<UserCredentials | null>>
-  ];
-  containers: [
-    Container[] | null,
-    React.Dispatch<React.SetStateAction<Container[] | null>>
-  ];
+  ]
+  containers: [Container[] | null, Error]
 }
 
-export const fetcher = (url: string) => fetch(url).then((r) => r.json());
+export const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
-export const AppContext = React.createContext<IAppState>({} as IAppState);
+export const AppContext = React.createContext<IAppState>({} as IAppState)
 
+// Provide state for the HIP app
 export const AppStoreProvider = ({ children }: { children: JSX.Element }) => {
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<Container | null>(null);
-  const [user, setUser] = useState<UserCredentials>();
+  const [debug, setDebug] = useState(false)
+  const [currentSession, setCurrentSession] = useState<Container | null>(null)
+  const [user, setUser] = useState<UserCredentials | null>(null)
 
   // Fetch Nextcloud user
   React.useEffect(() => {
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-  }, []);
+    const currentUser = getCurrentUser() as UserCredentials
+    setUser(currentUser)
+  }, [])
 
-  // Start polling containers fetch 
-  const {
-    data,
-    error,
-  } = useSWR<{ data: Container[]; error: Error }>(
-    () => `${API_SERVERS}/${user?.uid}`,
+  // Start polling containers fetch
+  const { data, error } = useSWR(
+    () => `${API_SESSIONS}/${user?.uid}`,
     fetcher,
     { refreshInterval: 3 * 1000 }
-  );
+  )
 
   const value: IAppState = React.useMemo(
     () => ({
-      visible: [visible, setVisible],
-      selected: [selected, setSelected],
+      currentSession: [currentSession, setCurrentSession],
       user: [user, setUser],
-      containers: data?.data || [],
+      containers: [data?.data || [], error],
+      debug: [debug, setDebug],
     }),
-    [visible, setVisible, selected, setSelected, user, setUser, data]
-  );
+    [
+      currentSession,
+      setCurrentSession,
+      user,
+      setUser,
+      data,
+      error,
+      debug,
+      setDebug,
+    ]
+  )
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-};
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+}
 
 export const useAppStore = (): IAppState => {
-  const context = React.useContext(AppContext);
+  const context = React.useContext(AppContext)
   if (!context) {
-    throw new Error("Wrap AppProvider!");
+    throw new Error('Wrap AppProvider!')
   }
 
-  return context;
-};
+  return context
+}

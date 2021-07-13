@@ -2,17 +2,11 @@ import { Button } from 'primereact/button'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import { confirmPopup } from 'primereact/confirmpopup'
 import { Sidebar } from 'primereact/sidebar'
-import { mutate } from 'swr'
 import React, { useEffect } from 'react'
-import { useAppStore, API_SERVERS } from '../context/appProvider'
-import { uniq } from '../utils'
-import { Container, ContainerType, ContainerState } from '../gatewayClientAPI'
+import { useAppStore } from '../context/appProvider'
+import { Container, ContainerType, ContainerState, createSession, destroyAppsAndSession, AppContainer } from '../gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
-
-
-export const fetcher = (url: string) => fetch(url).then((r) => r.json())
-
 
 const ConditionalWrapper = ({
   condition,
@@ -26,49 +20,33 @@ const ConditionalWrapper = ({
 
 
 const Sessions = () => {
-  const error = {}
   const {
-    visible: [visible, setVisible],
-    selected: [selected, setSelected],
+    currentSession: [currentSession, setCurrentSession],
     user: [user],
-    containers,
+    containers: [containers, error],
   } = useAppStore()
 
   useEffect(() => {
-    if (visible) {
+    if (currentSession) {
       document.body.classList.add('body-fixed')
     } else {
       document.body.classList.remove('body-fixed')
     }
-  }, [visible])
+  }, [currentSession])
 
-  const createServer = () => {
-    const id = uniq('server')
-    const url = `${API_SERVERS}/${id}/start/${user?.uid}`
-    const server = fetch(url)
-    server.then(() => mutate(`${API_SERVERS}/${user?.uid}`))
-
-    return server
-  }
-
-  const destroy = (id: string) => {
-    const url = `${API_SERVERS}/${id}/destroy`
-    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`))
-  }
-
-  const servers = containers
+  const sessions = containers
     ?.filter((container: Container) => container.type === ContainerType.SERVER)
     .map((s: Container) => ({
       ...s,
       apps: (containers as AppContainer[]).filter((a) => a.parentId === s.id),
     }))
 
-  const confirm = (event: any, serverId: string) => {
+  const confirm = (event: any, sessionId: string) => {
     confirmPopup({
       target: event.currentTarget,
       message: 'Permanently remove this session and all its applications?',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => destroy(serverId),
+      accept: () => user && destroyAppsAndSession(sessionId, user.uid),
       reject: () => {},
     })
   }
@@ -76,48 +54,47 @@ const Sessions = () => {
   return (
     <div>
       <Sidebar
-        visible={visible}
+        visible={currentSession != null}
         showCloseIcon={false}
         fullScreen
-        onHide={() => setVisible(false)}
+        onHide={() => setCurrentSession(null)}
       >
         <Session />
       </Sidebar>
       <main className="sessions p-shadow-5">
         <section
           className="sessions__header"
-          title="A session is a remote server instance where you can launch apps"
+          title="A session is a remote session instance where you can launch apps"
         >
           <h2>My Sessions</h2>
           <Button
             className="p-button-sm"
             label="Create session"
-            onClick={() => createServer()}
+            onClick={() => user && createSession(user.uid)}
           ></Button>
         </section>
         <section className="sessions__browser">
-          {!servers && !error && (
+          {!sessions && !error && (
             <ProgressSpinner
               strokeWidth="4"
               style={{ width: '24px', height: '24px' }}
             ></ProgressSpinner>
           )}
           {error && <p>{error.message}</p>}
-          {servers?.length === 0 && <p>Please, create a session</p>}
+          {sessions?.length === 0 && <p>Please, create a session</p>}
           <div className="sessions__items">
-            {servers?.map((server) => (
-              <div className="session__item" key={`${server.id}`}>
+            {sessions?.map((session) => (
+              <div className="session__item" key={`${session.id}`}>
                 <div className="session__desktop">
                   <ConditionalWrapper
-                    condition={server.state === ContainerState.RUNNING}
+                    condition={session.state === ContainerState.RUNNING}
                     wrapper={(children) => (
                       <a
                         title="Open"
-                        href={server.url}
+                        href={session.url}
                         onClick={(e) => {
                           e.preventDefault()
-                          setSelected(server)
-                          setVisible(true)
+                          setCurrentSession(session)
                         }}
                       >
                         {children}
@@ -126,11 +103,11 @@ const Sessions = () => {
                   >
                     <div className="session__desktop_overlay">
                       <div className="session__desktop-text">
-                        <div className="session__name">{`#${server?.name}`}</div>
+                        <div className="session__name">{`#${session?.name}`}</div>
                         <div className="session__details">
-                          <p>{server.state}</p>
-                          <p>{server.error?.message}</p>
-                          {server.apps.map((app) => (
+                          <p>{session.state}</p>
+                          <p>{session.error?.message}</p>
+                          {session.apps.map((app) => (
                             <div key={app.id} className="session_details-app">
                               <p>
                                 <strong>{app.app}</strong>: {app.state}
@@ -141,9 +118,9 @@ const Sessions = () => {
                         </div>
                       </div>
                       <div className="session__desktop-loading">
-                        {(server.state === ContainerState.CREATED ||
-                          server.state === ContainerState.LOADING ||
-                          server.state === ContainerState.STOPPING) && (
+                        {(session.state === ContainerState.CREATED ||
+                          session.state === ContainerState.LOADING ||
+                          session.state === ContainerState.STOPPING) && (
                           <ProgressSpinner
                             strokeWidth="4"
                             style={{ width: '24px', height: '24px' }}
@@ -158,19 +135,18 @@ const Sessions = () => {
                       icon="pi pi-times"
                       className="p-button-sm p-button-rounded p-button-outlined p-button-warning p-mr-2"
                       disabled={
-                        server.state !== ContainerState.RUNNING &&
-                        server.state !== ContainerState.EXITED
+                        session.state !== ContainerState.RUNNING &&
+                        session.state !== ContainerState.EXITED
                       }
-                      onClick={(e: any) => confirm(e, server.id)}
+                      onClick={(e: any) => confirm(e, session.id)}
                     ></Button>
                     <Button
                       title="Open"
                       icon="pi pi-eye"
                       className="p-button-sm p-button-rounded p-button-primary "
-                      disabled={server.state !== ContainerState.RUNNING}
+                      disabled={session.state !== ContainerState.RUNNING}
                       onClick={() => {
-                        setSelected(server)
-                        setVisible(true)
+                        setCurrentSession(session)
                       }}
                     ></Button>
                   </div>
