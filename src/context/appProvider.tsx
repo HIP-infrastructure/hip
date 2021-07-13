@@ -3,6 +3,9 @@ import { Container } from "../sessions/sessions";
 import useSWR, { mutate } from "swr";
 import { getCurrentUser } from "@nextcloud/auth";
 
+export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
+export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`
+
 export interface UserCredentials {
   uid: string;
   password: string;
@@ -25,9 +28,6 @@ export interface IAppState {
     React.Dispatch<React.SetStateAction<Container[] | null>>
   ];
 }
-
-export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`;
-export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`;
 
 export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 

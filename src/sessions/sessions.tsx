@@ -3,60 +3,16 @@ import { ProgressSpinner } from 'primereact/progressspinner'
 import { confirmPopup } from 'primereact/confirmpopup'
 import { Sidebar } from 'primereact/sidebar'
 import { mutate } from 'swr'
-import React, { useEffect, useState } from 'react'
-import { useAppStore, UserCredentials } from '../context/appProvider'
-import './sessions.css'
-import WebdavForm from '../UI/webdavLoginForm'
-import { Dialog } from 'primereact/dialog'
+import React, { useEffect } from 'react'
+import { useAppStore, API_SERVERS } from '../context/appProvider'
+import { uniq } from '../utils'
+import { Container, ContainerType, ContainerState } from '../gatewayClientAPI'
 import Session from './session'
+import './sessions.css'
 
-export interface Container {
-  id: string
-  name: string
-  user: string
-  url: string
-  state: ContainerState
-  error: Error | null
-  type: ContainerType
-  parentId?: string
-}
 
-export type AppContainer = Container & ContainerOptions
-
-export interface ContainerOptions {
-  app: string
-}
-
-export enum ContainerState {
-  UNINITIALIZED = 'uninitialized',
-  CREATED = 'created',
-  LOADING = 'loading',
-  RUNNING = 'running',
-  STOPPING = 'stopping',
-  EXITED = 'exited',
-  DESTROYED = 'destroyed',
-}
-
-export enum ContainerType {
-  SERVER = 'server',
-  APP = 'app',
-}
-
-export interface Error {
-  code: string
-  message: string
-}
-
-export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
-export const API_SERVERS = `${API_GATEWAY}/remote-app/servers`
 export const fetcher = (url: string) => fetch(url).then((r) => r.json())
-export const uniq = (type: string = 'server') => {
-  const uniqid = `${type === 'server' ? 'session' : 'app'}-${Date.now()
-    .toString()
-    .slice(-3)}`
 
-  return uniqid
-}
 
 const ConditionalWrapper = ({
   condition,
@@ -68,6 +24,7 @@ const ConditionalWrapper = ({
   children: JSX.Element
 }): JSX.Element => (condition ? wrapper(children) : children)
 
+
 const Sessions = () => {
   const error = {}
   const {
@@ -76,14 +33,6 @@ const Sessions = () => {
     user: [user],
     containers,
   } = useAppStore()
-  const [showWedavForm, setShowWedavForm] = useState(false)
-
-  useEffect(() => {
-    if (user?.password && user.src === 'session') {
-      setShowWedavForm(false)
-      if (selected) createApp(selected, user)
-    }
-  }, [user, selected])
 
   useEffect(() => {
     if (visible) {
@@ -92,16 +41,6 @@ const Sessions = () => {
       document.body.classList.remove('body-fixed')
     }
   }, [visible])
-
-  const createApp = async (
-    server: Container,
-    user: UserCredentials,
-    name: string = 'brainstorm'
-  ): Promise<void> => {
-    const aid = uniq('app')
-    const url = `${API_SERVERS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`
-    fetch(url).then(() => mutate(`${API_SERVERS}/${user?.uid}`))
-  }
 
   const createServer = () => {
     const id = uniq('server')
@@ -136,13 +75,6 @@ const Sessions = () => {
 
   return (
     <div>
-      <Dialog
-        header="Data access"
-        visible={showWedavForm}
-        onHide={() => setShowWedavForm(false)}
-      >
-        <WebdavForm src={'session'} />
-      </Dialog>
       <Sidebar
         visible={visible}
         showCloseIcon={false}

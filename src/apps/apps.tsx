@@ -4,19 +4,12 @@ import { useRef, useState, useEffect, useContext } from "react";
 import useSWR, { mutate } from "swr";
 import WebdavForm from "../UI/webdavLoginForm";
 import { Dialog } from "primereact/dialog";
-
 import brainstormLogo from "../assets/brainstorm__logo.png";
-import {
-  Container,
-  ContainerType,
-  API_SERVERS,
-  AppContainer,
-  uniq,
-  ContainerState,
-  API_GATEWAY,
-} from "../sessions/sessions";
-import { useAppStore, UserCredentials } from "../context/appProvider";
+import { Container, ContainerType, ContainerState } from '../gatewayClientAPI'
+import { useAppStore, UserCredentials, API_SERVERS } from "../context/appProvider";
 import "./apps.css";
+import { uniq } from '../utils'
+
 
 const items = [
   {
@@ -31,7 +24,7 @@ const items = [
 
 
 const Apps = () => {
-  const menu = useRef<SlideMenu>(null);
+  const menuRef = useRef<SlideMenu>(null);
   const [startingServer, setStartingServer] = useState<Container | null>();
   const [showWedavForm, setShowWedavForm] = useState(false);
 
@@ -164,7 +157,7 @@ const Apps = () => {
               </div>
               <div className="apps__actions">
                 <SlideMenu
-                  ref={menu}
+                  ref={menuRef}
                   model={menuItems}
                   popup
                   viewportHeight={220}
@@ -175,7 +168,7 @@ const Apps = () => {
                   className="p-button-sm p-button-outlined"
                   icon="pi pi-ellipsis-v"
                   label="Actions"
-                  onClick={(event) => menu?.current?.toggle(event)}
+                  onClick={(event) => menuRef?.current?.toggle(event)}
                 ></Button>
               </div>
             </div>
