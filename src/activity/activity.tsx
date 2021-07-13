@@ -1,7 +1,7 @@
 import { Card } from "primereact/card";
 import './activity.css'
 
-const Activity = () => (
+const Activity = (): JSX.Element  => (
   <main className="activity">
     <section className="activity__header">
       <h2>Activity</h2>

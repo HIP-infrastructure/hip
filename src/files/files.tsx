@@ -28,7 +28,7 @@ export interface DAVResultResponseProps {
   "quota-used-bytes"?: string;
 }
 
-const Files = () => {
+const Files = (): JSX.Element  => {
   // const [loading, setLoading] = useState(true);
   const [nodes, setNodes] = useState<TreeNode[]>([]);
   const [filesError, setFilesError] = useState();

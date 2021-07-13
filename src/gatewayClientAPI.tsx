@@ -62,7 +62,7 @@ export const createSession = (userId: string): Promise<Container> => {
   return session
 }
 
-export const destroyAppsAndSession = (sessionId: string, userId: string) => {
+export const destroyAppsAndSession = (sessionId: string, userId: string): void => {
   const url = `${API_SESSIONS}/${sessionId}/destroy`
   fetch(url).then(() => mutate(`${API_SESSIONS}/${userId}`))
 }
@@ -70,7 +70,7 @@ export const destroyAppsAndSession = (sessionId: string, userId: string) => {
 export const createApp = (
   server: Container,
   user: UserCredentials,
-  name: string = 'brainstorm'
+  name = 'brainstorm'
 ): Promise<Container> => {
   const aid = uniq('app')
   const url = `${API_SESSIONS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`

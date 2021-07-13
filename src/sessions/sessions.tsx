@@ -19,7 +19,7 @@ const ConditionalWrapper = ({
 }): JSX.Element => (condition ? wrapper(children) : children)
 
 
-const Sessions = () => {
+const Sessions = (): JSX.Element  => {
   const {
     currentSession: [currentSession, setCurrentSession],
     user: [user],
@@ -47,7 +47,6 @@ const Sessions = () => {
       message: 'Permanently remove this session and all its applications?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => user && destroyAppsAndSession(sessionId, user.uid),
-      reject: () => {},
     })
   }
 

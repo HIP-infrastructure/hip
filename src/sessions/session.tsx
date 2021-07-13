@@ -13,7 +13,7 @@ import WebdavForm from '../UI/webdavLoginForm'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
-const Session = () => {
+const Session = (): JSX.Element  => {
   const fullScreenRef = useRef<HTMLIFrameElement>(null)
   const [fullscreen, setFullscreen] = useState(false)
   const [showWedavForm, setShowWedavForm] = useState(false)
@@ -34,7 +34,7 @@ const Session = () => {
   useEffect(() => {
     if (fullscreen) {
       fullScreenRef?.current?.requestFullscreen()
-      document.addEventListener('fullscreenchange', (event) => {
+      document.addEventListener('fullscreenchange', () => {
         if (!document.fullscreenElement) {
           setFullscreen(false)
         }
@@ -80,7 +80,7 @@ const Session = () => {
               title="Go back to main window"
               icon="pi pi-chevron-left"
               className="p-button-sm p-button-rounded p-button-outlined p-button-secondary p-mr-2"
-              onClick={(e: any) => {
+              onClick={() => {
                 setCurrentSession(null)
               }}
             ></Button>

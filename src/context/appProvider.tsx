@@ -18,12 +18,12 @@ export interface IAppState {
   containers: [Container[] | null, Error]
 }
 
-export const fetcher = (url: string) => fetch(url).then((r) => r.json())
+export const fetcher = (url: string): Promise<void> => fetch(url).then((r) => r.json())
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
 // Provide state for the HIP app
-export const AppStoreProvider = ({ children }: { children: JSX.Element }) => {
+export const AppStoreProvider = ({ children }: { children: JSX.Element }): JSX.Element  => {
   const [debug, setDebug] = useState(false)
   const [currentSession, setCurrentSession] = useState<Container | null>(null)
   const [user, setUser] = useState<UserCredentials | null>(null)

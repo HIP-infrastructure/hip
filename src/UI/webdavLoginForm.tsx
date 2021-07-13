@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { useAppStore, IAppState } from "../context/appProvider";
+import { useAppStore } from "../context/appProvider";
 
 // import { classNames } from "primereact/utils";
 interface UserData {
@@ -10,7 +10,7 @@ interface UserData {
   password: string;
 }
 
-const WebdavForm = ({ src }: { src: 'session' | 'app' }) => {
+const WebdavForm = ({ src }: { src: 'session' | 'app' }): JSX.Element  => {
   // const [formData, setFormData] = useState({});
   const {
     user: [user, setUser],

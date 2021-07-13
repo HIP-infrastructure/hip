@@ -8,7 +8,7 @@ import { useAppStore } from '../context/appProvider'
 
 import './spaces.css'
 
-const Spaces = () => {
+const Spaces = (): JSX.Element  => {
   const {
     debug: [debug, setDebug],
   } = useAppStore()

@@ -26,7 +26,7 @@ const items = [
   },
 ]
 
-const Apps = () => {
+const Apps = (): JSX.Element  => {
   const menuRef = useRef<SlideMenu>(null)
   const [showWedavForm, setShowWedavForm] = useState(false)
   const [shouldCreateSession, setShouldCreateSession] = useState(false)

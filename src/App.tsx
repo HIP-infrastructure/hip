@@ -18,7 +18,7 @@ const items = [
   },
 ];
 
-const App = () => {
+const App = (): JSX.Element => {
   return (
     <AppStoreProvider>
       <main>
