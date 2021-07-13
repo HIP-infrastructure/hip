@@ -23,8 +23,7 @@ const App = () => {
     <AppStoreProvider>
       <main>
         <section>
-          <nav className="nav-menu">
-          </nav>
+          <nav className="nav-menu" />
           <div className="spaces">
             <div>
               <div className="spaces__nav">
@@ -34,7 +33,6 @@ const App = () => {
             </div>
           </div>
         </section>
-
         <footer>
           <p>HIP 2021</p>
         </footer>

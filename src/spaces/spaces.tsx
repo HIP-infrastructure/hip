@@ -16,7 +16,7 @@ const Spaces = () => {
   return (
     <div className="spaces__layout-wrapper">
       <div className="services__apps">
-        {debug && <Apps />}
+        <Apps />
       </div>
       <div className="spaces__layout-top">
         <div className="services__sessions">
@@ -31,8 +31,11 @@ const Spaces = () => {
 
       <div className="spaces__layout-bottom"></div>
       <div className="services__activity">
-      <p>Debug</p>
-        <InputSwitch checked={debug} onChange={() => setDebug(!debug)}></InputSwitch>
+        <p>Debug</p>
+        <InputSwitch
+          checked={debug}
+          onChange={() => setDebug(!debug)}
+        ></InputSwitch>
         <hr></hr>
         {debug && <Activity />}
       </div>

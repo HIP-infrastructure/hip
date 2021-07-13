@@ -66,9 +66,9 @@ const WebdavForm = ({ src }: { src: 'session' | 'app' }) => {
             <InputText
               id="login"
               name="login"
-              value={formik.values.login}
+              value={user?.uid}
               onChange={formik.handleChange}
-              autoFocus
+              disabled
               // className={classNames({ "p-invalid": isFormFieldValid("login") })}
             />
           </div>
@@ -89,6 +89,7 @@ const WebdavForm = ({ src }: { src: 'session' | 'app' }) => {
               type="password"
               value={formik.values.password}
               onChange={formik.handleChange}
+              autoFocus
             />
           </div>
         </div>

@@ -131,7 +131,7 @@ const Sessions = () => {
                   </ConditionalWrapper>
                   <div className="session_actions">
                     <Button
-                      title="Quit"
+                      title="Shut down"
                       icon="pi pi-times"
                       className="p-button-sm p-button-rounded p-button-outlined p-button-warning p-mr-2"
                       disabled={

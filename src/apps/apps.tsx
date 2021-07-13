@@ -1,7 +1,6 @@
 import { SlideMenu } from 'primereact/slidemenu'
 import { Button } from 'primereact/button'
-import { useRef, useState, useEffect, useContext } from 'react'
-import useSWR, { mutate } from 'swr'
+import { useRef, useState, useEffect } from 'react'
 import WebdavForm from '../UI/webdavLoginForm'
 import { Dialog } from 'primereact/dialog'
 import brainstormLogo from '../assets/brainstorm__logo.png'
@@ -9,12 +8,12 @@ import {
   Container,
   ContainerType,
   ContainerState,
-  API_SESSIONS,
   AppContainer,
+  createApp,
+  createSession,
 } from '../gatewayClientAPI'
-import { useAppStore, UserCredentials } from '../context/appProvider'
+import { useAppStore } from '../context/appProvider'
 import './apps.css'
-import { uniq } from '../utils'
 
 const items = [
   {
@@ -29,58 +28,69 @@ const items = [
 
 const Apps = () => {
   const menuRef = useRef<SlideMenu>(null)
-  const [startingServer, setStartingServer] = useState<Container | null>()
   const [showWedavForm, setShowWedavForm] = useState(false)
+  const [shouldCreateSession, setShouldCreateSession] = useState(false)
+  const [sessionForNewApp, setSessionForNewApp] =
+    useState<Container | null>()
+  const [newSessionForApp, setNewSessionForApp] = useState<Container | null>()
 
   const {
-    currentSession: [currentSession, setCurrentSession],
-    user: [user, setUser],
-    containers: [containers, error],
+    currentSession: [_, setCurrentSession],
+    user: [user],
+    containers: [containers],
   } = useAppStore()
 
+  // create app in existing session
+  // or create new session
   useEffect(() => {
     if (user?.password && user.src === 'app') {
       setShowWedavForm(false)
-      if (currentSession !== null) createApp(currentSession, user)
+
+      if (sessionForNewApp) {
+        createApp(sessionForNewApp, user)
+        setCurrentSession(sessionForNewApp)
+        setSessionForNewApp(null)
+      } else if (shouldCreateSession) {
+        createSession(user.uid).then((session) => {
+          setNewSessionForApp(session)
+          setShouldCreateSession(false)
+        })
+      }
     }
-  }, [user, currentSession])
+  }, [
+    user,
+    sessionForNewApp,
+    shouldCreateSession,
+    setShowWedavForm,
+    setSessionForNewApp,
+    setNewSessionForApp,
+    setShouldCreateSession,
+    setCurrentSession
+  ])
 
-  // useEffect(() => {
-  //   if (user?.password) {
-  //     // create app in exisiting session
-  //     if (startingServer) {
-  //       createApp(startingServer, user)
-  //       setCurrentSession(startingServer)
-  //       setStartingServer(null)
-  //     } else {
-  //       createServer()
-  //         .then((r) => r.json())
-  //         .then((response) => {
-  //           const session: Container = response.data
-  //           setCurrentSession(session)
-  //         })
-  //     }
-  //   }
-  // }, [user, setCurrentSession, startingServer, setStartingServer])
+  // create app in new session
+  useEffect(() => {
+    if (newSessionForApp && user?.password && user.src === 'app') {
+      const container = containers?.find((c) => {
+        return c.id === newSessionForApp?.id && c.state === ContainerState.RUNNING
+      })
 
-  // const createApp = async (
-  //   session: Container,
-  //   user: UserCredentials,
-  //   name: string = 'brainstorm'
-  // ): Promise<void> => {
-  //   const aid = uniq('app')
-  //   const url = `${API_SESSIONS}/${session.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`
-  //   fetch(url).then(() => mutate(`${API_SESSIONS}/${user?.uid}`))
-  // }
+      if (container) {
+        createApp(container, user)
+        setCurrentSession(container)
+        setNewSessionForApp(null)
+      }
+    }
+  }, [user, containers, newSessionForApp, setCurrentSession, setNewSessionForApp])
 
   const sessions =
     containers
       ?.filter(
         (container: Container) => container.type === ContainerType.SERVER
       )
-      .map((s: Container) => ({
-        ...s,
-        apps: (containers as AppContainer[]).filter((a) => a.parentId === s.id),
+      .map((container: Container) => ({
+        ...container,
+        apps: (containers as AppContainer[]).filter((a) => a.parentId === container.id),
       })) || []
 
   const menuItems =
@@ -100,7 +110,7 @@ const Apps = () => {
             if (brainstorm) {
               setCurrentSession(session)
             } else {
-              setStartingServer(session)
+              setSessionForNewApp(session)
               setShowWedavForm(true)
             }
           },
@@ -113,6 +123,7 @@ const Apps = () => {
         label: `Create a new session`,
         icon: 'pi pi-clone',
         command: () => {
+          setShouldCreateSession(true)
           setShowWedavForm(true)
         },
       },

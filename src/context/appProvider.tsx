@@ -43,20 +43,20 @@ export const AppStoreProvider = ({ children }: { children: JSX.Element }) => {
 
   const value: IAppState = React.useMemo(
     () => ({
+      debug: [debug, setDebug],
       currentSession: [currentSession, setCurrentSession],
       user: [user, setUser],
       containers: [data?.data || [], error],
-      debug: [debug, setDebug],
     }),
     [
+      debug,
+      setDebug,
       currentSession,
       setCurrentSession,
       user,
       setUser,
       data,
       error,
-      debug,
-      setDebug,
     ]
   )
 
