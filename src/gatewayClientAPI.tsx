@@ -46,7 +46,7 @@ export interface UserCredentials {
 	src?: 'session' | 'app'
 }
 
-export const API_GATEWAY = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_PREFIX}`
+export const API_GATEWAY = `${process.env.REACT_APP_GATEWAY_API}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
 export const API_SESSIONS = `${API_GATEWAY}/remote-app/servers`
 
 export const createSession = (userId: string): Promise<Container> => {
