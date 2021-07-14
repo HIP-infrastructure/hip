@@ -1,52 +1,52 @@
 .data {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    border: 1px solid var(--bluegray-200);
-    // box-shadow: 2px 2px 5px var(--bluegray-100);
-  }
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	border: 1px solid var(--bluegray-200);
+	// box-shadow: 2px 2px 5px var(--bluegray-100);
+}
 
-  .data__header {
-    padding: 0 1em;
-    flex: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background: var(--bluegray-600);
-  }
+.data__header {
+	padding: 0 1em;
+	flex: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	background: var(--bluegray-600);
+}
 
-  .data__header h2 {
-    color: white;
-    font-size: 16px;
-  }
+.data__header h2 {
+	color: white;
+	font-size: 16px;
+}
 
-  .data__browser {
-    padding: 1em;
-    flex: 1;
-  }
+.data__browser {
+	padding: 1em;
+	flex: 1;
+}
 
-  .data__error {
-    margin-bottom: 1em;
-  }
+.data__error {
+	margin-bottom: 1em;
+}
 
-  .data__row-actions {
-    visibility: hidden;
-  }
+.data__row-actions {
+	visibility: hidden;
+}
 
-  .data__row:hover .data__row-actions {
-    visibility: visible;
-  }
+.data__row:hover .data__row-actions {
+	visibility: visible;
+}
 
-  :host >>> .p-draggable-enter .data__row {
-    background-color: blue;
-  }
+:host >>> .p-draggable-enter .data__row {
+	background-color: blue;
+}
 
-  :host >>> .p-button {
-    margin: 0;
-    padding: 0.4em 0.75em;
-  }
+:host >>> .p-button {
+	margin: 0;
+	padding: 0.4em 0.75em;
+}
 
-  td .pi {
-    margin-right: 16px;
-  }
+td .pi {
+	margin-right: 16px;
+}

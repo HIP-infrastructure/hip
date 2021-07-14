@@ -1,30 +1,30 @@
 section {
-  display: flex;
+	display: flex;
 }
 
 .nav-menu {
-  width: 200px;
-  padding: 1em;
+	width: 200px;
+	padding: 1em;
 }
 
 .spaces {
-  flex: 1;
-  padding: 1em;
-  display: flex;
+	flex: 1;
+	padding: 1em;
+	display: flex;
 }
 
 .spaces__nav {
-  margin-top: 1em;
-  margin-bottom: 3em;
+	margin-top: 1em;
+	margin-bottom: 3em;
 }
 
 footer {
-  position: fixed;
-  width: 100vw;
-  bottom: 0;
-  left: 0;
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  background: rgb(235, 235, 235); /*var(--bluegray-50)*/
+	position: fixed;
+	width: 100vw;
+	bottom: 0;
+	left: 0;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	background: rgb(235, 235, 235); /*var(--bluegray-50)*/
 }
