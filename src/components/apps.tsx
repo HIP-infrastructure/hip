@@ -3,7 +3,7 @@ import { SlideMenu } from 'primereact/slidemenu'
 import { Button } from 'primereact/button'
 
 import { Dialog } from 'primereact/dialog'
-import WebdavForm from '../UI/webdavLoginForm'
+import WebdavForm from './webdavLoginForm'
 import brainstormLogo from '../assets/brainstorm__logo.png'
 import {
 	Container,
@@ -71,6 +71,8 @@ const Apps = (): JSX.Element => {
 	// create app in new session
 	useEffect(() => {
 		if (newSessionForApp && user?.password && user.src === 'app') {
+			setShowWedavForm(false)
+
 			const container = containers?.find(
 				c => c.id === newSessionForApp?.id && c.state === ContainerState.RUNNING
 			)

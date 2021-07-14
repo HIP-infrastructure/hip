@@ -1,6 +1,6 @@
 import React from 'react'
 import { TabMenu } from 'primereact/tabmenu'
-import Spaces from './spaces/spaces'
+import Spaces from './components/spaces'
 import './App.css'
 import { AppStoreProvider } from './context/appProvider'
 

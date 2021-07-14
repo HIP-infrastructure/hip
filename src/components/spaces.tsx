@@ -1,9 +1,9 @@
 import React from 'react'
 import { InputSwitch } from 'primereact/inputswitch'
-import Sessions from '../sessions/sessions'
-import Apps from '../apps/apps'
-import Activity from '../activity/activity'
-import Files from '../files/files'
+import Sessions from './sessions'
+import Apps from './apps'
+import Activity from './activity'
+import Files from './files'
 
 import { useAppStore } from '../context/appProvider'
 

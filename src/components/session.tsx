@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppStore } from '../context/appProvider'
 import { AppContainer, ContainerState, createApp } from '../gatewayClientAPI'
-import WebdavForm from '../UI/webdavLoginForm'
+import WebdavForm from './webdavLoginForm'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
