@@ -29,7 +29,7 @@ export enum ContainerState {
 }
 
 export enum ContainerType {
-	SERVER = 'server',
+	SESSION = 'server',
 	APP = 'app',
 }
 
@@ -47,14 +47,20 @@ export interface UserCredentials {
 }
 
 export const API_GATEWAY = `${process.env.REACT_APP_GATEWAY_API}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
-export const API_SESSIONS = `${API_GATEWAY}/remote-app/servers`
+export const API_CONTAINERS = `${API_GATEWAY}/remote-app/containers`
 
 export const createSession = (userId: string): Promise<Container> => {
 	const id = uniq('session')
-	const url = `${API_SESSIONS}/${id}/start/${userId}`
-	const session = fetch(url)
+	const url = `${API_CONTAINERS}/${id}/start`
+	const session = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ uid: userId }),
+	})
 		.then(r => {
-			mutate(`${API_SESSIONS}/${userId}`)
+			mutate(`${API_CONTAINERS}/${userId}`)
 			return r.json()
 		})
 		.then(j => j.data)
@@ -62,27 +68,33 @@ export const createSession = (userId: string): Promise<Container> => {
 	return session
 }
 
-export const destroyAppsAndSession = (
-	sessionId: string,
-	userId: string
-): void => {
-	const url = `${API_SESSIONS}/${sessionId}/destroy`
-	fetch(url).then(() => mutate(`${API_SESSIONS}/${userId}`))
-}
-
 export const createApp = (
-	server: Container,
+	session: Container,
 	user: UserCredentials,
 	name = 'brainstorm'
 ): Promise<Container> => {
 	const aid = uniq('app')
-	const url = `${API_SESSIONS}/${server.id}/apps/${aid}/start/${name}/${user.uid}/${user.password}`
-	const app = fetch(url)
+	const url = `${API_CONTAINERS}/${session.id}/apps/${aid}/start`
+	const app = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ app: name, uid: user.uid, password: user.password }),
+	})
 		.then(r => {
-			mutate(`${API_SESSIONS}/${user.uid}`)
+			mutate(`${API_CONTAINERS}/${user.uid}`)
 			return r.json()
 		})
 		.then(j => j.data)
 
 	return app
+}
+
+export const destroyAppsAndSession = (
+	sessionId: string,
+	userId: string
+): void => {
+	const url = `${API_CONTAINERS}/${sessionId}/destroy`
+	fetch(url).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { TreeTable } from 'primereact/treetable'
 import { Column } from 'primereact/column'
-import { API_GATEWAY } from '../gatewayClientAPI'
+import { API_GATEWAY } from '../api/gatewayClientAPI'
 
 export interface FileStat {
 	filename: string

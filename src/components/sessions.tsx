@@ -3,7 +3,7 @@ import { ProgressSpinner } from 'primereact/progressspinner'
 import { confirmPopup } from 'primereact/confirmpopup'
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect } from 'react'
-import { useAppStore } from '../context/appProvider'
+import { useAppStore } from '../store/appProvider'
 import {
 	Container,
 	ContainerType,
@@ -11,7 +11,7 @@ import {
 	createSession,
 	destroyAppsAndSession,
 	AppContainer,
-} from '../gatewayClientAPI'
+} from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
 
@@ -41,7 +41,7 @@ const Sessions = (): JSX.Element => {
 	}, [currentSession])
 
 	const sessions = containers
-		?.filter((container: Container) => container.type === ContainerType.SERVER)
+		?.filter((container: Container) => container.type === ContainerType.SESSION)
 		.map((s: Container) => ({
 			...s,
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),

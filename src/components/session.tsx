@@ -3,8 +3,8 @@ import { Dialog } from 'primereact/dialog'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import React, { useEffect, useRef, useState } from 'react'
 
-import { useAppStore } from '../context/appProvider'
-import { AppContainer, ContainerState, createApp } from '../gatewayClientAPI'
+import { useAppStore } from '../store/appProvider'
+import { AppContainer, ContainerState, createApp } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'

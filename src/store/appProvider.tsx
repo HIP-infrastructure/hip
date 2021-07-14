@@ -3,7 +3,7 @@ import useSWR from 'swr'
 
 import { getCurrentUser } from '@nextcloud/auth'
 
-import { API_SESSIONS, Container, UserCredentials } from '../gatewayClientAPI'
+import { API_CONTAINERS, Container, UserCredentials } from '../api/gatewayClientAPI'
 
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -41,7 +41,7 @@ export const AppStoreProvider = ({
 
 	// Start polling containers fetch
 	const { data, error } = useSWR(
-		() => `${API_SESSIONS}/${user?.uid}`,
+		() => `${API_CONTAINERS}/${user?.uid}`,
 		fetcher,
 		{ refreshInterval: 3 * 1000 }
 	)

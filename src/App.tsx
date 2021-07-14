@@ -2,7 +2,7 @@ import React from 'react'
 import { TabMenu } from 'primereact/tabmenu'
 import Spaces from './components/spaces'
 import './App.css'
-import { AppStoreProvider } from './context/appProvider'
+import { AppStoreProvider } from './store/appProvider'
 
 const items = [
 	{

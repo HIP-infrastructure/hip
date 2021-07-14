@@ -12,8 +12,8 @@ import {
 	AppContainer,
 	createApp,
 	createSession,
-} from '../gatewayClientAPI'
-import { useAppStore } from '../context/appProvider'
+} from '../api/gatewayClientAPI'
+import { useAppStore } from '../store/appProvider'
 import './apps.css'
 
 const items = [
@@ -94,7 +94,7 @@ const Apps = (): JSX.Element => {
 	const sessions =
 		containers
 			?.filter(
-				(container: Container) => container.type === ContainerType.SERVER
+				(container: Container) => container.type === ContainerType.SESSION
 			)
 			.map((container: Container) => ({
 				...container,

@@ -5,7 +5,7 @@ import Apps from './apps'
 import Activity from './activity'
 import Files from './files'
 
-import { useAppStore } from '../context/appProvider'
+import { useAppStore } from '../store/appProvider'
 
 import './spaces.css'
 
