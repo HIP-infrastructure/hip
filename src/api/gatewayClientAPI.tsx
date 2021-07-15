@@ -96,5 +96,11 @@ export const destroyAppsAndSession = (
 	userId: string
 ): void => {
 	const url = `${API_CONTAINERS}/${sessionId}/destroy`
-	fetch(url).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	fetch(url, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ uid: userId }),
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
