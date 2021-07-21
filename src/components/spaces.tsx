@@ -23,20 +23,20 @@ const Spaces = (): JSX.Element => {
 				<div className='services__sessions'>
 					<Sessions />
 				</div>
-				{debug && (
+				{/* {debug && (
 					<div className='services__files'>
 						<Files />
 					</div>
-				)}
+				)} */}
 			</div>
 
 			<div className='spaces__layout-bottom' />
-			<div className='services__activity'>
+			{/* <div className='services__activity'>
 				<p>Debug</p>
 				<InputSwitch checked={debug} onChange={() => setDebug(!debug)} />
 				<hr />
 				{debug && <Activity />}
-			</div>
+			</div> */}
 		</div>
 	)
 }

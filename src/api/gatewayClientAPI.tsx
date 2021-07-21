@@ -49,6 +49,11 @@ export interface UserCredentials {
 export const API_GATEWAY = `${process.env.REACT_APP_GATEWAY_API}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
 export const API_CONTAINERS = `${API_GATEWAY}/remote-app/containers`
 
+export const fetchRemote = () => {
+	const url = `${API_CONTAINERS}/fetch`
+	fetch(url)
+}
+
 export const createSession = (userId: string): Promise<Container> => {
 	const id = uniq('session')
 	const url = `${API_CONTAINERS}/${id}/start`

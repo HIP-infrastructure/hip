@@ -11,6 +11,7 @@ import {
 	createSession,
 	destroyAppsAndSession,
 	AppContainer,
+	fetchRemote
 } from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
@@ -27,6 +28,7 @@ const ConditionalWrapper = ({
 
 const Sessions = (): JSX.Element => {
 	const {
+		debug: [debug],
 		currentSession: [currentSession, setCurrentSession],
 		user: [user],
 		containers: [containers, error],
@@ -72,6 +74,11 @@ const Sessions = (): JSX.Element => {
 					title='A session is a remote session instance where you can launch apps'
 				>
 					<h2>My Sessions</h2>
+					{debug && <Button
+						className='p-button-sm'
+						label='Fetch remote'
+						onClick={() => user && fetchRemote()}
+					/>}
 					<Button
 						className='p-button-sm'
 						label='Create session'
@@ -86,7 +93,8 @@ const Sessions = (): JSX.Element => {
 						/>
 					)}
 					{error && <p>{error.message}</p>}
-					{sessions?.length === 0 && <p>Please, create a session</p>}
+					{!error && sessions?.length === 0 && <p>Please, create a session</p>}
+					
 					<div className='sessions__items'>
 						{sessions?.map(session => (
 							<div className='session__item' key={`${session.id}`}>
