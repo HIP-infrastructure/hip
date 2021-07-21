@@ -21,11 +21,11 @@ const Session = (): JSX.Element => {
 	} = useAppStore()
 
 	useEffect(() => {
-		if (user?.password && user.src === 'session') {
+		if (showWedavForm && user?.password && user.src === 'session') {
 			setShowWedavForm(false)
 			if (currentSession !== null) createApp(currentSession, user)
 		}
-	}, [user, currentSession])
+	}, [user, currentSession, showWedavForm, setShowWedavForm])
 
 	useEffect(() => {
 		if (fullscreen) {
