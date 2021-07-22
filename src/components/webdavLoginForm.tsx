@@ -10,7 +10,7 @@ interface UserData {
 	password: string
 }
 
-const WebdavForm = ({ src }: { src: 'session' | 'app' }): JSX.Element => {
+const WebdavForm = (): JSX.Element => {
 	// const [formData, setFormData] = useState({});
 	const {
 		user: [user, setUser],
@@ -38,7 +38,7 @@ const WebdavForm = ({ src }: { src: 'session' | 'app' }): JSX.Element => {
 		// },
 		onSubmit: (data: UserData) => {
 			// setFormData(data);
-			setUser({ ...user, password: data.password, src })
+			setUser({ ...user, password: data.password })
 
 			// formik.resetForm();
 		},

@@ -11,7 +11,8 @@ import {
 	createSession,
 	destroyAppsAndSession,
 	AppContainer,
-	fetchRemote
+	fetchRemote,
+	forceRemove,
 } from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
@@ -74,11 +75,13 @@ const Sessions = (): JSX.Element => {
 					title='A session is a remote session instance where you can launch apps'
 				>
 					<h2>My Sessions</h2>
-					{debug && <Button
-						className='p-button-sm'
-						label='Fetch remote'
-						onClick={() => user && fetchRemote()}
-					/>}
+					{debug && (
+						<Button
+							className='p-button-sm'
+							label='Fetch remote'
+							onClick={() => user && fetchRemote()}
+						/>
+					)}
 					<Button
 						className='p-button-sm'
 						label='Create session'
@@ -94,7 +97,7 @@ const Sessions = (): JSX.Element => {
 					)}
 					{error && <p>{error.message}</p>}
 					{!error && sessions?.length === 0 && <p>Please, create a session</p>}
-					
+
 					<div className='sessions__items'>
 						{sessions?.map(session => (
 							<div className='session__item' key={`${session.id}`}>
@@ -143,6 +146,18 @@ const Sessions = (): JSX.Element => {
 										</div>
 									</ConditionalWrapper>
 									<div className='session_actions'>
+										{debug && (
+											<Button
+												title='Force remove'
+												icon='pi pi-times'
+												className='p-button-sm p-button-rounded p-button-danger p-mr-2'
+												disabled={
+													session.state !== ContainerState.RUNNING &&
+													session.state !== ContainerState.EXITED
+												}
+												onClick={(e: any) => forceRemove(session.id)}
+											/>
+										)}
 										<Button
 											title='Shut down'
 											icon='pi pi-times'

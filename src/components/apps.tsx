@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from 'react'
 import { SlideMenu } from 'primereact/slidemenu'
 import { Button } from 'primereact/button'
 
-import { Dialog } from 'primereact/dialog'
-import WebdavForm from './webdavLoginForm'
 import brainstormLogo from '../assets/brainstorm__logo.png'
 import {
 	Container,
@@ -29,28 +27,33 @@ const items = [
 
 const Apps = (): JSX.Element => {
 	const menuRef = useRef<SlideMenu>(null)
-	const [showWedavForm, setShowWedavForm] = useState(false)
 	const [shouldCreateSession, setShouldCreateSession] = useState(false)
 	const [sessionForNewApp, setSessionForNewApp] = useState<Container | null>()
 	const [newSessionForApp, setNewSessionForApp] = useState<Container | null>()
+	const [inAppPage, setInAppPage] = useState(false)
 
 	const {
 		currentSession: [, setCurrentSession],
-		user: [user],
+		showWedavForm: [showWedavForm, setShowWedavForm],
+		user: [user, setUser],
 		containers: [containers],
 	} = useAppStore()
 
 	// create app in existing session
 	// or create new session
 	useEffect(() => {
-		if (user?.password && user.src === 'app') {
+		if (inAppPage && user?.password && showWedavForm) {
 			setShowWedavForm(false)
 
 			if (sessionForNewApp) {
 				createApp(sessionForNewApp, user)
+				// Remove password after use
+				const { password, ...nextUser } = user
+				setUser(nextUser)
 				setCurrentSession(sessionForNewApp)
 				setSessionForNewApp(null)
-			} else if (shouldCreateSession) {
+				setInAppPage(false);
+			} else if (shouldCreateSession && user.uid) {
 				createSession(user.uid).then(session => {
 					setNewSessionForApp(session)
 					setShouldCreateSession(false)
@@ -66,11 +69,13 @@ const Apps = (): JSX.Element => {
 		setNewSessionForApp,
 		setShouldCreateSession,
 		setCurrentSession,
+		setUser,
+		setInAppPage
 	])
 
 	// create app in new session
 	useEffect(() => {
-		if (newSessionForApp && user?.password && user.src === 'app') {
+		if (inAppPage && newSessionForApp && user?.password) {
 			setShowWedavForm(false)
 
 			const container = containers?.find(
@@ -79,8 +84,12 @@ const Apps = (): JSX.Element => {
 
 			if (container) {
 				createApp(container, user)
+				// Remove password after use
+				const { password, ...nextUser } = user
+				setUser(nextUser)
 				setCurrentSession(container)
 				setNewSessionForApp(null)
+				setInAppPage(false);
 			}
 		}
 	}, [
@@ -89,6 +98,7 @@ const Apps = (): JSX.Element => {
 		newSessionForApp,
 		setCurrentSession,
 		setNewSessionForApp,
+		setUser,
 	])
 
 	const sessions =
@@ -120,6 +130,7 @@ const Apps = (): JSX.Element => {
 						if (brainstorm) {
 							setCurrentSession(session)
 						} else {
+							setInAppPage(true);
 							setSessionForNewApp(session)
 							setShowWedavForm(true)
 						}
@@ -133,6 +144,7 @@ const Apps = (): JSX.Element => {
 				label: `Create a new session`,
 				icon: 'pi pi-clone',
 				command: () => {
+					setInAppPage(true);
 					setShouldCreateSession(true)
 					setShowWedavForm(true)
 				},
@@ -141,13 +153,6 @@ const Apps = (): JSX.Element => {
 
 	return (
 		<div>
-			<Dialog
-				header='Data access'
-				visible={showWedavForm}
-				onHide={() => setShowWedavForm(false)}
-			>
-				<WebdavForm src='app' />
-			</Dialog>
 			<main className='apps p-shadow-5'>
 				<section
 					className='apps__header'

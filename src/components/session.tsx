@@ -1,31 +1,39 @@
 import { Button } from 'primereact/button'
-import { Dialog } from 'primereact/dialog'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppStore } from '../store/appProvider'
-import { AppContainer, ContainerState, createApp } from '../api/gatewayClientAPI'
-import WebdavForm from './webdavLoginForm'
+import {
+	AppContainer,
+	ContainerState,
+	createApp,
+} from '../api/gatewayClientAPI'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
 const Session = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const [fullscreen, setFullscreen] = useState(false)
-	const [showWedavForm, setShowWedavForm] = useState(false)
+	const [inSession, setInSession] = useState(false)
 
 	const {
 		currentSession: [currentSession, setCurrentSession],
+		showWedavForm: [showWedavForm, setShowWedavForm],
 		containers: [containers],
-		user: [user],
+		user: [user, setUser],
 	} = useAppStore()
 
 	useEffect(() => {
-		if (showWedavForm && user?.password && user.src === 'session') {
+		if (inSession &&  showWedavForm && user?.password) {
 			setShowWedavForm(false)
 			if (currentSession !== null) createApp(currentSession, user)
+
+			// Remove password after use
+			const { password, ...nextUser } = user
+			setUser(nextUser)
+			setInSession(false)
 		}
-	}, [user, currentSession, showWedavForm, setShowWedavForm])
+	}, [user, inSession, currentSession, showWedavForm, setShowWedavForm, setUser, setInSession])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -45,13 +53,6 @@ const Session = (): JSX.Element => {
 
 	return (
 		<div className='session__sidebar'>
-			<Dialog
-				header='Data access'
-				visible={showWedavForm}
-				onHide={() => setShowWedavForm(false)}
-			>
-				<WebdavForm src='session' />
-			</Dialog>
 			{currentSession?.url && (
 				<iframe
 					ref={fullScreenRef}
@@ -114,8 +115,11 @@ const Session = (): JSX.Element => {
 									type='button'
 									className='p-button-sm p-button-outlined'
 									icon='pi pi-clone'
-									label='Open Brainstorm'
-									onClick={() => setShowWedavForm(true)}
+									label='Create Brainstorm'
+									onClick={() => {
+										setInSession(true)
+										setShowWedavForm(true)
+									}}
 								/>
 							)}
 					</div>

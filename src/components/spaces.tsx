@@ -4,7 +4,8 @@ import Sessions from './sessions'
 import Apps from './apps'
 import Activity from './activity'
 import Files from './files'
-
+import { Dialog } from 'primereact/dialog'
+import WebdavForm from './webdavLoginForm'
 import { useAppStore } from '../store/appProvider'
 
 import './spaces.css'
@@ -12,29 +13,38 @@ import './spaces.css'
 const Spaces = (): JSX.Element => {
 	const {
 		debug: [debug, setDebug],
+		showWedavForm: [showWedavForm, setShowWedavForm],
 	} = useAppStore()
 
 	return (
 		<div className='spaces__layout-wrapper'>
+			<Dialog
+				header='Data access'
+				visible={showWedavForm}
+				onHide={() => setShowWedavForm(false)}
+			>
+				<WebdavForm />
+			</Dialog>
 			<div className='services__apps'>
 				<Apps />
+				<div>
+					<p>Debug</p>
+					<InputSwitch checked={debug} onChange={() => setDebug(!debug)} />
+				</div>
 			</div>
 			<div className='spaces__layout-top'>
 				<div className='services__sessions'>
 					<Sessions />
 				</div>
-				{/* {debug && (
+				{/*
 					<div className='services__files'>
 						<Files />
 					</div>
-				)} */}
+				*/}
 			</div>
 
 			<div className='spaces__layout-bottom' />
 			{/* <div className='services__activity'>
-				<p>Debug</p>
-				<InputSwitch checked={debug} onChange={() => setDebug(!debug)} />
-				<hr />
 				{debug && <Activity />}
 			</div> */}
 		</div>
