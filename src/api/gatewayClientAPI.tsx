@@ -83,7 +83,7 @@ export const createSession = (userId: string): Promise<Container> => {
 export const createApp = (
 	session: Container,
 	user: UserCredentials,
-	name = 'brainstorm'
+	name: string
 ): Promise<Container> => {
 	const aid = uniq('app')
 	const url = `${API_CONTAINERS}/${session.id}/apps/${aid}/start`
@@ -101,6 +101,24 @@ export const createApp = (
 		.then(j => j.data)
 
 	return app
+}
+
+export const createSessionAndApp = (user: UserCredentials, appName: string): Promise<Container> => {
+	const url = `${API_CONTAINERS}/apps/${appName}/start`
+	const sessionAndApp = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ uid: user.uid, password: user.password }),
+	})
+		.then(r => {
+			mutate(`${API_CONTAINERS}/${user.uid}`)
+			return r.json()
+		})
+		.then(j => j.data)
+
+	return sessionAndApp
 }
 
 export const destroyAppsAndSession = (

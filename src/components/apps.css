@@ -26,6 +26,11 @@
 .apps__launchpad {
 	padding: 1em;
 	margin: auto;
+	display: flex;
+	flex-direction: column;
+}
+.apps__cards {
+	margin-top: 16px;;
 }
 
 .apps__card {
@@ -34,6 +39,10 @@
 	flex-direction: column;
 	align-items: center;
 	border: 1px solid rgba(128, 128, 128, 0.591);
+}
+
+.apps__card img {
+	width: 80px;
 }
 
 .apps__name {

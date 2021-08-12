@@ -8,13 +8,15 @@ import {
 	ContainerState,
 	createApp,
 } from '../api/gatewayClientAPI'
+import { appItems } from '../components/apps'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
 const Session = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const [fullscreen, setFullscreen] = useState(false)
-	const [inSession, setInSession] = useState(false)
+	const [inSessionPage, setInSessionPage] = useState(false)
+	const [appName, setAppName] = useState('')
 
 	const {
 		currentSession: [currentSession, setCurrentSession],
@@ -24,16 +26,24 @@ const Session = (): JSX.Element => {
 	} = useAppStore()
 
 	useEffect(() => {
-		if (inSession &&  showWedavForm && user?.password) {
+		if (inSessionPage && showWedavForm && user?.password) {
 			setShowWedavForm(false)
-			if (currentSession !== null) createApp(currentSession, user)
+			if (currentSession !== null) createApp(currentSession, user, appName)
 
 			// Remove password after use
 			const { password, ...nextUser } = user
 			setUser(nextUser)
-			setInSession(false)
+			setInSessionPage(false)
 		}
-	}, [user, inSession, currentSession, showWedavForm, setShowWedavForm, setUser, setInSession])
+	}, [
+		user,
+		inSessionPage,
+		currentSession,
+		showWedavForm,
+		setShowWedavForm,
+		setUser,
+		setInSessionPage,
+	])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -46,10 +56,43 @@ const Session = (): JSX.Element => {
 		}
 	}, [fullscreen])
 
-	const sessionApps =
-		(containers as AppContainer[])?.filter(
-			a => a.parentId === currentSession?.id
-		) || null
+	const AppActions = () => (
+		<div>
+			{appItems.map(app => {
+				const appInSession = (containers as AppContainer[])?.find(
+					container =>
+						container.parentId === currentSession?.id &&
+						container.app === app.name
+				)
+
+				if (appInSession) {
+					return (
+						<div key={appInSession.id}>
+							<div className='session__sidebar-appname'>{appInSession.app}</div>
+							<div className='session__sidebar-details'>
+								<p>{appInSession.state}</p>
+							</div>
+						</div>
+					)
+				} else {
+					return (
+						<Button
+							key={app.name}
+							type='button'
+							className='p-button-sm p-button-outlined'
+							icon='pi pi-clone'
+							label={`Run ${app.name}`}
+							onClick={() => {
+								setInSessionPage(true)
+								setAppName(app.name)
+								setShowWedavForm(true)
+							}}
+						/>
+					)
+				}
+			})}
+		</div>
+	)
 
 	return (
 		<div className='session__sidebar'>
@@ -99,29 +142,7 @@ const Session = (): JSX.Element => {
 					<p>{currentSession?.state}</p>
 					<p>{currentSession?.error?.message}</p>
 					<div className='session__sidebar-apps'>
-						{currentSession &&
-							sessionApps?.map(app => (
-								<div key={app.id}>
-									<div className='session__sidebar-appname'>{app.app}</div>
-									<div className='session__sidebar-details'>
-										<p>{app.state}</p>
-									</div>
-								</div>
-							))}
-
-						{currentSession?.state === ContainerState.RUNNING &&
-							sessionApps?.length === 0 && (
-								<Button
-									type='button'
-									className='p-button-sm p-button-outlined'
-									icon='pi pi-clone'
-									label='Create Brainstorm'
-									onClick={() => {
-										setInSession(true)
-										setShowWedavForm(true)
-									}}
-								/>
-							)}
+						<AppActions />
 					</div>
 				</div>
 			</div>
