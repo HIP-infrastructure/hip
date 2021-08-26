@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   gateway:
@@ -25,8 +25,8 @@ services:
     command: npm run start:dev
 
   web:
-    build: 
-      context: /mnt/nextcloud-dp/nextcloud/apps/hip 
+    build:
+      context: /mnt/nextcloud-dp/nextcloud/apps/hip
       target: base
     working_dir: /base
     volumes:
@@ -49,13 +49,11 @@ services:
     restart: always
     volumes:
       - ./gateway/redis/data:/data
-    expose: 
-     - 6379
+    expose:
+      - 6379
     networks:
       - nextcloud-docker_frontend
-  
+
 networks:
   nextcloud-docker_frontend:
     external: true
-
-

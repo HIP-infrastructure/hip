@@ -137,14 +137,17 @@ const Sessions = (): JSX.Element => {
 												{(session.state === ContainerState.CREATED ||
 													session.state === ContainerState.LOADING ||
 													session.state === ContainerState.STOPPING ||
-													session.apps.find(a => a.state === ContainerState.CREATED ||
-														a.state === ContainerState.LOADING ||
-														a.state === ContainerState.STOPPING)) && (
-														<ProgressSpinner
-															strokeWidth='4'
-															style={{ width: '24px', height: '24px' }}
-														/>
-													)}
+													session.apps.find(
+														a =>
+															a.state === ContainerState.CREATED ||
+															a.state === ContainerState.LOADING ||
+															a.state === ContainerState.STOPPING
+													)) && (
+													<ProgressSpinner
+														strokeWidth='4'
+														style={{ width: '24px', height: '24px' }}
+													/>
+												)}
 											</div>
 										</div>
 									</ConditionalWrapper>
@@ -158,7 +161,7 @@ const Sessions = (): JSX.Element => {
 													session.state !== ContainerState.RUNNING &&
 													session.state !== ContainerState.EXITED
 												}
-												onClick={(e: any) => forceRemove(session.id)}
+												onClick={() => forceRemove(session.id)}
 											/>
 										)}
 										<Button
