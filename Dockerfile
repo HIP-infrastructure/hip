@@ -11,10 +11,9 @@ COPY package.json ./
 RUN npm install
 COPY . .
 
+FROM base AS build
+ENV NODE_ENV=production
 
-# FROM base AS build
-# ENV NODE_ENV=production
-
-# WORKDIR /build
-# COPY --from=base /base ./
-# RUN npm run build
+WORKDIR /build
+COPY --from=base /base ./
+RUN npm run build
