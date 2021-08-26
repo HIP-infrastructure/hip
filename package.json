@@ -11,6 +11,7 @@
 		"@types/node": "^12.0.0",
 		"@types/react": "^17.0.0",
 		"@types/react-dom": "^17.0.0",
+		"eslint": "^7.32.0",
 		"formik": "^2.2.9",
 		"primeflex": "^2.0.0",
 		"primeicons": "^4.1.0",
@@ -20,7 +21,7 @@
 		"react-scripts": "4.0.3",
 		"react-transition-group": "^4.4.2",
 		"swr": "^0.5.6",
-		"typescript": "^4.1.2",
+		"typescript": "^4.3.5",
 		"web-vitals": "^1.0.1"
 	},
 	"scripts": {
@@ -31,12 +32,6 @@
 		"eject": "react-scripts eject",
 		"lint": "eslint '*/**/*.{ts,tsx}' --fix",
 		"prettier": "prettier --write ."
-	},
-	"eslintConfig": {
-		"extends": [
-			"react-app",
-			"react-app/jest"
-		]
 	},
 	"browserslist": {
 		"production": [
@@ -52,21 +47,15 @@
 	},
 	"homepage": "/apps/hip",
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^4.28.3",
-		"@typescript-eslint/parser": "^4.28.3",
-		"eslint": "^7.30.0",
-		"eslint-config-airbnb": "^18.2.1",
+		"@typescript-eslint/eslint-plugin": "^4.29.3",
+		"@typescript-eslint/parser": "^4.29.3",
 		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-import": "^2.23.4",
-		"eslint-plugin-jsx-a11y": "^6.4.1",
-		"eslint-plugin-react": "^7.24.0",
-		"eslint-plugin-react-hooks": "^4.2.0",
 		"husky": "^7.0.1",
-		"prettier": "^2.3.2"
+		"prettier": "2.3.2"
 	},
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier && npm run lint"
-    }
-  }
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run prettier && npm run lint"
+		}
+	}
 }
