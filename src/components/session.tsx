@@ -43,6 +43,7 @@ const Session = (): JSX.Element => {
 		setShowWedavForm,
 		setUser,
 		setInSessionPage,
+		appName,
 	])
 
 	useEffect(() => {

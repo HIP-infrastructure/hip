@@ -10,6 +10,7 @@ export interface Container {
 	error: Error | null
 	type: ContainerType
 	parentId?: string
+	apps?: AppContainer[]
 }
 
 export type AppContainer = Container & ContainerOptions
@@ -52,12 +53,12 @@ export const API_GATEWAY = `${URL}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
 export const API_CONTAINERS = `${API_GATEWAY}/remote-app/containers`
 
 // Debug functions
-export const fetchRemote = () => {
+export const fetchRemote = (): void => {
 	const url = `${API_CONTAINERS}/fetch`
 	fetch(url)
 }
 
-export const forceRemove = (id: string) => {
+export const forceRemove = (id: string): void => {
 	const url = `${API_CONTAINERS}/forceRemove/${id}`
 	fetch(url)
 }
