@@ -3,7 +3,6 @@ import { SlideMenu } from 'primereact/slidemenu'
 import { Button } from 'primereact/button'
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
-import intranatLogo from '../assets/intranat__logo.png'
 import anywaveLogo from '../assets/anywave__logo.png'
 
 import {
@@ -36,7 +35,8 @@ export const appItems: Application[] = [
 	},
 	{
 		name: 'anywave',
-		description: 'AnyWave is a software designed to easily open and view data recorded by EEG or MEG acquisition systems.',
+		description:
+			'AnyWave is a software designed to easily open and view data recorded by EEG or MEG acquisition systems.',
 		status: '',
 		url: 'https://meg.univ-amu.fr/wiki/AnyWave',
 		icon: anywaveLogo,
@@ -169,7 +169,7 @@ const Apps = (): JSX.Element => {
 				separator: true,
 			},
 			{
-				label: `Create a new session`,
+				label: 'Create a new session',
 				icon: 'pi pi-clone',
 				command: () => {
 					setInAppPage(true)
