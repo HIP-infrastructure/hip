@@ -20,7 +20,7 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	containers: [Container[] | null, Error]
+	containers: [Container[] | null, Error | undefined]
 }
 
 export const fetcher = (url: string): Promise<void> =>
@@ -46,7 +46,7 @@ export const AppStoreProvider = ({
 	}, [])
 
 	// Start polling containers fetch
-	const { data, error } = useSWR(
+	const { data, error } = useSWR<any, Error | undefined>(
 		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
 		fetcher,
 		{ refreshInterval: 3 * 1000 }

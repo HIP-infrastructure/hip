@@ -98,6 +98,9 @@ const Apps = (): JSX.Element => {
 		setCurrentSession,
 		setUser,
 		setInAppPage,
+		appName,
+		inAppPage,
+		showWedavForm,
 	])
 
 	// create app in new session
@@ -126,6 +129,9 @@ const Apps = (): JSX.Element => {
 		setCurrentSession,
 		setNewSessionForApp,
 		setUser,
+		appName,
+		inAppPage,
+		setShowWedavForm,
 	])
 
 	const sessions =
@@ -142,8 +148,8 @@ const Apps = (): JSX.Element => {
 
 	const menuItems = (app: Application) =>
 		[
-			...sessions?.map((session: Container) => {
-				const runningApp = session.apps.find(
+			...sessions?.map((session: Container ) => {
+				const runningApp = session?.apps?.find(
 					(sessionApp: AppContainer) =>
 						session.id === sessionApp.parentId && sessionApp.app === app.name
 				)

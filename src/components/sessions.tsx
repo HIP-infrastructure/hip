@@ -55,7 +55,7 @@ const Sessions = (): JSX.Element => {
 			target: event.currentTarget,
 			message: 'Permanently remove this session and all its applications?',
 			icon: 'pi pi-exclamation-triangle',
-			accept: () => user && destroyAppsAndSession(sessionId, user.uid),
+			accept: () => destroyAppsAndSession(sessionId, user?.uid || ''),
 		})
 	}
 
@@ -85,7 +85,7 @@ const Sessions = (): JSX.Element => {
 					<Button
 						className='p-button-sm'
 						label='Create session'
-						onClick={() => user && createSession(user.uid)}
+						onClick={() => createSession(user?.uid || '')}
 					/>
 				</section>
 				<section className='sessions__browser'>
