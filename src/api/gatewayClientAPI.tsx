@@ -45,9 +45,11 @@ export interface UserCredentials {
 	password?: string
 }
 
-export const API_GATEWAY = `${process.env.REACT_APP_GATEWAY_API}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
+const URL = process.env.REACT_APP_GATEWAY_API
+	? `${window.location.protocol}//${window.location.host}`
+	: `${process.env.REACT_APP_GATEWAY_API}`
+export const API_GATEWAY = `${URL}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
 export const API_CONTAINERS = `${API_GATEWAY}/remote-app/containers`
-
 
 // Debug functions
 export const fetchRemote = () => {
@@ -103,7 +105,10 @@ export const createApp = (
 	return app
 }
 
-export const createSessionAndApp = (user: UserCredentials, appName: string): Promise<Container> => {
+export const createSessionAndApp = (
+	user: UserCredentials,
+	appName: string
+): Promise<Container> => {
 	const url = `${API_CONTAINERS}/apps/${appName}/start`
 	const sessionAndApp = fetch(url, {
 		method: 'POST',
