@@ -1,0 +1,26 @@
+# Source https://github.com/HIP-infrastructure/app-in-browser/blob/dev/.gitlab-ci.yml
+# Source: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml
+
+image: docker:20
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ''
+services:
+  - name: docker:20-dind
+    alias: docker
+    command: ['--tls=false', '--mtu=1450']
+before_script:
+  - apk add --no-cache bash
+  - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+stages:
+  - build
+
+docker-build:
+  script:
+    - docker build --pull  .
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
