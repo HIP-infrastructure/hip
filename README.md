@@ -42,6 +42,11 @@ You can interract with npm like this
 docker-compose exec [frontend|gateway] npm add bulma
 ```
 
+ESlint Setup
+https://dev.to/leejianhowe/how-to-setup-eslint-for-react-typescript-projects-7ji
+Prettier Setup
+https://prettier.io/docs/en/install.html
+
 ## Current proof of concept
 
 as of 2014.04.02, the goal is to connect a web interface to the [App in browser](https://github.com/HIP-infrastructure/app-in-browser) in order to fire process, get feedbacks etc.
