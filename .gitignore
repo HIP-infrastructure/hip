@@ -10,8 +10,6 @@
 /coverage
 
 # production
-/build
-/dist/bundle.js.js
 
 # misc
 .DS_Store

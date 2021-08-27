@@ -33,8 +33,7 @@
 		"eject": "react-scripts eject",
 		"lint": "eslint '*/**/*.{ts,tsx}' --fix",
 		"prettier": "prettier --write .",
-		"bundle": "webpack --mode=production --config webpack.config.js",
-		"publish": "npm run build && npm run bundle"
+		"publish": "npm run build && ./build.hip.app.sh"
 	},
 	"browserslist": {
 		"production": [
@@ -54,9 +53,7 @@
 		"@typescript-eslint/parser": "^4.29.3",
 		"eslint-config-prettier": "^8.3.0",
 		"husky": "^7.0.1",
-		"prettier": "2.3.2",
-		"uglifyjs-webpack-plugin": "^2.2.0",
-		"webpack-cli": "^4.8.0"
+		"prettier": "2.3.2"
 	},
 	"husky": {
 		"hooks": {
