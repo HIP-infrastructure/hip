@@ -16,4 +16,4 @@ ENV NODE_ENV=production
 
 WORKDIR /build
 COPY --from=base /base ./
-RUN npm run build
+RUN npm run publish
