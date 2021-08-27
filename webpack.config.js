@@ -8,7 +8,7 @@ module.exports = {
   mode: "production",
   entry: {
     "bundle.js": glob
-      .sync("build/static/?(js|css)/main.*.?(js|css)")
+      .sync("build/static/?(js|css)/*.?(js|css)")
       .map((f) => path.resolve(__dirname, f)),
   },
   output: {
@@ -20,7 +20,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(jpe?g|png|gif|svg|woff|woff2)$/,
+        test: /\.(jpe?g|png|gif|svg|woff|ttf|eot)$/,
         loader: 'url-loader',
         options: { limit: 10240 },
     },
