@@ -33,8 +33,7 @@
 		"eject": "react-scripts eject",
 		"lint": "eslint '*/**/*.{ts,tsx}' --fix",
 		"prettier": "prettier --write .",
-		"bundle": "webpack --mode=production --config webpack.config.js",
-		"publish": "npm run build && npm run bundle"
+		"publish": "npm run build && ./buildhipapp.sh"
 	},
 	"browserslist": {
 		"production": [
