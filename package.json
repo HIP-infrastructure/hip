@@ -33,7 +33,7 @@
 		"eject": "react-scripts eject",
 		"lint": "eslint '*/**/*.{ts,tsx}' --fix",
 		"prettier": "prettier --write .",
-		"publish": "npm run build && ./build.hip.app.sh"
+		"publish": "npm run build && ./buildhipapp.sh"
 	},
 	"browserslist": {
 		"production": [
