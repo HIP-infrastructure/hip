@@ -25,7 +25,7 @@
 		"web-vitals": "^1.0.1"
 	},
 	"scripts": {
-		"prestart": "envsubst < .env.local.template > .env.development",
+		"prestart": "envsubst < .env.development.template > .env.development",
 		"start": "react-scripts start",
 		"prebuild": "envsubst < .env.template > .env",
 		"build": "react-scripts build",
