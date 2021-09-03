@@ -1,55 +1,69 @@
-# Human Intracerebral EEG Platform
+# Human Intracerebral EEG Platform - Nextcloud App Frontend
+## Overview
+The HIP is a platform for processing and sharing HUMAN intracerebral EEG data  
+[More...](https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/)
 
-Nextcloud App Frontend
+This service is part of the HIP infrastructure and runs as a Nextcloud App. It also communicate directly with the [Gateway API](https://github.com/HIP-infrastructure/gateway).  
 
-## Getting Started
+The main frontend deployment service is [Nextcloud docker](https://github.com/HIP-infrastructure/nextcloud-docker).
+While the backend service for remote apps is the [App in Browser](https://github.com/HIP-infrastructure/app-in-browser)  
 
-You will need Docker and docker-compose installed on your machine
+## Development - Getting Started
 
-### For Development
+You will need Docker, docker-compose, nodejs and npm installed on your machine
 
-As for now create .env variable for the whole stack so it's loaded with the docker-compose.
+1. Install the [Nextcloud docker](https://github.com/HIP-infrastructure/nextcloud-docker).
+2. Add this to the Caddyfile
 
-```
-cat <<EOT >> .env
-HOSTNAME=127.0.0.1
-GATEWAY_API=http://${HOSTNAME}:4000
-GATEWAY_API_PREFIX=/api/v1
+    ```
+    # hip nextcloud app, dev proxy to frontend
+    handle /apps/hip/static/* {
+        reverse_proxy web:3000
+    }
 
-REMOTE_APP_API=
-APP_BASIC_AUTH=Basic
+    handle /apps/hip/css/* {
+        reverse_proxy web:3000
+    }
 
-PRIVATE_WEBDAV_URL=
-COLLAB_WEBDAV_URL=
-COLLAB_WEBDAV_USERNAME=
-COLLAB_WEBDAV_PASSWORD=
+    # dev proxy to gateway
+    handle /api/v1/* {
+        reverse_proxy gateway:4000
+    }
+    ```
 
-NODE_ENV=development
-EOT
-```
+3. Install the Gateway service [Gateway API](https://github.com/HIP-infrastructure/gateway)
+4. Clone this repository inside `/mnt/nextcloud-dp/nextcloud/apps/hip`
+5. `cp templates/index.dev.php index.php`
+6. On the main folder, create a .env with   
+    HOSTNAME=example.com
+    GATEWAY_API=https://example.com
+    GATEWAY_API_PREFIX=/api/v1
 
-Fire the env
+    REMOTE_APP_API=https://example.com/api
+    REMOTE_APP_BASIC_AUTH=Basic pass
 
-```
-docker-compose up -d
-```
+    PRIVATE_WEBDAV_URL=https://example.com
+    COLLAB_WEBDAV_URL=https://example.com
+    COLLAB_WEBDAV_USERNAME=user
+    COLLAB_WEBDAV_PASSWORD=password
+7. Copy the `docker-compose.yml` file to the top folder
+8. `docker-compose up -d`
+9. Enable the HIP app inside Nextcloud at https://example.com/index.php/settings/apps
+10. Frontend will be visible at https://example.com/index.php/apps/hip/
+12. cd to `/mnt/nextcloud-dp/nextcloud/apps/hip` , `npm install`, `npm start`, and start making changes
 
-Frontend will be visible at [http://${HOSTNAME}:3000)](http://${HOSTNAME}:3000)
 
-You can interract with npm like this
-
-```
-docker-compose exec [frontend|gateway] npm add bulma
-```
-
-ESlint Setup
-https://dev.to/leejianhowe/how-to-setup-eslint-for-react-typescript-projects-7ji
+### ESlint Setup
+https://dev.to/leejianhowe/how-to-setup-eslint-for-react-typescript-projects-7ji  
 Prettier Setup
 https://prettier.io/docs/en/install.html
 
+### Publish the app 
+On the master branch, `npm run publish` will produce a  Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build. This can then be deployed on a production server with [Nextcloud docker](https://github.com/HIP-infrastructure/nextcloud-docker) the `./deploy.sh` command.
+
 ## Current proof of concept
 
-as of 2014.04.02, the goal is to connect a web interface to the [App in browser](https://github.com/HIP-infrastructure/app-in-browser) in order to fire process, get feedbacks etc.
+as of 2014.04.02 (done), the goal is to connect a web interface to the [App in browser](https://github.com/HIP-infrastructure/app-in-browser) in order to fire process, get feedbacks etc.
 
 ![System design overview](./doc/2021.04.02-microservice.png 'System design overview')
 
