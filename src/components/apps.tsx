@@ -1,9 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { SlideMenu } from 'primereact/slidemenu'
 import { Button } from 'primereact/button'
+import { Tooltip } from 'primereact/tooltip';
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
 import anywaveLogo from '../assets/anywave__logo.png'
+import localizerLogo from '../assets/localizer__logo.png'
+import fslLogo from '../assets/fsl__logo.png'
+import hibopLogo from '../assets/hibop__logo.png'
+import slicerLogo from '../assets/slicer__logo.png'
+import mrcicoglLogo from '../assets/mrcicogl__logo.png'
+import appLogo from '../assets/app__logo.png'
 
 import {
 	Container,
@@ -41,14 +48,46 @@ export const appItems: Application[] = [
 		url: 'https://meg.univ-amu.fr/wiki/AnyWave',
 		icon: anywaveLogo,
 	},
-	// {
-	// 	name: 'intranat',
-	// 	description:
-	// 		'A software to visualize electrodes implantation on image data and prepare database for group studies',
-	// 	status: 'running',
-	// 	url: 'https://gin11-web.ujf-grenoble.fr/?page_id=228',
-	// 	icon: intranatLogo,
-	// },
+	{
+		name: 'hibop',
+		description:
+			'HiBoP illustrates the possibility to render group-level activity dynamically at the cortical level, for several experimental conditions (columns) of the same cognitive paradigm.',
+		status: 'running',
+		url: '',
+		icon: hibopLogo
+	},
+	{
+		name: 'localizer',
+		description:
+			'',
+		status: 'running',
+		url: 'https://gin11-web.ujf-grenoble.fr/?page_id=228',
+		icon: localizerLogo
+	},
+	{
+		name: 'mricrogl',
+		description:
+			'MRIcroGL is a cross-platform tool for viewing DICOM and NIfTI format images. It provides a drag-and-drop user interface as well as a scripting language.',
+		status: 'running',
+		url: 'https://github.com/rordenlab/MRIcroGL',
+		icon: mrcicoglLogo
+	},
+	{
+		name: 'fsl',
+		description:
+			'FSL is a comprehensive library of analysis tools for FMRI, MRI and DTI brain imaging data.',
+		status: 'running',
+		url: 'https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL',
+		icon: fslLogo
+	},
+	{
+		name: 'slicer',
+		description:
+			'Desktop software to solve advanced image computing challenges with a focus on clinical and biomedical applications.',
+		status: 'running',
+		url: 'https://www.slicer.org/',
+		icon: slicerLogo
+	},
 ]
 
 const Apps = (): JSX.Element => {
@@ -189,10 +228,11 @@ const Apps = (): JSX.Element => {
 	const AppItems = () => (
 		<>
 			{appItems.map((app, i) => (
-				<div key={`${app.name}`} className='apps__cards'>
-					<div className='apps__card'>
-						<img src={app.icon} alt='' />
-						<div className='apps__name'>{app.name}</div>
+				<div key={`${app.name}`} className='app__card'>
+					<div className='app__card-img' title={app.name} tooltip={app.name}>
+						<img 
+							src={app.icon} alt='' 
+							onClick={event => appMenuRefs?.current[i]?.toggle(event)}/>
 					</div>
 					<div className='apps__actions'>
 						<SlideMenu
@@ -202,13 +242,13 @@ const Apps = (): JSX.Element => {
 							viewportHeight={220}
 							menuWidth={175}
 						/>
-						<Button
+						{/* <Button
+							style={{ width: '80px'}}
 							type='button'
-							className='p-button-sm p-button-outlined'
-							icon='pi pi-ellipsis-v'
-							label='Actions'
+							className='p-button-sm p-button-link' 
+							label={app.name}
 							onClick={event => appMenuRefs?.current[i]?.toggle(event)}
-						/>
+						/> */}
 					</div>
 				</div>
 			))}

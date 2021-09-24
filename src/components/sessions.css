@@ -77,8 +77,16 @@
 	margin-top: 32px;
 }
 
+.session__sidebar-app {
+	padding-bottom: 8px;
+}
+
 .session__sidebar-info .session__sidebar-appname {
 	font-size: large;
+}
+
+.session__sidebar-app-button {
+	padding: 0 0 8px 0;
 }
 
 .sessions__browser {
