@@ -68,7 +68,7 @@ const Session = (): JSX.Element => {
 
 				if (appInSession) {
 					return (
-						<div key={appInSession.id}>
+						<div key={appInSession.id} className='session__sidebar-app'>
 							<div className='session__sidebar-appname'>{appInSession.app}</div>
 							<div className='session__sidebar-details'>
 								<p>{appInSession.state}</p>
@@ -77,18 +77,20 @@ const Session = (): JSX.Element => {
 					)
 				} else {
 					return (
-						<Button
-							key={app.name}
-							type='button'
-							className='p-button-sm p-button-outlined'
-							icon='pi pi-clone'
-							label={`Run ${app.name}`}
-							onClick={() => {
-								setInSessionPage(true)
-								setAppName(app.name)
-								setShowWedavForm(true)
-							}}
-						/>
+						<div className="session__sidebar-app-button">
+							<Button
+								key={app.name}
+								type='button'
+								className='p-button-sm p-button-outlined'
+								icon='pi pi-clone'
+								label={`Run ${app.name}`}
+								onClick={() => {
+									setInSessionPage(true)
+									setAppName(app.name)
+									setShowWedavForm(true)
+								}}
+							/>
+						</div>
 					)
 				}
 			})}

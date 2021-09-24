@@ -29,20 +29,26 @@
 	display: flex;
 	flex-direction: column;
 }
-.apps__cards {
-	margin-top: 16px;
-}
-
-.apps__card {
-	padding-top: 4px;
+.app__card {
+	padding: 8px 0;
+	border-bottom: 1px solid lightgray;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	border: 1px solid rgba(128, 128, 128, 0.591);
+	justify-content: center;
 }
 
-.apps__card img {
-	width: 80px;
+.app__card :hover {
+	cursor: pointer;
+}
+
+.app__card-img {
+	height: 64px;
+	/* border: 1px solid rgba(128, 128, 128, 0.591); */
+}
+
+.app__card-img img {
+	width: 64px;
 }
 
 .apps__name {
@@ -54,4 +60,9 @@
 .apps__actions {
 	margin-top: 4px;
 	text-align: right;
+	width: 80px;
+}
+
+.apps__action {
+	width: 80px;
 }
