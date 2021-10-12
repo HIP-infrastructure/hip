@@ -9,8 +9,19 @@ import localizerLogo from '../assets/localizer__logo.png'
 import fslLogo from '../assets/fsl__logo.png'
 import hibopLogo from '../assets/hibop__logo.png'
 import slicerLogo from '../assets/slicer__logo.png'
-import mrcicoglLogo from '../assets/mrcicogl__logo.png'
+import mricroglLogo from '../assets/mrcicogl__logo.png'
 import freesurferLogo from '../assets/freesurfer__logo.png'
+
+const importedImages = [
+	brainstormLogo,
+	anywaveLogo,
+	localizerLogo,
+	fslLogo,
+	hibopLogo,
+	slicerLogo,
+	mricroglLogo,
+	freesurferLogo
+]
 
 import {
 	Container,
@@ -31,72 +42,7 @@ interface Application {
 	icon: string
 }
 
-export const appItems: Application[] = [
-	{
-		name: 'brainstorm',
-		description:
-			'Brainstorm is a collaborative, open-source application dedicated to the analysis of brain recordings: MEG, EEG, fNIRS, ECoG, depth electrodes and multiunit electrophysiology.',
-		status: 'running',
-		url: 'https: //neuroimage.usc.edu/brainstorm/Introduction',
-		icon: brainstormLogo,
-	},
-	{
-		name: 'anywave',
-		description:
-			'AnyWave is a software designed to easily open and view data recorded by EEG or MEG acquisition systems.',
-		status: '',
-		url: 'https://meg.univ-amu.fr/wiki/AnyWave',
-		icon: anywaveLogo,
-	},
-	{
-		name: 'hibop',
-		description:
-			'HiBoP illustrates the possibility to render group-level activity dynamically at the cortical level, for several experimental conditions (columns) of the same cognitive paradigm.',
-		status: 'running',
-		url: '',
-		icon: hibopLogo
-	},
-	{
-		name: 'localizer',
-		description:
-			'',
-		status: 'running',
-		url: 'https://gin11-web.ujf-grenoble.fr/?page_id=228',
-		icon: localizerLogo
-	},
-	{
-		name: 'mricrogl',
-		description:
-			'MRIcroGL is a cross-platform tool for viewing DICOM and NIfTI format images. It provides a drag-and-drop user interface as well as a scripting language.',
-		status: 'running',
-		url: 'https://github.com/rordenlab/MRIcroGL',
-		icon: mrcicoglLogo
-	},
-	{
-		name: 'fsl',
-		description:
-			'FSL is a comprehensive library of analysis tools for FMRI, MRI and DTI brain imaging data.',
-		status: 'running',
-		url: 'https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL',
-		icon: fslLogo
-	},
-	{
-		name: 'slicer',
-		description:
-			'Desktop software to solve advanced image computing challenges with a focus on clinical and biomedical applications.',
-		status: 'running',
-		url: 'https://www.slicer.org/',
-		icon: slicerLogo
-	},
-	{
-		name: 'freesurfer',
-		description:
-			'An open source software suite for processing and analyzing (human) brain MRI images.',
-		status: 'running',
-		url: 'https://surfer.nmr.mgh.harvard.edu/',
-		icon: freesurferLogo
-	},
-]
+
 
 const Apps = (): JSX.Element => {
 	const appMenuRefs = useRef<(SlideMenu | null)[]>([])
@@ -105,13 +51,26 @@ const Apps = (): JSX.Element => {
 	const [newSessionForApp, setNewSessionForApp] = useState<Container | null>()
 	const [appName, setAppName] = useState('')
 	const [inAppPage, setInAppPage] = useState(false)
+	const [images, setImages] = useState<any[]>([])
 
 	const {
 		currentSession: [, setCurrentSession],
 		showWedavForm: [showWedavForm, setShowWedavForm],
 		user: [user, setUser],
 		containers: [containers],
+		availableApps
 	} = useAppStore()
+
+	// Import images
+	// useEffect(() => {
+	// 	availableApps?.map(app => {
+	// 		import(`../assets/${app.name}__logo.png`)
+	// 			.then(image => {
+	// 				console.log(image)
+	// 				// setImages((images: any[]) => [...images, image])
+	// 			});
+	// 	})
+	// }, [availableApps, setImages])
 
 	// create app in existing session
 	// or create new session
@@ -195,7 +154,7 @@ const Apps = (): JSX.Element => {
 
 	const menuItems = (app: Application) =>
 		[
-			...sessions?.map((session: Container ) => {
+			...sessions?.map((session: Container) => {
 				const runningApp = session?.apps?.find(
 					(sessionApp: AppContainer) =>
 						session.id === sessionApp.parentId && sessionApp.app === app.name
@@ -235,31 +194,35 @@ const Apps = (): JSX.Element => {
 
 	const AppItems = () => (
 		<>
-			{appItems.map((app, i) => (
-				<div key={`${app.name}`} className='app__card'>
-					<div className='app__card-img' title={app.name} tooltip={app.name}>
-						<img 
-							src={app.icon} alt='' 
-							onClick={event => appMenuRefs?.current[i]?.toggle(event)}/>
-					</div>
-					<div className='apps__actions'>
-						<SlideMenu
-							ref={ref => (appMenuRefs.current[i] = ref)}
-							model={menuItems(app)}
-							popup
-							viewportHeight={220}
-							menuWidth={175}
-						/>
-						{/* <Button
+			{availableApps?.map((app, i) => {
+				return (
+					<div key={`${app.name}`} className='app__card'>
+						<div className='app__card-img' title={app.label} tooltip={app.name}>
+							<img
+								height="64px"
+								width="64px"
+								src={importedImages[i]} alt=''
+								onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
+						</div>
+						<div className='apps__actions'>
+							<SlideMenu
+								ref={ref => (appMenuRefs.current[i] = ref)}
+								model={menuItems(app)}
+								popup
+								viewportHeight={220}
+								menuWidth={175}
+							/>
+							{/* <Button
 							style={{ width: '80px'}}
 							type='button'
 							className='p-button-sm p-button-link' 
 							label={app.name}
 							onClick={event => appMenuRefs?.current[i]?.toggle(event)}
 						/> */}
+						</div>
 					</div>
-				</div>
-			))}
+				)
+			})}
 		</>
 	)
 

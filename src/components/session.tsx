@@ -83,7 +83,7 @@ const Session = (): JSX.Element => {
 								type='button'
 								className='p-button-sm p-button-outlined'
 								icon='pi pi-clone'
-								label={`Run ${app.name}`}
+								label={`${app.name}`}
 								onClick={() => {
 									setInSessionPage(true)
 									setAppName(app.name)
