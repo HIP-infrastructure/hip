@@ -13,6 +13,17 @@ import freesurferLogo from '../assets/freesurfer__logo.png'
 import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
+const importedImages = [
+	brainstormLogo,
+	anywaveLogo,
+	localizerLogo,
+	fslLogo,
+	hibopLogo,
+	slicerLogo,
+	mricroglLogo,
+	freesurferLogo
+]
+
 import {
 	Container,
 	ContainerType,
