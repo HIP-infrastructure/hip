@@ -10,7 +10,7 @@ import fslLogo from '../assets/fsl__logo.png'
 import hibopLogo from '../assets/hibop__logo.png'
 import slicerLogo from '../assets/slicer__logo.png'
 import mrcicoglLogo from '../assets/mrcicogl__logo.png'
-import appLogo from '../assets/app__logo.png'
+import freesurferLogo from '../assets/freesurfer__logo.png'
 
 import {
 	Container,
@@ -87,6 +87,14 @@ export const appItems: Application[] = [
 		status: 'running',
 		url: 'https://www.slicer.org/',
 		icon: slicerLogo
+	},
+	{
+		name: 'freesurfer',
+		description:
+			'An open source software suite for processing and analyzing (human) brain MRI images.',
+		status: 'running',
+		url: 'https://surfer.nmr.mgh.harvard.edu/',
+		icon: freesurferLogo
 	},
 ]
 
