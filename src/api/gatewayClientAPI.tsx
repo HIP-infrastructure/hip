@@ -46,11 +46,19 @@ export interface UserCredentials {
 	password?: string
 }
 
+export interface Application {
+	name: string;
+	label: string;
+	descriptions: string;
+	url: string;
+}
+
 const URL = process.env.REACT_APP_GATEWAY_API
 	? `${window.location.protocol}//${window.location.host}`
 	: `${process.env.REACT_APP_GATEWAY_API}`
 export const API_GATEWAY = `${URL}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
-export const API_CONTAINERS = `${API_GATEWAY}/remote-app/containers`
+export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
+export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
 // Debug functions
 export const fetchRemote = (): void => {
@@ -64,6 +72,16 @@ export const forceRemove = (id: string): void => {
 }
 
 // Gateway API
+
+export const getAvailableAppList = (): Promise<Application[]> => {
+	const url = `${API_REMOTE_APP}/apps`
+	const availableApps = fetch(url)
+		.then(r => r.json())
+
+	return availableApps
+
+}
+
 export const createSession = (userId: string): Promise<Container> => {
 	const id = uniq('session')
 	const url = `${API_CONTAINERS}/${id}/start`

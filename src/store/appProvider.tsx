@@ -7,20 +7,23 @@ import {
 	API_CONTAINERS,
 	Container,
 	UserCredentials,
+	Application,
+	getAvailableAppList
 } from '../api/gatewayClientAPI'
 
 export interface IAppState {
-	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-	showWedavForm: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+	showWedavForm: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	currentSession: [
 		Container | null,
 		React.Dispatch<React.SetStateAction<Container | null>>
-	]
+	];
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
-	]
-	containers: [Container[] | null, Error | undefined]
+	];
+	availableApps: Application[] | null;
+	containers: [Container[] | null, Error | undefined];
 }
 
 export const fetcher = (url: string): Promise<void> =>
@@ -35,6 +38,7 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
+	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [currentSession, setCurrentSession] = useState<Container | null>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [showWedavForm, setShowWedavForm] = useState(false)
@@ -43,6 +47,10 @@ export const AppStoreProvider = ({
 	React.useEffect(() => {
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
+
+		const apps = getAvailableAppList().then(
+			r => setAvailableApps(r)
+		)
 	}, [])
 
 	// Start polling containers fetch
@@ -58,6 +66,7 @@ export const AppStoreProvider = ({
 			currentSession: [currentSession, setCurrentSession],
 			showWedavForm: [showWedavForm, setShowWedavForm],
 			user: [user, setUser],
+			availableApps,
 			containers: [data?.data || [], error],
 		}),
 		[
@@ -71,6 +80,7 @@ export const AppStoreProvider = ({
 			setUser,
 			data,
 			error,
+			availableApps
 		]
 	)
 

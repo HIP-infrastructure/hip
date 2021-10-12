@@ -30,12 +30,14 @@
 	flex-direction: column;
 }
 .app__card {
-	padding: 8px 0;
-	border-bottom: 1px solid lightgray;
+	margin: 4px 0;
+	padding: 4px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid #e8e8e8;
+	border-radius: 8px;
 }
 
 .app__card :hover {
@@ -44,11 +46,12 @@
 
 .app__card-img {
 	height: 64px;
+	width: 64px;
 	/* border: 1px solid rgba(128, 128, 128, 0.591); */
 }
 
 .app__card-img img {
-	width: 64px;
+	object-fit: contain;	
 }
 
 .apps__name {
