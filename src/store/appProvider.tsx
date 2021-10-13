@@ -83,6 +83,8 @@ export const AppStoreProvider = ({
 		{ refreshInterval: 3 * 1000 }
 	)
 
+	console.log(data, error)
+
 	const value: IAppState = React.useMemo(
 		() => ({
 			debug: [debug, setDebug],
