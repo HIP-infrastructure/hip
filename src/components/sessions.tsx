@@ -18,6 +18,7 @@ import {
 } from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
+import { Message } from 'primereact/message';
 
 const ConditionalWrapper = ({
 	condition,
@@ -71,7 +72,7 @@ const Sessions = (): JSX.Element => {
 	}
 
 	return (
-		<div>
+		<>
 			<Sidebar
 				visible={currentSession != null}
 				showCloseIcon={false}
@@ -80,6 +81,7 @@ const Sessions = (): JSX.Element => {
 			>
 				<Session />
 			</Sidebar>
+
 			<main className='sessions p-shadow-5'>
 				<section
 					className='sessions__header'
@@ -106,8 +108,10 @@ const Sessions = (): JSX.Element => {
 							style={{ width: '24px', height: '24px' }}
 						/>
 					)}
-					{error && <p>{error.message}</p>}
-					{!error && sessions?.length === 0 && <p>Please, create a session</p>}
+					{error && <Message severity="error" text={error.message} />}
+					{!error && sessions?.length === 0 &&
+						<Message severity="info" text={'Please, create a session'} />
+					}
 
 					<div className='sessions__items'>
 						{sessions?.map(session => (
@@ -168,10 +172,6 @@ const Sessions = (): JSX.Element => {
 												title='Force remove'
 												icon='pi pi-times'
 												className='p-button-sm p-button-rounded p-button-danger p-mr-2'
-												disabled={
-													session.state !== ContainerState.RUNNING &&
-													session.state !== ContainerState.EXITED
-												}
 												onClick={() => forceRemove(session.id)}
 											/>
 										)}
@@ -214,7 +214,7 @@ const Sessions = (): JSX.Element => {
 					</div>
 				</section>
 			</main>
-		</div>
+		</>
 	)
 }
 

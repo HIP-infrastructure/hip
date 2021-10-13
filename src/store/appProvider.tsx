@@ -26,8 +26,31 @@ export interface IAppState {
 	containers: [Container[] | null, Error | undefined];
 }
 
-export const fetcher = (url: string): Promise<void> =>
-	fetch(url).then(r => r.json())
+export const fetcher = async (url: string): Promise<void> => {
+	const res = await fetch(url)
+	let message = ''
+
+	if (!res.ok) {
+
+		switch (true) {
+			case res.status === 403:
+				message = 'You have been logged out. Please log in again.'
+				break;
+
+			default:
+				message = 'An error occurred while fetching the data.';
+				break;
+		}
+		const error = new Error(message);
+		error.name = `${res.status}`;
+
+		throw error
+	}
+
+	return res.json()
+}
+
+// fetch(url).then(r => r.json())
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
@@ -59,6 +82,8 @@ export const AppStoreProvider = ({
 		fetcher,
 		{ refreshInterval: 3 * 1000 }
 	)
+
+	console.log(data, error)
 
 	const value: IAppState = React.useMemo(
 		() => ({
