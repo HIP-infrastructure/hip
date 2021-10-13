@@ -16,11 +16,11 @@ import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 const importedImages = [
 	brainstormLogo,
 	anywaveLogo,
-	localizerLogo,
-	fslLogo,
 	hibopLogo,
-	slicerLogo,
+	localizerLogo,
 	mricroglLogo,
+	fslLogo,
+	slicerLogo,
 	freesurferLogo
 ]
 
