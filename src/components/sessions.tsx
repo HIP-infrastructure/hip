@@ -139,7 +139,7 @@ const Sessions = (): JSX.Element => {
 										<div className='session__desktop_overlay'>
 											<div className='session__desktop-text'>
 												<div className='session__name'>{`#${session?.name}`}
-													{user?.uid === session?.user &&
+													{user?.uid !== session?.user &&
 														<span className='session__username'>{`${session?.user}`}</span>}
 												</div>
 												<div className='session__details'>
