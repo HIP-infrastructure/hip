@@ -8,7 +8,6 @@ import {
 	ContainerState,
 	createApp,
 } from '../api/gatewayClientAPI'
-import { appItems } from '../components/apps'
 
 const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
 
@@ -23,6 +22,7 @@ const Session = (): JSX.Element => {
 		showWedavForm: [showWedavForm, setShowWedavForm],
 		containers: [containers],
 		user: [user, setUser],
+		availableApps
 	} = useAppStore()
 
 	useEffect(() => {
@@ -59,7 +59,7 @@ const Session = (): JSX.Element => {
 
 	const AppActions = () => (
 		<div>
-			{appItems.map(app => {
+			{availableApps?.map(app => {
 				const appInSession = (containers as AppContainer[])?.find(
 					container =>
 						container.parentId === currentSession?.id &&
