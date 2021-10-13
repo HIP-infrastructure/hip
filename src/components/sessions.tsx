@@ -9,7 +9,7 @@ import {
 	ContainerType,
 	ContainerState,
 	createSession,
-	destroyAppsAndSession,
+	removeAppsAndSession,
 	pauseAppsAndSession,
 	resumeAppsAndSession,
 	AppContainer,
@@ -57,7 +57,7 @@ const Sessions = (): JSX.Element => {
 			target: event.currentTarget,
 			message: 'Permanently remove this session and all its applications?',
 			icon: 'pi pi-exclamation-triangle',
-			accept: () => destroyAppsAndSession(sessionId, user?.uid || ''),
+			accept: () => removeAppsAndSession(sessionId, user?.uid || ''),
 		})
 	}
 
