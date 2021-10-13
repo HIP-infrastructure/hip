@@ -6,7 +6,7 @@
 }
 
 .apps__header {
-	padding: 6px 8px;
+	padding: 4px 8px;
 	flex: 0;
 	display: flex;
 	flex-direction: row;
@@ -28,6 +28,7 @@
 	margin: auto;
 	display: flex;
 	flex-direction: column;
+	background-color: #e3e3e3;
 }
 .app__card {
 	margin: 4px 0;
@@ -36,7 +37,8 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid #e8e8e8;
+	border: 1px solid #8e8e8e;
+	background-color: #ffffff;
 	border-radius: 8px;
 }
 
