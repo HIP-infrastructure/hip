@@ -105,16 +105,16 @@ export const createSession = (userId: string): Promise<Container> => {
 export const createApp = (
 	session: Container,
 	user: UserCredentials,
-	name: string
+	appName: string
 ): Promise<Container> => {
-	const aid = uniq('app')
-	const url = `${API_CONTAINERS}/${session.id}/apps/${aid}/start`
+	const appId = uniq('app')
+	const url = `${API_CONTAINERS}/${session.id}/apps/${appId}/start`
 	const app = fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ app: name, userId: user.uid, password: user.password }),
+		body: JSON.stringify({ appName, userId: user.uid, password: user.password }),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
