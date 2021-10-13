@@ -10,6 +10,8 @@ import {
 	ContainerState,
 	createSession,
 	destroyAppsAndSession,
+	pauseAppsAndSession,
+	resumeAppsAndSession,
 	AppContainer,
 	fetchRemote,
 	forceRemove,
@@ -50,12 +52,21 @@ const Sessions = (): JSX.Element => {
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
 
-	const confirm = (event: any, sessionId: string) => {
+	const confirmRemove = (event: any, sessionId: string) => {
 		confirmPopup({
 			target: event.currentTarget,
 			message: 'Permanently remove this session and all its applications?',
 			icon: 'pi pi-exclamation-triangle',
 			accept: () => destroyAppsAndSession(sessionId, user?.uid || ''),
+		})
+	}
+
+	const confirmPause = (event: any, sessionId: string) => {
+		confirmPopup({
+			target: event.currentTarget,
+			message: 'Pause this session and all its applications? You can restore it later',
+			icon: 'pi pi-exclamation-triangle',
+			accept: () => pauseAppsAndSession(sessionId, user?.uid || ''),
 		})
 	}
 
@@ -143,11 +154,11 @@ const Sessions = (): JSX.Element => {
 															a.state === ContainerState.LOADING ||
 															a.state === ContainerState.STOPPING
 													)) && (
-													<ProgressSpinner
-														strokeWidth='4'
-														style={{ width: '24px', height: '24px' }}
-													/>
-												)}
+														<ProgressSpinner
+															strokeWidth='4'
+															style={{ width: '24px', height: '24px' }}
+														/>
+													)}
 											</div>
 										</div>
 									</ConditionalWrapper>
@@ -164,6 +175,19 @@ const Sessions = (): JSX.Element => {
 												onClick={() => forceRemove(session.id)}
 											/>
 										)}
+										{session.state !== ContainerState.PAUSED && <Button
+											title='Pause'
+											icon='pi pi-pause'
+											className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2'
+											onClick={(e: any) => confirmPause(e, session.id)}
+										/>}
+										{session.state === ContainerState.PAUSED && <Button
+											title='Resume'
+											icon='pi pi-play'
+											className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2'
+											onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid)}
+										/>}
+
 										<Button
 											title='Shut down'
 											icon='pi pi-times'
@@ -172,7 +196,7 @@ const Sessions = (): JSX.Element => {
 												session.state !== ContainerState.RUNNING &&
 												session.state !== ContainerState.EXITED
 											}
-											onClick={(e: any) => confirm(e, session.id)}
+											onClick={(e: any) => confirmRemove(e, session.id)}
 										/>
 										<Button
 											title='Open'

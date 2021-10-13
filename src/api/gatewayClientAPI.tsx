@@ -25,6 +25,7 @@ export enum ContainerState {
 	LOADING = 'loading',
 	RUNNING = 'running',
 	STOPPING = 'stopping',
+	PAUSED = 'paused',
 	EXITED = 'exited',
 	DESTROYED = 'destroyed',
 }
@@ -150,6 +151,34 @@ export const destroyAppsAndSession = (
 	userId: string
 ): void => {
 	const url = `${API_CONTAINERS}/${sessionId}/destroy`
+	fetch(url, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ uid: userId }),
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+}
+
+export const pauseAppsAndSession = (
+	sessionId: string,
+	userId: string
+): void => {
+	const url = `${API_CONTAINERS}/${sessionId}/pause`
+	fetch(url, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ uid: userId }),
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+}
+
+export const resumeAppsAndSession = (
+	sessionId: string,
+	userId: string
+): void => {
+	const url = `${API_CONTAINERS}/${sessionId}/resume`
 	fetch(url, {
 		method: 'PUT',
 		headers: {
