@@ -110,7 +110,11 @@ const Sessions = (): JSX.Element => {
 					)}
 					{error && <Message severity="error" text={error.message} />}
 					{!error && sessions?.length === 0 &&
-						<Message severity="info" text={'Please, create a session'} />
+						<Button
+							className='p-button-sm'
+							label='Create a new session'
+							onClick={() => createSession(user?.uid || '')}
+						/>
 					}
 
 					<div className='sessions__items'>

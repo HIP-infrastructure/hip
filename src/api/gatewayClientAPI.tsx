@@ -91,7 +91,7 @@ export const createSession = (userId: string): Promise<Container> => {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ uid: userId }),
+		body: JSON.stringify({ userId }),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${userId}`)
@@ -114,7 +114,7 @@ export const createApp = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ app: name, uid: user.uid, password: user.password }),
+		body: JSON.stringify({ app: name, userId: user.uid, password: user.password }),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
@@ -135,7 +135,7 @@ export const createSessionAndApp = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ uid: user.uid, password: user.password }),
+		body: JSON.stringify({ userId: user.uid, password: user.password }),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
@@ -156,7 +156,7 @@ export const removeAppsAndSession = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ uid: userId }),
+		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
@@ -170,7 +170,7 @@ export const pauseAppsAndSession = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ uid: userId }),
+		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
@@ -184,6 +184,6 @@ export const resumeAppsAndSession = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ uid: userId }),
+		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
