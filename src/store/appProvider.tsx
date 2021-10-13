@@ -78,12 +78,17 @@ export const AppStoreProvider = ({
 
 	// Start polling containers fetch
 	const { data, error } = useSWR<any, Error | undefined>(
-		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
+		() => (
+			user ? 
+				(user.uid === 'hipadmin' ?
+					`${API_CONTAINERS}` :
+					`${API_CONTAINERS}/${user?.uid}`
+				) : 
+				null
+		),
 		fetcher,
 		{ refreshInterval: 3 * 1000 }
 	)
-
-	console.log(data, error)
 
 	const value: IAppState = React.useMemo(
 		() => ({
