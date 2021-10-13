@@ -63,6 +63,15 @@ const Sessions = (): JSX.Element => {
 		})
 	}
 
+	const confirmPause = (event: any, sessionId: string) => {
+		confirmPopup({
+			target: event.currentTarget,
+			message: 'Pause this session and all its applications? You can restore it later',
+			icon: 'pi pi-exclamation-triangle',
+			accept: () => pauseAppsAndSession(sessionId, user?.uid || ''),
+		})
+	}
+
 	return (
 		<>
 			<Sidebar
