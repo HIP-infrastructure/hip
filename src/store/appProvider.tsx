@@ -78,14 +78,7 @@ export const AppStoreProvider = ({
 
 	// Start polling containers fetch
 	const { data, error } = useSWR<any, Error | undefined>(
-		() => (
-			user ? 
-				(user.uid === 'hipadmin' ?
-					`${API_CONTAINERS}` :
-					`${API_CONTAINERS}/${user?.uid}`
-				) : 
-				null
-		),
+		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
 		fetcher,
 		{ refreshInterval: 3 * 1000 }
 	)

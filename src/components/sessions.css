@@ -152,6 +152,11 @@
 	color: white;
 }
 
+.session__username {
+	padding: 8px 8px 0px 8px;
+	color: white;
+}
+
 .session__details {
 	padding: 0 4px;
 	font-size: small;
