@@ -92,6 +92,7 @@
 .sessions__browser {
 	padding: 0.5em;
 	flex: 1;
+	background-color: #e3e3e3;
 }
 
 .sessions__items {
