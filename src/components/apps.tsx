@@ -181,7 +181,7 @@ const Apps = (): JSX.Element => {
 				separator: true,
 			},
 			{
-				label: 'Create a new session',
+				label: 'Create in a new session',
 				icon: 'pi pi-clone',
 				command: () => {
 					setInAppPage(true)
