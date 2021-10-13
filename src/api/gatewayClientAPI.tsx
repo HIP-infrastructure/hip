@@ -146,11 +146,11 @@ export const createSessionAndApp = (
 	return sessionAndApp
 }
 
-export const destroyAppsAndSession = (
+export const removeAppsAndSession = (
 	sessionId: string,
 	userId: string
 ): void => {
-	const url = `${API_CONTAINERS}/${sessionId}/destroy`
+	const url = `${API_CONTAINERS}/${sessionId}/remove`
 	fetch(url, {
 		method: 'PUT',
 		headers: {
