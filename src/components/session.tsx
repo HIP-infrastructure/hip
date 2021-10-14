@@ -68,16 +68,24 @@ const Session = (): JSX.Element => {
 
 				if (appInSession) {
 					return (
-						<div key={appInSession.id} className='session__sidebar-app'>
+						<div key={app.name} className='session__sidebar-app'>
 							<div className='session__sidebar-appname'>{appInSession.app}</div>
 							<div className='session__sidebar-details'>
-								<p>{appInSession.state}</p>
+								{/* {(appInSession.state === ContainerState.CREATED ||
+									appInSession.state === ContainerState.LOADING ||
+									appInSession.state === ContainerState.STOPPING) && (
+										<ProgressSpinner
+											strokeWidth='4'
+											style={{ width: '24px', height: '24px' }}
+										/>
+									)} */}
+									<p>{appInSession.state}</p>
 							</div>
 						</div>
 					)
 				} else {
 					return (
-						<div className="session__sidebar-app-button">
+						<div key={app.name} className="session__sidebar-app-button">
 							<Button
 								key={app.name}
 								type='button'
