@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { SlideMenu } from 'primereact/slidemenu'
-import { Button } from 'primereact/button'
 import { Tooltip } from 'primereact/tooltip';
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
@@ -196,29 +195,32 @@ const Apps = (): JSX.Element => {
 		<>
 			{availableApps?.map((app, i) => {
 				return (
-					<div key={`${app.name}`} className='app__card'>
-						<div className='app__card-img' title={app.label} tooltip={app.name}>
-							<img
-								height="64px"
-								width="64px"
-								src={importedImages[i]} alt=''
-								onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
-						</div>
-						<div className='apps__actions'>
-							<SlideMenu
-								ref={ref => (appMenuRefs.current[i] = ref)}
-								model={menuItems(app)}
-								popup
-								viewportHeight={220}
-								menuWidth={175}
-							/>
-							{/* <Button
+					<div key={`${app.name}`}>
+						<Tooltip target={`.app__card__${app.name}`} content={`${app.label}`} />
+						<div className={`app__card app__card__${app.name}`}>
+							<div className='app__card-img'>
+								<img
+									height="64px"
+									width="64px"
+									src={importedImages[i]} alt=''
+									onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
+							</div>
+							<div className='apps__actions'>
+								<SlideMenu
+									ref={ref => (appMenuRefs.current[i] = ref)}
+									model={menuItems(app)}
+									popup
+									viewportHeight={220}
+									menuWidth={175}
+								/>
+								{/* <Button
 							style={{ width: '80px'}}
 							type='button'
 							className='p-button-sm p-button-link' 
 							label={app.name}
 							onClick={event => appMenuRefs?.current[i]?.toggle(event)}
 						/> */}
+							</div>
 						</div>
 					</div>
 				)

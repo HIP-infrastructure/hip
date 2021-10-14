@@ -92,7 +92,6 @@
 .sessions__browser {
 	padding: 0.5em;
 	flex: 1;
-	background-color: #e3e3e3;
 }
 
 .sessions__items {
@@ -114,7 +113,7 @@
 	height: 160px;
 	border-radius: 8px;
 	position: relative;
-	background: url('../assets/session-thumbnail.jpg');
+	background: right / cover no-repeat url('../assets/session-thumbnail.png');
 }
 
 .session__desktop a {

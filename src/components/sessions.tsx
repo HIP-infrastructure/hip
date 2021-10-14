@@ -2,6 +2,7 @@ import { Button } from 'primereact/button'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import { confirmPopup } from 'primereact/confirmpopup'
 import { Sidebar } from 'primereact/sidebar'
+import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
 import {
@@ -59,15 +60,6 @@ const Sessions = (): JSX.Element => {
 			message: 'Permanently remove this session and all its applications?',
 			icon: 'pi pi-exclamation-triangle',
 			accept: () => removeAppsAndSession(sessionId, user?.uid || ''),
-		})
-	}
-
-	const confirmPause = (event: any, sessionId: string) => {
-		confirmPopup({
-			target: event.currentTarget,
-			message: 'Pause this session and all its applications? You can restore it later',
-			icon: 'pi pi-exclamation-triangle',
-			accept: () => pauseAppsAndSession(sessionId, user?.uid || ''),
 		})
 	}
 
@@ -182,18 +174,23 @@ const Sessions = (): JSX.Element => {
 												onClick={() => forceRemove(session.id)}
 											/>
 										)}
-										{session.state !== ContainerState.PAUSED && <Button
-											title='Pause'
-											icon='pi pi-pause'
-											className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2'
-											onClick={(e: any) => confirmPause(e, session.id)}
-										/>}
-										{session.state === ContainerState.PAUSED && <Button
-											title='Resume'
-											icon='pi pi-play'
-											className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2'
-											onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid)}
-										/>}
+										{session.state !== ContainerState.PAUSED &&
+											<>
+												<Tooltip target=".pause" content="Pause the session. You can resume it later" />
+												<Button
+													title='Pause'
+													icon='pi pi-pause'
+													className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2 pause'
+													onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}
+												/></>}
+										{session.state === ContainerState.PAUSED &&
+											<>
+												<Tooltip target=".resume" content="Resume the session" /><Button
+													title='Resume'
+													icon='pi pi-play'
+													className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2 resume'
+													onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}
+												/></>}
 
 										<Button
 											title='Shut down'
