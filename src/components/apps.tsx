@@ -10,16 +10,18 @@ import hibopLogo from '../assets/hibop__logo.png'
 import slicerLogo from '../assets/slicer__logo.png'
 import mricroglLogo from '../assets/mrcicogl__logo.png'
 import freesurferLogo from '../assets/freesurfer__logo.png'
+import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 
 const importedImages = [
-	brainstormLogo,
 	anywaveLogo,
+	brainstormLogo,
+	dcm2niixLogo,
+	freesurferLogo,
+	fslLogo,
 	hibopLogo,
 	localizerLogo,
 	mricroglLogo,
-	fslLogo,
 	slicerLogo,
-	freesurferLogo
 ]
 
 import {
