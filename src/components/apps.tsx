@@ -14,14 +14,15 @@ import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
 const importedImages = [
-	brainstormLogo,
 	anywaveLogo,
+	brainstormLogo,
+	dcm2niixLogo,
+	freesurferLogo,
+	fslLogo,
 	hibopLogo,
 	localizerLogo,
 	mricroglLogo,
-	fslLogo,
 	slicerLogo,
-	freesurferLogo
 ]
 
 import {
