@@ -11,9 +11,11 @@ import slicerLogo from '../assets/slicer__logo.png'
 import mricroglLogo from '../assets/mrcicogl__logo.png'
 import freesurferLogo from '../assets/freesurfer__logo.png'
 import dcm2niixLogo from '../assets/dcm2niix__logo.png'
+import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
 const importedImages = [
 	anywaveLogo,
+	bidsManagerLogo,
 	brainstormLogo,
 	dcm2niixLogo,
 	freesurferLogo,
