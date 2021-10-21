@@ -15,6 +15,7 @@ import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
 const importedImages = [
 	anywaveLogo,
+	bidsManagerLogo,
 	brainstormLogo,
 	dcm2niixLogo,
 	freesurferLogo,
