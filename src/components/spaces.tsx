@@ -5,6 +5,7 @@ import Apps from './apps'
 import { Dialog } from 'primereact/dialog'
 import WebdavForm from './webdavLoginForm'
 import { useAppStore } from '../store/appProvider'
+import Data from './data'
 
 import './spaces.css'
 
@@ -34,11 +35,9 @@ const Spaces = (): JSX.Element => {
 				<div className='services__sessions'>
 					<Sessions />
 				</div>
-				{/*
-					<div className='services__files'>
-						<Files />
-					</div>
-				*/}
+				<div className='services__data'>
+					<Data />
+				</div>
 			</div>
 
 			<div className='spaces__layout-bottom' />
