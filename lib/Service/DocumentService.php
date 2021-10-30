@@ -7,20 +7,26 @@ use OCP\Files\FileInfo;
 use OCP\IDateTimeFormatter;
 use OCP\ILogger;
 use OCP\SystemTag\ISystemTagManager;
+use OCP\SystemTag\ISystemTagObjectMapper;
 
 class DocumentService
 {
+    private $systemTagManager;
+    private $systemTagObjectMapper;
+
     public function __construct(
         IRootFolder $rootFolder,
         IDateTimeFormatter $dateTimeFormatter,
         ILogger $logger,
-        ISystemTagManager $tagManager,
-        string $userId = null
+        ISystemTagManager $systemTagManager,
+        ISystemTagObjectMapper $systemTagObjectMapper,
+        string $userId = null,
     ) {
         $this->rootFolder = $rootFolder;
         $this->dateTimeFormatter = $dateTimeFormatter;
         $this->logger = $logger;
-        $this->tagManager = $tagManager;
+        $this->systemTagManager = $systemTagManager;
+        $this->systemTagObjectMapper = $systemTagObjectMapper;
         $this->currentUser = $userId;
         $this->userFolder = $this->rootFolder->getUserFolder($this->currentUser);
     }
@@ -37,6 +43,7 @@ class DocumentService
         $fileNodes = [];
         foreach ($nodes as $node) {
             if ($node->getType() === FileInfo::TYPE_FOLDER) {
+                array_push($fileNodes, $node);
                 $fileNodes = array_merge($fileNodes, $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath())));
             } else {
                 array_push($fileNodes, $node);
@@ -50,14 +57,8 @@ class DocumentService
     {
         $files = [];
 
-        // Get all files from documents and data requests recursively
         $nodes = $this->getFileNodesRecursively($parentFolder);
-
-        $alltags = $this->tagManager->getAllTags();
-        $tagMap = array();
-        foreach ($alltags as $tag) {
-            array_push($tagMap, $tag->getName());
-        }
+        $systemTags = $this->systemTagManager->getAllTags();
 
         foreach ($nodes as $node) {
             $fileId = $node->getId();
@@ -66,17 +67,24 @@ class DocumentService
             $timestamp = $node->getMTime();
             $modifiedDate = $this->dateTimeFormatter->formatDateTime($timestamp, 'medium');
             $owner = $node->getOwner()->getDisplayName();
-            // $currentTags = $this->tagManager->getTagsForObjects([$fileId]);
 
+            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], $node->getType() . 's');
+            $systemFileTags = array();
+            foreach ($tagIds as $fileId => $tags) {
+                foreach($tags as $tagId) {
+                    array_push($systemFileTags, $systemTags[$tagId]->getName());
+                }
+            }
 
             $fileInfo = array(
-                'path' => $path,
                 'name' => $name,
+                'type' => $node->getType(),
+                'id' =>$fileId,
+                'path' => $path,
                 'modifiedDate' => $modifiedDate,
                 'owner' => $owner,
                 'isShared' => $node->isShared(),
-                'tags' => $tagMap,
-                // 'test' => array_map(fn($tag): string => $tag.getName(), $tags)
+                'tags' => $systemFileTags
             );
 
             array_push($files, $fileInfo);
