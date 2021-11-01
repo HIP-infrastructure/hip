@@ -6,13 +6,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-
-// DATA='{
-//     "properties":{},
-//     "routing_key":"red",
-//     "payload":"'$4'",
-//     "payload_encoding":"string"
-// }'
+// use PhpAmqpLib\Exchange\AMQPExchangeType;
 
 
 class MessageService
@@ -21,17 +15,26 @@ class MessageService
     {
     }
 
-    public function send()
+    public function send(string $message)
     {
-        $connection = new AMQPStreamConnection('https://hub.thehip.app/api/exchanges/%2F/test-exchange/publish', 5672, 'hipadmin', 'UVg0i3Wz4usqfhpM9qJP');
-        $channel = $connection->channel();
+        try {
+            $connection = new AMQPStreamConnection(
+                'hub',
+                5672,
+                'guest',
+                'guest'
+            );
+            $channel = $connection->channel();
 
-        $channel->queue_declare('hello', false, false, false, false);
+            $channel->queue_declare('tags', false, false, false, false);
 
-        $msg = new AMQPMessage('Hello World!');
-        $channel->basic_publish($msg, '', 'hello');
+            $msg = new AMQPMessage($message);
+            $channel->basic_publish($msg, '', 'tags');
 
-        $channel->close();
-        $connection->close();
+            $channel->close();
+            $connection->close();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 }

@@ -7,8 +7,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IRequest;
-use OCA\HIP\Service\MessageService;
-
+use OCP\ILogger;
 
 /**
  * Class PageController
@@ -17,9 +16,10 @@ use OCA\HIP\Service\MessageService;
  */
 class PageController extends Controller
 {
-	public function __construct(IRequest $request)
+	public function __construct(ILogger $logger, IRequest $request)
 	{
 		parent::__construct(Application::APP_ID, $request);
+		$this->logger = $logger;
 	}
 	/**
 	 * @NoAdminRequired
@@ -30,9 +30,7 @@ class PageController extends Controller
 	public function index()
 	{
 		// Util::addScript(Application::APP_ID, 'index');
-		// $message = new MessageService();
-		// $message->send();
-
+		
 		$response = new TemplateResponse(
 			Application::APP_ID,
 			'index',
@@ -50,4 +48,6 @@ class PageController extends Controller
 
 		return $response;
 	}
+
+	
 }
