@@ -7,7 +7,8 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IRequest;
-use OCP\Util;
+use OCA\HIP\Service\MessageService;
+
 
 /**
  * Class PageController
@@ -29,6 +30,8 @@ class PageController extends Controller
 	public function index()
 	{
 		// Util::addScript(Application::APP_ID, 'index');
+		// $message = new MessageService();
+		// $message->send();
 
 		$response = new TemplateResponse(
 			Application::APP_ID,
