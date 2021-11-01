@@ -20,7 +20,7 @@ class DocumentService
         ILogger $logger,
         ISystemTagManager $systemTagManager,
         ISystemTagObjectMapper $systemTagObjectMapper,
-        string $userId = null,
+        string $userId = null
     ) {
         $this->rootFolder = $rootFolder;
         $this->dateTimeFormatter = $dateTimeFormatter;
@@ -68,7 +68,7 @@ class DocumentService
             $modifiedDate = $this->dateTimeFormatter->formatDateTime($timestamp, 'medium');
             $owner = $node->getOwner()->getDisplayName();
 
-            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], $node->getType() . 's');
+            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], $node->getId() . 's');
             $systemFileTags = array();
             foreach ($tagIds as $fileId => $tags) {
                 foreach($tags as $tagId) {
