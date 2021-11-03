@@ -58,7 +58,7 @@ class DocumentService
         $files = [];
 
         $nodes = $this->getFileNodesRecursively($parentFolder);
-        $systemTags = $this->systemTagManager->getAllTags();
+        // $systemTags = $this->systemTagManager->getAllTags();
 
         foreach ($nodes as $node) {
             $fileId = $node->getId();
@@ -68,11 +68,14 @@ class DocumentService
             $modifiedDate = $this->dateTimeFormatter->formatDateTime($timestamp, 'medium');
             $owner = $node->getOwner()->getDisplayName();
 
-            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], $node->getId() . 's');
+            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], 'files');
             $systemFileTags = array();
             foreach ($tagIds as $fileId => $tags) {
                 foreach($tags as $tagId) {
-                    array_push($systemFileTags, $systemTags[$tagId]->getName());
+                    $tagarray = array();
+                    // $tagarray['id'] = $systemTags[$tagId]->getId();
+                    // $tagarray['label'] = $systemTags[$tagId]->getName();
+                    array_push($systemFileTags, $tagId);
                 }
             }
 

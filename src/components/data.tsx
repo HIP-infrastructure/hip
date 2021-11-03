@@ -3,43 +3,30 @@ import './data.css'
 import { TreeTable } from 'primereact/treetable'
 import { Column } from 'primereact/column'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
+import { Tag as TagComponent } from 'primereact/tag';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button'
 
-export interface FileStat {
-	filename: string
-	basename: string
-	lastmod: string
+export interface Document {
+	type: string
 	size: number
-	type: 'file' | 'directory'
-	etag: string | null
-	mime?: string
-	props?: DAVResultResponseProps
+	updated: string
+	name: string
+	path: string
+	tags: Tag[]
+	id: number
 }
-
 export interface TreeNode {
 	key: string
 	label: string
 	leaf: boolean
-	data: {
-		type: string
-		size: number
-		updated: string
-		name: string
-		path: string
-	}
+	data: Document
 	icon: string
 }
 
-export interface DAVResultResponseProps {
-	displayname: string
-	resourcetype: {
-		collection?: boolean
-	}
-	getlastmodified?: string
-	getetag?: string
-	getcontentlength?: string
-	getcontenttype?: string
-	'quota-available-bytes'?: string
-	'quota-used-bytes'?: string
+export interface Tag {
+	label: string;
+	id: number;
 }
 
 const Files = (): JSX.Element => {
@@ -47,30 +34,27 @@ const Files = (): JSX.Element => {
 	const [nodes, setNodes] = useState<TreeNode[]>([])
 	const [filesError, setFilesError] = useState()
 	const [documents, setDocuments] = useState<any>()
+	const [tags, setTags] = useState<Tag[]>([])
+	const [selectedTags, setSelectedTags] = useState<any>([])
 
-	useEffect(() => {
-		fetch(`https://hip.local/index.php/apps/hip/document/list`, {
-			// headers: {
-			// 	'Content-Type': 'application/json'
-			//   },
-		}).then((response) => {
-			return response.json();
-		}).then(data => setDocuments(data))
-	}, [])
-
-	const getFiles = async (path: string) => {
+	const getTags = async () => {
 		try {
-			const data = await fetch(`${API_GATEWAY}/files${path}`).then(res =>
-				res.json()
-			)
+			const response = await fetch(`/index.php/apps/hip/tag/list`);
+			const data = await response.json()
+			return { data, error: null }
+		} catch (error) {
+			return { data: null, error }
+		}
+	}
 
-			if (data.statusCode) {
-				return { data: null, error: data }
-			}
+	const getFiles = async (path: string, tags: Tag[]) => {
+		try {
+			const response = await fetch(`/index.php/apps/hip/document/list`);
+			const data = await response.json()
 
 			const nextNodes = [...(data || [])]
 				.sort((a, b) => {
-					if (a.type === 'directory') {
+					if (a.type === 'dir') {
 						return -1
 					}
 					if (a.type === b.type) {
@@ -79,21 +63,26 @@ const Files = (): JSX.Element => {
 					return 1
 				})
 				?.map(s => ({
-					key: s.filename,
-					label: s.basename,
+					key: `${s.id}`,
+					label: s.name,
 					leaf: s.type === 'file',
 					data: {
+						id: s.id,
 						type: s.type,
+						tags: s.tags.map((t: number) => ({
+							id: t,
+							label: tags.find((tag) => tag?.id === t)?.label
+						})),
 						size: Math.round(s.size / 1024),
-						updated: new Date(s.lastmod).toLocaleDateString('en-US', {
+						updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
 							day: 'numeric',
 							month: 'short',
 							year: 'numeric',
 							hour: 'numeric',
 							minute: 'numeric',
 						}),
-						name: s.basename,
-						path: s.filename,
+						name: s.name,
+						path: s.path,
 					},
 					icon: s.type === 'file' ? 'pi pi-file' : 'pi pi-folder',
 				}))
@@ -104,11 +93,38 @@ const Files = (): JSX.Element => {
 		}
 	}
 
+	const handleChangeTag = async (data: Document, tag: Tag) => {
+
+		const method = data.tags.map(t => t.id).includes(tag.id) ? 'DELETE' : 'PUT';
+		await fetch(`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`, {
+			headers: {
+				"requesttoken": window.OC.requestToken,
+			},
+			method
+		});
+
+		await getFiles('/', tags).then(({ data, error }) => {
+			if (error) setFilesError(error?.message)
+			if (data) setNodes(data as TreeNode[])
+		})
+
+
+
+		setSelectedTags(tag)
+	}
+
 	useEffect(() => {
-		// getFiles('/').then(({ data, error }) => {
-		// 	if (error) setFilesError(error?.message)
-		// 	if (data) setNodes(data as TreeNode[])
-		// })
+		const flow = async () => {
+			const { data: tags } = await getTags();
+			// console.log(tags)
+			setTags(tags);
+			await getFiles('/', tags).then(({ data, error }) => {
+				if (error) setFilesError(error?.message)
+				// console.log(data)
+				if (data) setNodes(data as TreeNode[])
+			})
+		}
+		flow();
 	}, [])
 
 	const onExpand = async (event: TreeNode) => {
@@ -123,6 +139,34 @@ const Files = (): JSX.Element => {
 		}
 	}
 
+	// const selectedTagsTemplate = (option: any) => {
+	// 	if (option) {
+	// 		return <Tag className="p-mr-2" value={option}></Tag>
+	// 	}
+
+	// 	return "Select Tags";
+	// }
+
+	// const tagTemplate = (option: string) =>
+	// 	<Tag className="p-mr-2" value={option}></Tag>
+
+
+	const statusBodyTemplate = (node: { data: Document }) => <>
+		{node.data.tags.map((t: Tag) =>
+			<TagComponent className="p-mr-2" value={t.label} />
+
+		)}
+
+		<Dropdown
+			options={tags}
+			onChange={(e) => handleChangeTag(node.data, e.value)}
+			optionLabel="label"
+			placeholder="Tag"
+			className="multiselect-custom"
+		/>
+	</>
+
+
 	if (!nodes) return <div>loading...</div>
 
 	return (
@@ -130,18 +174,17 @@ const Files = (): JSX.Element => {
 			<section className='data__header'>
 				<h2>Data</h2>
 			</section>
+
 			<section className='data__browser'>
-			<pre>{JSON.stringify(documents, null, 2)}</pre>
-
-
-				{/* {filesError && <div className='data__error'>filesError</div>}
+				{filesError && <div className='data__error'>filesError</div>}
 				{!nodes && !filesError && <div>Loading...</div>}
 				<TreeTable value={nodes} onExpand={onExpand}>
 					<Column field='name' header='' expander />
-					<Column field='type' header='TYPE' />
-					<Column field='size' header='SIZE' />
+					<Column body={statusBodyTemplate} header='TAGS' />
+					{/* <Column field='size' header='SIZE' />
 					<Column field='updated' header='UPDATED' />
-				</TreeTable> */}
+					<Column field='actions' header='ACTIONS' /> */}
+				</TreeTable>
 			</section>
 		</main>
 	)
