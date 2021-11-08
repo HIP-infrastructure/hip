@@ -42,8 +42,8 @@ class TagEventListener implements IEventListener
                 // $message['info'] = $info;
 
                 $messageService = new MessageService();
-                $messageService->send($path);
-                // $messageService->send(serialize($message));
+                // $messageService->send(json_encode("{\"path\": \"$path\" }"));
+                $messageService->send(json_encode($message));
             } catch (Throwable $e) {
                 $this->logger->error('Error sending event: ' . $e->getMessage(), [
                     'exception' => $e,
