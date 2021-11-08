@@ -31,6 +31,41 @@ class DocumentService
         $this->userFolder = $this->rootFolder->getUserFolder($this->currentUser);
     }
 
+    private function fileInfo($node)
+    {
+
+        $id = $node->getId();
+        $timestamp = $node->getMTime();
+        $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$id], 'files');
+        $systemFileTags = array();
+        foreach ($tagIds as $fileId => $tags) {
+            foreach ($tags as $tagId) {
+                // $tagarray = array();
+                // $tagarray['id'] = $systemTags[$tagId]->getId();
+                // $tagarray['label'] = $systemTags[$tagId]->getName();
+                array_push($systemFileTags, $tagId);
+            }
+        }
+
+        $data = array(
+            'name' => $node->getName(),
+            'type' => $node->getType(),
+            'id' => $id,
+            'path' => '/apps/files/?dir=' . $this->userFolder->getRelativePath($node->getParent()->getPath()) . '&openfile=' . $node->getId(),
+            'modifiedDate' => $this->dateTimeFormatter->formatDateTime($timestamp, 'medium'),
+            'owner' => $node->getOwner()->getDisplayName(),
+            'isShared' => $node->isShared(),
+            'tags' => $systemFileTags
+        );
+
+        $fileInfo = array(
+            'key' => $id,
+            'data' => $data
+        );
+
+        return $fileInfo;
+    }
+
     private function getFileNodesRecursively($folderName)
     {
         if (!$this->userFolder->nodeExists($folderName)) {
@@ -43,10 +78,12 @@ class DocumentService
         $fileNodes = [];
         foreach ($nodes as $node) {
             if ($node->getType() === FileInfo::TYPE_FOLDER) {
-                array_push($fileNodes, $node);
-                $fileNodes = array_merge($fileNodes, $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath())));
+                $children = $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath()));
+                $fileInfo = $this->fileInfo($node);
+                $fileInfo['children'] =  $children;
+                array_push($fileNodes, $fileInfo);
             } else {
-                array_push($fileNodes, $node);
+                array_push($fileNodes, $this->fileInfo($node));
             }
         }
 
@@ -55,44 +92,6 @@ class DocumentService
 
     public function files($parentFolder)
     {
-        $files = [];
-
-        $nodes = $this->getFileNodesRecursively($parentFolder);
-        // $systemTags = $this->systemTagManager->getAllTags();
-
-        foreach ($nodes as $node) {
-            $fileId = $node->getId();
-            $path = '/apps/files/?dir=' . $this->userFolder->getRelativePath($node->getParent()->getPath()) . '&openfile=' . $fileId;
-            $name = $node->getName();
-            $timestamp = $node->getMTime();
-            $modifiedDate = $this->dateTimeFormatter->formatDateTime($timestamp, 'medium');
-            $owner = $node->getOwner()->getDisplayName();
-
-            $tagIds = $this->systemTagObjectMapper->getTagIdsForObjects([$fileId], 'files');
-            $systemFileTags = array();
-            foreach ($tagIds as $fileId => $tags) {
-                foreach($tags as $tagId) {
-                    $tagarray = array();
-                    // $tagarray['id'] = $systemTags[$tagId]->getId();
-                    // $tagarray['label'] = $systemTags[$tagId]->getName();
-                    array_push($systemFileTags, $tagId);
-                }
-            }
-
-            $fileInfo = array(
-                'name' => $name,
-                'type' => $node->getType(),
-                'id' =>$fileId,
-                'path' => $path,
-                'modifiedDate' => $modifiedDate,
-                'owner' => $owner,
-                'isShared' => $node->isShared(),
-                'tags' => $systemFileTags
-            );
-
-            array_push($files, $fileInfo);
-        }
-
-        return $files;
+        return $this->getFileNodesRecursively($parentFolder);
     }
 }
