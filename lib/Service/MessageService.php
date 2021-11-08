@@ -26,10 +26,11 @@ class MessageService
             );
             $channel = $connection->channel();
 
-            $channel->queue_declare('tags', false, false, false, false);
+            $channel->exchange_declare('topic_logs', 'topic', false, false, false);
+            // $channel->queue_declare('tags', false, false, false, false);
 
             $msg = new AMQPMessage($message);
-            $channel->basic_publish($msg, '', 'tags');
+            $channel->basic_publish($msg, 'topic_logs', 'tags');
 
             $channel->close();
             $connection->close();
