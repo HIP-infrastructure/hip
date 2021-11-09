@@ -79,7 +79,7 @@ const Session = (): JSX.Element => {
 											style={{ width: '24px', height: '24px' }}
 										/>
 									)} */}
-									<p>{appInSession.state}</p>
+								<p>{appInSession.state}</p>
 							</div>
 						</div>
 					)
