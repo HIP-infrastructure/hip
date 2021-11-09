@@ -51,7 +51,7 @@ class DocumentService
             'name' => $node->getName(),
             'type' => $node->getType(),
             'id' => $id,
-            'path' => '/apps/files/?dir=' . $this->userFolder->getRelativePath($node->getParent()->getPath()) . '&openfile=' . $node->getId(),
+            'path' => '/apps/files/?dir=' . $this->userFolder->getRelativePath($node->getParent()->getPath()) . '&fileId=' . $node->getId(),
             'modifiedDate' => $this->dateTimeFormatter->formatDateTime($timestamp, 'medium'),
             'owner' => $node->getOwner()->getDisplayName(),
             'isShared' => $node->isShared(),

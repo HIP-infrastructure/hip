@@ -152,14 +152,16 @@ const Files = (): JSX.Element => {
 			<TagComponent className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
 		)}
 
-		<Dropdown
-			options={tags}
-			onChange={(e) => handleChangeTag(node.data, e.value)}
-			optionLabel="label"
-			placeholder="Tag"
-			className="multiselect-custom"
-		/>
+
 	</>
+
+	const actionBodyTemplate = (node: { data: Document }) => <Dropdown
+		options={tags}
+		onChange={(e) => handleChangeTag(node.data, e.value)}
+		optionLabel="label"
+		placeholder="Tag"
+		className="multiselect-custom"
+	/>
 
 
 	if (!nodes) return <div>loading...</div>
@@ -176,6 +178,7 @@ const Files = (): JSX.Element => {
 				<TreeTable value={nodes}>
 					<Column field='name' header='' expander />
 					<Column body={statusBodyTemplate} header='TAGS' />
+					<Column body={actionBodyTemplate} header="Action" />
 					{/* <Column field='size' header='SIZE' />
 					<Column field='updated' header='UPDATED' />
 					<Column field='actions' header='ACTIONS' /> */}

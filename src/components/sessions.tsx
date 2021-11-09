@@ -5,6 +5,8 @@ import { Sidebar } from 'primereact/sidebar'
 import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
+import { InputSwitch } from 'primereact/inputswitch'
+
 import {
 	Container,
 	ContainerType,
@@ -33,10 +35,10 @@ const ConditionalWrapper = ({
 
 const Sessions = (): JSX.Element => {
 	const {
-		debug: [debug],
 		currentSession: [currentSession, setCurrentSession],
 		user: [user],
 		containers: [containers, error],
+		debug: [debug, setDebug],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -80,18 +82,21 @@ const Sessions = (): JSX.Element => {
 					title='A session is a remote session instance where you can launch apps'
 				>
 					<h2>My Sessions</h2>
-					{debug && (
+					<div>
+						{debug && (
+							<Button
+								className='p-button-sm p-mr-2'
+								label='Fetch remote'
+								onClick={() => user && fetchRemote()}
+							/>
+						)}
 						<Button
-							className='p-button-sm'
-							label='Fetch remote'
-							onClick={() => user && fetchRemote()}
+							className='p-button-sm p-mr-2'
+							label='Create session'
+							onClick={() => createSession(user?.uid || '')}
 						/>
-					)}
-					<Button
-						className='p-button-sm'
-						label='Create session'
-						onClick={() => createSession(user?.uid || '')}
-					/>
+						<InputSwitch className='p-mr-2' checked={debug} onChange={() => setDebug(!debug)} />
+					</div>
 				</section>
 				<section className='sessions__browser'>
 					{!sessions && !error && (

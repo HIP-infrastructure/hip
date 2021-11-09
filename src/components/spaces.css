@@ -8,28 +8,24 @@
     margin-left: 16px;
 }
 
-.spaces__layout-top {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 960px;
-}
-
-.spaces__layout-bottom {
-    display: flex;
-    flex-direction: row;
-}
-
-.services__data {
-    flex: 1;
-}
-
 .services__apps {
     flex: 0;
     min-width: 144 px;
     margin-right: 16px;
+    margin-bottom: 44px;
 }
 
-.services__sessions {
-    flex: 1;
+.spaces__layout-top {
+    display: flex;
+    flex-direction: column;
+    min-width: 960px;
+}
+
+.services__sessions {}
+
+.services__data {}
+
+.spaces__layout-bottom {
+    display: flex;
+    flex-direction: row;
 }
