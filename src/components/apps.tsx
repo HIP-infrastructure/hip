@@ -65,7 +65,8 @@ const Apps = (): JSX.Element => {
 		showWedavForm: [showWedavForm, setShowWedavForm],
 		user: [user, setUser],
 		containers: [containers],
-		availableApps
+		availableApps,
+		debug: [debug],
 	} = useAppStore()
 
 	// Import images
@@ -197,6 +198,16 @@ const Apps = (): JSX.Element => {
 					setShowWedavForm(true)
 				},
 			},
+			{
+				separator: true,
+			},
+			{
+				label: 'Documentation',
+				icon: 'pi pi-clone',
+				command: () => {
+					window.open(app.url, '_blank')
+				},
+			},
 		] || []
 
 	const AppItems = () => (
@@ -204,7 +215,7 @@ const Apps = (): JSX.Element => {
 			{availableApps?.map((app, i) => {
 				return (
 					<div key={`${app.name}`}>
-						<Tooltip target={`.app__card__${app.name}`} content={`${app.label}`} />
+						<Tooltip target={`.app__card__${app.name}`} content={`${app.label} ${app.version} ${app.state !== 'ready' ? '(	' + app.state + ')': ''}\n ${app.description}`} />
 						<div className={`app__card app__card__${app.name}`}>
 							<div className='app__card-img'>
 								<img
@@ -218,8 +229,6 @@ const Apps = (): JSX.Element => {
 									ref={ref => (appMenuRefs.current[i] = ref)}
 									model={menuItems(app)}
 									popup
-									viewportHeight={220}
-									menuWidth={175}
 								/>
 								{/* <Button
 							style={{ width: '80px'}}
