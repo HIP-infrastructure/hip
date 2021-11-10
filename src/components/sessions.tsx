@@ -6,6 +6,7 @@ import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
 import { InputSwitch } from 'primereact/inputswitch'
+import { Toast } from 'primereact/toast';
 
 import {
 	Container,
@@ -21,7 +22,6 @@ import {
 } from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
-import { Message } from 'primereact/message';
 
 const ConditionalWrapper = ({
 	condition,
@@ -34,6 +34,7 @@ const ConditionalWrapper = ({
 }): JSX.Element => (condition ? wrapper(children) : children)
 
 const Sessions = (): JSX.Element => {
+	const toast = React.useRef(null);
 	const {
 		currentSession: [currentSession, setCurrentSession],
 		user: [user],
@@ -65,6 +66,8 @@ const Sessions = (): JSX.Element => {
 		})
 	}
 
+	error && toast?.current?.show({ severity: 'error', summary: 'Error', detail: error.message, position: "bottom-right" })
+
 	return (
 		<>
 			<Sidebar
@@ -75,6 +78,8 @@ const Sessions = (): JSX.Element => {
 			>
 				<Session />
 			</Sidebar>
+
+			<Toast ref={toast} />
 
 			<main className='sessions p-shadow-5'>
 				<section
@@ -95,6 +100,7 @@ const Sessions = (): JSX.Element => {
 							label='Create session'
 							onClick={() => createSession(user?.uid || '')}
 						/>
+						<span className='p-mr-2' style={{ color: 'white' }}>debug</span>
 						<InputSwitch className='p-mr-2' checked={debug} onChange={() => setDebug(!debug)} />
 					</div>
 				</section>
@@ -105,8 +111,8 @@ const Sessions = (): JSX.Element => {
 							style={{ width: '24px', height: '24px' }}
 						/>
 					)}
-					{error && <Message severity="error" text={error.message} />}
-					{!error && sessions?.length === 0 &&
+
+					{sessions?.length === 0 &&
 						<Button
 							className='p-button-sm'
 							label='Create a new session'
