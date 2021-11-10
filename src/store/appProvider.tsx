@@ -89,7 +89,7 @@ export const AppStoreProvider = ({
 			currentSession: [currentSession, setCurrentSession],
 			showWedavForm: [showWedavForm, setShowWedavForm],
 			user: [user, setUser],
-			availableApps,
+			availableApps: debug ? availableApps : availableApps?.filter(app => !debug ? app.state === 'ready': true),
 			containers: [data?.data || [], error],
 		}),
 		[
