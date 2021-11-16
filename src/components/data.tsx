@@ -6,6 +6,8 @@ import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { Tag as TagComponent } from 'primereact/tag';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button'
+import BIDSConverterForm from './convert'
+import { OverlayPanel } from 'primereact/overlaypanel';
 
 export interface Document {
 	type: string
@@ -36,6 +38,7 @@ const Files = (): JSX.Element => {
 	const [documents, setDocuments] = useState<any>()
 	const [tags, setTags] = useState<Tag[]>([])
 	const [selectedTags, setSelectedTags] = useState<any>([])
+	const op = React.useRef<OverlayPanel>(null);
 
 	const getTags = async () => {
 		try {
@@ -94,7 +97,6 @@ const Files = (): JSX.Element => {
 	}
 
 	const handleChangeTag = async (data: Document, tag: Tag) => {
-		console.log(data, tag)
 		const method = data.tags.includes(tag.id) ? 'DELETE' : 'PUT';
 		await fetch(`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`, {
 			headers: {
@@ -163,6 +165,18 @@ const Files = (): JSX.Element => {
 		className="multiselect-custom"
 	/>
 
+	const bIDSBodyTemplate = (node: { data: Document }) =>
+		node.data.tags.includes(tags?.find(t => t?.label === 'subject')?.id || -1) && <Button
+			className='p-button-sm p-mr-2'
+			label='Bids converter'
+			onClick={(e) => handleBIDSConverter(e, node)}
+		/>
+
+	const handleBIDSConverter = (event: any, target: any) => {
+		// op.current?.toggle(e)}
+		//op?.current?.toggle(event, target)
+	}
+
 
 	if (!nodes) return <div>loading...</div>
 
@@ -176,13 +190,22 @@ const Files = (): JSX.Element => {
 				{filesError && <div className='data__error'>filesError</div>}
 				{!nodes && !filesError && <div>Loading...</div>}
 				<TreeTable value={nodes}>
-					<Column field='name' header='' expander />
+					<Column field='name' header='NAME' expander />
 					<Column body={statusBodyTemplate} header='TAGS' />
-					<Column body={actionBodyTemplate} header="Action" />
-					{/* <Column field='size' header='SIZE' />
-					<Column field='updated' header='UPDATED' />
+					<Column body={actionBodyTemplate} header="TAG" />
+					<Column body={bIDSBodyTemplate} header='ACTIONS' />
+					{/*<Column field='updated' header='UPDATED' />
 					<Column field='actions' header='ACTIONS' /> */}
 				</TreeTable>
+				<OverlayPanel
+					ref={op}
+					showCloseIcon
+					id="overlay_panel"
+					style={{ width: "450px" }}
+					className="overlaypanel-demo"
+				>
+					<BIDSConverterForm />
+				</OverlayPanel>
 			</section>
 		</main>
 	)

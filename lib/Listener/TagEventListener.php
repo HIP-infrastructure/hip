@@ -35,15 +35,31 @@ class TagEventListener implements IEventListener
                 $info = Filesystem::getFileInfo($path);
                 // $a = \OC::$server->getRootFolder()->getById($objectId);
 
-                $message = array();
-                $message['event'] = $event->getEvent();
-                $message['objectId'] = $objectId;
-                $message['path'] = $path;
-                // $message['info'] = $info;
+                $message = array(
+                    "event" => $event->getEvent(),
+                    "objectId" => $objectId,
+                    "path" => $path
+                );
+                // "info" => $info;
 
-                $messageService = new MessageService();
-                // $messageService->send(json_encode("{\"path\": \"$path\" }"));
-                $messageService->send(json_encode($message));
+                // $messageService = new MessageService();
+                //$messageService->send(json_encode($message));
+
+                $payload = json_encode(array("message" => $message));
+
+                $ch = curl_init('http://gateway:4000/api/v1/remote-app/bids');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                // $this->logger->debug(
+                //     sprintf('TagEventListener %d', $response)
+                // );
+
             } catch (Throwable $e) {
                 $this->logger->error('Error sending event: ' . $e->getMessage(), [
                     'exception' => $e,
