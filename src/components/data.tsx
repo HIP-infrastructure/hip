@@ -21,9 +21,9 @@ export interface Document {
 export interface TreeNode {
 	key: string
 	label: string
-	leaf: boolean
-	data: Document
 	icon: string
+	data: Document
+	children?: TreeNode[]
 }
 
 export interface Tag {
@@ -33,11 +33,12 @@ export interface Tag {
 
 const Files = (): JSX.Element => {
 	const [loading, setLoading] = useState(true);
-	const [nodes, setNodes] = useState<any>({})
+	const [nodes, setNodes] = useState<TreeNode[]>([])
 	const [filesError, setFilesError] = useState()
 	const [documents, setDocuments] = useState<any>()
 	const [tags, setTags] = useState<Tag[]>([])
 	const [selectedTags, setSelectedTags] = useState<any>([])
+	const [selectedBIDSFolder, setSelectedBIDSFolder] = useState({})
 	const op = React.useRef<OverlayPanel>(null);
 
 	const getTags = async () => {
@@ -174,7 +175,8 @@ const Files = (): JSX.Element => {
 
 	const handleBIDSConverter = (event: any, target: any) => {
 		// op.current?.toggle(e)}
-		//op?.current?.toggle(event, target)
+		setSelectedBIDSFolder(target)
+		op?.current?.toggle(event, null)
 	}
 
 
@@ -204,7 +206,7 @@ const Files = (): JSX.Element => {
 					style={{ width: "450px" }}
 					className="overlaypanel-demo"
 				>
-					<BIDSConverterForm />
+					<BIDSConverterForm nodes={nodes}/>
 				</OverlayPanel>
 			</section>
 		</main>
