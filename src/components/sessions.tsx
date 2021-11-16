@@ -5,7 +5,6 @@ import { Sidebar } from 'primereact/sidebar'
 import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
-import { InputSwitch } from 'primereact/inputswitch'
 import { Toast } from 'primereact/toast';
 
 import {
@@ -39,7 +38,7 @@ const Sessions = (): JSX.Element => {
 		currentSession: [currentSession, setCurrentSession],
 		user: [user],
 		containers: [containers, error],
-		debug: [debug, setDebug],
+		debug: [debug],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -100,8 +99,7 @@ const Sessions = (): JSX.Element => {
 							label='Create session'
 							onClick={() => createSession(user?.uid || '')}
 						/>
-						<span className='p-mr-2' style={{ color: 'white' }}>debug</span>
-						<InputSwitch className='p-mr-2' checked={debug} onChange={() => setDebug(!debug)} />
+
 					</div>
 				</section>
 				<section className='sessions__browser'>
