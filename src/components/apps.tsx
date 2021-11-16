@@ -203,7 +203,7 @@ const Apps = (): JSX.Element => {
 			},
 			{
 				label: 'Documentation',
-				icon: 'pi pi-clone',
+				icon: 'pi pi-external-link',
 				command: () => {
 					window.open(app.url, '_blank')
 				},
@@ -215,8 +215,8 @@ const Apps = (): JSX.Element => {
 			{availableApps?.map((app, i) => {
 				return (
 					<div key={`${app.name}`}>
-						<Tooltip target={`.app__card__${app.name}`} content={`${app.label} ${app.version} ${app.state !== 'ready' ? '(	' + app.state + ')': ''}\n ${app.description}`} />
-						<div className={`app__card app__card__${app.name}`}>
+						<Tooltip target={`.app__card__${app.name}`} content={`${app.label} ${app.version} ${app.state !== 'ready' ? '(' + app.state + ')': ''}\n\n ${app.description}`} />
+						<div className={`app__card app__card__${app.name} app__card-${app.state}`}>
 							<div className='app__card-img'>
 								<img
 									height="64px"

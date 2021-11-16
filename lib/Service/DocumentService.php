@@ -59,7 +59,7 @@ class DocumentService
         );
 
         $fileInfo = array(
-            'key' => $id,
+            'key' => "$id",
             'data' => $data
         );
 
