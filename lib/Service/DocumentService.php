@@ -51,7 +51,7 @@ class DocumentService
             'name' => $node->getName(),
             'type' => $node->getType(),
             'id' => $id,
-            'path' => '/apps/files/?dir=' . $this->userFolder->getRelativePath($node->getParent()->getPath()) . '&fileId=' . $node->getId(),
+            'path' => $this->userFolder->getRelativePath($node->getPath()),
             'modifiedDate' => $this->dateTimeFormatter->formatDateTime($timestamp, 'medium'),
             'owner' => $node->getOwner()->getDisplayName(),
             'isShared' => $node->isShared(),
@@ -60,6 +60,7 @@ class DocumentService
 
         $fileInfo = array(
             'key' => "$id",
+            'label' => $node->getName(),
             'data' => $data
         );
 
