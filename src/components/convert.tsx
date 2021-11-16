@@ -8,6 +8,7 @@ import 'primeflex/primeflex.css';
 import {
     API_REMOTE_APP,
 } from '../api/gatewayClientAPI'
+import { useAppStore } from '../store/appProvider'
 
 interface FormData {
     name?: string;
@@ -21,6 +22,9 @@ interface FormData {
 }
 
 export default ({ nodes }: { nodes?: TreeNode[] }) => {
+    const {
+		user: [user],
+	} = useAppStore()
     const [formData, setFormData] = React.useState<FormData>({})
 
     React.useEffect(() => {
@@ -45,9 +49,10 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
             imaging: {
                 dcm: findPathForDocument(formData.imaging?.dcm),
                 nii: findPathForDocument(formData.imaging?.nii),
-            }
+            },
+            owner: user?.displayName
         }
-        console.log(params)
+
         try {
             const response = await fetch(`${API_REMOTE_APP}/bids`, {
                 method: 'POST',
@@ -58,9 +63,11 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
             })
 
             const data = await response.json()
-            return { data, error: null }
+            console.log(data)
+            
+            // return { data, error: null }
         } catch (error) {
-            return { data: null, error }
+            // return { data: null, error }
         }
     }
 
@@ -120,7 +127,8 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
                             filter
                             placeholder="Select Items">
                         </TreeSelect>
-                    </span><span className="p-field p-col">
+                    </span>
+                    <span className="p-field p-col">
                         <h5>Imaging: DICOM</h5>
                         <TreeSelect
                             value={formData.imaging?.dcm}
@@ -137,7 +145,8 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
                             filter
                             placeholder="Select Items">
                         </TreeSelect>
-                    </span><span className="p-field p-col">
+                    </span>
+                    <span className="p-field p-col">
                         <h5>Imaging: NIFTI</h5>
                         <TreeSelect
                             value={formData.imaging?.nii}
