@@ -33,13 +33,22 @@ export interface Tag {
 
 const Files = (): JSX.Element => {
 	const [loading, setLoading] = useState(true);
-	const [nodes, setNodes] = useState<TreeNode[]>([])
+	const [nodes, setNodes] = useState<TreeNode[]>()
 	const [filesError, setFilesError] = useState()
-	const [documents, setDocuments] = useState<any>()
 	const [tags, setTags] = useState<Tag[]>([])
-	const [selectedTags, setSelectedTags] = useState<any>([])
-	const [selectedBIDSFolder, setSelectedBIDSFolder] = useState({})
 	const op = React.useRef<OverlayPanel>(null);
+
+	useEffect(() => {
+		const flow = async () => {
+			const { data: tags } = await getTags();
+			setTags(tags);
+			await getFiles().then(({ data, error }) => {
+				if (error) setFilesError(error?.message)
+				if (data) setNodes(data)
+			})
+		}
+		flow();
+	}, [])
 
 	const getTags = async () => {
 		try {
@@ -51,32 +60,44 @@ const Files = (): JSX.Element => {
 		}
 	}
 
+	const annotateNodes = (data: TreeNode[]): TreeNode[] => {
+
+		const sort = (nodes: TreeNode[]) => nodes
+			.sort((a, b) => {
+				if (a.data.type === 'dir') {
+					return -1
+				}
+				if (a.data.type === b.data.type) {
+					return 0
+				}
+				return 1
+			})
+
+		const traverse = (nodes: TreeNode[]): TreeNode[] => {
+
+			const nextNodes = nodes.map(node => {
+				if (node.children) {
+					node.icon = 'pi pi-folder'
+					const kids = sort(node.children)
+					node.children = traverse(kids)
+				}
+				node.icon = 'pi pi-file'
+
+				return node
+			})
+
+			return nextNodes;
+		}
+
+		return traverse(data)
+	}
+
 	const getFiles = async () => {
 		try {
 			const response = await fetch(`/index.php/apps/hip/document/list`);
-			const data = await response.json()
+			const json: TreeNode[] = await response.json()
+			const data = annotateNodes(json)
 
-			// const nextNodes = [...(data || [])]
-			// 	.sort((a, b) => {
-			// 		if (a.type === 'dir') {
-			// 			return -1
-			// 		}
-			// 		if (a.type === b.type) {
-			// 			return 0
-			// 		}
-			// 		return 1
-			// 	})
-			// 	?.map(s => ({
-			// 		key: `${s.id}`,
-			// 		label: s.name,
-			// 		leaf: s.type === 'file',
-			// 		data: {
-			// 			id: s.id,
-			// 			type: s.type,
-			// 			tags: s.tags.map((t: number) => ({
-			// 				id: t,
-			// 				label: tags.find((tag) => tag?.id === t)?.label
-			// 			})),
 			// 			size: Math.round(s.size / 1024),
 			// 			updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
 			// 				day: 'numeric',
@@ -85,12 +106,7 @@ const Files = (): JSX.Element => {
 			// 				hour: 'numeric',
 			// 				minute: 'numeric',
 			// 			}),
-			// 			name: s.name,
-			// 			path: s.path,
-			// 		},
-			// 		icon: s.type === 'file' ? 'pi pi-file' : 'pi pi-folder',
-			// 	}))
-
+	
 			return { data, error: null }
 		} catch (error) {
 			return { data: null, error }
@@ -110,52 +126,12 @@ const Files = (): JSX.Element => {
 			if (error) setFilesError(error?.message)
 			if (data) setNodes(data as TreeNode[])
 		})
-
-		setSelectedTags(tag)
 	}
-
-	useEffect(() => {
-		const flow = async () => {
-			const { data: tags } = await getTags();
-			setTags(tags);
-			await getFiles().then(({ data, error }) => {
-				if (error) setFilesError(error?.message)
-				if (data) setNodes(data)
-			})
-		}
-		flow();
-	}, [])
-
-	// const onExpand = async (event: TreeNode) => {
-	// 	const node = event.node // as TreeNode;
-	// 	if (!node.children) {
-	// 		const { data, error } = await getFiles(event.node.data.name, tags);
-	// 		if (error) setFilesError(error?.message)
-	// 		if (data) {
-	// 			node.children = data // TODO: immutable
-	// 			setNodes([...nodes])
-	// 		}
-	// 	}
-	// }
-
-	// const selectedTagsTemplate = (option: any) => {
-	// 	if (option) {
-	// 		return <Tag className="p-mr-2" value={option}></Tag>
-	// 	}
-
-	// 	return "Select Tags";
-	// }
-
-	// const tagTemplate = (option: string) =>
-	// 	<Tag className="p-mr-2" value={option}></Tag>
-
 
 	const statusBodyTemplate = (node: { data: Document }) => <>
 		{node.data.tags.map((t: any) =>
 			<TagComponent className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
 		)}
-
-
 	</>
 
 	const actionBodyTemplate = (node: { data: Document }) => <Dropdown
@@ -173,46 +149,45 @@ const Files = (): JSX.Element => {
 			onClick={(e) => handleBIDSConverter(e, node)}
 		/>
 
-	const handleBIDSConverter = (event: any, target: any) => {
-		// op.current?.toggle(e)}
-		setSelectedBIDSFolder(target)
+	const handleBIDSConverter = (event: any, target?: any) => {
 		op?.current?.toggle(event, null)
 	}
-
-
-	if (!nodes) return <div>loading...</div>
 
 	return (
 		<main className='data p-shadow-5'>
 			<section className='data__header'>
 				<h2>Data</h2>
+				<div>
+					<Button
+						className='p-button-sm p-mr-2'
+						label='Bids converter'
+						onClick={(e) => handleBIDSConverter(e)}
+					/>
+					<OverlayPanel
+						ref={op}
+						showCloseIcon
+						id="overlay_panel"
+						style={{ width: "450px" }}
+						className="overlaypanel-demo"
+					>
+						<BIDSConverterForm nodes={nodes} />
+					</OverlayPanel>
+				</div>
 			</section>
 
 			<section className='data__browser'>
 				{filesError && <div className='data__error'>filesError</div>}
 				{!nodes && !filesError && <div>Loading...</div>}
-				<TreeTable value={nodes}>
+				{nodes && <TreeTable value={nodes}>
 					<Column field='name' header='NAME' expander />
 					<Column body={statusBodyTemplate} header='TAGS' />
 					<Column body={actionBodyTemplate} header="TAG" />
 					<Column body={bIDSBodyTemplate} header='ACTIONS' />
-					{/*<Column field='updated' header='UPDATED' />
-					<Column field='actions' header='ACTIONS' /> */}
 				</TreeTable>
-				<OverlayPanel
-					ref={op}
-					showCloseIcon
-					id="overlay_panel"
-					style={{ width: "450px" }}
-					className="overlaypanel-demo"
-				>
-					<BIDSConverterForm nodes={nodes}/>
-				</OverlayPanel>
+				}
 			</section>
 		</main>
 	)
-
-
 }
 
 export default Files

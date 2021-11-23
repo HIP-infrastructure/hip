@@ -33,13 +33,14 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
 
     const findPathForDocument = (key?: string): string | undefined => {
 
-        if (!(key && nodes)) return
+        if (!(key && nodes)) 
+            return
 
         const findNode = (node: TreeNode, key: string): TreeNode | undefined => node.key === key ?
             node :
             node.children?.reduce((result: TreeNode | undefined, n) => result || findNode(n, key), undefined)
 
-        return nodes.reduce((r: TreeNode | undefined, n) => r || findNode(n, key), undefined)?.data?.path;
+        return findNode({ key: 'null', children: nodes }, key)?.data.path;
     }
 
     const handleBIDSConvert = async () => {
