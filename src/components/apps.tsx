@@ -13,6 +13,18 @@ import freesurferLogo from '../assets/freesurfer__logo.png'
 import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
+import {
+	Container,
+	ContainerType,
+	ContainerState,
+	AppContainer,
+	createApp,
+	createSession,
+	Application,
+} from '../api/gatewayClientAPI'
+import { useAppStore } from '../store/appProvider'
+import './apps.css'
+
 const importedImages = [
 	anywaveLogo,
 	bidsManagerLogo,
@@ -25,27 +37,6 @@ const importedImages = [
 	mricroglLogo,
 	slicerLogo,
 ]
-
-import {
-	Container,
-	ContainerType,
-	ContainerState,
-	AppContainer,
-	createApp,
-	createSession,
-} from '../api/gatewayClientAPI'
-import { useAppStore } from '../store/appProvider'
-import './apps.css'
-
-interface Application {
-	name: string
-	description: string
-	status: string
-	url: string
-	icon: string
-}
-
-
 
 const Apps = (): JSX.Element => {
 	const appMenuRefs = useRef<(SlideMenu | null)[]>([])
