@@ -30,6 +30,7 @@ class PageController extends Controller {
 
         $csp = new ContentSecurityPolicy();
 		$csp->addAllowedFrameDomain('gpu1.thehip.app');
+		$csp->addAllowedFrameDomain('backend.thehip.app');
 		//$scp->addAllowedConnectDomain('*');
 		// $csp->addAllowedScriptDomain('unsafe-inline');
         $response->setContentSecurityPolicy($csp);
