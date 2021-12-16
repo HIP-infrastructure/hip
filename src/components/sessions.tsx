@@ -5,6 +5,8 @@ import { Sidebar } from 'primereact/sidebar'
 import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
+import { Toast } from 'primereact/toast';
+
 import {
 	Container,
 	ContainerType,
@@ -19,7 +21,6 @@ import {
 } from '../api/gatewayClientAPI'
 import Session from './session'
 import './sessions.css'
-import { Message } from 'primereact/message';
 
 const ConditionalWrapper = ({
 	condition,
@@ -32,11 +33,12 @@ const ConditionalWrapper = ({
 }): JSX.Element => (condition ? wrapper(children) : children)
 
 const Sessions = (): JSX.Element => {
+	const toast = React.useRef(null);
 	const {
-		debug: [debug],
 		currentSession: [currentSession, setCurrentSession],
 		user: [user],
 		containers: [containers, error],
+		debug: [debug],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -63,6 +65,8 @@ const Sessions = (): JSX.Element => {
 		})
 	}
 
+	error && toast?.current?.show({ severity: 'error', summary: 'Error', detail: error.message, position: "bottom-right" })
+
 	return (
 		<>
 			<Sidebar
@@ -74,24 +78,29 @@ const Sessions = (): JSX.Element => {
 				<Session />
 			</Sidebar>
 
+			<Toast ref={toast} />
+
 			<main className='sessions p-shadow-5'>
 				<section
 					className='sessions__header'
 					title='A session is a remote session instance where you can launch apps'
 				>
 					<h2>My Sessions</h2>
-					{debug && (
+					<div>
+						{debug && (
+							<Button
+								className='p-button-sm p-mr-2'
+								label='Fetch remote'
+								onClick={() => user && fetchRemote()}
+							/>
+						)}
 						<Button
-							className='p-button-sm'
-							label='Fetch remote'
-							onClick={() => user && fetchRemote()}
+							className='p-button-sm p-mr-2'
+							label='Create session'
+							onClick={() => createSession(user?.uid || '')}
 						/>
-					)}
-					<Button
-						className='p-button-sm'
-						label='Create session'
-						onClick={() => createSession(user?.uid || '')}
-					/>
+
+					</div>
 				</section>
 				<section className='sessions__browser'>
 					{!sessions && !error && (
@@ -100,12 +109,12 @@ const Sessions = (): JSX.Element => {
 							style={{ width: '24px', height: '24px' }}
 						/>
 					)}
-					{error && <Message severity="error" text={error.message} />}
-					{!error && sessions?.length === 0 &&
+
+					{sessions?.length === 0 &&
 						<Button
 							className='p-button-sm'
 							label='Create a new session'
-							onClick={() => createSession(user?.uid || '')}
+							onClick={() => user?.uid && createSession(user?.uid)}
 						/>
 					}
 
@@ -130,12 +139,11 @@ const Sessions = (): JSX.Element => {
 									>
 										<div className='session__desktop_overlay'>
 											<div className='session__desktop-text'>
-												<div className='session__name'>{`#${session?.name}`}
+												<div className='session__name'>{`Session #${session?.name}: ${session.state}`}
 													{user?.uid !== session?.user &&
 														<span className='session__username'>{`${session?.user}`}</span>}
 												</div>
 												<div className='session__details'>
-													<p>{session.state}</p>
 													<p>{session.error?.message}</p>
 													{session.apps.map(app => (
 														<div key={app.id} className='session_details-app'>

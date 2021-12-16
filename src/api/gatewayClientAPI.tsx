@@ -47,11 +47,14 @@ export interface UserCredentials {
 	password?: string
 }
 
-export interface Application {
-	name: string;
-	label: string;
-	descriptions: string;
-	url: string;
+interface Application {
+	name: string
+	description: string
+	status: string
+	url: string
+	icon: string,
+	state: string,
+	version: string
 }
 
 const URL = process.env.REACT_APP_GATEWAY_API
@@ -80,7 +83,6 @@ export const getAvailableAppList = (): Promise<Application[]> => {
 		.then(r => r.json())
 
 	return availableApps
-
 }
 
 export const createSession = (userId: string): Promise<Container> => {
