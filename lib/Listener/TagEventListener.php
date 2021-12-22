@@ -40,10 +40,6 @@ class TagEventListener implements IEventListener
                     "objectId" => $objectId,
                     "path" => $path
                 );
-                // "info" => $info;
-
-                // $messageService = new MessageService();
-                //$messageService->send(json_encode($message));
 
                 $payload = json_encode(array("message" => $message));
 
@@ -55,10 +51,6 @@ class TagEventListener implements IEventListener
 
                 $response = curl_exec($ch);
                 curl_close($ch);
-
-                // $this->logger->debug(
-                //     sprintf('TagEventListener %d', $response)
-                // );
 
             } catch (Throwable $e) {
                 $this->logger->error('Error sending event: ' . $e->getMessage(), [
