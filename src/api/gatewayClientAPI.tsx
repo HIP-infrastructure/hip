@@ -57,10 +57,9 @@ interface Application {
 	version: string
 }
 
-const URL = process.env.REACT_APP_GATEWAY_API
-	? `${window.location.protocol}//${window.location.host}`
-	: `${process.env.REACT_APP_GATEWAY_API}`
-export const API_GATEWAY = `${URL}${process.env.REACT_APP_GATEWAY_API_PREFIX}`
+const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
+	? `${process.env.REACT_APP_GATEWAY_API}`
+	:`${window.location.protocol}//${window.location.host}`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 

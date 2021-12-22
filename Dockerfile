@@ -11,6 +11,8 @@ COPY package.json ./
 RUN npm install
 COPY . .
 
+RUN chown -R node:node /base
+
 FROM base AS build
 ENV NODE_ENV=production
 
