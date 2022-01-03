@@ -13,6 +13,18 @@ import freesurferLogo from '../assets/freesurfer__logo.png'
 import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 
+import {
+	Container,
+	ContainerType,
+	ContainerState,
+	AppContainer,
+	createApp,
+	createSession,
+	Application,
+} from '../api/gatewayClientAPI'
+import { useAppStore } from '../store/appProvider'
+import './apps.css'
+
 const importedImages = [
 	anywaveLogo,
 	bidsManagerLogo,
@@ -162,7 +174,7 @@ const Apps = (): JSX.Element => {
 
 	const menuItems = (app: Application) =>
 		[
-			...sessions?.map((session: Container) => {
+			...(sessions || []).map((session: Container) => {
 				const runningApp = session?.apps?.find(
 					(sessionApp: AppContainer) =>
 						session.id === sessionApp.parentId && sessionApp.app === app.name

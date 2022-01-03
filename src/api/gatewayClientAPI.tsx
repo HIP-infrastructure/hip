@@ -47,14 +47,15 @@ export interface UserCredentials {
 	password?: string
 }
 
-interface Application {
+export interface Application {
 	name: string
 	description: string
 	status: string
 	url: string
 	icon: string,
 	state: string,
-	version: string
+	version: string,
+	label?: string
 }
 
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API

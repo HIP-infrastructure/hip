@@ -65,7 +65,7 @@ const Sessions = (): JSX.Element => {
 		})
 	}
 
-	error && toast?.current?.show({ severity: 'error', summary: 'Error', detail: error.message, position: "bottom-right" })
+	// error && toast?.current?.show({ severity: 'error', summary: 'Error', detail: error.message, position: "bottom-right" })
 
 	return (
 		<>

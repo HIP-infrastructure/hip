@@ -21,15 +21,15 @@ interface FormData {
     }
 }
 
-export default ({ nodes }: { nodes?: TreeNode[] }) => {
+const Convert = ({ nodes }: { nodes?: TreeNode[] }) => {
     const {
 		user: [user],
 	} = useAppStore()
     const [formData, setFormData] = React.useState<FormData>({})
 
-    React.useEffect(() => {
-        console.log(formData)
-    }, [formData])
+    // React.useEffect(() => {
+    //     console.log(formData)
+    // }, [formData])
 
     const findPathForDocument = (key?: string): string | undefined => {
 
@@ -64,7 +64,7 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
             })
 
             const data = await response.json()
-            console.log(data)
+            // console.log(data)
             
             // return { data, error: null }
         } catch (error) {
@@ -170,3 +170,5 @@ export default ({ nodes }: { nodes?: TreeNode[] }) => {
         </Card>
     )
 }
+
+export default Convert 
