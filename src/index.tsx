@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { AppStoreProvider } from './store/appProvider'
+import { BrowserRouter } from "react-router-dom";
 
 import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
@@ -13,7 +14,9 @@ import './index.css'
 ReactDOM.render(
 	<React.StrictMode>
 		<AppStoreProvider>
-			<App />
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
 		</AppStoreProvider>
 
 	</React.StrictMode>,

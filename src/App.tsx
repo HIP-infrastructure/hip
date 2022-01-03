@@ -4,23 +4,29 @@ import Spaces from './components/spaces'
 import './App.css'
 import { InputSwitch } from 'primereact/inputswitch'
 import { useAppStore } from './store/appProvider'
+import { Routes, Route, Link, useLocation, Outlet } from "react-router-dom";
+import Data from './components/data'
+import BIDSConverterForm from './components/convert'
+
+
+const ROUTE_PREFIX = '/index.php/apps/hip'
 
 const items = [
 	{
 		label: 'Personal',
-		routerLink: '/personal',
+		routerLink: '/private',
 	},
 	{
 		label: 'Collaborative',
-		disabled: true,
+		routerLink: '/private',
 	},
 	{
 		label: 'Public',
 		disabled: true,
-	},
+	}
 ]
 
-const App = (): JSX.Element => {
+const Home = (): JSX.Element => {
 	const {
 		debug: [debug, setDebug],
 	} = useAppStore()
@@ -48,5 +54,16 @@ const App = (): JSX.Element => {
 		</main>
 	)
 }
+
+const App = () => <>
+	<h1>Welcome router</h1>
+	{/* <pre>{JSON.stringify(useLocation(), null, 2)}</pre> */}
+	<Link to={`${ROUTE_PREFIX}/workflows`}>Bids</Link>
+	<Routes>
+		<Route path={`${ROUTE_PREFIX}/`} element={<Home />}>
+			<Route path={`${ROUTE_PREFIX}/`} element={<Data />} />
+			<Route path={`${ROUTE_PREFIX}/workflows`} element={<BIDSConverterForm />} />
+		</Route>
+	</Routes></>
 
 export default App
