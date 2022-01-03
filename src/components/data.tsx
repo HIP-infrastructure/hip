@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react'
 import './data.css'
 import { TreeTable } from 'primereact/treetable'
 import { Column } from 'primereact/column'
-import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { Tag as TagComponent } from 'primereact/tag';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button'
-import BIDSConverterForm from './convert'
-import { OverlayPanel } from 'primereact/overlaypanel';
 
 export interface Document {
 	type: string
@@ -34,16 +31,15 @@ export interface Tag {
 const Files = (): JSX.Element => {
 	const [loading, setLoading] = useState(true);
 	const [nodes, setNodes] = useState<TreeNode[]>()
-	const [filesError, setFilesError] = useState()
+	const [filesError, setFilesError] = useState<string>()
 	const [tags, setTags] = useState<Tag[]>([])
-	const op = React.useRef<OverlayPanel>(null);
 
 	useEffect(() => {
 		const flow = async () => {
 			const { data: tags } = await getTags();
 			setTags(tags);
 			await getFiles().then(({ data, error }) => {
-				if (error) setFilesError(error?.message)
+				// if (error) setFilesError(error?.message)
 				if (data) setNodes(data)
 			})
 		}
@@ -92,7 +88,7 @@ const Files = (): JSX.Element => {
 		return traverse(data)
 	}
 
-	const getFiles = async () => {
+	const getFiles = async (): Promise<{data: TreeNode[] | null, error: Error | null}> => {
 		try {
 			const response = await fetch(`/index.php/apps/hip/document/list`);
 			const json: TreeNode[] = await response.json()
@@ -108,7 +104,7 @@ const Files = (): JSX.Element => {
 			// 			}),
 	
 			return { data, error: null }
-		} catch (error) {
+		} catch (error: any) {
 			return { data: null, error }
 		}
 	}
@@ -130,7 +126,7 @@ const Files = (): JSX.Element => {
 
 	const statusBodyTemplate = (node: { data: Document }) => <>
 		{node.data.tags.map((t: any) =>
-			<TagComponent className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
+			<TagComponent key={t.label} className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
 		)}
 	</>
 
@@ -142,36 +138,21 @@ const Files = (): JSX.Element => {
 		className="multiselect-custom"
 	/>
 
-	const bIDSBodyTemplate = (node: { data: Document }) =>
-		node.data.tags.includes(tags?.find(t => t?.label === 'subject')?.id || -1) && <Button
-			className='p-button-sm p-mr-2'
-			label='Bids converter'
-			onClick={(e) => handleBIDSConverter(e, node)}
-		/>
+	// const bIDSBodyTemplate = (node: { data: Document }) =>
+	// 	node.data.tags.includes(tags?.find(t => t?.label === 'subject')?.id || -1) && <Button
+	// 		className='p-button-sm p-mr-2'
+	// 		label='Bids converter'
+	// 		onClick={(e) => handleBIDSConverter(e, node)}
+	// 	/>
 
-	const handleBIDSConverter = (event: any, target?: any) => {
-		op?.current?.toggle(event, null)
-	}
+
 
 	return (
 		<main className='data p-shadow-5'>
 			<section className='data__header'>
 				<h2>Data</h2>
 				<div>
-					<Button
-						className='p-button-sm p-mr-2'
-						label='Bids converter'
-						onClick={(e) => handleBIDSConverter(e)}
-					/>
-					<OverlayPanel
-						ref={op}
-						showCloseIcon
-						id="overlay_panel"
-						style={{ width: "450px" }}
-						className="overlaypanel-demo"
-					>
-						<BIDSConverterForm nodes={nodes} />
-					</OverlayPanel>
+					
 				</div>
 			</section>
 
@@ -182,7 +163,7 @@ const Files = (): JSX.Element => {
 					<Column field='name' header='NAME' expander />
 					<Column body={statusBodyTemplate} header='TAGS' />
 					<Column body={actionBodyTemplate} header="TAG" />
-					<Column body={bIDSBodyTemplate} header='ACTIONS' />
+					{/* <Column body={bIDSBodyTemplate} header='ACTIONS' /> */}
 				</TreeTable>
 				}
 			</section>
