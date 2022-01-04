@@ -5,7 +5,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /base
 
-RUN npm install -g npm@7.19.1
+RUN npm install -g npm@8.3.0
 RUN npm install -g react-scripts typescript --silent
 COPY package.json ./
 RUN npm install
