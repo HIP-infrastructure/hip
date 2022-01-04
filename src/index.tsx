@@ -5,12 +5,6 @@ import reportWebVitals from './reportWebVitals'
 import { AppStoreProvider } from './store/appProvider'
 import { BrowserRouter } from "react-router-dom";
 
-import 'primereact/resources/themes/saga-blue/theme.css'
-import 'primereact/resources/primereact.min.css'
-import 'primeicons/primeicons.css'
-import 'primeflex/primeflex.css'
-import './index.css'
-
 ReactDOM.render(
 	<React.StrictMode>
 		<AppStoreProvider>
@@ -18,7 +12,6 @@ ReactDOM.render(
 				<App />
 			</BrowserRouter>
 		</AppStoreProvider>
-
 	</React.StrictMode>,
 	document.getElementById('hip-root')
 )

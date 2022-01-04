@@ -1,64 +1,96 @@
 import React from 'react'
-import { TabMenu } from 'primereact/tabmenu'
 import Spaces from './components/spaces'
-import './App.css'
-import { InputSwitch } from 'primereact/inputswitch'
 import { useAppStore } from './store/appProvider'
-import { Routes, Route, Link, useLocation, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Data from './components/data'
+import { Box, Tab, Tabs, FormControlLabel, Switch } from '@mui/material';
 import BIDSConverterForm from './components/convert'
-
-
-const ROUTE_PREFIX = '/index.php/apps/hip'
-
-const items = [
-	{
-		label: 'Personal',
-		routerLink: '/private',
-	},
-	{
-		label: 'Collaborative',
-		routerLink: '/private',
-	},
-	{
-		label: 'Public',
-		disabled: true,
-	}
-]
+import { ROUTE_PREFIX } from './constants'
+import CssBaseline from '@mui/material/CssBaseline';
+import { APP_MARGIN_TOP } from './constants'
 
 const Home = (): JSX.Element => {
-	const {
-		debug: [debug, setDebug],
-	} = useAppStore()
+	const { debug: [debug, setDebug] } = useAppStore()
+	const [selectedSpace, setSelectedSpace] = React.useState(0)
 
 	return (
-		<main>
-			<section>
-				<nav className='nav-menu' />
-				<div className='spaces'>
+		<Box
+			component='main'
+			className='hip'
+			sx={{
+				marginTop: APP_MARGIN_TOP,
+				display: 'flex',
+				backgroundColor: 'lime'
+			}}>
+			<CssBaseline />
+			<Box
+				component='section'
+				sx={{ display: 'flex' }}>
+				<Box
+					component='nav'
+					className='hip__nav'
+					sx={{
+						width: '200px',
+						padding: '1em',
+						backgroundColor: 'aquamarine'
+					}} />
+				<Box
+					className='spaces'
+					sx={{
+						display: 'flex',
+						flex: 1,
+						backgroundColor: 'azure'
+					}}
+				>
 					<div>
-						<div className='spaces__nav'>
-							<TabMenu model={items} />
-							<div>
-								<span className='p-mr-2'>debug</span>
-								<InputSwitch className='p-mr-2' checked={debug} onChange={() => setDebug(!debug)} />
-							</div>
+						<Box
+							className='spaces__nav'
+							sx={{
+								display: 'flex',
+								backgroundColor: 'deepPink'
+							}}
+						>
+							<Tabs
+								value={selectedSpace}
+								onChange={(_, value) => setSelectedSpace(value)}
+								sx={{
+									flex: 1
+								}}
+							>
+								<Tab label="Private" />
+								<Tab label="Collaborative" />
+								<Tab label="Public" />
+							</Tabs >
+
+							<FormControlLabel
+								control={<Switch checked={debug}
+									onChange={() => setDebug(!debug)} />}
+								label="Debug" />
+						</Box>
+						<div className='space'>
+							<Spaces />
 						</div>
-						<Spaces />
 					</div>
-				</div>
-			</section>
-			<footer>
-				<p>HIP 2021</p>
-			</footer>
-		</main>
+				</Box>
+			</Box>
+			<Box
+				component="footer"
+				sx={{
+					position: 'fixed',
+					width: '100vw',
+					bottom: 0,
+					left: 0,
+					textAlign: 'center',
+					padding: 0,
+					margin: 0,
+				}}>
+				<p>HIP {new Date().getFullYear()}</p>
+			</Box>
+		</Box>
 	)
 }
 
 const App = () => <>
-	<h1>Welcome router</h1>
-	{/* <pre>{JSON.stringify(useLocation(), null, 2)}</pre> */}
-	<Link to={`${ROUTE_PREFIX}/workflows`}>Bids</Link>
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Home />}>
 			<Route path={`${ROUTE_PREFIX}/`} element={<Data />} />
