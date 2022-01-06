@@ -1,34 +1,61 @@
-import { Button } from 'primereact/button'
-import { ProgressSpinner } from 'primereact/progressspinner'
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from "react-router-dom";
 
+import AppList from './appList'
 import { useAppStore } from '../store/appProvider'
 import {
-	AppContainer,
-	ContainerState,
-	createApp,
+	Container,
+	AppContainer
 } from '../api/gatewayClientAPI'
+import SessionInfo from './sessionInfo'
+import { APP_MARGIN_TOP, XPRA_PARAMS, ROUTE_PREFIX, DRAWER_WIDTH } from '../constants'
 
-const xpraHTML5Parameters = 'keyboard=false&sharing=yes&sound=no'
+import { useParams } from "react-router-dom";
+
+import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress } from '@mui/material';
+import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack } from '@mui/icons-material';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import { styled, useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+
+interface AppBarProps extends MuiAppBarProps {
+	open?: boolean;
+}
 
 const Session = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
-	const [fullscreen, setFullscreen] = useState(false)
-	const [inSessionPage, setInSessionPage] = useState(false)
-	const [appName, setAppName] = useState('')
-
 	const {
-		currentSession: [currentSession, setCurrentSession],
 		showWedavForm: [showWedavForm, setShowWedavForm],
 		containers: [containers],
 		user: [user, setUser],
-		availableApps
 	} = useAppStore()
+
+	const params = useParams();
+	const theme = useTheme();
+	const navigate = useNavigate();
+
+	const [fullscreen, setFullscreen] = useState(false)
+	const [inSessionPage, setInSessionPage] = useState(false)
+	const [appName, setAppName] = useState('')
+	const [open, setOpen] = useState(true);
+	const [session, setSession] = useState<Container>()
+
+	useEffect(() => {
+		// TODO: Remove on unload
+		document.body.classList.add('body-fixed')
+
+		// get session from params
+		const session = containers?.find(c => c.id === params.id)
+		if (session) {
+			session.apps = containers?.filter(c => c.parentId === session.id) as AppContainer[]
+			setSession(session)
+		}
+	}, [setSession])
 
 	useEffect(() => {
 		if (inSessionPage && showWedavForm && user?.password) {
 			setShowWedavForm(false)
-			if (currentSession !== null) createApp(currentSession, user, appName)
+			// if (currentSession !== null) createApp(currentSession, user, appName)
 
 			// Remove password after use
 			const { password, ...nextUser } = user
@@ -38,7 +65,7 @@ const Session = (): JSX.Element => {
 	}, [
 		user,
 		inSessionPage,
-		currentSession,
+		// currentSession,
 		showWedavForm,
 		setShowWedavForm,
 		setUser,
@@ -57,107 +84,150 @@ const Session = (): JSX.Element => {
 		}
 	}, [fullscreen])
 
-	const AppActions = () => (
-		<div>
-			{availableApps?.map(app => {
-				const appInSession = (containers as AppContainer[])?.find(
-					container =>
-						container.parentId === currentSession?.id &&
-						container.app === app.name
-				)
+	const handleDrawerOpen = () => {
+		setOpen(true);
+	};
 
-				if (appInSession) {
-					return (
-						<div key={app.name} className='session__sidebar-app'>
-							<div className='session__sidebar-appname'>{appInSession.app}</div>
-							<div className='session__sidebar-details'>
-								{/* {(appInSession.state === ContainerState.CREATED ||
-									appInSession.state === ContainerState.LOADING ||
-									appInSession.state === ContainerState.STOPPING) && (
-										<ProgressSpinner
-											strokeWidth='4'
-											style={{ width: '24px', height: '24px' }}
-										/>
-									)} */}
-								<p>{appInSession.state}</p>
-							</div>
-						</div>
-					)
-				} else {
-					return (
-						<div key={app.name} className="session__sidebar-app-button">
-							<Button
-								key={app.name}
-								type='button'
-								className='p-button-sm p-button-outlined'
-								icon='pi pi-clone'
-								label={`${app.name}`}
-								onClick={() => {
-									setInSessionPage(true)
-									setAppName(app.name)
-									setShowWedavForm(true)
-								}}
-							/>
-						</div>
-					)
-				}
-			})}
-		</div>
-	)
+	const handleDrawerClose = () => {
+		setOpen(false);
+	};
+
+	const handleBackLocation = () => {
+		navigate(`${ROUTE_PREFIX}/`)
+	}
+
+	const startAppInSession = () => {
+	}
+
+	const AppBar = styled(MuiAppBar, {
+		shouldForwardProp: (prop) => prop !== 'open',
+	})<AppBarProps>(({ theme, open }) => ({
+		transition: theme.transitions.create(['margin', 'width'], {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		}),
+		...(open && {
+			width: `calc(100% - ${DRAWER_WIDTH}px)`,
+			marginRight: `${DRAWER_WIDTH}px`,
+			transition: theme.transitions.create(['margin', 'width'], {
+				easing: theme.transitions.easing.easeOut,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+		}),
+	}));
+
+	const DrawerHeader = styled('div')(({ theme }) => ({
+		display: 'flex',
+		alignItems: 'center',
+		padding: theme.spacing(0, 1),
+		// necessary for content to be below app bar
+		...theme.mixins.toolbar,
+		justifyContent: 'flex-end',
+	}));
+
+	const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+		open?: boolean;
+	}>(({ theme, open }) => ({
+		flexGrow: 1,
+		transition: theme.transitions.create('margin', {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		}),
+		marginRight: `-${DRAWER_WIDTH}px`,
+		...(open && {
+			transition: theme.transitions.create('margin', {
+				easing: theme.transitions.easing.easeOut,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+			marginRight: 0,
+		}),
+	}));
 
 	return (
-		<div className='session__sidebar'>
-			{currentSession?.url && (
-				<iframe
-					ref={fullScreenRef}
-					title='Live Session'
-					className='session__sidebar_iframe'
-					src={`${currentSession.url}?${xpraHTML5Parameters}`}
-					allowFullScreen
-				/>
-			)}
-			{!currentSession?.url && (
-				<div className='session__sidebar_iframe'>
-					<div>
-						<ProgressSpinner />
+		<Box sx={{ display: 'flex' }}>
+			<AppBar position="fixed" open={open} sx={{
+				marginTop: `${APP_MARGIN_TOP}px`
+			}}>
+				<Toolbar>
+					<IconButton color="inherit"
+						aria-label="go back"
+						onClick={handleBackLocation}>
+						<ArrowBack />
+					</IconButton>
+					<Box sx={{ flexGrow: 1 }} />
+					<Typography variant="h6" noWrap component="div">
+						Session #{session?.name}
+					</Typography>
+					<Box sx={{ flexGrow: 1 }} />
+					<IconButton
+						color="inherit"
+						aria-label="fullscreen"
+						onClick={() => setFullscreen(!fullscreen)}
+						sx={{ mr: 2 }}
+					>
+						<OpenInFull />
+					</IconButton>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={handleDrawerOpen}
+						edge="end"
+						sx={{ mr: 2, ...(open && { display: 'none' }) }}
+					>
+						<Menu />
+					</IconButton>
+
+				</Toolbar>
+			</AppBar>
+			<Main open={open} sx={{ marginTop: '16px' }}>
+				{!session && (
+					<div className='session_iframe'>
+						<div>
+							<CircularProgress />
+						</div>
 					</div>
-				</div>
-			)}
-			<div className='session__sidebar-info'>
-				<div className='session__sidebar-header'>
-					<div className='session__sidebar-name'>{`#${currentSession?.name}`}</div>
-					<div className='session__sidebar_actions'>
-						<Button
-							title='Go back to main window'
-							icon='pi pi-chevron-left'
-							className='p-button-sm p-button-rounded p-button-outlined p-button-secondary p-mr-2'
-							onClick={() => {
-								setCurrentSession(null)
-							}}
-						/>
-						<Button
-							title='Fullscreen'
-							icon='pi pi-window-maximize'
-							className='p-button-sm p-button-outlined p-button-primary p-mr-2'
-							disabled={
-								currentSession?.state !== ContainerState.RUNNING &&
-								currentSession?.state !== ContainerState.EXITED
-							}
-							onClick={() => {
-								setFullscreen(true)
-							}}
-						/>
-					</div>
-				</div>
-				<div className='session__sidebar-details'>
-					<p>{currentSession?.state}</p>
-					<p>{currentSession?.error?.message}</p>
-					<div className='session__sidebar-apps'>
-						<AppActions />
-					</div>
-				</div>
-			</div>
-		</div>
+				)}
+				{session &&
+					<iframe
+						ref={fullScreenRef}
+						title='Live Session'
+						className='session_iframe'
+						src={`${session.url}?${XPRA_PARAMS}`}
+						allowFullScreen
+					/>
+				}
+			</Main>
+			<Drawer
+				sx={{
+					width: DRAWER_WIDTH,
+					flexShrink: 0,
+					'& .MuiDrawer-paper': {
+						width: DRAWER_WIDTH,
+						boxSizing: 'border-box',
+						top: `${APP_MARGIN_TOP}px`
+					}
+				}}
+				anchor={'right'}
+				variant="persistent"
+				open={open}
+				elevation={100}
+			>
+				<DrawerHeader>
+					<IconButton
+						color="inherit"
+						aria-label="fullscreen"
+						onClick={() => setFullscreen(!fullscreen)}
+						sx={{ mr: 2 }}
+					></IconButton>
+					<IconButton onClick={handleDrawerClose}>
+						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
+					</IconButton>
+				</DrawerHeader>
+				<SessionInfo session={session} />
+				<Divider />
+				<AppList session={session} />
+			</Drawer>
+		</Box >
 	)
 }
 
