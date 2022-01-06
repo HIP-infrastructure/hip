@@ -1,15 +1,30 @@
-import React from 'react'
+import * as React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { AppStoreProvider } from './store/appProvider'
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useLocation } from "react-router-dom";
+
+const DebugRouter = ({ children }: { children: JSX.Element }) => {
+	if (process.env.NODE_ENV === "development") {
+		const location = useLocation()
+		console.log(
+			`Route: ${location.pathname}${location.search}, State: ${JSON.stringify(
+				location.state,
+			)}`,
+		)
+	}
+
+	return children
+}
 
 ReactDOM.render(
 	<React.StrictMode>
 		<AppStoreProvider>
 			<BrowserRouter>
-				<App />
+				<DebugRouter>
+					<App />
+				</DebugRouter>
 			</BrowserRouter>
 		</AppStoreProvider>
 	</React.StrictMode>,
