@@ -59,7 +59,11 @@ Prettier Setup
 https://prettier.io/docs/en/install.html
 
 ### Publish the app 
-On the master branch, `npm run publish` will produce a  Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build. This can then be deployed on a production server with [Nextcloud docker](https://github.com/HIP-infrastructure/nextcloud-docker) the `./deploy.sh` command.
+On the master branch, `npm run publish` will produce a  Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build. 
+
+`docker-compose -f docker-compose-dev.yml run web npm run publish`
+
+The package can then be deployed as a NextCloud app by moving the hip folder inside nextcloud/apps/hip
 
 ## Current proof of concept
 
