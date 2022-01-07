@@ -5,14 +5,18 @@ import AppList from './appList'
 import { useAppStore } from '../store/appProvider'
 import {
 	Container,
-	AppContainer
+	AppContainer,
+	Application,
+	createApp
 } from '../api/gatewayClientAPI'
+import WebdavForm from './webdavLoginForm'
+
 import SessionInfo from './sessionInfo'
 import { APP_MARGIN_TOP, XPRA_PARAMS, ROUTE_PREFIX, DRAWER_WIDTH } from '../constants'
 
 import { useParams } from "react-router-dom";
 
-import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress } from '@mui/material';
+import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal } from '@mui/material';
 import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack } from '@mui/icons-material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
@@ -34,44 +38,23 @@ const Session = (): JSX.Element => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 
-	const [fullscreen, setFullscreen] = useState(false)
-	const [inSessionPage, setInSessionPage] = useState(false)
-	const [appName, setAppName] = useState('')
-	const [open, setOpen] = useState(true);
 	const [session, setSession] = useState<Container>()
+	const [startApp, setStartApp] = useState<Application>()
+	const [fullscreen, setFullscreen] = useState(false)
+	const [open, setOpen] = useState(true);
 
 	useEffect(() => {
 		// TODO: Remove on unload
 		document.body.classList.add('body-fixed')
 
 		// get session from params
-		const session = containers?.find(c => c.id === params.id)
-		if (session) {
-			session.apps = containers?.filter(c => c.parentId === session.id) as AppContainer[]
-			setSession(session)
+		const s = containers?.find(c => c.id === params.id)
+		if (s && (!session || s.id === session?.id)) {
+			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
+			setSession(s)
 		}
-	}, [setSession])
 
-	useEffect(() => {
-		if (inSessionPage && showWedavForm && user?.password) {
-			setShowWedavForm(false)
-			// if (currentSession !== null) createApp(currentSession, user, appName)
-
-			// Remove password after use
-			const { password, ...nextUser } = user
-			setUser(nextUser)
-			setInSessionPage(false)
-		}
-	}, [
-		user,
-		inSessionPage,
-		// currentSession,
-		showWedavForm,
-		setShowWedavForm,
-		setUser,
-		setInSessionPage,
-		appName,
-	])
+	}, [session, setSession, containers])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -84,6 +67,26 @@ const Session = (): JSX.Element => {
 		}
 	}, [fullscreen])
 
+	// Start an app in the session after getting user's password
+	useEffect(() => {
+		if (!(session && startApp && user)) {
+			return;
+		}
+
+		setShowWedavForm(false)
+		createApp(session, user, startApp.name)
+
+		// Remove password after use
+		const { password, ...nextUser } = user
+		setUser(nextUser)
+		setStartApp(undefined)
+	}, [user])
+
+	const handleStartApp = (app: Application) => {
+		setStartApp(app)
+		setShowWedavForm(true)
+	}
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -94,9 +97,6 @@ const Session = (): JSX.Element => {
 
 	const handleBackLocation = () => {
 		navigate(`${ROUTE_PREFIX}/`)
-	}
-
-	const startAppInSession = () => {
 	}
 
 	const AppBar = styled(MuiAppBar, {
@@ -125,28 +125,30 @@ const Session = (): JSX.Element => {
 		justifyContent: 'flex-end',
 	}));
 
-	const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-		open?: boolean;
-	}>(({ theme, open }) => ({
-		flexGrow: 1,
-		transition: theme.transitions.create('margin', {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		marginRight: `-${DRAWER_WIDTH}px`,
-		...(open && {
-			transition: theme.transitions.create('margin', {
-				easing: theme.transitions.easing.easeOut,
-				duration: theme.transitions.duration.enteringScreen,
-			}),
-			marginRight: 0,
-		}),
-	}));
+	const modalStyle = {
+		position: 'absolute' as 'absolute',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: 200,
+		bgcolor: 'background.paper',
+		border: '1px solid #333',
+		boxShadow: 4,
+		p: 4,
+	};
 
 	return (
 		<Box sx={{ display: 'flex' }}>
+			<Modal
+				open={showWedavForm}
+				onClose={() => setShowWedavForm(false)}
+			>
+				<Box sx={modalStyle}>
+					<WebdavForm />
+				</Box>
+			</Modal>
 			<AppBar position="fixed" open={open} sx={{
-				marginTop: `${APP_MARGIN_TOP}px`
+				marginTop: `${APP_MARGIN_TOP}px`,
 			}}>
 				<Toolbar>
 					<IconButton color="inherit"
@@ -176,27 +178,37 @@ const Session = (): JSX.Element => {
 					>
 						<Menu />
 					</IconButton>
-
 				</Toolbar>
 			</AppBar>
-			<Main open={open} sx={{ marginTop: '16px' }}>
+			<Box>
 				{!session && (
-					<div className='session_iframe'>
-						<div>
-							<CircularProgress />
-						</div>
+					<div style={{
+						border: 'solid 1px gray',
+						width: '100vw',
+						height: '100vh',
+						backgroundColor: '#333',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<CircularProgress size={32} />
 					</div>
 				)}
 				{session &&
 					<iframe
 						ref={fullScreenRef}
 						title='Live Session'
-						className='session_iframe'
 						src={`${session.url}?${XPRA_PARAMS}`}
 						allowFullScreen
+						style={{
+							border: 'solid 1px gray',
+							width: '100vw',
+							height: '100vh',
+							backgroundColor: '#333'
+						}}
 					/>
 				}
-			</Main>
+			</Box>
 			<Drawer
 				sx={{
 					width: DRAWER_WIDTH,
@@ -204,8 +216,10 @@ const Session = (): JSX.Element => {
 					'& .MuiDrawer-paper': {
 						width: DRAWER_WIDTH,
 						boxSizing: 'border-box',
-						top: `${APP_MARGIN_TOP}px`
-					}
+						top: `${APP_MARGIN_TOP}px`,
+						backgroundColor: theme.palette.primary.light
+
+					},
 				}}
 				anchor={'right'}
 				variant="persistent"
@@ -225,7 +239,7 @@ const Session = (): JSX.Element => {
 				</DrawerHeader>
 				<SessionInfo session={session} />
 				<Divider />
-				<AppList session={session} />
+				<AppList session={session} handleStartApp={handleStartApp} />
 			</Drawer>
 		</Box >
 	)
