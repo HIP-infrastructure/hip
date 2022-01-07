@@ -1,17 +1,13 @@
 import React from 'react'
 import { useFormik } from 'formik'
-import { InputText } from 'primereact/inputtext'
-import { Button } from 'primereact/button'
+import { Button, Input, Typography } from '@mui/material'
 import { useAppStore } from '../store/appProvider'
-
-// import { classNames } from "primereact/utils";
 interface UserData {
 	login: string
 	password: string
 }
 
 const WebdavForm = (): JSX.Element => {
-	// const [formData, setFormData] = useState({});
 	const {
 		user: [user, setUser],
 	} = useAppStore()
@@ -21,83 +17,36 @@ const WebdavForm = (): JSX.Element => {
 			login: '',
 			password: '',
 		},
-		// validate: (data) => {
-		//     console.log('validate')
-		//   let errors: { login: string | undefined, password: string | undefined } = { login: undefined, password: undefined };
-
-		//   if (!data.login) {
-		//     errors.login = "Login is required.";
-		//   }
-
-		//   if (!data.password) {
-		//     errors.password = "Password is required.";
-		//   }
-
-		//   console.log(errors)
-		//   return errors;
-		// },
 		onSubmit: (data: UserData) => {
-			// setFormData(data);
 			setUser({ ...user, password: data.password })
-
-			// formik.resetForm();
 		},
 	})
-
-	//   const isFormFieldValid = (name: string) => !!(formik.touched[name] && formik.errors[name]);
-	//   const getFormErrorMessage = (name: string) => {
-	//       return isFormFieldValid(name) && <small className="p-error">{formik.errors[name]}</small>;
-	//   };
 
 	return (
 		<>
 			<form onSubmit={formik.handleSubmit}>
-				<div className='p-field p-grid'>
-					<label
-						htmlFor='login'
-						className='p-col-fixed'
-						style={{ width: '100px' }}
-						// className={classNames({ "p-error": isFormFieldValid("login") })}
-					>
-						Login *
-					</label>
-					<div className='p-col'>
-						<InputText
-							id='login'
-							name='login'
-							value={user?.uid}
-							onChange={formik.handleChange}
-							disabled
-							// className={classNames({ "p-invalid": isFormFieldValid("login") })}
+				<Typography variant="h6" noWrap component="div">
+				Data access
+					</Typography>
+				<div>
+					<Input
+						id="login"
+						onChange={formik.handleChange}
+						value={user?.uid}
+						disabled
+						placeholder="Login"
 						/>
-					</div>
-
-					{/* {getFormErrorMessage("login")} */}
+				</div><div>
+					<Input
+						id="password"
+						type="password"
+						onChange={formik.handleChange}
+						value={formik.values.password}
+						placeholder="Password"
+						autoFocus />
+				</div><div>
+					<Button type='submit' variant="text" >Submit</Button>
 				</div>
-				<div className='p-field p-grid'>
-					<label
-						htmlFor='password'
-						className='p-col-fixed'
-						style={{ width: '100px' }}
-					>
-						Password *
-					</label>
-					<div className='p-col'>
-						<InputText
-							id='password'
-							type='password'
-							value={formik.values.password}
-							onChange={formik.handleChange}
-							autoFocus
-						/>
-					</div>
-				</div>
-				<Button
-					type='submit'
-					label='Submit'
-					className='p-mt-2'
-					style={{ float: 'right' }}
-				/>
 			</form>
 		</>
 	)

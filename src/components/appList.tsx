@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useAppStore } from '../store/appProvider'
-import { Application, Container } from '../api/gatewayClientAPI'
-import { Avatar, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Application, Container, ContainerState } from '../api/gatewayClientAPI'
+import { Avatar, List, ListItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material';
 
@@ -17,7 +17,8 @@ import dcm2niix from '../assets/dcm2niix__logo.png'
 import bidsmanager from '../assets/bidsmanager__logo.png'
 
 interface Session {
-    session?: Container
+    session?: Container;
+    handleStartApp: (app: Application) => void
 }
 
 const logos: { [key: string]: string } = {
@@ -30,7 +31,7 @@ const logos: { [key: string]: string } = {
     mricrogl, freesurfer, dcm2niix, bidsmanager
 }
 
-const AppList = ({ session }: Session) => {
+const AppList = ({ session, handleStartApp }: Session) => {
     const { availableApps } = useAppStore()
 
     const AppAvatar = ({ name, label }: { name: string, label?: string }) => <Avatar
@@ -52,15 +53,34 @@ const AppList = ({ session }: Session) => {
         </IconButton> */}
     </>
 
+    const appInSession = ({ name }: { name: string }) => session?.apps?.find(s => s.app === name)
+
+    const AppState = ({ name }: { name: string }) => {
+        const app = appInSession({ name })
+
+        if (app?.state === ContainerState.LOADING || app?.state === ContainerState.CREATED)
+            return <CircularProgress size={16} />
+
+        if (app?.state === ContainerState.RUNNING)
+            return <PlayCircleOutlined />
+
+
+        if (app?.state === ContainerState.UNINITIALIZED)
+            return <StopCircleOutlined />
+
+        return null
+    }
+
     return <List>
         <ListItem sx={{ fontSize: 22 }}>
             Applications
         </ListItem>
         {availableApps?.map((app, index) => (
-            <ListItem button key={app.name}
-                // secondaryAction={
-                //     <AppActions app={app} />
-                // }
+            <ListItem
+                key={app.name}
+                onClick={() => handleStartApp(app)}
+                button={appInSession({ name: app.name }) === undefined || false}
+                secondaryAction={<AppState name={app.name} />}
             >
                 <ListItemIcon>
                     <AppAvatar name={app.name} label={app.label} />
