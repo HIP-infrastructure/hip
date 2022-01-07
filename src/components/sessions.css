@@ -1,184 +1,180 @@
 .sessions {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	margin-bottom: 1em;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 1em;
 }
 
 .body-fixed {
-	overflow-y: hidden;
-	overflow-x: hidden;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .sessions__header {
-	padding: 4px 8px;
-	flex: 0;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	background: #0e3f67; /*var(--blue-800) */
-	align-items: center;
-	border: 1px solid #0e3f67;
+    padding: 4px 8px;
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #0e3f67;
+    /*var(--blue-800) */
+    align-items: center;
+    border: 1px solid #0e3f67;
 }
 
 .sessions__header .p-button .p-button-icon-right {
-	margin-right: 0 !important;
+    margin-right: 0 !important;
 }
+
 .sessions__header h2 {
-	color: white;
-	font-size: 16px;
-	font-weight: bold;
-	margin-bottom: 0px;
-	line-height: 30px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    line-height: 30px;
 }
 
-.session__sidebar {
-	display: flex;
-	margin-top: 8px;
-	flex-direction: row;
-	justify-content: flex-start;
+.session {
+    display: flex;
+    margin-top: 8px;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
-.session__sidebar_iframe {
-	border: solid 1px gray;
-	width: 90vw;
-	height: 90vh;
+.session__drawer {
+    flex: 1;
+    margin-left: 8px;
+    margin-top: 16px;
 }
 
-.session__sidebar-info {
-	flex: 1;
-	margin-left: 8px;
-	margin-top: 16px;
-}
-
-.session__sidebar-header {
-	display: flex;
-	justify-content: start;
-	align-items: center;
-}
-
-.session__sidebar_actions {
-	flex: 0;
-	display: flex;
-}
-
-.session__sidebar-info .session__sidebar-name {
-	font-weight: 700;
-	font-size: x-large;
-	flex: 1;
-}
-
-.session__sidebar-info .session__sidebar-details {
-	font-size: small;
-}
-
-.session__sidebar-info .session__sidebar-apps {
-	margin-top: 32px;
-}
-
-.session__sidebar-app {
-	padding-bottom: 8px;
-}
-
-.session__sidebar-info .session__sidebar-appname {
-	font-size: large;
-}
-
-.session__sidebar-app-button {
-	padding: 0 0 8px 0;
-}
-
-.sessions__browser {
-	padding: 0.5em;
-	flex: 1;
-}
-
-.sessions__items {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	flex-wrap: wrap;
-}
-
-.session__item {
-	border: 1px transparent grey;
-	width: 240px;
-	margin: 4px 0 4px 4px;
-	overflow: clip;
-}
-
-.session__desktop {
-	width: 240px;
-	height: 160px;
-	border-radius: 8px;
-	position: relative;
-	background: right / cover no-repeat url('../assets/session-thumbnail.png');
-}
-
-.session__desktop a {
-	cursor: pointer;
-}
-
-.session__desktop-loading {
-	width: 30px;
-}
-
-.session__desktop_overlay {
-	background-color: rgba(0, 0, 0, 0.4);
-	width: 100%;
-	height: 100%;
-	padding: 4px;
-	border-radius: 8px;
-	display: flex;
-	flex-direction: row;
-	align-items: top;
-	justify-content: space-between;
+.session-header {
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
 .session_actions {
-	z-index: 999;
-	text-align: right;
-	position: absolute;
-	right: 4px;
-	bottom: 8px;
+    flex: 0;
+    display: flex;
+}
+
+.session__drawer .session-name {
+    font-weight: 700;
+    font-size: x-large;
+    flex: 1;
+}
+
+.session__drawer .session-details {
+    font-size: small;
+}
+
+.session__drawer .session-apps {
+    margin-top: 32px;
+}
+
+.session-app {
+    padding-bottom: 8px;
+}
+
+.session__drawer .session-appname {
+    font-size: large;
+}
+
+.session-app-button {
+    padding: 0 0 8px 0;
+}
+
+.sessions__browser {
+    padding: 0.5em;
+    flex: 1;
+}
+
+.sessions__items {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.session__item {
+    border: 1px transparent grey;
+    width: 240px;
+    margin: 4px 0 4px 4px;
+    overflow: clip;
+}
+
+.session__desktop {
+    width: 240px;
+    height: 160px;
+    border-radius: 8px;
+    position: relative;
+    background: right / cover no-repeat url('../assets/session-thumbnail.png');
+}
+
+.session__desktop a {
+    cursor: pointer;
+}
+
+.session__desktop-loading {
+    width: 30px;
+}
+
+.session__desktop_overlay {
+    background-color: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: top;
+    justify-content: space-between;
+}
+
+.session_actions {
+    z-index: 999;
+    text-align: right;
+    position: absolute;
+    right: 4px;
+    bottom: 8px;
 }
 
 .session__name {
-	font-weight: 700;
-	padding: 8px 8px 0px 8px;
-	font-size: large;
-	color: white;
+    font-weight: 700;
+    padding: 8px 8px 0px 8px;
+    font-size: large;
+    color: white;
 }
 
 .session__username {
-	padding: 8px 8px 0px 8px;
-	color: white;
+    padding: 8px 8px 0px 8px;
+    color: white;
 }
 
 .session__details {
-	padding: 0 4px;
-	font-size: small;
-	z-index: 998;
-	color: white;
+    padding: 0 4px;
+    font-size: small;
+    z-index: 998;
+    color: white;
 }
 
 .session__details p {
-	margin: 0 4px;
-	text-transform: capitalize;
+    margin: 0 4px;
+    text-transform: capitalize;
 }
 
 .session_details-app {
-	/* margin-top: 16px; */
+    /* margin-top: 16px; */
 }
 
 .p-sidebar-icons {
-	margin-top: 2.5em;
+    margin-top: 2.5em;
 }
 
 .p-sidebar-header {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	margin-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 32px;
 }
