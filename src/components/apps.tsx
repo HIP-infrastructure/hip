@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { SlideMenu } from 'primereact/slidemenu'
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-import { styled } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
@@ -249,11 +247,11 @@ const Apps = (): JSX.Element => {
 										onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
 								</div>
 								<div className='apps__actions'>
-									<SlideMenu
+									{/* <SlideMenu
 										ref={ref => (appMenuRefs.current[i] = ref)}
 										model={menuItems(app)}
 										popup
-									/>
+									/> */}
 									{/* <Button
 							style={{ width: '80px'}}
 							type='button'

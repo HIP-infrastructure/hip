@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import './data.css'
-import { TreeTable } from 'primereact/treetable'
-import { Column } from 'primereact/column'
-import { Tag as TagComponent } from 'primereact/tag';
-import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button'
 
 export interface Document {
 	type: string
@@ -125,18 +120,18 @@ const Files = (): JSX.Element => {
 	}
 
 	const statusBodyTemplate = (node: { data: Document }) => <>
-		{node.data.tags.map((t: any) =>
-			<TagComponent key={t.label} className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
+		{node.data.tags.map((t: any) => <div></div>
+			//<TagComponent key={t.label} className="p-mr-2" value={`${tags.find((tag) => tag?.id === t)?.label}`} />
 		)}
 	</>
 
-	const actionBodyTemplate = (node: { data: Document }) => <Dropdown
-		options={tags}
-		onChange={(e) => handleChangeTag(node.data, e.value)}
-		optionLabel="label"
-		placeholder="Tag"
-		className="multiselect-custom"
-	/>
+	// const actionBodyTemplate = (node: { data: Document }) => <Dropdown
+	// 	options={tags}
+	// 	onChange={(e) => handleChangeTag(node.data, e.value)}
+	// 	optionLabel="label"
+	// 	placeholder="Tag"
+	// 	className="multiselect-custom"
+	// />
 
 	// const bIDSBodyTemplate = (node: { data: Document }) =>
 	// 	node.data.tags.includes(tags?.find(t => t?.label === 'subject')?.id || -1) && <Button
@@ -159,13 +154,11 @@ const Files = (): JSX.Element => {
 			<section className='data__browser'>
 				{filesError && <div className='data__error'>filesError</div>}
 				{!nodes && !filesError && <div>Loading...</div>}
-				{nodes && <TreeTable value={nodes}>
+				{/* {nodes && <TreeTable value={nodes}>
 					<Column field='name' header='NAME' expander />
 					<Column body={statusBodyTemplate} header='TAGS' />
 					<Column body={actionBodyTemplate} header="TAG" />
-					{/* <Column body={bIDSBodyTemplate} header='ACTIONS' /> */}
-				</TreeTable>
-				}
+				</TreeTable>} */}
 			</section>
 		</main>
 	)
