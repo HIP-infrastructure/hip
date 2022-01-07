@@ -4,6 +4,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { AppStoreProvider } from './store/appProvider'
 import { BrowserRouter, useLocation } from "react-router-dom";
+import Theme from './components/theme'
 
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
 	if (process.env.NODE_ENV === "development") {
@@ -23,11 +24,13 @@ ReactDOM.render(
 		<AppStoreProvider>
 			<BrowserRouter>
 				<DebugRouter>
-					<App />
+					<Theme>
+						<App />
+					</Theme>
 				</DebugRouter>
 			</BrowserRouter>
 		</AppStoreProvider>
-	</React.StrictMode>,
+	</React.StrictMode >,
 	document.getElementById('hip-root')
 )
 
