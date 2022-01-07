@@ -48,7 +48,7 @@ const Home = (): JSX.Element => {
 								onChange={(_, value) => setSelectedSpace(value)}
 								sx={{ flex: 1 }}
 							>
-								{TAB_NAMES.map(n => <Tab label={n} />)}
+								{TAB_NAMES.map(n => <Tab label={n} key={n} />)}
 							</Tabs >
 
 							<FormControlLabel
@@ -71,23 +71,20 @@ const Home = (): JSX.Element => {
 }
 
 const App = () =>
-	<>
-		<Link to={`${ROUTE_PREFIX}/sessions/session-423`}>Route</Link>
+	<Routes>
+		<Route path={`${ROUTE_PREFIX}/`} element={<Home />}>
+		</Route>
+		<Route path={`${ROUTE_PREFIX}/sessions/:id`} element={<Session />} />
+		<Route
+			path="*"
+			element={
+				<main style={{ padding: "1rem" }}>
+					<p>There's nothing here!</p>
+				</main>
+			}
+		/>
+	</Routes>
 
-		<Routes>
-			<Route path={`${ROUTE_PREFIX}/`} element={<Home />}>
-			</Route>
-			<Route path={`${ROUTE_PREFIX}/sessions/:id`} element={<Session />} />
-			<Route
-				path="*"
-				element={
-					<main style={{ padding: "1rem" }}>
-						<p>There's nothing here!</p>
-					</main>
-				}
-			/>
-		</Routes>
-	</>
 
 
 export default App
