@@ -1,12 +1,9 @@
-import { Button } from 'primereact/button'
-import { ProgressSpinner } from 'primereact/progressspinner'
-import { confirmPopup } from 'primereact/confirmpopup'
-import { Sidebar } from 'primereact/sidebar'
-import { Tooltip } from 'primereact/tooltip';
 import React, { useEffect } from 'react'
 import { useAppStore } from '../store/appProvider'
-import { Toast } from 'primereact/toast';
-
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PREFIX } from '../constants';
+import { Visibility, PowerSettingsNew, Pause, Clear, Replay } from '@mui/icons-material'
+import { Alert, Box, CircularProgress, Button, IconButton, Tooltip } from '@mui/material';
 import {
 	Container,
 	ContainerType,
@@ -19,7 +16,6 @@ import {
 	fetchRemote,
 	forceRemove,
 } from '../api/gatewayClientAPI'
-import Session from './session'
 import './sessions.css'
 
 const ConditionalWrapper = ({
@@ -35,19 +31,24 @@ const ConditionalWrapper = ({
 const Sessions = (): JSX.Element => {
 	const toast = React.useRef(null);
 	const {
-		currentSession: [currentSession, setCurrentSession],
 		user: [user],
 		containers: [containers, error],
 		debug: [debug],
 	} = useAppStore()
 
-	useEffect(() => {
-		if (currentSession) {
-			document.body.classList.add('body-fixed')
-		} else {
-			document.body.classList.remove('body-fixed')
-		}
-	}, [currentSession])
+	const navigate = useNavigate();
+
+	function handleOpenSession(sessionId: string) {
+		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
+	}
+
+	// useEffect(() => {
+	// 	if (currentSession) {
+	// 		document.body.classList.add('body-fixed')
+	// 	} else {
+	// 		document.body.classList.remove('body-fixed')
+	// 	}
+	// }, [currentSession])
 
 	const sessions = containers
 		?.filter((container: Container) => container.type === ContainerType.SESSION)
@@ -57,30 +58,22 @@ const Sessions = (): JSX.Element => {
 		}))
 
 	const confirmRemove = (event: any, sessionId: string) => {
-		confirmPopup({
-			target: event.currentTarget,
-			message: 'Permanently remove this session and all its applications?',
-			icon: 'pi pi-exclamation-triangle',
-			accept: () => removeAppsAndSession(sessionId, user?.uid || ''),
-		})
+		// confirmPopup({
+		// 	target: event.currentTarget,
+		// 	message: 'Permanently remove this session and all its applications?',
+		// 	icon: 'pi pi-exclamation-triangle',
+		// 	accept: () => removeAppsAndSession(sessionId, user?.uid || ''),
+		// })
 	}
 
 	// error && toast?.current?.show({ severity: 'error', summary: 'Error', detail: error.message, position: "bottom-right" })
 
 	return (
 		<>
-			<Sidebar
-				visible={currentSession != null}
-				showCloseIcon={false}
-				fullScreen
-				onHide={() => setCurrentSession(null)}
-			>
-				<Session />
-			</Sidebar>
-
-			<Toast ref={toast} />
-
-			<main className='sessions p-shadow-5'>
+			<main className='sessions'>
+				<Alert severity="success" color="info">
+					This is a success alert — check it out!
+				</Alert>
 				<section
 					className='sessions__header'
 					title='A session is a remote session instance where you can launch apps'
@@ -88,34 +81,19 @@ const Sessions = (): JSX.Element => {
 					<h2>My Sessions</h2>
 					<div>
 						{debug && (
-							<Button
-								className='p-button-sm p-mr-2'
-								label='Fetch remote'
-								onClick={() => user && fetchRemote()}
-							/>
-						)}
-						<Button
-							className='p-button-sm p-mr-2'
-							label='Create session'
-							onClick={() => createSession(user?.uid || '')}
-						/>
+							<Button variant="text" color="info" onClick={() => user && fetchRemote()}>Fetch remote</Button>
 
+						)}
+						<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create session</Button>
 					</div>
 				</section>
 				<section className='sessions__browser'>
 					{!sessions && !error && (
-						<ProgressSpinner
-							strokeWidth='4'
-							style={{ width: '24px', height: '24px' }}
-						/>
+						<CircularProgress size={24} />
 					)}
 
 					{sessions?.length === 0 &&
-						<Button
-							className='p-button-sm'
-							label='Create a new session'
-							onClick={() => user?.uid && createSession(user?.uid)}
-						/>
+						<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create a new session</Button>
 					}
 
 					<div className='sessions__items'>
@@ -130,7 +108,7 @@ const Sessions = (): JSX.Element => {
 												href={session.url}
 												onClick={e => {
 													e.preventDefault()
-													setCurrentSession(session)
+													handleOpenSession(session.id)
 												}}
 											>
 												{children}
@@ -165,61 +143,49 @@ const Sessions = (): JSX.Element => {
 															a.state === ContainerState.LOADING ||
 															a.state === ContainerState.STOPPING
 													)) && (
-														<ProgressSpinner
-															strokeWidth='4'
-															style={{ width: '24px', height: '24px' }}
-														/>
+														<CircularProgress size={24} />
 													)}
 											</div>
 										</div>
 									</ConditionalWrapper>
-									<div className='session_actions'>
+									<Box className='session_actions' sx={{ mr: 2 }}>
 										{debug && (
-											<Button
-												title='Force remove'
-												icon='pi pi-times'
-												className='p-button-sm p-button-rounded p-button-danger p-mr-2'
-												onClick={() => forceRemove(session.id)}
-											/>
+											<Tooltip title="Force remove" placement="top">
+												<IconButton edge="end" color="primary" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
+													<Clear />
+												</IconButton>
+											</Tooltip>
 										)}
-										{session.state !== ContainerState.PAUSED &&
-											<>
-												<Tooltip target=".pause" content="Pause the session. You can resume it later" />
-												<Button
-													title='Pause'
-													icon='pi pi-pause'
-													className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2 pause'
-													onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}
-												/></>}
-										{session.state === ContainerState.PAUSED &&
-											<>
-												<Tooltip target=".resume" content="Resume the session" /><Button
-													title='Resume'
-													icon='pi pi-play'
-													className='p-button-sm p-button-rounded p-button-outlined p-button-primary p-mr-2 resume'
-													onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}
-												/></>}
 
-										<Button
-											title='Shut down'
-											icon='pi pi-times'
-											className='p-button-sm p-button-rounded p-button-outlined p-button-warning p-mr-2'
-											disabled={
-												session.state !== ContainerState.RUNNING &&
-												session.state !== ContainerState.EXITED
-											}
-											onClick={(e: any) => confirmRemove(e, session.id)}
-										/>
-										<Button
-											title='Open'
-											icon='pi pi-eye'
-											className='p-button-sm p-button-rounded p-button-primary '
-											disabled={session.state !== ContainerState.RUNNING}
-											onClick={() => {
-												setCurrentSession(session)
-											}}
-										/>
-									</div>
+										<Tooltip title="Shut down" placement="top">
+											<IconButton edge="end" color="primary" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
+												<PowerSettingsNew />
+											</IconButton>
+										</Tooltip>
+
+										{session.state === ContainerState.PAUSED &&
+											<Tooltip title="Resume the session" placement="top">
+												<IconButton edge="end" color="primary" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
+													<Replay />
+												</IconButton>
+											</Tooltip>
+										}
+
+										{session.state !== ContainerState.PAUSED &&
+											<Tooltip title="Pause the session. You can resume it later" placement="top">
+												<IconButton edge="end" color="primary" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
+													<Pause />
+												</IconButton>
+											</Tooltip>
+										}
+
+										<Tooltip title="Open" placement="top">
+											<IconButton sx={{ ml: 0.6 }} edge="end" color="primary" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
+												<Visibility />
+											</IconButton>
+										</Tooltip>
+
+									</Box>
 								</div>
 							</div>
 						))}

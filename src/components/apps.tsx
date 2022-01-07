@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { SlideMenu } from 'primereact/slidemenu'
-import { Tooltip } from 'primereact/tooltip';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
 import anywaveLogo from '../assets/anywave__logo.png'
@@ -73,7 +75,6 @@ const Apps = (): JSX.Element => {
 	const [images, setImages] = useState<any[]>([])
 
 	const {
-		currentSession: [, setCurrentSession],
 		showWedavForm: [showWedavForm, setShowWedavForm],
 		user: [user, setUser],
 		containers: [containers],
@@ -103,7 +104,7 @@ const Apps = (): JSX.Element => {
 				// Remove password after use
 				const { password, ...nextUser } = user
 				setUser(nextUser)
-				setCurrentSession(sessionForNewApp)
+				// setCurrentSession(sessionForNewApp)
 				setSessionForNewApp(null)
 				setInAppPage(false)
 			} else if (shouldCreateSession && user.uid) {
@@ -121,7 +122,7 @@ const Apps = (): JSX.Element => {
 		setSessionForNewApp,
 		setNewSessionForApp,
 		setShouldCreateSession,
-		setCurrentSession,
+		// setCurrentSession,
 		setUser,
 		setInAppPage,
 		appName,
@@ -143,7 +144,7 @@ const Apps = (): JSX.Element => {
 				// Remove password after use
 				const { password, ...nextUser } = user
 				setUser(nextUser)
-				setCurrentSession(container)
+				// setCurrentSession(container)
 				setNewSessionForApp(null)
 				setInAppPage(false)
 			}
@@ -152,7 +153,7 @@ const Apps = (): JSX.Element => {
 		user,
 		containers,
 		newSessionForApp,
-		setCurrentSession,
+		// setCurrentSession,
 		setNewSessionForApp,
 		setUser,
 		appName,
@@ -187,7 +188,7 @@ const Apps = (): JSX.Element => {
 					disabled: session.state !== ContainerState.RUNNING,
 					command: () => {
 						if (runningApp) {
-							setCurrentSession(session)
+							// setCurrentSession(session)
 						} else {
 							setInAppPage(true)
 							setAppName(app.name)
@@ -227,51 +228,49 @@ const Apps = (): JSX.Element => {
 			{availableApps?.map((app, i) => {
 				return (
 					<div key={`${app.name}`}>
-						<Tooltip target={`.app__card__${app.name}`} content={`${app.label} ${app.version} ${app.state !== 'ready' ? '(' + app.state + ')': ''}\n\n ${app.description}`} />
-						<div className={`app__card app__card__${app.name} app__card-${app.state}`}>
-							<div className='app__card-img'>
-								<img
-									height="64px"
-									width="64px"
-									src={importedImages[i]} alt=''
-									onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
-							</div>
-							<div className='apps__actions'>
-								<SlideMenu
-									ref={ref => (appMenuRefs.current[i] = ref)}
-									model={menuItems(app)}
-									popup
-								/>
-								{/* <Button
+						<Tooltip
+							placement="right"
+							title={
+								<React.Fragment>
+									<Typography color="inherit">{app.label} {app.version}</Typography>
+									{app.state !== 'ready' ? '(' + app.state + ')' : ''} <br />
+									{app.description}
+									<br />
+									<a href={app.url} target="_blank" rel="noreferrer">Website</a>
+								</React.Fragment>
+							}
+						>
+							<div className={`app__card app__card__${app.name} app__card-${app.state}`}>
+								<div className='app__card-img'>
+									<img
+										height="64px"
+										width="64px"
+										src={importedImages[i]} alt=''
+										onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
+								</div>
+								<div className='apps__actions'>
+									<SlideMenu
+										ref={ref => (appMenuRefs.current[i] = ref)}
+										model={menuItems(app)}
+										popup
+									/>
+									{/* <Button
 							style={{ width: '80px'}}
 							type='button'
 							className='p-button-sm p-button-link' 
 							label={app.name}
 							onClick={event => appMenuRefs?.current[i]?.toggle(event)}
 						/> */}
+								</div>
 							</div>
-						</div>
+						</Tooltip>
 					</div>
 				)
 			})}
 		</>
 	)
 
-	return (
-		<div>
-			<main className='apps p-shadow-5'>
-				<section
-					className='apps__header'
-					title='Apps are launched inside a session'
-				>
-					<h2>Applications</h2>
-				</section>
-				<section className='apps__launchpad'>
-					<AppItems />
-				</section>
-			</main>
-		</div>
-	)
+	return <AppItems />
 }
 
 export default Apps
