@@ -14,10 +14,6 @@ import {
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	showWedavForm: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-	currentSession: [
-		Container | null,
-		React.Dispatch<React.SetStateAction<Container | null>>
-	];
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
@@ -62,7 +58,6 @@ export const AppStoreProvider = ({
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
-	const [currentSession, setCurrentSession] = useState<Container | null>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [showWedavForm, setShowWedavForm] = useState(false)
 
@@ -86,7 +81,6 @@ export const AppStoreProvider = ({
 	const value: IAppState = React.useMemo(
 		() => ({
 			debug: [debug, setDebug],
-			currentSession: [currentSession, setCurrentSession],
 			showWedavForm: [showWedavForm, setShowWedavForm],
 			user: [user, setUser],
 			availableApps,
@@ -95,8 +89,6 @@ export const AppStoreProvider = ({
 		[
 			debug,
 			setDebug,
-			currentSession,
-			setCurrentSession,
 			showWedavForm,
 			setShowWedavForm,
 			user,
