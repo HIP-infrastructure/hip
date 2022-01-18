@@ -3,7 +3,7 @@ import { useAppStore } from '../store/appProvider'
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PREFIX } from '../constants';
 import { Visibility, PowerSettingsNew, Pause, Clear, Replay } from '@mui/icons-material'
-import { Alert, Box, CircularProgress, Button, IconButton, Tooltip } from '@mui/material';
+import {  Box, CircularProgress, Button, IconButton, Tooltip } from '@mui/material';
 import {
 	Container,
 	ContainerType,
@@ -71,9 +71,6 @@ const Sessions = (): JSX.Element => {
 	return (
 		<>
 			<main className='sessions'>
-				<Alert severity="success" color="info">
-					This is a success alert — check it out!
-				</Alert>
 				<section
 					className='sessions__header'
 					title='A session is a remote session instance where you can launch apps'
@@ -151,21 +148,21 @@ const Sessions = (): JSX.Element => {
 									<Box className='session_actions' sx={{ mr: 2 }}>
 										{debug && (
 											<Tooltip title="Force remove" placement="top">
-												<IconButton edge="end" color="primary" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
+												<IconButton edge="end" color="info" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
 													<Clear />
 												</IconButton>
 											</Tooltip>
 										)}
 
 										<Tooltip title="Shut down" placement="top">
-											<IconButton edge="end" color="primary" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
+											<IconButton edge="end" color="info" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
 												<PowerSettingsNew />
 											</IconButton>
 										</Tooltip>
 
 										{session.state === ContainerState.PAUSED &&
 											<Tooltip title="Resume the session" placement="top">
-												<IconButton edge="end" color="primary" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
+												<IconButton edge="end" color="info" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
 													<Replay />
 												</IconButton>
 											</Tooltip>
@@ -173,14 +170,14 @@ const Sessions = (): JSX.Element => {
 
 										{session.state !== ContainerState.PAUSED &&
 											<Tooltip title="Pause the session. You can resume it later" placement="top">
-												<IconButton edge="end" color="primary" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
+												<IconButton edge="end" color="info" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
 													<Pause />
 												</IconButton>
 											</Tooltip>
 										}
 
 										<Tooltip title="Open" placement="top">
-											<IconButton sx={{ ml: 0.6 }} edge="end" color="primary" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
+											<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
 												<Visibility />
 											</IconButton>
 										</Tooltip>
