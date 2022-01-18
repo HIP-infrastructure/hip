@@ -204,7 +204,8 @@ const Session = (): JSX.Element => {
 							border: 'solid 1px gray',
 							width: '100vw',
 							height: '100vh',
-							backgroundColor: '#333'
+							backgroundColor: '#333',
+							marginTop: '36px'
 						}}
 					/>
 				}
@@ -217,7 +218,7 @@ const Session = (): JSX.Element => {
 						width: DRAWER_WIDTH,
 						boxSizing: 'border-box',
 						top: `${APP_MARGIN_TOP}px`,
-						backgroundColor: theme.palette.primary.light
+
 
 					},
 				}}

@@ -18,7 +18,7 @@ import bidsmanager from '../assets/bidsmanager__logo.png'
 
 interface Session {
     session?: Container;
-    handleStartApp: (app: Application) => void
+    handleStartApp?: (app: Application) => void
 }
 
 const logos: { [key: string]: string } = {
@@ -64,7 +64,6 @@ const AppList = ({ session, handleStartApp }: Session) => {
         if (app?.state === ContainerState.RUNNING)
             return <PlayCircleOutlined />
 
-
         if (app?.state === ContainerState.UNINITIALIZED)
             return <StopCircleOutlined />
 
@@ -72,20 +71,20 @@ const AppList = ({ session, handleStartApp }: Session) => {
     }
 
     return <List>
-        <ListItem sx={{ fontSize: 22 }}>
+        <ListItem sx={{ fontSize: 22 }} >
             Applications
         </ListItem>
         {availableApps?.map((app, index) => (
             <ListItem
                 key={app.name}
-                onClick={() => handleStartApp(app)}
-                button={appInSession({ name: app.name }) === undefined || false}
+                onClick={() => handleStartApp && handleStartApp(app)}
+                button={appInSession({ name: app.name }) !== undefined}
                 secondaryAction={<AppState name={app.name} />}
             >
                 <ListItemIcon>
                     <AppAvatar name={app.name} label={app.label} />
                 </ListItemIcon>
-                <ListItemText primary={app.name} />
+                <ListItemText primary={app.label} />
             </ListItem>
         ))}
     </List>
