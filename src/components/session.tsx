@@ -44,9 +44,13 @@ const Session = (): JSX.Element => {
 	const [open, setOpen] = useState(true);
 
 	useEffect(() => {
-		// TODO: Remove on unload
 		document.body.classList.add('body-fixed')
+		return () => {
+			document.body.classList.remove('body-fixed')
+		}
+	  }, []);
 
+	useEffect(() => {
 		// get session from params
 		const s = containers?.find(c => c.id === params.id)
 		if (s && (!session || s.id === session?.id)) {
