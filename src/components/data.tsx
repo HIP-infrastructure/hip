@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import TitleBar from './titleBar';
+
 import './data.css'
 
 export interface Document {
@@ -83,7 +85,7 @@ const Files = (): JSX.Element => {
 		return traverse(data)
 	}
 
-	const getFiles = async (): Promise<{data: TreeNode[] | null, error: Error | null}> => {
+	const getFiles = async (): Promise<{ data: TreeNode[] | null, error: Error | null }> => {
 		try {
 			const response = await fetch(`/index.php/apps/hip/document/list`);
 			const json: TreeNode[] = await response.json()
@@ -97,7 +99,7 @@ const Files = (): JSX.Element => {
 			// 				hour: 'numeric',
 			// 				minute: 'numeric',
 			// 			}),
-	
+
 			return { data, error: null }
 		} catch (error: any) {
 			return { data: null, error }
@@ -143,14 +145,8 @@ const Files = (): JSX.Element => {
 
 
 	return (
-		<main className='data p-shadow-5'>
-			<section className='data__header'>
-				<h2>Data</h2>
-				<div>
-					
-				</div>
-			</section>
-
+		<>
+			<TitleBar title='Data' />
 			<section className='data__browser'>
 				{filesError && <div className='data__error'>filesError</div>}
 				{!nodes && !filesError && <div>Loading...</div>}
@@ -160,7 +156,7 @@ const Files = (): JSX.Element => {
 					<Column body={actionBodyTemplate} header="TAG" />
 				</TreeTable>} */}
 			</section>
-		</main>
+		</>
 	)
 }
 

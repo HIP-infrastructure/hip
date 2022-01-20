@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react'
+import React  from 'react'
 import { useAppStore } from '../store/appProvider'
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PREFIX } from '../constants';
 import { Visibility, PowerSettingsNew, Pause, Clear, Replay } from '@mui/icons-material'
-import {  Box, CircularProgress, Button, IconButton, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Button, IconButton, Tooltip } from '@mui/material';
+import TitleBar from './titleBar';
+
 import {
 	Container,
 	ContainerType,
@@ -70,125 +72,114 @@ const Sessions = (): JSX.Element => {
 
 	return (
 		<>
-			<main className='sessions'>
-				<section
-					className='sessions__header'
-					title='A session is a remote session instance where you can launch apps'
-				>
-					<h2>My Sessions</h2>
-					<div>
-						{debug && (
-							<Button variant="text" color="info" onClick={() => user && fetchRemote()}>Fetch remote</Button>
+			<TitleBar 
+				title={'My Sessions'}
+				button={<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create session</Button>}
+			/>
+			<section className='sessions__browser'>
+				{!sessions && !error && (
+					<CircularProgress size={24} />
+				)}
 
-						)}
-						<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create session</Button>
-					</div>
-				</section>
-				<section className='sessions__browser'>
-					{!sessions && !error && (
-						<CircularProgress size={24} />
-					)}
+				{sessions?.length === 0 &&
+					<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create a new session</Button>
+				}
 
-					{sessions?.length === 0 &&
-						<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create a new session</Button>
-					}
-
-					<div className='sessions__items'>
-						{sessions?.map(session => (
-							<div className='session__item' key={`${session.id}`}>
-								<div className='session__desktop'>
-									<ConditionalWrapper
-										condition={session.state === ContainerState.RUNNING}
-										wrapper={children => (
-											<a
-												title='Open'
-												href={session.url}
-												onClick={e => {
-													e.preventDefault()
-													handleOpenSession(session.id)
-												}}
-											>
-												{children}
-											</a>
-										)}
-									>
-										<div className='session__desktop_overlay'>
-											<div className='session__desktop-text'>
-												<div className='session__name'>{`Session #${session?.name}: ${session.state}`}
-													{user?.uid !== session?.user &&
-														<span className='session__username'>{`${session?.user}`}</span>}
-												</div>
-												<div className='session__details'>
-													<p>{session.error?.message}</p>
-													{session.apps.map(app => (
-														<div key={app.id} className='session_details-app'>
-															<p>
-																<strong>{app.app}</strong>: {app.state}
-															</p>
-															<p>{app.error?.message}</p>
-														</div>
-													))}
-												</div>
+				<div className='sessions__items'>
+					{sessions?.map(session => (
+						<div className='session__item' key={`${session.id}`}>
+							<div className='session__desktop'>
+								<ConditionalWrapper
+									condition={session.state === ContainerState.RUNNING}
+									wrapper={children => (
+										<a
+											title='Open'
+											href={session.url}
+											onClick={e => {
+												e.preventDefault()
+												handleOpenSession(session.id)
+											}}
+										>
+											{children}
+										</a>
+									)}
+								>
+									<div className='session__desktop_overlay'>
+										<div className='session__desktop-text'>
+											<div className='session__name'>{`Session #${session?.name}: ${session.state}`}
+												{user?.uid !== session?.user &&
+													<span className='session__username'>{`${session?.user}`}</span>}
 											</div>
-											<div className='session__desktop-loading'>
-												{(session.state === ContainerState.CREATED ||
-													session.state === ContainerState.LOADING ||
-													session.state === ContainerState.STOPPING ||
-													session.apps.find(
-														a =>
-															a.state === ContainerState.CREATED ||
-															a.state === ContainerState.LOADING ||
-															a.state === ContainerState.STOPPING
-													)) && (
-														<CircularProgress size={24} />
-													)}
+											<div className='session__details'>
+												<p>{session.error?.message}</p>
+												{session.apps.map(app => (
+													<div key={app.id} className='session_details-app'>
+														<p>
+															<strong>{app.app}</strong>: {app.state}
+														</p>
+														<p>{app.error?.message}</p>
+													</div>
+												))}
 											</div>
 										</div>
-									</ConditionalWrapper>
-									<Box className='session_actions' sx={{ mr: 2 }}>
-										{debug && (
-											<Tooltip title="Force remove" placement="top">
-												<IconButton edge="end" color="info" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
-													<Clear />
-												</IconButton>
-											</Tooltip>
-										)}
-
-										<Tooltip title="Shut down" placement="top">
-											<IconButton edge="end" color="info" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
-												<PowerSettingsNew />
+										<div className='session__desktop-loading'>
+											{(session.state === ContainerState.CREATED ||
+												session.state === ContainerState.LOADING ||
+												session.state === ContainerState.STOPPING ||
+												session.apps.find(
+													a =>
+														a.state === ContainerState.CREATED ||
+														a.state === ContainerState.LOADING ||
+														a.state === ContainerState.STOPPING
+												)) && (
+													<CircularProgress size={24} />
+												)}
+										</div>
+									</div>
+								</ConditionalWrapper>
+								<Box className='session_actions' sx={{ mr: 2 }}>
+									{debug && (
+										<Tooltip title="Force remove" placement="top">
+											<IconButton edge="end" color="info" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
+												<Clear />
 											</IconButton>
 										</Tooltip>
+									)}
 
-										{session.state === ContainerState.PAUSED &&
-											<Tooltip title="Resume the session" placement="top">
-												<IconButton edge="end" color="info" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
-													<Replay />
-												</IconButton>
-											</Tooltip>
-										}
+									<Tooltip title="Shut down" placement="top">
+										<IconButton edge="end" color="info" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
+											<PowerSettingsNew />
+										</IconButton>
+									</Tooltip>
 
-										{session.state !== ContainerState.PAUSED &&
-											<Tooltip title="Pause the session. You can resume it later" placement="top">
-												<IconButton edge="end" color="info" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
-													<Pause />
-												</IconButton>
-											</Tooltip>
-										}
-
-										<Tooltip title="Open" placement="top">
-											<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
-												<Visibility />
+									{session.state === ContainerState.PAUSED &&
+										<Tooltip title="Resume the session" placement="top">
+											<IconButton edge="end" color="info" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
+												<Replay />
 											</IconButton>
 										</Tooltip>
+									}
 
-									</Box>
-								</div>
+									{session.state !== ContainerState.PAUSED &&
+										<Tooltip title="Pause the session. You can resume it later" placement="top">
+											<IconButton edge="end" color="info" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
+												<Pause />
+											</IconButton>
+										</Tooltip>
+									}
+
+									<Tooltip title="Open" placement="top">
+										<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
+											<Visibility />
+										</IconButton>
+									</Tooltip>
+
+								</Box>
 							</div>
-						))}
-					</div>
-				</section>
-			</main>
+						</div>
+					))}
+				</div>
+			</section>
 		</>
 	)
 }

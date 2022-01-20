@@ -53,7 +53,7 @@ export interface Application {
 	status: string
 	url: string
 	icon: string,
-	state: string,
+	state: 'ready' | 'beta' | 'faulty',
 	version: string,
 	label?: string
 }
