@@ -1,6 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react'
-import Tooltip from '@mui/material/Tooltip';
+import * as React from 'react';
 import Typography from '@mui/material/Typography';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip } from '@mui/material';
+import { useAppStore } from '../store/appProvider'
+import TitleBar from './titleBar';
 
 import brainstormLogo from '../assets/brainstorm__logo.png'
 import anywaveLogo from '../assets/anywave__logo.png'
@@ -12,18 +14,6 @@ import mricroglLogo from '../assets/mrcicogl__logo.png'
 import freesurferLogo from '../assets/freesurfer__logo.png'
 import dcm2niixLogo from '../assets/dcm2niix__logo.png'
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
-
-import {
-	Container,
-	ContainerType,
-	ContainerState,
-	AppContainer,
-	createApp,
-	createSession,
-	Application,
-} from '../api/gatewayClientAPI'
-import { useAppStore } from '../store/appProvider'
-import './apps.css'
 
 const importedImages = [
 	anywaveLogo,
