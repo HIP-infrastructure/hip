@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Box, Drawer, List, ListItemButton, ListItem, Divider, ListItemIcon, ListItemText, PaperProps } from '@mui/material';
-import { Apps, Assignment, Dashboard, Folder, FolderShared, Monitor, Psychology, HelpCenter } from '@mui/icons-material';
-import { useNavigate } from "react-router-dom";
+import { Apps, Assignment, Dashboard, Folder, Monitor, Psychology, HelpCenter } from '@mui/icons-material';
+import { useNavigate, useResolvedPath, useMatch } from "react-router-dom";
 import { Space } from '../App';
 import { APP_MARGIN_TOP } from '../constants'
+import { ROUTE_PREFIX } from '../constants'
 
 const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Element => {
     const { space, ...other } = props;
@@ -21,12 +22,14 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                     route: 'dashboard',
                     label: 'Dashboard',
                     icon: <Dashboard />,
+                    disabled: true
 
                 },
                 {
                     route: 'documentation',
                     label: 'Documentation',
-                    icon: <HelpCenter />
+                    icon: <HelpCenter />, 
+                    disabled: true
                 }]
         },
         {
@@ -36,8 +39,6 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                     route: `${space.route}/sessions`,
                     label: 'Sessions',
                     icon: <Monitor />,
-                    active: true
-
                 },
                 {
                     route: `${space.route}/apps`,
@@ -52,7 +53,8 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                 {
                     route: `${space.route}/studies`,  // project ?
                     label: 'Studies',
-                    icon: <Psychology />
+                    icon: <Psychology />, 
+                    disabled: true
                 },
                 {
                     route: `${space.route}/workflows`,
@@ -62,6 +64,14 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
         },
 
     ]
+
+    const isActive = (route: string) => {
+        const current = `${ROUTE_PREFIX}/${route}`
+        const resolved = useResolvedPath(current);
+        const match = useMatch({ path: resolved.pathname, end: true });
+
+        return match !== null
+    }
 
     return (
         <Drawer variant="permanent" {...other} sx={{
@@ -79,9 +89,9 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                         <ListItem sx={{ py: 2, px: 3 }}>
                             <ListItemText sx={{ color: '#333' }}>{label}</ListItemText>
                         </ListItem>
-                        {children.map(({ label, route, icon, active }) => (
+                        {children.map(({ label, route, icon, disabled }) => (
                             <ListItem disablePadding key={label}>
-                                <ListItemButton selected={active} onClick={() => handleClick(route)}>
+                                <ListItemButton disabled={disabled} selected={isActive(route)} onClick={() => handleClick(route)}>
                                     <ListItemIcon>{icon}</ListItemIcon>
                                     <ListItemText>{label}</ListItemText>
                                 </ListItemButton>
