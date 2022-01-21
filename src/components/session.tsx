@@ -7,7 +7,8 @@ import {
 	Container,
 	AppContainer,
 	Application,
-	createApp
+	createApp,
+	ContainerType
 } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
 
@@ -16,11 +17,10 @@ import { APP_MARGIN_TOP, XPRA_PARAMS, ROUTE_PREFIX, DRAWER_WIDTH } from '../cons
 
 import { useParams } from "react-router-dom";
 
-import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal } from '@mui/material';
-import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack } from '@mui/icons-material';
+import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack, ExpandMore } from '@mui/icons-material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean;
@@ -29,7 +29,6 @@ interface AppBarProps extends MuiAppBarProps {
 const Session = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
-		showWedavForm: [showWedavForm, setShowWedavForm],
 		containers: [containers],
 		user: [user, setUser],
 	} = useAppStore()
@@ -42,22 +41,29 @@ const Session = (): JSX.Element => {
 	const [startApp, setStartApp] = useState<Application>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [open, setOpen] = useState(true);
+	const [showWedavForm, setShowWedavForm] = useState(false)
 
 	useEffect(() => {
 		document.body.classList.add('body-fixed')
 		return () => {
 			document.body.classList.remove('body-fixed')
 		}
-	  }, []);
+	}, []);
 
 	useEffect(() => {
-		// get session from params
+		// get session and its children apps from params
 		const s = containers?.find(c => c.id === params.id)
-		if (s && (!session || s.id === session?.id)) {
-			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
+		if (s && (s.id !== session?.id)) {
 			setSession(s)
 		}
 
+	}, [params, session, setSession, containers])
+
+	useEffect(() => {
+		if (session) {
+			session.apps = containers?.filter(c => c.parentId === session.id) as AppContainer[]
+			setSession(session)
+		}
 	}, [session, setSession, containers])
 
 	useEffect(() => {
@@ -103,6 +109,11 @@ const Session = (): JSX.Element => {
 		navigate(`${ROUTE_PREFIX}/`)
 	}
 
+	const handleOnChange = (event: SelectChangeEvent) => {
+		const sessionId = event.target.value as string
+		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
+	};
+
 	const AppBar = styled(MuiAppBar, {
 		shouldForwardProp: (prop) => prop !== 'open',
 	})<AppBarProps>(({ theme, open }) => ({
@@ -141,6 +152,8 @@ const Session = (): JSX.Element => {
 		p: 4,
 	};
 
+	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<Modal
@@ -161,9 +174,19 @@ const Session = (): JSX.Element => {
 						<ArrowBack />
 					</IconButton>
 					<Box sx={{ flexGrow: 1 }} />
-					<Typography variant="h6" noWrap component="div">
-						Session #{session?.name}
-					</Typography>
+					<FormControl>
+						<Select
+							id="session-select"
+							IconComponent={() => <ExpandMore />}
+							value={session?.id}
+							onChange={handleOnChange}
+							sx={{ color: 'white' }}
+						>
+							{
+								sessions?.map(s => <MenuItem value={s?.id} key={s?.id}>{`Session #${s?.name}`}</MenuItem>)
+							}
+						</Select>
+					</FormControl>
 					<Box sx={{ flexGrow: 1 }} />
 					<IconButton
 						color="inherit"

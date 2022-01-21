@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useSWR from 'swr'
+import { mutate } from 'swr'
 
 import { getCurrentUser } from '@nextcloud/auth'
 
@@ -13,7 +14,6 @@ import {
 
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-	showWedavForm: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
@@ -59,29 +59,30 @@ export const AppStoreProvider = ({
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [showWedavForm, setShowWedavForm] = useState(false)
 
 	// Fetch Nextcloud user
 	React.useEffect(() => {
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
 
-		const apps = getAvailableAppList().then(
+		getAvailableAppList().then(
 			r => setAvailableApps(r)
 		)
+
+		setInterval(() => {
+			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
+		}, 3* 1000)
 	}, [])
 
 	// Start polling containers fetch
 	const { data, error } = useSWR<any, Error | undefined>(
 		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
-		fetcher,
-		{ refreshInterval: 3 * 1000 }
+		fetcher
 	)
 
 	const value: IAppState = React.useMemo(
 		() => ({
 			debug: [debug, setDebug],
-			showWedavForm: [showWedavForm, setShowWedavForm],
 			user: [user, setUser],
 			availableApps,
 			containers: [data?.data || [], error],
@@ -89,8 +90,6 @@ export const AppStoreProvider = ({
 		[
 			debug,
 			setDebug,
-			showWedavForm,
-			setShowWedavForm,
 			user,
 			setUser,
 			data,
