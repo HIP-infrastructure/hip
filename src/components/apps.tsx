@@ -32,7 +32,7 @@ const Apps = () => {
 	const { availableApps } = useAppStore()
 
 	return <>
-		<TitleBar title={'Available Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session, or right here in a new session.'} />
+		<TitleBar title={'Available Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking launch app'} />
 		<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 			{availableApps?.map((app, i) =>
 				<Card sx={{ maxWidth: 320 }} key={app.name}>
