@@ -1,6 +1,6 @@
 import React from 'react'
 import { useFormik } from 'formik'
-import { Button, Input, Typography } from '@mui/material'
+import { Box, Button, Input, Typography } from '@mui/material'
 import { useAppStore } from '../store/appProvider'
 interface UserData {
 	login: string
@@ -25,28 +25,35 @@ const WebdavForm = (): JSX.Element => {
 	return (
 		<>
 			<form onSubmit={formik.handleSubmit}>
-				<Typography variant="h6" noWrap component="div">
-				Data access
-					</Typography>
-				<div>
+				<Typography gutterBottom variant="h6" noWrap component="div">
+					Data access
+				</Typography>
+				<Typography gutterBottom variant="subtitle1" component="div">
+					For security reasons, we need your credentials for every data access
+				</Typography>
+				<Box>
 					<Input
 						id="login"
+						disableUnderline
 						onChange={formik.handleChange}
 						value={user?.uid}
 						disabled
 						placeholder="Login"
-						/>
-				</div><div>
+					/>
+				</Box>
+				<Box>
 					<Input
 						id="password"
 						type="password"
+						disableUnderline
 						onChange={formik.handleChange}
 						value={formik.values.password}
 						placeholder="Password"
 						autoFocus />
-				</div><div>
+				</Box>
+				<Box sx={{ pt: 2 }}>
 					<Button type='submit' variant="text" >Submit</Button>
-				</div>
+				</Box>
 			</form>
 		</>
 	)
