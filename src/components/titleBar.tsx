@@ -35,7 +35,7 @@ const TitleBar = (props: ITitleBar) => {
             </Toolbar>
         </AppBar>
         {
-            description && <Typography color="inherit" sx={{ p: 2}} gutterBottom variant="subtitle2">
+            description && <Typography sx={{ pl: 1, pt: 2}} color="inherit" variant="subtitle2">
                 {description}
             </Typography>
 
