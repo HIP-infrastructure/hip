@@ -15,6 +15,7 @@ import Workflows from './components/workflows';
 import Documentation from './components/documentation';
 import Dashboard from './components/dashboard';
 
+import './App.css'
 export interface Space {
 	label: string;
 	route: string;
