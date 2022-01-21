@@ -62,10 +62,10 @@ const AppList = ({ session, handleStartApp }: Session) => {
             return <CircularProgress size={16} />
 
         if (app?.state === ContainerState.RUNNING)
-            return <PlayCircleOutlined />
+            return <StopCircleOutlined />
 
         if (app?.state === ContainerState.UNINITIALIZED)
-            return <StopCircleOutlined />
+            return <PlayCircleOutlined />
 
         return null
     }

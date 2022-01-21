@@ -155,6 +155,7 @@ const Files = (): JSX.Element => {
 					<Column body={statusBodyTemplate} header='TAGS' />
 					<Column body={actionBodyTemplate} header="TAG" />
 				</TreeTable>} */}
+				<pre>{JSON.stringify(nodes, null, 2)}</pre>
 			</section>
 		</>
 	)
