@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom";
-
 import AppList from './appList'
 import { useAppStore } from '../store/appProvider'
 import {
@@ -11,13 +10,10 @@ import {
 	ContainerType
 } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
-
 import SessionInfo from './sessionInfo'
 import { APP_MARGIN_TOP, XPRA_PARAMS, ROUTE_PREFIX, DRAWER_WIDTH } from '../constants'
-
 import { useParams } from "react-router-dom";
-
-import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal, FormControl, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack, ExpandMore } from '@mui/icons-material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
@@ -40,7 +36,7 @@ const Session = (): JSX.Element => {
 	const [session, setSession] = useState<Container>()
 	const [startApp, setStartApp] = useState<Application>()
 	const [fullscreen, setFullscreen] = useState(false)
-	const [open, setOpen] = useState(true);
+	const [drawerOpen, setDrawerOpen] = useState(true);
 	const [showWedavForm, setShowWedavForm] = useState(false)
 
 	useEffect(() => {
@@ -53,18 +49,12 @@ const Session = (): JSX.Element => {
 	useEffect(() => {
 		// get session and its children apps from params
 		const s = containers?.find(c => c.id === params.id)
-		if (s && (s.id !== session?.id)) {
+		if (s) { // && (s.id !== session?.id)) {
+			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
 			setSession(s)
 		}
 
 	}, [params, session, setSession, containers])
-
-	useEffect(() => {
-		if (session) {
-			session.apps = containers?.filter(c => c.parentId === session.id) as AppContainer[]
-			setSession(session)
-		}
-	}, [session, setSession, containers])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -98,11 +88,11 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleDrawerOpen = () => {
-		setOpen(true);
+		setDrawerOpen(true);
 	};
 
 	const handleDrawerClose = () => {
-		setOpen(false);
+		setDrawerOpen(false);
 	};
 
 	const handleBackLocation = () => {
@@ -164,7 +154,7 @@ const Session = (): JSX.Element => {
 					<WebdavForm />
 				</Box>
 			</Modal>
-			<AppBar position="fixed" open={open} sx={{
+			<AppBar position="fixed" open={drawerOpen} sx={{
 				marginTop: `${APP_MARGIN_TOP}px`,
 			}}>
 				<Toolbar>
@@ -178,7 +168,7 @@ const Session = (): JSX.Element => {
 						<Select
 							id="session-select"
 							IconComponent={() => <ExpandMore />}
-							value={session?.id}
+							value={session?.id || ''}
 							onChange={handleOnChange}
 							sx={{ color: 'white' }}
 						>
@@ -201,7 +191,7 @@ const Session = (): JSX.Element => {
 						aria-label="open drawer"
 						onClick={handleDrawerOpen}
 						edge="end"
-						sx={{ mr: 2, ...(open && { display: 'none' }) }}
+						sx={{ mr: 2, ...(drawerOpen && { display: 'none' }) }}
 					>
 						<Menu />
 					</IconButton>
@@ -251,7 +241,7 @@ const Session = (): JSX.Element => {
 				}}
 				anchor={'right'}
 				variant="persistent"
-				open={open}
+				open={drawerOpen}
 				elevation={100}
 			>
 				<DrawerHeader>
