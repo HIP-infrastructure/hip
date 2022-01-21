@@ -139,7 +139,7 @@ export const createSessionAndApp = (
 	user: UserCredentials,
 	appName: string
 ): Promise<Container> => {
-	const url = `${API_CONTAINERS}/apps/${appName}/start`
+	const url = `${API_REMOTE_APP}/apps/${appName}/start`
 	const sessionAndApp = fetch(url, {
 		method: 'POST',
 		headers: {
