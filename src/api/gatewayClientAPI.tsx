@@ -58,6 +58,14 @@ export interface Application {
 	label?: string
 }
 
+export interface Workflow {
+	id: string;
+	label: string;
+	description: string;
+	state: 'ready' | 'beta' | 'faulty',
+	enabled: boolean
+}
+
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	:`${window.location.protocol}//${window.location.host}`
