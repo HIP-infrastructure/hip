@@ -1,23 +1,15 @@
-import React from 'react'
-import { useAppStore } from '../store/appProvider'
+import { Clear, Pause, PowerSettingsNew, Replay, Visibility } from '@mui/icons-material';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from '@mui/material';
+import React, { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PREFIX } from '../constants';
-import { Visibility, PowerSettingsNew, Pause, Clear, Replay } from '@mui/icons-material'
-import { Typography, Card, CardActions, CardContent, CardMedia, Chip, Box, Button, IconButton, Tooltip } from '@mui/material';
-import TitleBar from './titleBar';
-import SessionImage from '../assets/session-thumbnail.png'
 import {
-	Container,
-	ContainerType,
-	ContainerState,
-	createSession,
-	removeAppsAndSession,
-	pauseAppsAndSession,
-	resumeAppsAndSession,
-	AppContainer,
-	fetchRemote,
-	forceRemove,
-} from '../api/gatewayClientAPI'
+	AppContainer, Container, ContainerState, ContainerType, createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
+} from '../api/gatewayClientAPI';
+import SessionImage from '../assets/session-thumbnail.png';
+import { ROUTE_PREFIX } from '../constants';
+import { useAppStore } from '../store/appProvider';
+import TitleBar from './titleBar';
+import Modal, { ModalComponentHandle } from './UI/Modal';
 
 const Sessions = (): JSX.Element => {
 	const {
@@ -25,23 +17,24 @@ const Sessions = (): JSX.Element => {
 		containers: [containers, error],
 		debug: [debug],
 	} = useAppStore()
+	const modalRef = useRef<ModalComponentHandle>(null);
 	const navigate = useNavigate();
-
-	React.useEffect(() => {
-		console.log(containers)
-	}, [containers])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
 	}
 
-	const confirmRemove = (event: any, sessionId: string) => {
-		// confirmPopup({
-		// 	target: event.currentTarget,
-		// 	message: 'Permanently remove this session and all its applications?',
-		// 	icon: 'pi pi-exclamation-triangle',
-		// 	accept: () => removeAppsAndSession(sessionId, user?.uid || ''),
-		// })
+	const confirmRemove = async (sessionId: string) => {
+		if (!modalRef.current) return;
+
+		const reply = await modalRef.current.open(
+			'Remove session ?',
+			'Permanently remove this session and all its applications?'
+		);
+
+		if (reply) {
+			removeAppsAndSession(sessionId, user?.uid || '')
+		}
 	}
 
 	const sessions = containers
@@ -53,6 +46,7 @@ const Sessions = (): JSX.Element => {
 
 	return (
 		<>
+			<Modal ref={modalRef} />
 			<TitleBar
 				title={'My Sessions'}
 				description={'Sessions are remote virtual computers on secure infrastructure where you can launch apps on your data.'}
@@ -96,21 +90,21 @@ const Sessions = (): JSX.Element => {
 						<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
 							{debug && (
 								<Tooltip title="Force remove" placement="top">
-									<IconButton edge="end" color="info" aria-label="force remove" onClick={(e: any) => forceRemove(session.id)}>
+									<IconButton edge="end" color="info" aria-label="force remove" onClick={() => forceRemove(session.id)}>
 										<Clear />
 									</IconButton>
 								</Tooltip>
 							)}
 
 							<Tooltip title="Shut down" placement="top">
-								<IconButton edge="end" color="info" aria-label="Shut down" onClick={(e: any) => confirmRemove(e, session.id)}>
+								<IconButton edge="end" color="info" aria-label="Shut down" onClick={() => confirmRemove(session.id)}>
 									<PowerSettingsNew />
 								</IconButton>
 							</Tooltip>
 
 							{session.state === ContainerState.PAUSED &&
 								<Tooltip title="Resume the session" placement="top">
-									<IconButton edge="end" color="info" aria-label="Resume" onClick={(e: any) => resumeAppsAndSession(session.id, user?.uid || '')}>
+									<IconButton edge="end" color="info" aria-label="Resume" onClick={(y) => resumeAppsAndSession(session.id, user?.uid || '')}>
 										<Replay />
 									</IconButton>
 								</Tooltip>
@@ -118,14 +112,14 @@ const Sessions = (): JSX.Element => {
 
 							{session.state !== ContainerState.PAUSED &&
 								<Tooltip title="Pause the session. You can resume it later" placement="top">
-									<IconButton edge="end" color="info" aria-label="pause" onClick={(e: any) => pauseAppsAndSession(session.id, user?.uid || '')}>
+									<IconButton edge="end" color="info" aria-label="pause" onClick={() => pauseAppsAndSession(session.id, user?.uid || '')}>
 										<Pause />
 									</IconButton>
 								</Tooltip>
 							}
 
 							<Tooltip title="Open" placement="top">
-								<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={(e: any) => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
+								<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={() => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
 									<Visibility />
 								</IconButton>
 							</Tooltip>
