@@ -1,25 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Modal } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { Modal, Box, Button, Card, CardActions, CardContent, CardMedia, Chip } from '@mui/material';
-import { useAppStore } from '../store/appProvider'
-import TitleBar from './titleBar';
-import WebdavForm from './webdavLoginForm'
-import brainstormLogo from '../assets/brainstorm__logo.png'
-import anywaveLogo from '../assets/anywave__logo.png'
-import localizerLogo from '../assets/localizer__logo.png'
-import fslLogo from '../assets/fsl__logo.png'
-import hibopLogo from '../assets/hibop__logo.png'
-import slicerLogo from '../assets/slicer__logo.png'
-import mricroglLogo from '../assets/mrcicogl__logo.png'
-import freesurferLogo from '../assets/freesurfer__logo.png'
-import dcm2niixLogo from '../assets/dcm2niix__logo.png'
-import bidsManagerLogo from '../assets/bidsmanager__logo.png'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
 	Application,
-	createSessionAndApp,
-} from '../api/gatewayClientAPI'
-import { useNavigate } from "react-router-dom";
-import { ROUTE_PREFIX } from '../constants'
+	createSessionAndApp
+} from '../api/gatewayClientAPI';
+import anywaveLogo from '../assets/anywave__logo.png';
+import bidsManagerLogo from '../assets/bidsmanager__logo.png';
+import brainstormLogo from '../assets/brainstorm__logo.png';
+import dcm2niixLogo from '../assets/dcm2niix__logo.png';
+import freesurferLogo from '../assets/freesurfer__logo.png';
+import fslLogo from '../assets/fsl__logo.png';
+import hibopLogo from '../assets/hibop__logo.png';
+import localizerLogo from '../assets/localizer__logo.png';
+import mricroglLogo from '../assets/mrcicogl__logo.png';
+import slicerLogo from '../assets/slicer__logo.png';
+import { ROUTE_PREFIX } from '../constants';
+import { useAppStore } from '../store/appProvider';
+import TitleBar from './titleBar';
+import WebdavForm from './webdavLoginForm';
 
 const importedImages = [
 	anywaveLogo,
@@ -90,7 +90,11 @@ const Apps = () => {
 			</Box>
 		</Modal>
 		<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-			{availableApps?.map((app, i) =>
+			{availableApps.error &&
+				<Typography gutterBottom variant="body2" color="error">
+					{availableApps.error.message}
+				</Typography>}
+			{availableApps.apps?.map((app, i) =>
 				<Card sx={{ maxWidth: 320 }} key={app.name}>
 					<CardMedia
 						component="img"

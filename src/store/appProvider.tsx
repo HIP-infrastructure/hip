@@ -1,24 +1,16 @@
-import React, { useState } from 'react'
-import useSWR from 'swr'
-import { mutate } from 'swr'
-
 import { getCurrentUser } from '@nextcloud/auth'
-
+import React, { useState } from 'react'
+import useSWR, { mutate } from 'swr'
 import {
-	API_CONTAINERS,
-	Container,
-	UserCredentials,
-	Application,
-	getAvailableAppList
+	API_CONTAINERS, Application, Container, getAvailableAppList, UserCredentials
 } from '../api/gatewayClientAPI'
-
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	];
-	availableApps: Application[] | null;
+	availableApps: { apps: Application[] | null, error: Error | null };
 	containers: [Container[] | null, Error | undefined];
 }
 
@@ -46,8 +38,6 @@ export const fetcher = async (url: string): Promise<void> => {
 	return res.json()
 }
 
-// fetch(url).then(r => r.json())
-
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
 // Provide state for the HIP app
@@ -57,7 +47,7 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
+	const [availableApps, setAvailableApps] = useState<IAppState["availableApps"]>({ apps: [], error: null })
 	const [user, setUser] = useState<UserCredentials | null>(null)
 
 	// Fetch Nextcloud user
@@ -66,12 +56,14 @@ export const AppStoreProvider = ({
 		setUser(currentUser)
 
 		getAvailableAppList().then(
-			r => setAvailableApps(r)
+			({ ...data }) => {
+				setAvailableApps(data)
+			}
 		)
 
 		setInterval(() => {
 			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
-		}, 3* 1000)
+		}, 3 * 1000)
 	}, [])
 
 	// Start polling containers fetch

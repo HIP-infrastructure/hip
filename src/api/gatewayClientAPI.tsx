@@ -68,7 +68,7 @@ export interface Workflow {
 
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
-	:`${window.location.protocol}//${window.location.host}`
+	: `${window.location.protocol}//${window.location.host}`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
@@ -85,10 +85,13 @@ export const forceRemove = (id: string): void => {
 
 // Gateway API
 
-export const getAvailableAppList = (): Promise<Application[]> => {
+export const getAvailableAppList = (): Promise<{ apps: Application[] | null, error: Error | null }> => {
 	const url = `${API_REMOTE_APP}/apps`
 	const availableApps = fetch(url)
 		.then(r => r.json())
+		.then(r => r.statusCode?
+			({ apps: null, error: r }) :
+			({ apps: (r.json() as Application[]), error: null }))
 
 	return availableApps
 }
