@@ -3,7 +3,7 @@ import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularP
 import React, { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
-	AppContainer, Container, ContainerState, ContainerType, createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
+	loading, color, AppContainer, Container, ContainerState, ContainerType, createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
 } from '../api/gatewayClientAPI';
 import SessionImage from '../assets/session-thumbnail.png';
 import { ROUTE_PREFIX } from '../constants';
@@ -44,10 +44,6 @@ const Sessions = (): JSX.Element => {
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
 
-
-	const loading = (state: ContainerState) => [ContainerState.CREATED, ContainerState.LOADING, ContainerState.STOPPING].includes(state)
-	const color = (state: ContainerState) => [ContainerState.RUNNING, ContainerState.CREATED, ContainerState.LOADING].includes(state) ? 'success' : 'error'
-
 	return (
 		<>
 			<Modal ref={modalRef} />
@@ -57,17 +53,23 @@ const Sessions = (): JSX.Element => {
 				button={<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create session</Button>}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+				{sessions?.length === 0 && <Typography variant="subtitle1">
+					There is no active session
+				</Typography>}
 				{sessions?.map((session, i) =>
 					<Card sx={{ maxWidth: 320 }} key={session.name}>
+						{		console.log([loading(session.state), ...session.apps.map(a => loading(a.state))])
+}
 						<Box sx={{ position: "relative" }}>
 							<CardMedia
 								component="img"
 								height="140"
 								src={SessionImage}
 								alt={session.name}
-
 							/>
-							{loading(session.state) && <CircularProgress size={32} color='secondary' sx={{ position: "absolute", top: 10, left: 10 }} />}
+							{[loading(session.state), ...session.apps.map(a => loading(a.state))].reduce((p, c) => p || c, false) &&
+								<CircularProgress size={32} sx={{ position: "absolute", top: 10, left: 10 }} />
+							}
 						</Box>
 						<CardContent>
 							<Box sx={{ display: 'flex' }}>
@@ -80,7 +82,6 @@ const Sessions = (): JSX.Element => {
 									</Typography>
 								</Box>
 								<Box>
-
 									<Chip
 										label={
 											<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -93,14 +94,13 @@ const Sessions = (): JSX.Element => {
 							</Box>
 
 							<Typography sx={{ mt: 2 }} gutterBottom variant="body2" color="text.secondary">
-								<p>{session.error?.message}</p>
+								{session.error?.message}
 								{session.apps.map(app => (
-									<div key={app.id}>
-										<p>
-											<strong>{app.app}</strong>: {app.state}
-										</p>
-										<p>{app.error?.message}</p>
-									</div>
+									<span key={app.name}>
+										<strong>{app.app}</strong>: {app.state}
+										<br />
+										{app.error?.message}
+									</span>
 								))}
 							</Typography>
 						</CardContent>
@@ -136,7 +136,7 @@ const Sessions = (): JSX.Element => {
 							}
 
 							<Tooltip title="Open" placement="top">
-								<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={() => handleOpenSession(session.id)} disabled={session.state !== ContainerState.RUNNING}>
+								<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={() => handleOpenSession(session.id)}>
 									<Visibility />
 								</IconButton>
 							</Tooltip>
