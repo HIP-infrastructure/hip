@@ -30,6 +30,9 @@ export enum ContainerState {
 	DESTROYED = 'destroyed',
 }
 
+export const loading = (state: ContainerState) => [ContainerState.CREATED, ContainerState.LOADING, ContainerState.STOPPING].includes(state)
+export const color = (state?: ContainerState) => state && [ContainerState.RUNNING, ContainerState.CREATED, ContainerState.LOADING].includes(state) ? 'success' : 'error'
+
 export enum ContainerType {
 	SESSION = 'server',
 	APP = 'app',
@@ -88,10 +91,11 @@ export const forceRemove = (id: string): void => {
 export const getAvailableAppList = (): Promise<{ apps: Application[] | null, error: Error | null }> => {
 	const url = `${API_REMOTE_APP}/apps`
 	const availableApps = fetch(url)
-		.then(r => r.json())
-		.then(r => r.statusCode?
-			({ apps: null, error: r }) :
-			({ apps: (r.json() as Application[]), error: null }))
+		.then(a => a.json())
+		.catch(error => ({ apps: null, error }))
+		.then(json => json.statusCode ?
+			({ apps: null, error: json }) :
+			({ apps: (json as Application[]), error: null }))
 
 	return availableApps
 }
@@ -199,4 +203,24 @@ export const resumeAppsAndSession = (
 		},
 		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+}
+
+export const stopApp = (
+	sessionId: string,
+	userId: string,
+	appId: string
+): void => {
+	const url = `${API_CONTAINERS}/${sessionId}/apps/${appId}/stop`
+	const app = fetch(url, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ userId }),
+	})
+		.then(r => {
+			mutate(`${API_CONTAINERS}/${userId}`)
+			return r.json()
+		})
+		.then(j => j.data)
 }
