@@ -51,8 +51,32 @@ const Session = (): JSX.Element => {
 		}
 	}, []);
 
+	// Check for XPra readiness
 	useEffect(() => {
+		if (intervalRef.current || !session?.url)
+			return
+
+		intervalRef.current = setInterval(() => {
+			fetch(session.url).then(result => {
+
+				if (result.status === 200) {
+
+					if (intervalRef.current)
+						clearInterval(intervalRef.current)
+
+					setSessionIsAlive(true)
+				}
+			})
+
+		}, 1000)
+		return () => {
+			if (intervalRef.current)
+				clearInterval(intervalRef.current)
+		}
+	}, [session]);
+
 		// get session and its children apps from params
+	useEffect(() => {
 		const s = containers?.find(c => c.id === params.id)
 		if (s) { // && (s.id !== session?.id)) {
 			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
