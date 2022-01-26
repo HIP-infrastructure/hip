@@ -14,6 +14,7 @@ import Apps from './components/apps'
 import Workflows from './components/workflows';
 import Documentation from './components/documentation';
 import Dashboard from './components/dashboard';
+import BidsConverter from './components/bidsConvert';
 
 import './App.css'
 export interface Space {
@@ -117,7 +118,10 @@ const App = () =>
 				<Route index element={<Sessions />} />
 				<Route path={'sessions'} element={<Sessions />} />
 				<Route path={'data'} element={<Data />} />
-				<Route path={'workflows'} element={<Workflows />} />
+				<Route path={'workflows'} element={<Outlet />}>
+					<Route index element={<Workflows />} />
+					<Route path={'bids'} element={<BidsConverter />} />
+				</Route>
 				<Route path={'apps'} element={<Apps />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
