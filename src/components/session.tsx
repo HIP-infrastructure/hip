@@ -7,7 +7,9 @@ import {
 	AppContainer,
 	Application,
 	createApp,
-	ContainerType
+	stopApp,
+	ContainerType,
+
 } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
 import SessionInfo from './sessionInfo'
@@ -38,6 +40,9 @@ const Session = (): JSX.Element => {
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true);
 	const [showWedavForm, setShowWedavForm] = useState(false)
+
+	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+
 
 	useEffect(() => {
 		document.body.classList.add('body-fixed')
@@ -82,7 +87,15 @@ const Session = (): JSX.Element => {
 		setStartApp(undefined)
 	}, [user])
 
-	const handleStartApp = (app: Application) => {
+	const handleToggleApp = (app: Application) => {
+
+		const targetApp = session?.apps?.find(a => a.app === app.name)
+		if (targetApp) {
+			stopApp(session?.id || '', user?.uid || '', targetApp.id)
+
+			return
+		}
+
 		setStartApp(app)
 		setShowWedavForm(true)
 	}
@@ -141,8 +154,6 @@ const Session = (): JSX.Element => {
 		boxShadow: 4,
 		p: 4,
 	};
-
-	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 
 	return (
 		<Box sx={{ display: 'flex' }}>
@@ -257,7 +268,7 @@ const Session = (): JSX.Element => {
 				</DrawerHeader>
 				<SessionInfo session={session} />
 				<Divider />
-				<AppList session={session} handleStartApp={handleStartApp} />
+				<AppList session={session} handleToggleApp={handleToggleApp} />
 			</Drawer>
 		</Box >
 	)

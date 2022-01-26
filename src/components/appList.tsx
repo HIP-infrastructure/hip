@@ -1,24 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useAppStore } from '../store/appProvider'
-import { Application, Container, ContainerState } from '../api/gatewayClientAPI'
-import { Avatar, List, ListItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material';
-
-import brainstorm from '../assets/brainstorm__logo.png'
-import anywave from '../assets/anywave__logo.png'
-import localizer from '../assets/localizer__logo.png'
-import fsl from '../assets/fsl__logo.png'
-import hibop from '../assets/hibop__logo.png'
-import slicer from '../assets/slicer__logo.png'
-import mricrogl from '../assets/mrcicogl__logo.png'
-import freesurfer from '../assets/freesurfer__logo.png'
-import dcm2niix from '../assets/dcm2niix__logo.png'
-import bidsmanager from '../assets/bidsmanager__logo.png'
+import { Avatar, CircularProgress, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import React from 'react';
+import { Application, Container, ContainerState } from '../api/gatewayClientAPI';
+import anywave from '../assets/anywave__logo.png';
+import bidsmanager from '../assets/bidsmanager__logo.png';
+import brainstorm from '../assets/brainstorm__logo.png';
+import dcm2niix from '../assets/dcm2niix__logo.png';
+import freesurfer from '../assets/freesurfer__logo.png';
+import fsl from '../assets/fsl__logo.png';
+import hibop from '../assets/hibop__logo.png';
+import localizer from '../assets/localizer__logo.png';
+import mricrogl from '../assets/mrcicogl__logo.png';
+import slicer from '../assets/slicer__logo.png';
+import { useAppStore } from '../store/appProvider';
 
 interface Session {
     session?: Container;
-    handleStartApp?: (app: Application) => void
+    handleToggleApp?: (app: Application) => void
 }
 
 const logos: { [key: string]: string } = {
@@ -31,7 +30,7 @@ const logos: { [key: string]: string } = {
     mricrogl, freesurfer, dcm2niix, bidsmanager
 }
 
-const AppList = ({ session, handleStartApp }: Session) => {
+const AppList = ({ session, handleToggleApp }: Session) => {
     const { availableApps } = useAppStore()
 
     const AppAvatar = ({ name, label }: { name: string, label?: string }) => <Avatar
@@ -74,10 +73,14 @@ const AppList = ({ session, handleStartApp }: Session) => {
         <ListItem sx={{ fontSize: 22 }} >
             Applications
         </ListItem>
-        {availableApps?.map((app, index) => (
+        {availableApps.error &&
+            <Typography gutterBottom variant="body2" color="error">
+                {availableApps.error.message}
+            </Typography>}
+        {availableApps.apps?.map((app, index) => (
             <ListItem
                 key={app.name}
-                onClick={() => handleStartApp && handleStartApp(app)}
+                onClick={() => handleToggleApp && handleToggleApp(app)}
                 button={appInSession({ name: app.name }) !== undefined}
                 secondaryAction={<AppState name={app.name} />}
             >
