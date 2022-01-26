@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom";
-import AppList from './appList'
+import AppList from './sessionAppList'
 import { useAppStore } from '../store/appProvider'
 import {
 	Container,
@@ -9,7 +9,6 @@ import {
 	createApp,
 	stopApp,
 	ContainerType,
-
 } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
 import SessionInfo from './sessionInfo'
@@ -40,10 +39,12 @@ const Session = (): JSX.Element => {
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true);
 	const [showWedavForm, setShowWedavForm] = useState(false)
+	const [sessionIsAlive, setSessionIsAlive] = useState(false)
+	const intervalRef = useRef<NodeJS.Timeout>();
 
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 
-
+	// Remove scroll for entire window
 	useEffect(() => {
 		document.body.classList.add('body-fixed')
 		return () => {
@@ -75,7 +76,7 @@ const Session = (): JSX.Element => {
 		}
 	}, [session]);
 
-		// get session and its children apps from params
+	// get session and its children apps from params
 	useEffect(() => {
 		const s = containers?.find(c => c.id === params.id)
 		if (s) { // && (s.id !== session?.id)) {
@@ -202,6 +203,7 @@ const Session = (): JSX.Element => {
 					<FormControl>
 						<Select
 							id="session-select"
+							aria-label="Select session"
 							IconComponent={() => <ExpandMore />}
 							value={session?.id || ''}
 							onChange={handleOnChange}
@@ -215,7 +217,7 @@ const Session = (): JSX.Element => {
 					<Box sx={{ flexGrow: 1 }} />
 					<IconButton
 						color="inherit"
-						aria-label="fullscreen"
+						aria-label="full screen"
 						onClick={() => setFullscreen(!fullscreen)}
 						sx={{ mr: 2 }}
 					>
@@ -233,23 +235,25 @@ const Session = (): JSX.Element => {
 				</Toolbar>
 			</AppBar>
 			<Box>
-				{!session && (
-					<div style={{
-						border: 'solid 1px gray',
-						width: '100vw',
-						height: '100vh',
-						backgroundColor: '#333',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center'
-					}}>
+				{!sessionIsAlive && (
+					<div
+						aria-label='Loading remote session'
+						style={{
+							border: 'solid 1px gray',
+							width: '100vw',
+							height: '100vh',
+							backgroundColor: '#333',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center'
+						}}>
 						<CircularProgress size={32} />
 					</div>
 				)}
-				{session &&
+				{sessionIsAlive && session &&
 					<iframe
 						ref={fullScreenRef}
-						title='Live Session'
+						title='Session'
 						src={`${session.url}?${XPRA_PARAMS}`}
 						allowFullScreen
 						style={{
@@ -281,12 +285,9 @@ const Session = (): JSX.Element => {
 			>
 				<DrawerHeader>
 					<IconButton
-						color="inherit"
-						aria-label="fullscreen"
-						onClick={() => setFullscreen(!fullscreen)}
-						sx={{ mr: 2 }}
-					></IconButton>
-					<IconButton onClick={handleDrawerClose}>
+						onClick={handleDrawerClose}
+						aria-label="Close drawer"
+					>
 						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
 					</IconButton>
 				</DrawerHeader>

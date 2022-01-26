@@ -1,9 +1,7 @@
+import { Box, Card, CardContent, Chip, Typography } from '@mui/material';
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { Container } from '../api/gatewayClientAPI';
-import { DRAWER_WIDTH } from '../constants'
+import { Container, color } from '../api/gatewayClientAPI';
+import { DRAWER_WIDTH } from '../constants';
 
 const SessionInfo = ({ session }: { session?: Container }) => {
 
@@ -15,14 +13,21 @@ const SessionInfo = ({ session }: { session?: Container }) => {
                 <Typography sx={{ fontSize: 14 }} gutterBottom>
                     {session?.user}
                 </Typography>
-                <Typography variant="h5" component="div">
-                    Session #{session?.name}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }}>
-                    {session?.state}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="h5" gutterBottom component="div">
+                        Session #{session?.name}
+                    </Typography>
+                    <Chip
+                        label={
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                {session?.state}
+                            </Box>}
+                        color={color(session?.state)}
+                        variant="outlined"
+                    />
+                </Box>
                 <Typography variant="body2">
-                    <a href={session?.url}>Direct link</a>
+                    <a href={session?.url}>Open in external window</a>
                     {session?.error}
                 </Typography>
             </CardContent>

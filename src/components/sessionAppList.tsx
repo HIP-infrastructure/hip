@@ -1,8 +1,8 @@
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material';
-import { Avatar, CircularProgress, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Avatar, CircularProgress, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import React from 'react';
-import { Application, Container, ContainerState } from '../api/gatewayClientAPI';
+import { Application, Container, ContainerState, loading, color, } from '../api/gatewayClientAPI';
 import anywave from '../assets/anywave__logo.png';
 import bidsmanager from '../assets/bidsmanager__logo.png';
 import brainstorm from '../assets/brainstorm__logo.png';
@@ -33,40 +33,42 @@ const logos: { [key: string]: string } = {
 const AppList = ({ session, handleToggleApp }: Session) => {
     const { availableApps } = useAppStore()
 
+    const appInSession = ({ name }: { name: string }) => session?.apps?.find(s => s.app === name)
+
     const AppAvatar = ({ name, label }: { name: string, label?: string }) => <Avatar
         alt={label}
         src={logos[name]}
         sx={{ width: 32, height: 32 }}
     />
 
-    const AppActions = ({ app }: { app: Application }) => <>
-        {session?.apps?.find(a => a.app === app.name) ?
-            <IconButton edge="end" aria-label="stop">
-                <StopCircleOutlined />
-            </IconButton> :
-            <IconButton edge="end" aria-label="start">
-                <PlayCircleOutlined />
-            </IconButton>}
-        {/* <IconButton edge="end" aria-label="delete">
-            <ExpandMoreOutlined />
-        </IconButton> */}
-    </>
+    const AppState = ({ state }: { state?: ContainerState }) => {
 
-    const appInSession = ({ name }: { name: string }) => session?.apps?.find(s => s.app === name)
+        if (!state) return <PlayCircleOutlined />
 
-    const AppState = ({ name }: { name: string }) => {
-        const app = appInSession({ name })
-
-        if (app?.state === ContainerState.LOADING || app?.state === ContainerState.CREATED)
+        if (loading(state))
             return <CircularProgress size={16} />
 
-        if (app?.state === ContainerState.RUNNING)
-            return <StopCircleOutlined />
+        if (state === ContainerState.RUNNING)
+            return <StopCircleOutlined color={color(state)} />
 
-        if (app?.state === ContainerState.UNINITIALIZED)
-            return <PlayCircleOutlined />
+        return <PlayCircleOutlined />
+    }
 
-        return null
+    const Button = ({ app }: { app: Application }) => {
+        const startedApp = appInSession({ name: app.name })
+        const label = `${startedApp?.state === ContainerState.RUNNING ? 'Stop' : 'Start'} ${app.label}`
+
+        return <ListItemButton
+            sx={{ cursor: 'pointer' }}
+            aria-label={label}
+            title={label}
+            onClick={() => handleToggleApp && handleToggleApp(app)}            >
+            <ListItemIcon>
+                <AppAvatar name={app.name} label={app.label} />
+            </ListItemIcon>
+            <ListItemText primary={app.label} />
+            <AppState state={startedApp?.state} />
+        </ListItemButton>
     }
 
     return <List>
@@ -78,17 +80,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
                 {availableApps.error.message}
             </Typography>}
         {availableApps.apps?.map((app, index) => (
-            <ListItem
-                key={app.name}
-                onClick={() => handleToggleApp && handleToggleApp(app)}
-                button={appInSession({ name: app.name }) !== undefined}
-                secondaryAction={<AppState name={app.name} />}
-            >
-                <ListItemIcon>
-                    <AppAvatar name={app.name} label={app.label} />
-                </ListItemIcon>
-                <ListItemText primary={app.label} />
-            </ListItem>
+            <Button app={app} key={app.name} />
         ))}
     </List>
 }
