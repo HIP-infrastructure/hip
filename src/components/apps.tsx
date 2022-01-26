@@ -72,7 +72,7 @@ const Apps = () => {
 		top: '50%',
 		left: '50%',
 		transform: 'translate(-50%, -50%)',
-		width: 200,
+		width: 240,
 		bgcolor: 'background.paper',
 		border: '1px solid #333',
 		boxShadow: 4,
@@ -80,7 +80,7 @@ const Apps = () => {
 	};
 
 	return <>
-		<TitleBar title={'Available Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking launch app'} />
+		<TitleBar title={'Available Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking start app'} />
 		<Modal
 			open={showWedavForm}
 			onClose={() => setShowWedavForm(false)}
@@ -119,8 +119,8 @@ const Apps = () => {
 
 					</CardContent>
 					<CardActions>
-						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>Open Website </Button>
-						<Button size="small" onClick={() => handleCreateApp(app)}>Launch App</Button>
+						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button>
+						<Button size="small" onClick={() => handleCreateApp(app)}>Start</Button>
 					</CardActions>
 				</Card>
 			)}

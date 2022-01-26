@@ -15,6 +15,10 @@ import Workflows from './components/workflows';
 import Documentation from './components/documentation';
 import Dashboard from './components/dashboard';
 import BidsConverter from './components/bidsConvert';
+import CollaborativeSessions from './components/collab/sessions'
+import CollaborativeData from './components/collab/data'
+import PublicSessions from './components/public/sessions'
+import PublicData from './components/public/data'
 
 import './App.css'
 export interface Space {
@@ -125,6 +129,16 @@ const App = () =>
 				<Route path={'apps'} element={<Apps />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
+				<Route index element={<CollaborativeSessions />} />
+				<Route path={'sessions'} element={<CollaborativeSessions />} />
+				<Route path={'data'} element={<CollaborativeData />} />
+				<Route path={'apps'} element={<Apps />} />
+			</Route>
+			<Route path={'public'} element={<Outlet />}>
+				<Route index element={<PublicSessions />} />
+				<Route path={'sessions'} element={<PublicSessions />} />
+				<Route path={'data'} element={<PublicData />} />
+				<Route path={'apps'} element={<Apps />} />
 			</Route>
 			<Route
 				path="*"
