@@ -1,5 +1,5 @@
 import { Clear, Pause, PowerSettingsNew, Replay, Visibility } from '@mui/icons-material';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 import React, { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,6 +44,10 @@ const Sessions = (): JSX.Element => {
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
 
+
+	const loading = (state: ContainerState) => [ContainerState.CREATED, ContainerState.LOADING, ContainerState.STOPPING].includes(state)
+	const color = (state: ContainerState) => [ContainerState.RUNNING, ContainerState.CREATED, ContainerState.LOADING].includes(state) ? 'success' : 'error'
+
 	return (
 		<>
 			<Modal ref={modalRef} />
@@ -55,13 +59,16 @@ const Sessions = (): JSX.Element => {
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{sessions?.map((session, i) =>
 					<Card sx={{ maxWidth: 320 }} key={session.name}>
-						<CardMedia
-							component="img"
-							height="140"
-							src={SessionImage}
-							alt={session.name}
+						<Box sx={{ position: "relative" }}>
+							<CardMedia
+								component="img"
+								height="140"
+								src={SessionImage}
+								alt={session.name}
 
-						/>
+							/>
+							{loading(session.state) && <CircularProgress size={32} color='secondary' sx={{ position: "absolute", top: 10, left: 10 }} />}
+						</Box>
 						<CardContent>
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
@@ -72,7 +79,17 @@ const Sessions = (): JSX.Element => {
 										{session?.user}
 									</Typography>
 								</Box>
-								<Chip label={session.state} color={session.state === ContainerState.RUNNING ? "success" : "error"} variant="outlined" />
+								<Box>
+
+									<Chip
+										label={
+											<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+												{session.state}
+											</Box>}
+										color={color(session.state)}
+										variant="outlined"
+									/>
+								</Box>
 							</Box>
 
 							<Typography sx={{ mt: 2 }} gutterBottom variant="body2" color="text.secondary">
