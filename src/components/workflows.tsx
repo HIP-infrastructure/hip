@@ -6,6 +6,7 @@ import TitleBar from './titleBar';
 
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 import { Workflow } from '../api/gatewayClientAPI';
+import { useNavigate } from 'react-router-dom';
 
 const availableWorkflows: Workflow[] = [
     {
@@ -17,38 +18,47 @@ const availableWorkflows: Workflow[] = [
     }
 ];
 
-const Workflows = () => <>
-    <TitleBar title='Workflows' />
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-        {availableWorkflows?.map((workflow, i) =>
-            <Card sx={{ maxWidth: 320 }} key={workflow.id}>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    src={bidsManagerLogo}
-                    alt={workflow.label}
-                />
-                <CardContent>
-                    <Box sx={{ display: 'flex' }}>
-                        <Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
-                            {workflow.label}
+const Workflows = () => {
+    const navigate = useNavigate();
+
+    const handleClickWorkflow = (id: string) => {
+        navigate(id)
+    }
+
+    return <>
+        <TitleBar title='Workflows' />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+            {availableWorkflows?.map((workflow, i) =>
+                <Card sx={{ maxWidth: 320 }} key={workflow.id}>
+                    <CardMedia
+                        component="img"
+                        height="140"
+                        src={bidsManagerLogo}
+                        alt={workflow.label}
+                    />
+                    <CardContent>
+                        <Box sx={{ display: 'flex' }}>
+                            <Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
+                                {workflow.label}
+                            </Typography>
+                            <Chip label={workflow.state} color={workflow.state !== 'faulty' ? "success" : "error"} variant="outlined" />
+                        </Box>
+
+                        <Typography gutterBottom variant="body2" color="text.secondary">
+                            {workflow.description}
                         </Typography>
-                        <Chip label={workflow.state} color={workflow.state !== 'faulty' ? "success" : "error"} variant="outlined" />
-                    </Box>
+                        <Typography variant="caption" color="text.secondary">
 
-                    <Typography gutterBottom variant="body2" color="text.secondary">
-                        {workflow.description}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                        </Typography>
 
-                    </Typography>
-
-                </CardContent>
-                <CardActions>
-                    <Button size="small">Launch Workflow</Button>
-                </CardActions>
-            </Card>
-        )}
-    </Box></>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" onClick={() => handleClickWorkflow('bids')}>Launch Workflow</Button>
+                    </CardActions>
+                </Card>
+            )}
+        </Box>
+    </>
+}
 
 export default Workflows
