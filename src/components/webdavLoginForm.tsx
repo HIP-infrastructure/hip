@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
-import { Box, Button, Input, Typography } from '@mui/material'
+import { Box, Button, IconButton, Input, InputAdornment, Typography, } from '@mui/material'
 import { useAppStore } from '../store/appProvider'
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
 interface UserData {
 	login: string
 	password: string
 }
 
 const WebdavForm = (): JSX.Element => {
-	const {
-		user: [user, setUser],
-	} = useAppStore()
+	const { user: [user, setUser] } = useAppStore()
+	const [showPassword, setShowPassword] = useState(false)
+
+	const handleClickShowPassword = () => {
+		setShowPassword(!showPassword)
+	};
+
+	const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+	};
 
 	const formik = useFormik({
 		initialValues: {
@@ -44,12 +53,24 @@ const WebdavForm = (): JSX.Element => {
 				<Box>
 					<Input
 						id="password"
-						type="password"
+						type={showPassword ? 'text' : 'password'}
 						disableUnderline
 						onChange={formik.handleChange}
 						value={formik.values.password}
 						placeholder="Password"
-						autoFocus />
+						autoFocus
+						endAdornment={
+							<InputAdornment position="end">
+								<IconButton
+									aria-label="toggle password visibility"
+									onClick={handleClickShowPassword}
+									onMouseDown={handleMouseDownPassword}
+									edge="end"
+								>
+									{showPassword ? <VisibilityOff /> : <Visibility />}
+								</IconButton>
+							</InputAdornment>
+						} />
 				</Box>
 				<Box sx={{ pt: 2 }}>
 					<Button type='submit' variant="text" >Submit</Button>
