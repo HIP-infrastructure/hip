@@ -1,4 +1,4 @@
 import * as React from 'react'
 import TitleBar from '../titleBar'
 
-export default () => <TitleBar title={'Collaborative data'} description={'Coming soon'} />
+export default () => <TitleBar title={'Collaborative data'} description={'Not yet implemented'} />
