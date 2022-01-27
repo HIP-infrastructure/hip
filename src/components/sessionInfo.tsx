@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Chip, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Link, Typography } from '@mui/material';
 import * as React from 'react';
 import { Container, color } from '../api/gatewayClientAPI';
 import { DRAWER_WIDTH } from '../constants';
@@ -26,10 +26,11 @@ const SessionInfo = ({ session }: { session?: Container }) => {
                         variant="outlined"
                     />
                 </Box>
-                <Typography variant="body2">
-                    <a href={session?.url}>Open in external window</a>
-                    {session?.error}
-                </Typography>
+                <Link href={session?.url} underline="hover">
+                    Open in Browser
+                </Link>
+                <Typography variant="body2">{session?.error}</Typography>
+
             </CardContent>
         </Card>
     );
