@@ -65,15 +65,13 @@ const Layout = (): JSX.Element => {
 					<Navigation
 						space={SPACES_NAV[selectedSpace]}
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-						variant="temporary"
-						open={mobileOpen}
-						onClose={handleDrawerToggle}
+						// open={mobileOpen}
+						// onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation
 					space={SPACES_NAV[selectedSpace]}
 					PaperProps={{ style: { width: DRAWER_WIDTH } }}
-					sx={{ display: { sm: 'block', xs: 'none' } }}
 				/>
 			</Box>
 			<Box sx={{ margin: '32px' }}>

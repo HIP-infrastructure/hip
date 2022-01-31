@@ -38,11 +38,6 @@ export enum ContainerType {
 	APP = 'app',
 }
 
-export interface Error {
-	code: string
-	message: string
-}
-
 export interface UserCredentials {
 	uid?: string
 	displayName?: string | null
@@ -87,6 +82,21 @@ export const forceRemove = (id: string): void => {
 }
 
 // Gateway API
+
+// Files
+export const getFiles = (): Promise<{ files: any[] | null, error: Error | null }> => {
+	const url = `${API_GATEWAY}/files/`
+	const files = fetch(url)
+		.then(a => a.json())
+		.catch(error => ({ files: null, error }))
+		.then(json => json.statusCode ?
+			({ files: null, error: json }) :
+			({ files: json, error: null }))
+
+	return files
+}
+
+// Sessions & apps
 
 export const getAvailableAppList = (): Promise<{ apps: Application[] | null, error: Error | null }> => {
 	const url = `${API_REMOTE_APP}/apps`
