@@ -6,9 +6,11 @@ import { AppStoreProvider } from './store/appProvider'
 import { BrowserRouter, useLocation } from "react-router-dom";
 import Theme from './components/theme'
 
+
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
+	const location = useLocation()
+
 	if (process.env.NODE_ENV === "development") {
-		const location = useLocation()
 		console.log(
 			`Route: ${location.pathname}${location.search}, State: ${JSON.stringify(
 				location.state,
