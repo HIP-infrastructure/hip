@@ -1,102 +1,86 @@
-import { Box, Button, Breadcrumbs, Link, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import * as React from 'react';
+import { Box, Button, CircularProgress, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import TitleBar from './titleBar';
+import {
+    getFiles, TreeNode, search
+} from '../api/gatewayClientAPI'
 
+import TreeSelect from './UI/treeSelect'
 
-function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    event.preventDefault();
-    console.info('You clicked a breadcrumb.');
-}
-
-const steps = ['Select Database & subject', 'Demographic Informations', 'Choose files'];
-
+const steps = ['Select Database & Subject', 'Subject Informations', 'Choose Files'];
 
 const BidsConverter = () => {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set<number>());
 
-    const isStepOptional = (step: number) => {
-        return step === 1;
-    };
+    const [activeStep, setActiveStep] = useState(0);
+    const [searchResult1, setSearchResult1] = useState();
+    const [term, setTerm] = useState('')
+    const [nodesBoxes, setNodesBoxes] = useState<TreeNode[][]>();
+    // see https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
+    const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-    const isStepSkipped = (step: number) => {
-        return skipped.has(step);
-    };
+    const files = async (path: string) => await getFiles(path)
+
+    const handleSelectedPath = async (pathes: string[]) => {
+        const result = await files(pathes.join(''));
+        setNodesBoxes(prev => {
+            if (!prev) return [result];
+
+            prev[pathes.length - 1] = result
+            prev.splice(pathes.length)
+            console.log('prev', prev?.length)
+            return prev
+        })
+        forceUpdate();
+    }
+
+    // const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const term = event.target.value;
+    //     setTerm(term)
+    //     const result = await search(term)
+
+    //     setSearchResult1(result)
+    // }
 
     const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
-        }
-
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            // You probably want to guard against something like this,
-            // it should never occur unless someone's actively trying to break something.
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    };
-
     const handleReset = () => {
         setActiveStep(0);
     };
 
+    const StepNavigation = ({ activeStep }: { activeStep: number }) => <>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+            >
+                Back
+            </Button>
+            <Box sx={{ flex: '1 1 auto' }} />
+            <Button onClick={handleNext}>
+                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+        </Box></>
+
+    const Title = ({ activeStep }: { activeStep: number }) => <Typography sx={{ mt: 2, mb: 1 }}>{steps[activeStep]}</Typography>
 
     return <>
-        <div role="presentation" onClick={handleClick}>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">
-                    HIP
-                </Link>
-                <Link
-                    underline="hover"
-                    color="inherit"
-                    href="/getting-started/installation/"
-                >
-                    Workflows
-                </Link>
-                <Link
-                    underline="hover"
-                    color="text.primary"
-                    href="/components/breadcrumbs/"
-                    aria-current="page"
-                >
-                    Bids Converter
-                </Link>
-            </Breadcrumbs>
-        </div>
         <TitleBar title='Bids Converter' />
-        <Box sx={{ width: '100%' }}>
+
+        <Box sx={{ width: '100%', mt: 2 }}>
             <Stepper activeStep={activeStep}>
                 {steps.map((label, index) => {
                     const stepProps: { completed?: boolean } = {};
                     const labelProps: {
                         optional?: React.ReactNode;
                     } = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant="caption">Optional</Typography>
-                        );
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
                     return (
                         <Step key={label} {...stepProps}>
                             <StepLabel {...labelProps}>{label}</StepLabel>
@@ -104,44 +88,61 @@ const BidsConverter = () => {
                     );
                 })}
             </Stepper>
-            {activeStep === steps.length ? (
-                <React.Fragment>
+
+            {activeStep === 0 && <>
+                <Box sx={{ display: 'flex', mt: 4 }}>
+                    <Box sx={{ flex: '0 0 auto' }}>
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            Select Subject or create a new subject in a BIDS database
+                        </Typography>
+                        
+                        <TreeSelect
+                            nodesBoxes={nodesBoxes}
+                            handleSelectedPath={handleSelectedPath}
+                        />
+                    </Box>
+                </Box>
+                {/* <Box sx={{ flex: '0 0 auto', mt: 4 }}>
                     <Typography sx={{ mt: 2, mb: 1 }}>
-                        All steps completed - you&apos;re finished
+                        Select or create Subject
                     </Typography>
+                    <TextField
+                        id="search1"
+                        label="Search1"
+                        value={term}
+                        onChange={handleSearch}
+                    />
+                    <pre>{JSON.stringify(searchResult1, null, 2)}</pre>
+                </Box> */}
+
+                <StepNavigation activeStep={activeStep} />
+            </>
+            }
+            {activeStep === 1 && <>
+                <Title activeStep={activeStep} />
+                <StepNavigation activeStep={activeStep} />
+            </>}
+            {activeStep === 2 && <>
+                <Title activeStep={activeStep} />
+                <StepNavigation activeStep={activeStep} />
+            </>}
+
+            {activeStep === steps.length && (
+                <>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                        <CircularProgress size={16} />
+                        <Typography>
+                            All steps completed
+                        </Typography>
+                    </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />
                         <Button onClick={handleReset}>Reset</Button>
                     </Box>
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Button
-                            color="inherit"
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            sx={{ mr: 1 }}
-                        >
-                            Back
-                        </Button>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        {isStepOptional(activeStep) && (
-                            <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                Skip
-                            </Button>
-                        )}
-                        <Button onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
-                    </Box>
-                </React.Fragment>
+                </>
             )}
         </Box>
     </>
-
 }
 
 export default BidsConverter
-
