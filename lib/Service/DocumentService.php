@@ -79,9 +79,9 @@ class DocumentService
         $fileNodes = [];
         foreach ($nodes as $node) {
             if ($node->getType() === FileInfo::TYPE_FOLDER) {
-                $children = $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath()));
+                //$children = $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath()));
                 $fileInfo = $this->fileInfo($node);
-                $fileInfo['children'] =  $children;
+                //$fileInfo['children'] =  $children;
                 array_push($fileNodes, $fileInfo);
             } else {
                 array_push($fileNodes, $this->fileInfo($node));
