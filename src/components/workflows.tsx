@@ -53,7 +53,7 @@ const Workflows = () => {
 
                     </CardContent>
                     <CardActions>
-                        <Button size="small" onClick={() => handleClickWorkflow('bids')}>Launch Workflow</Button>
+                        <Button size="small" onClick={() => handleClickWorkflow('bids')}>Start Workflow</Button>
                     </CardActions>
                 </Card>
             )}

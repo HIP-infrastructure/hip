@@ -64,6 +64,14 @@ export interface Workflow {
 	enabled: boolean
 }
 
+export interface TreeNode {
+	key: string
+	label: string
+	icon: string
+	data: Document
+	children?: TreeNode[]
+}
+
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	: `${window.location.protocol}//${window.location.host}`
@@ -84,16 +92,45 @@ export const forceRemove = (id: string): void => {
 // Gateway API
 
 // Files
-export const getFiles = (): Promise<{ files: any[] | null, error: Error | null }> => {
-	const url = `${API_GATEWAY}/files/`
-	const files = fetch(url)
-		.then(a => a.json())
-		.catch(error => ({ files: null, error }))
-		.then(json => json.statusCode ?
-			({ files: null, error: json }) :
-			({ files: json, error: null }))
+// export const getFiles = (): Promise<{ files: any[] | null, error: Error | null }> => {
+// 	const url = `${API_GATEWAY}/files/`
+// 	const files = fetch(url)
+// 		.then(a => a.json())
+// 		.catch(error => ({ files: null, error }))
+// 		.then(json => json.statusCode ?
+// 			({ files: null, error: json }) :
+// 			({ files: json, error: null }))
 
-	return files
+// 	return files
+// }
+
+export const getFiles = async (path: string): Promise<TreeNode[]> => {
+	//try {
+		const response = await fetch(`/index.php/apps/hip/document/list?path=${path}`);
+		const node: TreeNode[] = await response.json()
+
+		// 			size: Math.round(s.size / 1024),
+		// 			updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
+		// 				day: 'numeric',
+		// 				month: 'short',
+		// 				year: 'numeric',
+		// 				hour: 'numeric',
+		// 				minute: 'numeric',
+		// 			}),
+
+		return node
+
+	// } catch (error: any) {
+	// 	return { data: null, error }
+	// }
+}
+
+export const search = async (term: string) => {
+	return fetch(`https://hip.local/api/v1/files/search/${term}`, {
+		headers: {
+			'requesttoken': window.OC.requestToken
+		}
+	}).then(data => data.json())
 }
 
 // Sessions & apps
