@@ -21,7 +21,7 @@ class DocumentController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
     */
-    public function list() {
-        return $this->service->files('/');
+    public function list(string $path) {
+        return $this->service->files($path);
     }
 }
