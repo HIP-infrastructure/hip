@@ -72,6 +72,21 @@ export interface TreeNode {
 	children?: TreeNode[]
 }
 
+export interface Document {
+	type: string
+	size: number
+	updated: string
+	name: string
+	path: string
+	tags: number[]
+	id: number
+}
+
+export interface Tag {
+	label: string;
+	id: number;
+}
+
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	: `${window.location.protocol}//${window.location.host}`
@@ -106,7 +121,7 @@ export const forceRemove = (id: string): void => {
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
-		const response = await fetch(`/index.php/apps/hip/document/list?path=${path}`);
+		const response = await fetch(`/index.php/apps/hip/document/files?path=${path}`);
 		const node: TreeNode[] = await response.json()
 
 		// 			size: Math.round(s.size / 1024),
@@ -125,6 +140,19 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	// }
 }
 
+export const getFileContent = async(path:string): Promise<string> => {
+	const response = await fetch(`/index.php/apps/hip/document/file?path=${path}`);
+
+	return await response.text()
+}
+
+export const createFolder = async( parentPath:string, name: string): Promise<TreeNode[]> => {
+	const response = await fetch(`/index.php/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
+	const node: TreeNode[] = await response.json()
+	
+	return node
+}
+
 export const search = async (term: string) => {
 	return fetch(`https://hip.local/api/v1/files/search/${term}`, {
 		headers: {
@@ -132,6 +160,33 @@ export const search = async (term: string) => {
 		}
 	}).then(data => data.json())
 }
+
+
+const getTags = async () => {
+	try {
+		const response = await fetch(`/index.php/apps/hip/tag/list`);
+		const data = await response.json()
+		return { data, error: null }
+	} catch (error) {
+		return { data: null, error }
+	}
+}
+
+const handleChangeTag = async (data: Document, tag: Tag) => {
+	const method = data.tags.includes(tag.id) ? 'DELETE' : 'PUT';
+	await fetch(`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`, {
+		headers: {
+			"requesttoken": window.OC.requestToken,
+		},
+		method
+	});
+
+	// await getFiles().then(({ data, error }) => {
+	// 	if (error) setFilesError(error?.message)
+	// 	if (data) setNodes(data as TreeNode[])
+	// })
+}
+
 
 // Sessions & apps
 
