@@ -67,7 +67,7 @@ class DocumentService
         return $fileInfo;
     }
 
-    private function getFileNodesRecursively($folderName)
+    private function getFiles($folderName)
     {
         if (!$this->userFolder->nodeExists($folderName)) {
             return [];
@@ -79,7 +79,7 @@ class DocumentService
         $fileNodes = [];
         foreach ($nodes as $node) {
             if ($node->getType() === FileInfo::TYPE_FOLDER) {
-                //$children = $this->getFileNodesRecursively($this->userFolder->getRelativePath($node->getPath()));
+                //$children = $this->getFiles($this->userFolder->getRelativePath($node->getPath()));
                 $fileInfo = $this->fileInfo($node);
                 //$fileInfo['children'] =  $children;
                 array_push($fileNodes, $fileInfo);
@@ -91,8 +91,29 @@ class DocumentService
         return $fileNodes;
     }
 
-    public function files($parentFolder)
+    public function files($path)
     {
-        return $this->getFileNodesRecursively($parentFolder);
+        return $this->getFiles($path);
+    }
+
+    public function file($path)
+    {
+        if (!$this->userFolder->nodeExists($path)) {
+            return [];
+        }
+        $file = $this->userFolder->get($path);
+        return $file->getContent();
+    }
+
+    public function createFolder($parentPath, $name)
+    {
+        $path = $parentPath . $name;
+
+        if (!$this->userFolder->nodeExists($path)) {
+            $parentFolder = $this->userFolder->get($parentPath);
+            $parentFolder->newFolder($name);
+        }
+
+        return $this->getFiles($parentPath);
     }
 }
