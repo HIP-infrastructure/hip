@@ -55,7 +55,7 @@ const Layout = (): JSX.Element => {
 	};
 
 	return (
-		<Box component='main' sx={{ display: 'flex', width: 'fit-content' }}>
+		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
 			<Box
 				component="nav"
@@ -74,7 +74,7 @@ const Layout = (): JSX.Element => {
 					PaperProps={{ style: { width: DRAWER_WIDTH } }}
 				/>
 			</Box>
-			<Box sx={{ margin: '32px' }}>
+			<Box sx={{ margin: '32px', width: 'inherit' }}>
 				<Box>
 					{/* <Alert severity="success" color="info">
 						This is a success alert — check it out!
