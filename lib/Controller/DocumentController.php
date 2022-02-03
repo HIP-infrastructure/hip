@@ -10,7 +10,8 @@ use OCA\HIP\Service\DocumentService;
 
 class DocumentController extends Controller
 {
-    public function __construct(ILogger $logger, string $AppName, IRequest $request, DocumentService $service) {
+    public function __construct(ILogger $logger, string $AppName, IRequest $request, DocumentService $service)
+    {
         parent::__construct($AppName, $request);
         $this->service = $service;
         $this->logger = $logger;
@@ -20,8 +21,27 @@ class DocumentController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
-    */
-    public function list(string $path) {
+     */
+    public function files(string $path)
+    {
         return $this->service->files($path);
+    }
+
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function file(string $path)
+    {
+        return $this->service->file($path);
+    }
+
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function createFolder(string $parentPath, string $name)
+    {
+        return $this->service->createFolder($parentPath, $name);
     }
 }
