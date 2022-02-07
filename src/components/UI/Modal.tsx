@@ -12,6 +12,7 @@ const modalStyle = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     minWidth: 275,
+    maxWidth: 360,
     bgcolor: 'background.paper',
     boxShadow: 4,
 };
