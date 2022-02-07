@@ -28,19 +28,7 @@ const Workflows = () => {
 
     return <>
         <TitleBar title='Workflows' />
-        <Box sx={{ mt: 4 }}>
-            <Typography gutterBottom variant="subtitle1">
-                Running Workflows
-            </Typography>
-            <WorkflowsStatus />
-        </Box>
-
-
-        <Box sx={{ mt: 4 }}>
-            <Typography gutterBottom variant="subtitle1" >
-                Available Workflows
-            </Typography>
-        </Box>
+    
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
             {availableWorkflows?.map((workflow, i) =>
                 <Card sx={{ maxWidth: 320 }} key={workflow.id}>
@@ -71,6 +59,17 @@ const Workflows = () => {
                     </CardActions>
                 </Card>
             )}
+        </Box>
+        <hr />
+        <Box sx={{ mt: 4 }}>
+            <Typography gutterBottom variant="h6">
+                Running Workflows
+            </Typography>
+
+            <Typography gutterBottom variant="body1">
+                You don't have any workflow in progress
+            </Typography>
+            {/* <WorkflowsStatus /> */}
         </Box>
     </>
 }
