@@ -61,14 +61,12 @@ const Session = (): JSX.Element => {
 			fetch(session.url).then(result => {
 
 				if (result.status === 200) {
-
 					if (intervalRef.current)
 						clearInterval(intervalRef.current)
 
 					setSessionIsAlive(true)
 				}
 			})
-
 		}, 1000)
 		return () => {
 			if (intervalRef.current)
@@ -193,27 +191,25 @@ const Session = (): JSX.Element => {
 			<AppBar position="fixed" open={drawerOpen} sx={{
 				marginTop: `${APP_MARGIN_TOP}px`,
 			}}>
-				<Toolbar>
+				<Toolbar variant="dense">
 					<IconButton color="inherit"
 						aria-label="go back"
 						onClick={handleBackLocation}>
 						<ArrowBack />
 					</IconButton>
 					<Box sx={{ flexGrow: 1 }} />
-					<FormControl>
-						<Select
-							id="session-select"
-							aria-label="Select session"
-							IconComponent={() => <ExpandMore />}
-							value={session?.id || ''}
-							onChange={handleOnChange}
-							sx={{ color: 'white' }}
-						>
-							{
-								sessions?.map(s => <MenuItem value={s?.id} key={s?.id}>{`Session #${s?.name}`}</MenuItem>)
-							}
-						</Select>
-					</FormControl>
+					<Select
+						id="session-select"
+						aria-label="Select session"
+						IconComponent={() => <ExpandMore />}
+						value={session?.id || ''}
+						onChange={handleOnChange}
+						sx={{ color: 'white' }}
+					>
+						{
+							sessions?.map(s => <MenuItem value={s?.id} key={s?.id}>{`Session #${s?.name}`}</MenuItem>)
+						}
+					</Select>
 					<Box sx={{ flexGrow: 1 }} />
 					<IconButton
 						color="inherit"
@@ -239,8 +235,7 @@ const Session = (): JSX.Element => {
 					<div
 						aria-label='Loading remote session'
 						style={{
-							border: 'solid 1px gray',
-							width: '100vw',
+							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
 							height: '100vh',
 							backgroundColor: '#333',
 							display: 'flex',
@@ -257,11 +252,10 @@ const Session = (): JSX.Element => {
 						src={`${session.url}?${XPRA_PARAMS}`}
 						allowFullScreen
 						style={{
-							border: 'solid 1px gray',
-							width: '100vw',
-							height: '100vh',
+							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
+							height: drawerOpen ? '90vh' : '100vh',
 							backgroundColor: '#333',
-							marginTop: '36px'
+							marginTop: '32px'
 						}}
 					/>
 				}
