@@ -55,6 +55,7 @@ const entities = {
 const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
     const [filesPanes, setFilesPanes] = useState<TreeNode[][]>();
     const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+    const [currentBidsFile, setCurrentBidsFile] = useState<File>()
     const [bidsFiles, setBidsFiles] = useState<File[]>()
 
     useEffect(() => {
@@ -66,7 +67,10 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
     }
 
     const handleSelectedPath = async (pathes: string[]) => {
+        console.log(pathes)
         const path = pathes.join('')
+        setCurrentBidsFile(f => f ? ({ ...f, path }) : ({ path }))
+
         const result = await files(path);
         setFilesPanes(prev => {
             if (!prev) return [result];
@@ -80,7 +84,10 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
     }
 
     const handleAddFile = () => {
+        if (currentBidsFile)
+            setBidsFiles([...(bidsFiles || []), currentBidsFile])
 
+        setCurrentBidsFile(undefined)
     }
 
     return <>
@@ -90,10 +97,10 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
             <Select
                 labelId="bids-modality"
                 id="bids-modality-select"
-                value={file?.modality}
+                value={currentBidsFile?.modality}
                 label="Modality"
                 onChange={(event) => {
-                    setFile(f => f ? ({ ...f, modality: event?.target.value }) : ({ modality: event.target.value }))
+                    setCurrentBidsFile(f => f ? ({ ...f, modality: event?.target.value }) : ({ modality: event.target.value }))
                 }}
             >
                 {modalities.map(m => <MenuItem value={m.name}>{m.name}</MenuItem>)}
@@ -110,21 +117,17 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
             <Box sx={{ mr: 1 }}>
                 <DynamicForm
                     fields={entities}
-                    handleChangeFields={entity => {
-                        // setSubject(s => ({
-                        //     ...(s ? s : {}),
-                        //     participant
-                        // }))
+                    handleChangeFields={(event) => {
+                        setCurrentBidsFile(f => f ? ({ ...f, entity: event?.target.value }) : ({ entity: event.target.value }))
                     }} />
             </Box>
-
             <FileBrowser
                 nodesPanes={filesPanes}
                 handleSelectedPath={handleSelectedPath}
             />
         </Box>
 
-        <Button variant="outlined" sx={{ mt: 2 }}>Add file</Button>
+        <Button onClick={handleAddFile} variant="outlined" sx={{ mt: 2 }}>Add file</Button>
 
         <Box>
             <TableContainer component={Paper}>
@@ -138,18 +141,16 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {[].map((row) => (
+                        {bidsFiles?.map((file) => (
                             <TableRow
-                                key={row.name}
+                                key={file.path}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    {file.path}
                                 </TableCell>
-                                <TableCell align="right">{row.name}</TableCell>
-                                <TableCell align="right">{row.status}</TableCell>
-                                <TableCell align="right">{row.elapsed}</TableCell>
-                                <TableCell align="right">{row.progress}</TableCell>
+                                <TableCell align="right">{file.modality}</TableCell>
+                                <TableCell align="right">{file.session}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

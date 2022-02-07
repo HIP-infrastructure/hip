@@ -28,7 +28,7 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                 {
                     route: 'documentation',
                     label: 'Documentation',
-                    icon: <HelpCenter />, 
+                    icon: <HelpCenter />,
                     disabled: true
                 }]
         },
@@ -46,6 +46,11 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                     icon: <Apps />
                 },
                 {
+                    route: `${space.route}/workflows`,
+                    label: 'Workflows',
+                    icon: <Assignment />
+                },
+                {
                     route: `${space.route}/data`,
                     label: 'Data',
                     icon: <Folder />
@@ -53,14 +58,9 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                 {
                     route: `${space.route}/studies`,  // project ?
                     label: 'Studies',
-                    icon: <Psychology />, 
+                    icon: <Psychology />,
                     disabled: true
-                },
-                {
-                    route: `${space.route}/workflows`,
-                    label: 'Workflows',
-                    icon: <Assignment />
-                },]
+                }]
         },
 
     ]
