@@ -44,12 +44,11 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('gpu1.thehip.app');
 		$csp->addAllowedFrameDomain('backend.thehip.app');
 		$csp->addAllowedFrameDomain('hipapp.local');
-		// $csp->addAllowedConnectDomain('*');
-		// $csp->addAllowedScriptDomain('unsafe-inline');
+		$csp->addAllowedConnectDomain('gpu1.thehip.app');
+		$csp->addAllowedConnectDomain('backend.thehip.app');
+		$csp->addAllowedConnectDomain('hipapp.local');
 		$response->setContentSecurityPolicy($csp);
 
 		return $response;
 	}
-
-	
 }
