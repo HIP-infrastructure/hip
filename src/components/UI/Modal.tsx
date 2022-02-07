@@ -52,8 +52,7 @@ const ModalComponent = forwardRef<ModalComponentHandle, Props>(
                     <Card>
                         <React.Fragment>
                             <CardContent>
-
-                                <Typography variant="h5" component="div">
+                                <Typography variant="h5">
                                     {title}
                                 </Typography>
                                 <Typography variant="body2">

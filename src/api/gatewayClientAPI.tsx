@@ -121,35 +121,51 @@ export const forceRemove = (id: string): void => {
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
-		const response = await fetch(`/index.php/apps/hip/document/files?path=${path}`);
-		const node: TreeNode[] = await response.json()
+	const response = await fetch(`/index.php/apps/hip/document/files?path=${path}`);
+	const node: TreeNode[] = await response.json()
 
-		// 			size: Math.round(s.size / 1024),
-		// 			updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
-		// 				day: 'numeric',
-		// 				month: 'short',
-		// 				year: 'numeric',
-		// 				hour: 'numeric',
-		// 				minute: 'numeric',
-		// 			}),
+	// 			size: Math.round(s.size / 1024),
+	// 			updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
+	// 				day: 'numeric',
+	// 				month: 'short',
+	// 				year: 'numeric',
+	// 				hour: 'numeric',
+	// 				minute: 'numeric',
+	// 			}),
 
-		return node
+	return node
 
 	// } catch (error: any) {
 	// 	return { data: null, error }
 	// }
 }
 
-export const getFileContent = async(path:string): Promise<string> => {
+export const getFileContent = async (path: string): Promise<string> => {
 	const response = await fetch(`/index.php/apps/hip/document/file?path=${path}`);
 
 	return await response.text()
 }
 
-export const createFolder = async( parentPath:string, name: string): Promise<TreeNode[]> => {
+export const getJsonFileContent = async (path: string): Promise<{ [key: string]: string | number }> => {
+
+	try {
+		const response = await fetch(`/index.php/apps/hip/document/file?path=${path}`);
+
+		const maybeJson = await response.json()
+		const j = maybeJson.replace(/\\n/g, '')
+
+		return JSON.parse(j)
+	} catch (e) {
+		console.log(e)
+
+		return 
+	}
+}
+
+export const createFolder = async (parentPath: string, name: string): Promise<TreeNode[]> => {
 	const response = await fetch(`/index.php/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
 	const node: TreeNode[] = await response.json()
-	
+
 	return node
 }
 
