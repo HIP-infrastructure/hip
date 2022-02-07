@@ -80,7 +80,7 @@ const Apps = () => {
 	};
 
 	return <>
-		<TitleBar title={'Available Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking start app'} />
+		<TitleBar title={'Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking start app'} />
 		<Modal
 			open={showWedavForm}
 			onClose={() => setShowWedavForm(false)}

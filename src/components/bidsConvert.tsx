@@ -223,7 +223,7 @@ const BidsConverter = () => {
                                 nodesPanes={folderPanes}
                                 handleSelectedPath={handleSelectedPath}
                             >
-                                <Button sx={{ mt: 2, p: 1, mr: 1 }} variant='outlined'>New BIDS Database</Button>
+                                <Button sx={{ mt: 2, p: 1, mr: 1 }} disabled variant='outlined'>New BIDS Database</Button>
                             </FileBrowser>
                             {database &&
                                 <DatabaseInfo database={database} />
@@ -257,7 +257,7 @@ const BidsConverter = () => {
                         <Typography sx={{ mb: 2 }}>
                             Select a Subject or create a new one
                         </Typography>
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ display: 'flex', }}>
                             <Box>
                                 {subjectFolder &&
                                     <FilePanel
@@ -265,10 +265,9 @@ const BidsConverter = () => {
                                         handleSelectedPath={handleSelectedSubjectPath}
                                     />
                                 }
-                                <Button onClick={handleNewSubject} variant="outlined" sx={{ mt: 2 }}>New Subject </Button>
+                                <Button onClick={handleNewSubject} variant="outlined" sx={{ mt: 2, mb: 2 }}>New Subject </Button>
+
                             </Box>
-
-
                             {subject && subject.participant &&
                                 <Box sx={{
                                     overflowY: 'auto',

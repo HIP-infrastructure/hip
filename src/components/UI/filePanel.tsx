@@ -110,10 +110,10 @@ export default ({ nodes, handleSelectedPath, standalone = true }: ITreeSelect) =
             defaultCollapseIcon={<ArrowDropDown />}
             defaultExpandIcon={<ArrowRight />}
             defaultEndIcon={<div style={{ width: 24 }} />}
-            sx={{ 
-                height: 292, 
-                flexGrow: 1, 
-                maxWidth: 400, 
+            sx={{
+                height: 292,
+                flexGrow: 1,
+                maxWidth: 400,
                 minWidth: 240,
                 mr: 1,
                 overflowY: 'auto',
@@ -130,6 +130,9 @@ export default ({ nodes, handleSelectedPath, standalone = true }: ITreeSelect) =
                     labelInfo={standalone || node.data.type !== 'dir' ? null : <ArrowRight />}
                 />
             )}
+            {nodes?.length === 0 && <Typography variant="body2" sx={{ fontWeight: 'inherit', p: 0.5 }}>
+                Empty
+            </Typography>}
         </TreeView>
     );
 }
