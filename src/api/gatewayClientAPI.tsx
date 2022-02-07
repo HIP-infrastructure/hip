@@ -121,7 +121,8 @@ export const forceRemove = (id: string): void => {
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
-	const response = await fetch(`/index.php/apps/hip/document/files?path=${path}`);
+	const url = `/apps/hip/document/files?path=${path}`
+	const response = await fetch(url);
 	const node: TreeNode[] = await response.json()
 
 	// 			size: Math.round(s.size / 1024),
@@ -141,7 +142,7 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 }
 
 export const getFileContent = async (path: string): Promise<string> => {
-	const response = await fetch(`/index.php/apps/hip/document/file?path=${path}`);
+	const response = await fetch(`/apps/hip/document/file?path=${path}`);
 
 	return await response.text()
 }
@@ -149,7 +150,7 @@ export const getFileContent = async (path: string): Promise<string> => {
 export const getJsonFileContent = async (path: string): Promise<{ [key: string]: string | number }> => {
 
 	try {
-		const response = await fetch(`/index.php/apps/hip/document/file?path=${path}`);
+		const response = await fetch(`/apps/hip/document/file?path=${path}`);
 
 		const maybeJson = await response.json()
 		const j = maybeJson.replace(/\\n/g, '')
@@ -158,19 +159,19 @@ export const getJsonFileContent = async (path: string): Promise<{ [key: string]:
 	} catch (e) {
 		console.log(e)
 
-		return 
+		return
 	}
 }
 
 export const createFolder = async (parentPath: string, name: string): Promise<TreeNode[]> => {
-	const response = await fetch(`/index.php/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
+	const response = await fetch(`/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
 	const node: TreeNode[] = await response.json()
 
 	return node
 }
 
 export const search = async (term: string) => {
-	return fetch(`https://hip.local/api/v1/files/search/${term}`, {
+	return fetch(`/api/v1/files/search/${term}`, {
 		headers: {
 			'requesttoken': window.OC.requestToken
 		}
@@ -180,7 +181,7 @@ export const search = async (term: string) => {
 
 const getTags = async () => {
 	try {
-		const response = await fetch(`/index.php/apps/hip/tag/list`);
+		const response = await fetch(`/apps/hip/tag/list`);
 		const data = await response.json()
 		return { data, error: null }
 	} catch (error) {
