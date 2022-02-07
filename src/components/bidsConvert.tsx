@@ -1,18 +1,22 @@
-import { Box, Button, Card, CardContent, CircularProgress, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import TitleBar from './titleBar';
 import {
-    getFiles, TreeNode, search, getFileContent, createFolder
+    getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
 } from '../api/gatewayClientAPI'
-import TreeSelect from './UI/treeSelect'
+import FileBrowser from './UI/fileBrowser'
 import FilePanel from './UI/filePanel'
-
-
-interface BIDSDatabase {
+import CreateField from './UI/createField'
+import DatabaseInfo from './workflows/bidsConverter/databaseInfo';
+import SubjectInfo from './workflows/bidsConverter/subjectInfo';
+import DynamicForm from './UI/dynamicForm';
+import BIDSFiles from './workflows/bidsConverter/bidFiles'
+export interface BIDSDatabase {
     path?: string;
     participants?: Participant[];
+    description?: { [key: string]: string | number }
 }
-interface BIDSSubject {
+export interface BIDSSubject {
     id?: string;
     database?: BIDSDatabase;
     path?: string;
@@ -22,7 +26,7 @@ interface Participant {
     [key: string]: string | number
 }
 
-const steps = ['BIDS Database', 'Subject', 'Files'];
+const steps = ['BIDS Database', 'Subject', 'Files', 'Run'];
 
 const BidsConverter = () => {
 
@@ -31,7 +35,8 @@ const BidsConverter = () => {
     const [subject, setSubject] = useState<BIDSSubject>()
     // const [searchResult1, setSearchResult1] = useState();
     // const [term, setTerm] = useState('')
-    const [nodesBoxes, setNodesBoxes] = useState<TreeNode[][]>();
+    const [folderPanes, setFolderPanes] = useState<TreeNode[][]>();
+    const [subjectFolder, setSubjectFolder] = useState<TreeNode[]>()
     // see https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
     const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
@@ -40,29 +45,45 @@ const BidsConverter = () => {
         handleSelectedPath(['/'])
     }, [])
 
+    const files = async (path: string) => {
+        return await getFiles(path)
+    }
 
     const folders = async (path: string) => {
-        const files = await getFiles(path)
-        return files?.filter(f => f.data.type === 'dir')
+        const f = await files(path)
+        return f?.filter(f => f.data.type === 'dir')
     }
 
     const handleSelectedPath = async (pathes: string[]) => {
         const path = pathes.join('')
-
+        const description = await getJsonFileContent(`${path}dataset_description.json`)
         const result = await folders(path);
-        setNodesBoxes(prev => {
-            if (!prev) return [result];
 
-            prev[pathes.length - 1] = result
-            prev.splice(pathes.length)
+        if (description) {
+            const participants = await readBIDSParticipants(`${path}participants.tsv`)
+            setFolderPanes(prev => {
+                if (!prev) return
+                prev.splice(pathes.length - 1)
 
-            return prev
-        })
+                return prev
+            })
+            setDatabase({ path, participants, description })
+            setSubjectFolder(result);
+
+        } else {
+            setDatabase(undefined)
+
+
+            setFolderPanes(prev => {
+                if (!prev) return [result];
+
+                prev[pathes.length - 1] = result
+                prev.splice(pathes.length)
+
+                return prev
+            })
+        }
         forceUpdate();
-
-        const participants = await readBIDSParticipants(`${path}participants.tsv`)
-        setDatabase({ path, participants })
-        setSubject(s => ({ ...s, database }))
     }
 
     const handleSelectedSubjectPath = async (pathes: string[]) => {
@@ -163,40 +184,6 @@ const BidsConverter = () => {
             </Button>
         </Box></>
 
-    const SubjectInfo = ({ subject }: { subject?: BIDSSubject }) =>
-        <Card sx={{
-            minWidth: 296,
-            maxWidth: 296,
-            bgcolor: 'grey.50',
-            m: 1
-        }}>
-            <CardContent>
-                {database?.path && <Typography sx={{ overflowWrap: 'break-word' }}>
-                    <strong>BIDS Database Folder</strong>
-                    <br />
-                    {database?.path}
-                </Typography>}
-
-                {database?.participants && <Typography gutterBottom>
-                    Number of subjects: {database?.participants?.length}
-                </Typography>}
-
-                {subject?.path && <Typography>
-                    <strong>Subject Folder</strong>
-                    <br />
-                    {subject?.path}
-                </Typography>
-                }
-                {subject?.participant && <><Typography>
-                    <strong>Informations</strong>
-                    <br />
-                </Typography>
-                    <pre>{JSON.stringify(subject?.participant, null, 2)}</pre>
-                </>
-                }
-            </CardContent>
-        </Card>
-
     const Title = ({ activeStep }: { activeStep: number }) => <Typography sx={{ mt: 2, mb: 1 }}>{steps[activeStep]}</Typography>
 
     return <>
@@ -223,7 +210,7 @@ const BidsConverter = () => {
                         border: 1,
                         borderColor: 'grey.400',
                         p: 2,
-                        m: 1,
+                        mr: 1,
                         display: 'flex',
                         flex: '1 0 auto',
                         flexFlow: 'column'
@@ -231,15 +218,23 @@ const BidsConverter = () => {
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Select a BIDS Database Folder, or create a new one
                         </Typography>
-                        <Box sx={{ flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
-                            <TreeSelect
-                                nodesBoxes={nodesBoxes}
+                        <Box sx={{ display: 'flex', flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
+                            <FileBrowser
+                                nodesPanes={folderPanes}
                                 handleSelectedPath={handleSelectedPath}
-                            />
+                            >
+                                <Button sx={{ mt: 2, p: 1, mr: 1 }} variant='outlined'>New BIDS Database</Button>
+                            </FileBrowser>
+                            {database &&
+                                <DatabaseInfo database={database} />
+                            }
                         </Box>
                         <StepNavigation activeStep={activeStep} />
                     </Box>
-                    <SubjectInfo subject={subject} />
+                    <Box sx={{
+                        minWidth: 240,
+                        maxWidth: 400
+                    }}></Box>
                 </Box>
                 {/* 
                     <TextField id="search1" label="Search1" value={term} onChange={handleSearch} />
@@ -247,13 +242,14 @@ const BidsConverter = () => {
 
             </>
             }
+
             {activeStep === 1 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
                     <Box sx={{
                         border: 1,
                         borderColor: 'grey.400',
                         p: 2,
-                        m: 1,
+                        mr: 1,
                         display: 'flex',
                         flex: '1 0 auto',
                         flexFlow: 'column'
@@ -263,36 +259,56 @@ const BidsConverter = () => {
                         </Typography>
                         <Box sx={{ display: 'flex' }}>
                             <Box>
-                                {nodesBoxes &&
+                                {subjectFolder &&
                                     <FilePanel
-                                        nodes={nodesBoxes[nodesBoxes?.length - 1]}
+                                        nodes={subjectFolder}
                                         handleSelectedPath={handleSelectedSubjectPath}
                                     />
                                 }
                                 <Button onClick={handleNewSubject} variant="outlined" sx={{ mt: 2 }}>New Subject </Button>
                             </Box>
-                            <Box>
-                                {subject && subject.participant &&
-                                    Object.keys(subject.participant).map(key =>
-                                        <Box sx={{ p: 2 }} key={key}>
-                                            <TextField
-                                                label={key}
-                                                id={key}
-                                                onChange={(event) => handleChangeParticipant(event as ChangeEvent<HTMLTextAreaElement>, key)}
-                                                value={subject.participant[key]}
-                                            />
-                                        </Box>
-                                    )}
 
-                                <Button variant="outlined" sx={{ mt: 2 }}>New Field </Button>
 
-                            </Box>
+                            {subject && subject.participant &&
+                                <Box sx={{
+                                    overflowY: 'auto',
+                                    border: 1,
+                                    borderColor: 'grey.400',
+                                    width: '100%',
+                                    p: 2,
+                                    mr: 1
+                                }}>
+                                    <Typography gutterBottom variant='subtitle2'>
+                                        Subject
+                                    </Typography>
+                                    <Box>
+                                        <DynamicForm
+                                            fields={subject.participant}
+                                            handleChangeFields={participant => {
+                                                setSubject(s => ({
+                                                    ...(s ? s : {}),
+                                                    participant
+                                                }))
+                                            }} />
+                                        <CreateField handleCreateField={({ key, value }) => {
+                                            if (key && value)
+                                                setSubject(s => ({
+                                                    ...s,
+                                                    participant: {
+                                                        ...s?.participant,
+                                                        [key]: isNaN(value) ? value : Number(value)
+                                                    }
+                                                }))
+                                        }} />
+                                    </Box>
+                                </Box>
+                            }
+
+
                         </Box>
                         <StepNavigation activeStep={activeStep} />
-
                     </Box>
-                    <SubjectInfo subject={subject} />
-
+                    <DatabaseInfo database={database} />
                 </Box>
 
             </>}
@@ -302,26 +318,45 @@ const BidsConverter = () => {
                         border: 1,
                         borderColor: 'grey.400',
                         p: 2,
-                        m: 1,
+                        mr: 1,
                         display: 'flex',
                         flex: '1 0 auto',
                         flexFlow: 'column'
                     }} >
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                            Select a BIDS Database Folder, or create a new one
+                            Add Files
                         </Typography>
-                        <Box sx={{ flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
-                            <TreeSelect
-                                nodesBoxes={nodesBoxes}
-                                handleSelectedPath={handleSelectedPath}
-                            />
-                        </Box>
+                        <BIDSFiles subject={subject} database={database} />
                         <StepNavigation activeStep={activeStep} />
                     </Box>
-                    <SubjectInfo subject={subject} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
+                        <DatabaseInfo database={database} />
+                        <SubjectInfo subject={subject} />
+                    </Box>
                 </Box>
             </>}
 
+            {activeStep === 3 && (
+                <>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                        <Typography>
+                            Convert
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
+                            <DatabaseInfo database={database} />
+                            <SubjectInfo subject={subject} />
+                        </Box>
+                        <Box>
+                            <Button variant="outlined" sx={{ mt: 2 }}>Cancel</Button>
+                            <Button variant="outlined" sx={{ mt: 2 }}>Convert</Button>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                        <Box sx={{ flex: '1 1 auto' }} />
+                        <Button onClick={handleReset}>Reset</Button>
+                    </Box>
+                </>
+            )}
 
             {activeStep === steps.length && (
                 <>
@@ -330,6 +365,10 @@ const BidsConverter = () => {
                         <Typography>
                             All steps completed
                         </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
+                            <DatabaseInfo database={database} />
+                            <SubjectInfo subject={subject} />
+                        </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />

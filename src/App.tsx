@@ -119,7 +119,7 @@ const App = () =>
 			<Route path={`${ROUTE_PREFIX}/dashboard`} element={<Dashboard />} />
 			<Route path={`${ROUTE_PREFIX}/documentation`} element={<Documentation />} />
 			<Route path={'private'} element={<Outlet />}>
-				<Route index element={<BidsConverter />} />
+				<Route index element={<Sessions />} />
 				<Route path={'sessions'} element={<Sessions />} />
 				<Route path={'data'} element={<Data />} />
 				<Route path={'workflows'} element={<Outlet />}>

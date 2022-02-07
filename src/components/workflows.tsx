@@ -7,6 +7,7 @@ import TitleBar from './titleBar';
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 import { Workflow } from '../api/gatewayClientAPI';
 import { useNavigate } from 'react-router-dom';
+import WorkflowsStatus from './UI/workflowsStatus'
 
 const availableWorkflows: Workflow[] = [
     {
@@ -27,6 +28,19 @@ const Workflows = () => {
 
     return <>
         <TitleBar title='Workflows' />
+        <Box sx={{ mt: 4 }}>
+            <Typography gutterBottom variant="subtitle1">
+                Running Workflows
+            </Typography>
+            <WorkflowsStatus />
+        </Box>
+
+
+        <Box sx={{ mt: 4 }}>
+            <Typography gutterBottom variant="subtitle1" >
+                Available Workflows
+            </Typography>
+        </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
             {availableWorkflows?.map((workflow, i) =>
                 <Card sx={{ maxWidth: 320 }} key={workflow.id}>
