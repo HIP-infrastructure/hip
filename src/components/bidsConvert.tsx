@@ -258,14 +258,17 @@ const BidsConverter = () => {
                             Select a Subject or create a new one
                         </Typography>
                         <Box sx={{ display: 'flex', }}>
-                            <Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 {subjectFolder &&
                                     <FilePanel
                                         nodes={subjectFolder}
                                         handleSelectedPath={handleSelectedSubjectPath}
                                     />
                                 }
-                                <Button onClick={handleNewSubject} variant="outlined" sx={{ mt: 2, mb: 2 }}>New Subject </Button>
+                                <Button 
+                                    sx={{ mt: 2, p: 1, mr: 1 }} 
+                                    onClick={handleNewSubject} 
+                                    variant="outlined">New Subject </Button>
 
                             </Box>
                             {subject && subject.participant &&
@@ -289,21 +292,21 @@ const BidsConverter = () => {
                                                     participant
                                                 }))
                                             }} />
-                                        <CreateField handleCreateField={({ key, value }) => {
-                                            if (key && value)
-                                                setSubject(s => ({
-                                                    ...s,
-                                                    participant: {
-                                                        ...s?.participant,
-                                                        [key]: isNaN(value) ? value : Number(value)
-                                                    }
-                                                }))
-                                        }} />
+                                        <Box sx={{ m: 2 }}>
+                                            <CreateField handleCreateField={({ key, value }) => {
+                                                if (key && value)
+                                                    setSubject(s => ({
+                                                        ...s,
+                                                        participant: {
+                                                            ...s?.participant,
+                                                            [key]: isNaN(value) ? value : Number(value)
+                                                        }
+                                                    }))
+                                            }} />
+                                        </Box>
                                     </Box>
                                 </Box>
                             }
-
-
                         </Box>
                         <StepNavigation activeStep={activeStep} />
                     </Box>
@@ -320,7 +323,8 @@ const BidsConverter = () => {
                         mr: 1,
                         display: 'flex',
                         flex: '1 0 auto',
-                        flexFlow: 'column'
+                        flexFlow: 'column',
+                        justifyContent: 'flex-start'
                     }} >
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Add Files
@@ -337,22 +341,29 @@ const BidsConverter = () => {
 
             {activeStep === 3 && (
                 <>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Typography>
-                            Convert
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                            <DatabaseInfo database={database} />
-                            <SubjectInfo subject={subject} />
+                    <Box sx={{ mt: 2 }}>
+                        <Box sx={{
+                            border: 1,
+                            borderColor: 'grey.400',
+                            p: 2,
+                            mr: 1,
+                        }} >
+                            <Typography>
+                                BIDS Conversion Summary
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
+                                <DatabaseInfo database={database} />
+                                <SubjectInfo subject={subject} />
+                            </Box>
+                            {/* <Box>
+                                <Button variant="outlined" sx={{ mt: 2 }}>Cancel</Button>
+                                <Button variant="outlined" sx={{ mt: 2 }}>Convert</Button>
+                            </Box> */}
                         </Box>
-                        <Box>
-                            <Button variant="outlined" sx={{ mt: 2 }}>Cancel</Button>
-                            <Button variant="outlined" sx={{ mt: 2 }}>Convert</Button>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Box sx={{ flex: '1 1 auto' }} />
+                            <Button onClick={handleReset}>Reset</Button>
                         </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Reset</Button>
                     </Box>
                 </>
             )}
