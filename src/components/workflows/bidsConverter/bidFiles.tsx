@@ -1,11 +1,12 @@
 import DynamicForm from '../bidsConverter/../../UI/dynamicForm';
-import { Box, Button, InputLabel, Select, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Button, InputLabel, Select, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
     getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
 } from '../../../api/gatewayClientAPI'
 import { BIDSDatabase, BIDSSubject } from '../../bidsConvert';
 import FileBrowser from '../../UI/fileBrowser';
+import CreateField from '../../UI/createField';
 
 interface IBIDSFiles {
     subject?: BIDSSubject
@@ -91,53 +92,15 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
     }
 
     return <>
-
-        <Box>
-            <InputLabel id="bids-modality">Modality</InputLabel>
-            <Select
-                labelId="bids-modality"
-                id="bids-modality-select"
-                value={currentBidsFile?.modality}
-                label="Modality"
-                onChange={(event) => {
-                    setCurrentBidsFile(f => f ? ({ ...f, modality: event?.target.value }) : ({ modality: event.target.value }))
-                }}
-            >
-                {modalities.map(m => <MenuItem value={m.name}>{m.name}</MenuItem>)}
-            </Select>
-
-        </Box>
-        <Box sx={{
-            display: 'flex',
-            flex: '0 1 auto',
-            mt: 2,
-            maxWidth: 'inherit',
-            overflowY: 'auto'
-        }} >
-            <Box sx={{ mr: 1 }}>
-                <DynamicForm
-                    fields={entities}
-                    handleChangeFields={(event) => {
-                        setCurrentBidsFile(f => f ? ({ ...f, entity: event?.target.value }) : ({ entity: event.target.value }))
-                    }} />
-            </Box>
-            <FileBrowser
-                nodesPanes={filesPanes}
-                handleSelectedPath={handleSelectedPath}
-            />
-        </Box>
-
-        <Button onClick={handleAddFile} variant="outlined" sx={{ mt: 2 }}>Add file</Button>
-
-        <Box>
+        <Box sx={{ mb: 2 }}>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>File</TableCell>
-                            <TableCell align="right">Name</TableCell>
                             <TableCell align="right">Modality</TableCell>
                             <TableCell align="right">Session</TableCell>
+                            <TableCell align="right">Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -151,12 +114,83 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
                                 </TableCell>
                                 <TableCell align="right">{file.modality}</TableCell>
                                 <TableCell align="right">{file.session}</TableCell>
+                                <TableCell align="right">
+                                    <Button variant="outlined" size="small" sx={{ mt: 2 }}>Edit</Button>
+                                    <Button variant="outlined" size="small" sx={{ mt: 2 }}>Remove</Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
         </Box>
+        <Box sx={{
+            display: 'flex',
+            mt: 1,
+            maxWidth: 'inherit',
+            flexGrow: 1,
+            p: 1,
+            border: 1,
+            borderColor: 'grey.400',
+        }} >
+            <Box sx={{
+                display: 'flex',
+                flexFlow: 'column',
+                border: 1,
+                borderColor: 'grey.400',
+                mr: 1,
+                p: 1
+            }}>
+                <Typography>Modality</Typography>
+                <Select
+                    labelId="bids-modality"
+                    id="bids-modality-select"
+                    value={currentBidsFile?.modality}
+                    label="Modality"
+                    onChange={(event) => {
+                        setCurrentBidsFile(f => f ? ({ ...f, modality: event?.target.value }) : ({ modality: event.target.value }))
+                    }}
+                >
+                    {modalities.map(m => <MenuItem value={m.name}>{m.name}</MenuItem>)}
+                </Select>
+                <Typography sx={{ mt: 2 }}> Session</Typography>
+                <DynamicForm
+                    fields={entities}
+                    handleChangeFields={(event) => {
+                        setCurrentBidsFile(f => f ? ({ ...f, entity: event?.target.value }) : ({ entity: event.target.value }))
+                    }} />
+
+                <Box sx={{ m: 2 }}>
+                    <CreateField handleCreateField={({ key, value }) => {
+                        // if (key && value)
+                            // setSubject(s => ({
+                            //     ...s,
+                            //     participant: {
+                            //         ...s?.participant,
+                            //         [key]: isNaN(value) ? value : Number(value)
+                            //     }
+                            // }))
+                    }} />
+                </Box>
+            </Box>
+            <Box>
+                <FileBrowser
+                    nodesPanes={filesPanes}
+                    handleSelectedPath={handleSelectedPath}
+                >
+
+                </FileBrowser>
+                <Button
+                    onClick={handleAddFile}
+                    variant="contained"
+                    sx={{ mt: 2, float: 'right' }}>
+                    Add file
+                </Button>
+            </Box>
+        </Box>
+
+
+
 
     </>
 }
