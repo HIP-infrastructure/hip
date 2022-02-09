@@ -95,14 +95,14 @@ const Apps = () => {
 					{availableApps.error.message}
 				</Typography>}
 			{availableApps.apps?.map((app, i) =>
-				<Card sx={{ maxWidth: 320 }} key={app.name}>
+				<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={app.name}>
 					<CardMedia
 						component="img"
 						height="140"
 						src={importedImages[i]}
 						alt={app.label}
 					/>
-					<CardContent>
+					<CardContent sx={{ flexGrow: 1 }}>
 						<Box sx={{ display: 'flex' }}>
 							<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
 								{app.label} {app.version}
@@ -118,13 +118,13 @@ const Apps = () => {
 						</Typography>
 
 					</CardContent>
-					<CardActions>
+					<CardActions sx={{ p: 2, alignSelf: 'end' }} >
 						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button>
 						<Button size="small" onClick={() => handleCreateApp(app)}>Start</Button>
 					</CardActions>
 				</Card>
 			)}
-		</Box></>
+		</Box ></>
 }
 
 export default Apps
