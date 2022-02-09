@@ -57,7 +57,7 @@ const Sessions = (): JSX.Element => {
 					There is no active session
 				</Typography>}
 				{sessions?.map((session, i) =>
-					<Card sx={{ maxWidth: 320 }} key={session.name}>
+					<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={session.name}>
 						<Box sx={{ position: "relative" }}>
 							<CardMedia
 								component="img"
@@ -69,7 +69,7 @@ const Sessions = (): JSX.Element => {
 								<CircularProgress size={32} sx={{ position: "absolute", top: 10, left: 10 }} />
 							}
 						</Box>
-						<CardContent>
+						<CardContent sx={{ flexGrow: 1 }}>
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
 									<Typography variant="h5">

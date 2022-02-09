@@ -41,7 +41,7 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                 },
                 {
                     route: `${space.route}/apps`,
-                    label: 'App Catalog',
+                    label: 'Applications',
                     icon: <Apps />
                 },
                 {
