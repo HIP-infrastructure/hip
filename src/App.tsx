@@ -47,6 +47,7 @@ const Layout = (): JSX.Element => {
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
 	const handleSelectSpace = (selectedSpace: number) => {
+		setSelectedSpace(selectedSpace)
 		navigate(SPACES_NAV[selectedSpace].route)
 	}
 
