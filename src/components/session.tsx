@@ -15,7 +15,7 @@ import SessionInfo from './sessionInfo'
 import { APP_MARGIN_TOP, XPRA_PARAMS, ROUTE_PREFIX, DRAWER_WIDTH } from '../constants'
 import { useParams } from "react-router-dom";
 import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal, FormControl, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack, ExpandMore } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Menu, Fullscreen, ArrowBack, ExpandMore } from '@mui/icons-material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
 import { createBrowserHistory } from 'history';
@@ -220,7 +220,7 @@ const Session = (): JSX.Element => {
 						onClick={() => setFullscreen(!fullscreen)}
 						sx={{ mr: 2 }}
 					>
-						<OpenInFull />
+						<Fullscreen />
 					</IconButton>
 					<IconButton
 						color="inherit"
