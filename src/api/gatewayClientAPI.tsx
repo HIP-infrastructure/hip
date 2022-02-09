@@ -178,6 +178,13 @@ export const search = async (term: string) => {
 	}).then(data => data.json())
 }
 
+export const getBids = async () => {
+	return fetch(`/api/v1/files/bids`, {
+		headers: {
+			'requesttoken': window.OC.requestToken
+		}
+	}).then(data => data.json())
+}
 
 const getTags = async () => {
 	try {
