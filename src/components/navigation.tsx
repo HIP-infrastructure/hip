@@ -22,7 +22,6 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                     route: 'dashboard',
                     label: 'Dashboard',
                     icon: <Dashboard />,
-                    disabled: true
 
                 },
                 {

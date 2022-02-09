@@ -58,8 +58,6 @@ const Sessions = (): JSX.Element => {
 				</Typography>}
 				{sessions?.map((session, i) =>
 					<Card sx={{ maxWidth: 320 }} key={session.name}>
-						{		console.log([loading(session.state), ...session.apps.map(a => loading(a.state))])
-}
 						<Box sx={{ position: "relative" }}>
 							<CardMedia
 								component="img"

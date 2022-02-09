@@ -18,6 +18,7 @@ import { Divider, IconButton, Drawer, Box, Toolbar, CircularProgress, Modal, For
 import { ChevronLeft, ChevronRight, Menu, OpenInFull, ArrowBack, ExpandMore } from '@mui/icons-material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
+import { createBrowserHistory } from 'history';
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean;
@@ -33,6 +34,8 @@ const Session = (): JSX.Element => {
 	const params = useParams();
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const history = createBrowserHistory();
+
 
 	const [session, setSession] = useState<Container>()
 	const [startApp, setStartApp] = useState<Application>()
@@ -132,7 +135,7 @@ const Session = (): JSX.Element => {
 	};
 
 	const handleBackLocation = () => {
-		navigate(`${ROUTE_PREFIX}/`)
+		history.go(-1)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {
