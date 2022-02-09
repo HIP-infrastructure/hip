@@ -46,9 +46,9 @@ const Layout = (): JSX.Element => {
 	const theme = useTheme();
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
-	React.useEffect(() => {
+	const handleSelectSpace = (selectedSpace: number) => {
 		navigate(SPACES_NAV[selectedSpace].route)
-	}, [selectedSpace])
+	}
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -65,8 +65,8 @@ const Layout = (): JSX.Element => {
 					<Navigation
 						space={SPACES_NAV[selectedSpace]}
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-						// open={mobileOpen}
-						// onClose={handleDrawerToggle}
+					// open={mobileOpen}
+					// onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation
@@ -83,7 +83,7 @@ const Layout = (): JSX.Element => {
 				<Box sx={{ display: 'flex', marginBottom: '8px' }} >
 					<Tabs
 						value={selectedSpace}
-						onChange={(_, value) => setSelectedSpace(value)}
+						onChange={(_, value) => handleSelectSpace(value)}
 						sx={{ flex: 1, mb: 4 }}
 					>
 						{SPACES_NAV.map(n => <Tab label={n.label} key={n.route} />)}
@@ -116,6 +116,7 @@ const Layout = (): JSX.Element => {
 const App = () =>
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
+			<Route index element={<Dashboard />} />
 			<Route path={`${ROUTE_PREFIX}/dashboard`} element={<Dashboard />} />
 			<Route path={`${ROUTE_PREFIX}/documentation`} element={<Documentation />} />
 			<Route path={'private'} element={<Outlet />}>
