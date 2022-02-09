@@ -1,21 +1,16 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Link, Typography } from '@mui/material';
-import React, { useState, useEffect } from 'react'
-import { TreeNode, getFiles, getJsonFileContent } from '../api/gatewayClientAPI';
+import { Box, Button, Card, CardActions, CardContent, Link, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { getBids } from '../api/gatewayClientAPI';
+import { BIDSDatabase } from './bidsConvert';
 import TitleBar from './titleBar';
 
-const Data = (): JSX.Element => {
-	const [nodes, setNodes] = useState<TreeNode[]>()
 
-	const folders = async (path: string) => {
-		const f = await getFiles(path)
-		return f?.filter(f => f.data.type === 'dir')
-	}
+const Data = (): JSX.Element => {
+	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabase[]>([])
 
 	useEffect(() => {
-		folders('/').then(fs => {
-			Promise.all(fs.map(f => getJsonFileContent(`${f.data.path}/dataset_description.json`)))
-		}).then(bids => {
-			console.log(bids)
+		getBids().then(r => {
+			setBidsDatabase(r)
 		})
 	}, [])
 
@@ -30,28 +25,33 @@ const Data = (): JSX.Element => {
 				</CardContent>
 			</Card>
 
-			{/* <Typography variant="body2">
+			<Typography variant="body2">
 				BIDS Databases
 			</Typography>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{nodes && nodes.map(n => <Card sx={{ maxWidth: 320 }} >
-					<CardContent>
-						<Box sx={{ display: 'flex' }}>
-							<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
-								{n.label}
+				{bidsDatabase && bidsDatabase.map((database, i) =>
+					<Card sx={{ maxWidth: 320 }} key={`${i}`}>
+						<CardContent>
+							<Box sx={{ display: 'flex' }}>
+								<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
+								</Typography>
+							</Box>
+							<Typography variant="caption" color="text.secondary">
+								{database?.description &&
+									Object.keys(database?.description).map((k: string) =>
+										<Typography variant="body2" key={k}><em>{k}</em>: {database.description[k]}</Typography>)}
 							</Typography>
-						</Box>
-						<Typography gutterBottom variant="body2" color="text.secondary">
-							52 patients
-						</Typography>
-						<Typography variant="caption" color="text.secondary">
-							Informations
-						</Typography>
-					</CardContent>
-				</Card>)
-				}
-			</Box> */}
+							<Typography gutterBottom variant="body2" color="text.secondary">
+								participants: {database?.participants?.length}
+							</Typography>
+						</CardContent>
+						<CardActions sx={{ p: 2, alignSelf: 'end' }} >
+							<Button size="small" onClick={() => { window.open(database?.resourceUrl, '_blank') }}>See Database</Button>
+						</CardActions>
+					</Card>
+				)}
+			</Box>
 		</>
 	)
 }
