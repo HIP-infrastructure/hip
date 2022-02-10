@@ -1,5 +1,6 @@
-import { Box, Button, Card, CardActions, CardContent, Link, Typography } from '@mui/material';
+import { Box, Card, CardContent, CircularProgress, Link, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getBids } from '../api/gatewayClientAPI';
 import { BIDSDatabase } from './bidsConvert';
 import TitleBar from './titleBar';
@@ -7,6 +8,7 @@ import TitleBar from './titleBar';
 
 const Data = (): JSX.Element => {
 	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabase[]>([])
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		getBids().then(r => {
@@ -17,41 +19,69 @@ const Data = (): JSX.Element => {
 	return (
 		<>
 			<TitleBar title='Data' />
-			<Card>
-				<CardContent>
-					<Link href="/index.php/apps/files/" underline="hover">
-						See your data in NextCloud Browser
+
+			<Box sx={{ mt: 2 }}>
+				<Typography variant="h6">
+					Private Data
+				</Typography>
+				<Typography variant="subtitle2">
+					See your data in <Link underline="hover" href="/apps/files/" >
+						NextCloud Browser
 					</Link>
-				</CardContent>
-			</Card>
-
-			<Typography variant="body2">
-				BIDS Databases
-			</Typography>
-
-			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{bidsDatabase && bidsDatabase.map((database, i) =>
-					<Card sx={{ maxWidth: 320 }} key={`${i}`}>
-						<CardContent>
-							<Box sx={{ display: 'flex' }}>
-								<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
-								</Typography>
-							</Box>
-							<Typography variant="caption" color="text.secondary">
-								{database?.description &&
-									Object.keys(database?.description).map((k: string) =>
-										<Typography variant="body2" key={k}><em>{k}</em>: {database.description[k]}</Typography>)}
-							</Typography>
-							<Typography gutterBottom variant="body2" color="text.secondary">
-								participants: {database?.participants?.length}
-							</Typography>
-						</CardContent>
-						<CardActions sx={{ p: 2, alignSelf: 'end' }} >
-							<Button size="small" onClick={() => { window.open(database?.resourceUrl, '_blank') }}>See Database</Button>
-						</CardActions>
-					</Card>
-				)}
+				</Typography>
 			</Box>
+
+			<Box sx={{ mt: 2 }}>
+				<Typography variant="h6">
+					BIDS Databases
+				</Typography>
+
+				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+					{bidsDatabase.length === 0 && <CircularProgress size={32} />}
+					{bidsDatabase && bidsDatabase.map((database, i) =>
+						<Card sx={{ minWidth: 320 }} key={`${i}`}>
+							{/* <CardMedia
+								component="img"
+								height="140"
+								image={bidsManagerLogo}
+								alt="Bids Database"
+							/> */}
+							<CardContent>
+								<Typography gutterBottom variant="h5" component="div">
+									<Link href={database.resourceUrl} underline="always" target="_blank" >
+										{database?.description && database?.description['Name']}
+									</Link>
+								</Typography>
+								<Typography gutterBottom variant="caption" color="text.secondary">
+									{database?.description &&
+										Object.keys(database?.description).map((k: string) =>
+											<Typography variant="body2" key={k}><em>{k}</em>: {database.description[k]}</Typography>)}
+								</Typography>
+								<Box sx={{ m: 2 }}></Box>
+								<Typography variant="body2" color="text.secondary">
+									participants: {database?.participants?.length}
+								</Typography>
+								<Typography variant="body2" color="text.secondary">
+									{database?.participants?.map(p =>
+										<>
+											<Box key={p.participant_id}>
+												<Link
+													href={`${database.resourceUrl}/${p.participant_id}`}
+													target="_blank"
+													underline="always"
+												>
+													{p.participant_id}
+												</Link>
+												, {p.age}, {p.sex}
+											</Box>
+										</>
+									)}
+								</Typography>
+							</CardContent>
+						</Card>
+					)}
+				</Box>
+			</Box >
 		</>
 	)
 }

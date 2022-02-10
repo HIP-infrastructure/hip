@@ -106,19 +106,6 @@ export const forceRemove = (id: string): void => {
 
 // Gateway API
 
-// Files
-// export const getFiles = (): Promise<{ files: any[] | null, error: Error | null }> => {
-// 	const url = `${API_GATEWAY}/files/`
-// 	const files = fetch(url)
-// 		.then(a => a.json())
-// 		.catch(error => ({ files: null, error }))
-// 		.then(json => json.statusCode ?
-// 			({ files: null, error: json }) :
-// 			({ files: json, error: null }))
-
-// 	return files
-// }
-
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
 	const url = `/apps/hip/document/files?path=${path}`
@@ -172,6 +159,7 @@ export const createFolder = async (parentPath: string, name: string): Promise<Tr
 
 export const search = async (term: string) => {
 	return fetch(`/api/v1/files/search/${term}`, {
+		//return fetch(`/apps/hip/search/search?term=${term}`, {
 		headers: {
 			'requesttoken': window.OC.requestToken
 		}
@@ -185,6 +173,26 @@ export const getBids = async () => {
 		}
 	}).then(data => data.json())
 }
+
+export const readBIDSParticipants = async (path: string) => {
+	const tsv = await getFileContent(path)
+	const [headers, ...rows] = tsv
+		.replaceAll('"', '')
+		.trim()
+		.split('\\n')
+		.map(r => r.split('\\t'))
+
+	const participants: Participant[] = rows.reduce((a, r) => [
+		...a,
+		Object.assign(
+			...(r.map((x, i, _, c = x.trim()) =>
+				({ [headers[i].trim()]: isNaN(c) ? c : Number(c) })
+			)))
+	], [] as Participant[])
+
+	return participants
+}
+
 
 const getTags = async () => {
 	try {
