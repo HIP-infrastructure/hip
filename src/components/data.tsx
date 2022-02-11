@@ -1,9 +1,81 @@
-import { Box, Card, CardContent, CircularProgress, Link, Typography } from '@mui/material';
+import { Box, CircularProgress, Link, Typography } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBids } from '../api/gatewayClientAPI';
-import { BIDSDatabase } from './bidsConvert';
+import { Participant } from './bidsConvert';
 import TitleBar from './titleBar';
+
+export interface BIDSDatabase {
+	path: string;
+	Name: string;
+	BIDSVersion: string;
+	Licence: string;
+	Authors: string[];
+	Acknowledgements: string;
+	HowToAcknowledge: string;
+	Funding: string[];
+	ReferencesAndLinks: string[];
+	DatasetDOI: string;
+	participants?: Participant[],
+	Browse: string;
+}
+
+// interface ExtendedBIDSDatabase extends BIDSDatabase {
+// 	[key: string]: string[] | string | number
+// }
+
+const columns: GridColDef[] = [
+	{
+		field: 'Name',
+		headerName: 'Name',
+		width: 320,
+	},
+	{
+		field: 'Participants',
+		headerName: 'Participants',
+		type: 'number',
+		sortable: false,
+		width: 160,
+	},
+	{
+		field: 'Browse',
+		headerName: 'Browse',
+		sortable: false,
+		renderCell: (params: { value: string }) => (
+			<Link
+				target="_blank"
+				href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
+			>
+				Browse
+			</Link>
+		),
+		width: 150
+	},
+	{
+		field: 'Authors',
+		headerName: 'Authors',
+		sortable: false,
+		renderCell: (params: { value: string[] | undefined }) =>
+			`${params.value?.toString()}`
+		,
+		width: 320
+	},
+	{
+		field: 'BIDSVersion',
+		headerName: 'BIDS Version',
+		width: 150,
+	},
+	{
+		field: 'Path',
+		headerName: 'Path',
+		sortable: false,
+		width: 320
+	},
+
+];
+
+// https://hip.local/apps/files/?dir=
 
 
 const Data = (): JSX.Element => {
@@ -16,6 +88,17 @@ const Data = (): JSX.Element => {
 		})
 	}, [])
 
+	const rows = bidsDatabase.map(db => ({
+		id: db.path,
+		Name: db.Name,
+		Authors: db.Authors,
+		Participants: db.participants && db.participants.length,
+		Licence: db.Licence,
+		BIDSVersion: db.BIDSVersion,
+		Path: db.path,
+		Browse: db.path
+	}))
+
 	return (
 		<>
 			<TitleBar title='Data' />
@@ -25,7 +108,7 @@ const Data = (): JSX.Element => {
 					Private Data
 				</Typography>
 				<Typography variant="subtitle2">
-					See your data in <Link underline="hover" href="/apps/files/" >
+					Browse your data in <Link underline="always" href="/apps/files/" >
 						NextCloud Browser
 					</Link>
 				</Typography>
@@ -33,53 +116,17 @@ const Data = (): JSX.Element => {
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant="h6">
-					BIDS Databases
+					BIDS Databases {bidsDatabase.length === 0 && <CircularProgress size={16} />}
 				</Typography>
 
-				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-					{bidsDatabase.length === 0 && <CircularProgress size={32} />}
-					{bidsDatabase && bidsDatabase.map((database, i) =>
-						<Card sx={{ minWidth: 320 }} key={`${i}`}>
-							{/* <CardMedia
-								component="img"
-								height="140"
-								image={bidsManagerLogo}
-								alt="Bids Database"
-							/> */}
-							<CardContent>
-								<Typography gutterBottom variant="h5" component="div">
-									<Link href={database.resourceUrl} underline="always" target="_blank" >
-										{database?.description && database?.description['Name']}
-									</Link>
-								</Typography>
-								<Typography gutterBottom variant="caption" color="text.secondary">
-									{database?.description &&
-										Object.keys(database?.description).map((k: string) =>
-											<Typography variant="body2" key={k}><em>{k}</em>: {database.description[k]}</Typography>)}
-								</Typography>
-								<Box sx={{ m: 2 }}></Box>
-								<Typography variant="body2" color="text.secondary">
-									participants: {database?.participants?.length}
-								</Typography>
-								<Typography variant="body2" color="text.secondary">
-									{database?.participants?.map(p =>
-										<>
-											<Box key={p.participant_id}>
-												<Link
-													href={`${database.resourceUrl}/${p.participant_id}`}
-													target="_blank"
-													underline="always"
-												>
-													{p.participant_id}
-												</Link>
-												, {p.age}, {p.sex}
-											</Box>
-										</>
-									)}
-								</Typography>
-							</CardContent>
-						</Card>
-					)}
+				<Box sx={{ height: 500, width: '100%' }}>
+					<DataGrid
+						rows={rows}
+						columns={columns}
+						pageSize={100}
+						rowsPerPageOptions={[100]}
+						disableSelectionOnClick
+					/>
 				</Box>
 			</Box >
 		</>
