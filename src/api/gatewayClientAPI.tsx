@@ -30,8 +30,21 @@ export enum ContainerState {
 	DESTROYED = 'destroyed',
 }
 
-export const loading = (state: ContainerState) => [ContainerState.CREATED, ContainerState.LOADING, ContainerState.STOPPING].includes(state)
-export const color = (state?: ContainerState) => state && [ContainerState.RUNNING, ContainerState.CREATED, ContainerState.LOADING].includes(state) ? 'success' : 'error'
+export const loading = (state: ContainerState) =>
+	[
+		ContainerState.CREATED,
+		ContainerState.LOADING,
+		ContainerState.STOPPING,
+	].includes(state)
+export const color = (state?: ContainerState) =>
+	state &&
+	[
+		ContainerState.RUNNING,
+		ContainerState.CREATED,
+		ContainerState.LOADING,
+	].includes(state)
+		? 'success'
+		: 'error'
 
 export enum ContainerType {
 	SESSION = 'server',
@@ -50,17 +63,17 @@ export interface Application {
 	description: string
 	status: string
 	url: string
-	icon: string,
-	state: 'ready' | 'beta' | 'faulty',
-	version: string,
+	icon: string
+	state: 'ready' | 'beta' | 'faulty'
+	version: string
 	label?: string
 }
 
 export interface Workflow {
-	id: string;
-	label: string;
-	description: string;
-	state: 'ready' | 'beta' | 'faulty',
+	id: string
+	label: string
+	description: string
+	state: 'ready' | 'beta' | 'faulty'
 	enabled: boolean
 }
 
@@ -83,8 +96,8 @@ export interface Document {
 }
 
 export interface Tag {
-	label: string;
-	id: number;
+	label: string
+	id: number
 }
 
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
@@ -109,7 +122,7 @@ export const forceRemove = (id: string): void => {
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
 	const url = `/apps/hip/document/files?path=${path}`
-	const response = await fetch(url);
+	const response = await fetch(url)
 	const node: TreeNode[] = await response.json()
 
 	// 			size: Math.round(s.size / 1024),
@@ -129,29 +142,33 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 }
 
 export const getFileContent = async (path: string): Promise<string> => {
-	const response = await fetch(`/apps/hip/document/file?path=${path}`);
+	const response = await fetch(`/apps/hip/document/file?path=${path}`)
 
 	return await response.text()
 }
 
-export const getJsonFileContent = async (path: string): Promise<{ [key: string]: string | number }> => {
-
+export const getJsonFileContent = async (
+	path: string
+): Promise<{ [key: string]: string | number }> => {
 	try {
-		const response = await fetch(`/apps/hip/document/file?path=${path}`);
+		const response = await fetch(`/apps/hip/document/file?path=${path}`)
 
 		const maybeJson = await response.json()
 		const j = maybeJson.replace(/\\n/g, '')
 
 		return JSON.parse(j)
-	} catch (e) {
-		console.log(e)
-
-		return
+	} catch (e: any) {
+		return { error: e.message }
 	}
 }
 
-export const createFolder = async (parentPath: string, name: string): Promise<TreeNode[]> => {
-	const response = await fetch(`/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
+export const createFolder = async (
+	parentPath: string,
+	name: string
+): Promise<TreeNode[]> => {
+	const response = await fetch(
+		`/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`
+	)
 	const node: TreeNode[] = await response.json()
 
 	return node
@@ -161,16 +178,16 @@ export const search = async (term: string) => {
 	return fetch(`/api/v1/files/search/${term}`, {
 		//return fetch(`/apps/hip/search/search?term=${term}`, {
 		headers: {
-			'requesttoken': window.OC.requestToken
-		}
+			requesttoken: window.OC.requestToken,
+		},
 	}).then(data => data.json())
 }
 
 export const getBids = async () => {
 	return fetch(`/api/v1/files/bids`, {
 		headers: {
-			'requesttoken': window.OC.requestToken
-		}
+			requesttoken: window.OC.requestToken,
+		},
 	}).then(data => data.json())
 }
 
@@ -182,21 +199,24 @@ export const readBIDSParticipants = async (path: string) => {
 		.split('\\n')
 		.map(r => r.split('\\t'))
 
-	const participants: Participant[] = rows.reduce((a, r) => [
-		...a,
-		Object.assign(
-			...(r.map((x, i, _, c = x.trim()) =>
-				({ [headers[i].trim()]: isNaN(c) ? c : Number(c) })
-			)))
-	], [] as Participant[])
+	const participants: Participant[] = rows.reduce(
+		(a, r) => [
+			...a,
+			Object.assign(
+				...r.map((x, i, _, c = x.trim()) => ({
+					[headers[i].trim()]: isNaN(c) ? c : Number(c),
+				}))
+			),
+		],
+		[] as Participant[]
+	)
 
 	return participants
 }
 
-
 const getTags = async () => {
 	try {
-		const response = await fetch(`/apps/hip/tag/list`);
+		const response = await fetch(`/apps/hip/tag/list`)
 		const data = await response.json()
 		return { data, error: null }
 	} catch (error) {
@@ -205,13 +225,16 @@ const getTags = async () => {
 }
 
 const handleChangeTag = async (data: Document, tag: Tag) => {
-	const method = data.tags.includes(tag.id) ? 'DELETE' : 'PUT';
-	await fetch(`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`, {
-		headers: {
-			"requesttoken": window.OC.requestToken,
-		},
-		method
-	});
+	const method = data.tags.includes(tag.id) ? 'DELETE' : 'PUT'
+	await fetch(
+		`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`,
+		{
+			headers: {
+				requesttoken: window.OC.requestToken,
+			},
+			method,
+		}
+	)
 
 	// await getFiles().then(({ data, error }) => {
 	// 	if (error) setFilesError(error?.message)
@@ -219,17 +242,21 @@ const handleChangeTag = async (data: Document, tag: Tag) => {
 	// })
 }
 
-
 // Sessions & apps
 
-export const getAvailableAppList = (): Promise<{ apps: Application[] | null, error: Error | null }> => {
+export const getAvailableAppList = (): Promise<{
+	apps: Application[] | null
+	error: Error | null
+}> => {
 	const url = `${API_REMOTE_APP}/apps`
 	const availableApps = fetch(url)
 		.then(a => a.json())
 		.catch(error => ({ apps: null, error }))
-		.then(json => json.statusCode ?
-			({ apps: null, error: json }) :
-			({ apps: (json as Application[]), error: null }))
+		.then(json =>
+			json.statusCode
+				? { apps: null, error: json }
+				: { apps: json as Application[], error: null }
+		)
 
 	return availableApps
 }
@@ -265,7 +292,11 @@ export const createApp = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ appName, userId: user.uid, password: user.password }),
+		body: JSON.stringify({
+			appName,
+			userId: user.uid,
+			password: user.password,
+		}),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)

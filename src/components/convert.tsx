@@ -4,21 +4,19 @@ import * as React from 'react'
 // import TreeNode from 'primereact/treenode';
 // import { Button } from 'primereact/button'
 // import { Card } from 'primereact/card';
-import 'primeflex/primeflex.css';
-import {
-    API_REMOTE_APP,
-} from '../api/gatewayClientAPI'
+import 'primeflex/primeflex.css'
+import { API_REMOTE_APP } from '../api/gatewayClientAPI'
 import { useAppStore } from '../store/appProvider'
 
 interface FormData {
-    name?: string;
-    age?: string;
-    sex?: string;
-    ieeg?: any;
-    imaging?: {
-        dcm?: any;
-        nii?: any;
-    }
+	name?: string
+	age?: string
+	sex?: string
+	ieeg?: any
+	imaging?: {
+		dcm?: any
+		nii?: any
+	}
 }
 
 // const Convert = ({ nodes }: { nodes?: TreeNode[] }) => {
@@ -33,7 +31,7 @@ interface FormData {
 
 //     const findPathForDocument = (key?: string): string | undefined => {
 
-//         if (!(key && nodes)) 
+//         if (!(key && nodes))
 //             return
 
 //         const findNode = (node: TreeNode, key: string): TreeNode | undefined => node.key === key ?
@@ -65,7 +63,7 @@ interface FormData {
 
 //             const data = await response.json()
 //             // console.log(data)
-            
+
 //             // return { data, error: null }
 //         } catch (error) {
 //             // return { data: null, error }
@@ -171,4 +169,4 @@ interface FormData {
 //     )
 // }
 
-export default <div>Data</div> 
+export default <div>Data</div>
