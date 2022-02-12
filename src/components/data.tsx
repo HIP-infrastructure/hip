@@ -1,8 +1,8 @@
-import { Box, CircularProgress, Link, Typography } from '@mui/material'
+import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getBids } from '../api/gatewayClientAPI'
+import { BIDSDatabaseResponse, getBids } from '../api/gatewayClientAPI'
 import { Participant } from './bidsConvert'
 import TitleBar from './titleBar'
 
@@ -76,7 +76,7 @@ const columns: GridColDef[] = [
 // https://hip.local/apps/files/?dir=
 
 const Data = (): JSX.Element => {
-	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabase[]>([])
+	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -85,7 +85,7 @@ const Data = (): JSX.Element => {
 		})
 	}, [])
 
-	const rows = bidsDatabase.map(db => ({
+	const rows = bidsDatabase?.data?.map(db => ({
 		id: db.path,
 		Name: db.Name,
 		Authors: db.Authors,
@@ -94,12 +94,14 @@ const Data = (): JSX.Element => {
 		BIDSVersion: db.BIDSVersion,
 		Path: db.path,
 		Browse: db.path,
-	}))
+	})) || []
 
 	return (
 		<>
 			<TitleBar title='Data' />
-
+			{bidsDatabase?.error &&
+				<Alert severity="error">{bidsDatabase.error.message}</Alert>
+			}
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>Private Data</Typography>
 				<Typography variant='subtitle2'>
@@ -113,7 +115,9 @@ const Data = (): JSX.Element => {
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
 					BIDS Databases{' '}
-					{bidsDatabase.length === 0 && <CircularProgress size={16} />}
+					{!bidsDatabase?.data &&
+						!bidsDatabase?.error &&
+						<CircularProgress size={16} />}
 				</Typography>
 
 				<Box sx={{ height: 500, width: '100%' }}>

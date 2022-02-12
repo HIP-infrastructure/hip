@@ -1,6 +1,6 @@
 import { Box, CardContent, Typography } from '@mui/material'
 import React from 'react'
-import { BIDSDatabase } from '../../bidsConvert'
+import { BIDSDatabase } from '../../data'
 
 const DatabaseInfo = ({ database }: { database?: BIDSDatabase }) => (
 	<Box
@@ -30,12 +30,12 @@ const DatabaseInfo = ({ database }: { database?: BIDSDatabase }) => (
 			</Typography>
 		)}
 
-		{database?.description &&
+		{/* {database?.description &&
 			Object.keys(database?.description).map((k: string) => (
 				<Typography variant='body2' key={k}>
 					<em>{k}</em>: {database.description[k]}
 				</Typography>
-			))}
+			))} */}
 	</Box>
 )
 

@@ -23,7 +23,7 @@ const SubjectInfo = ({ subject }: { subject?: BIDSSubject }) => (
 		{subject?.participant &&
 			Object.keys(subject?.participant).map((k: string) => (
 				<Typography key={k} variant='body2'>
-					<em>{k}</em>: {subject?.participant[k]}
+					{/* <em>{k}</em>: {subject?.participant[k]} */}
 				</Typography>
 			))}
 	</Box>

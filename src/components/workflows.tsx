@@ -65,7 +65,7 @@ const Workflows = () => {
 							<Typography variant='caption' color='text.secondary'></Typography>
 						</CardContent>
 						<CardActions>
-							<Button size='small' onClick={() => handleClickWorkflow('bids')}>
+							<Button size='small' disabled onClick={() => handleClickWorkflow('bids')}>
 								Start Workflow
 							</Button>
 						</CardActions>

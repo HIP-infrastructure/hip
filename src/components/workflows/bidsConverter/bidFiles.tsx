@@ -16,19 +16,15 @@ import {
 } from '@mui/material'
 import React, { useState, useEffect, ChangeEvent } from 'react'
 import {
-	getJsonFileContent,
-	getFiles,
 	TreeNode,
 	search,
-	getFileContent,
-	createFolder,
 } from '../../../api/gatewayClientAPI'
-import { BIDSDatabase, BIDSSubject } from '../../bidsConvert'
 import FileBrowser from '../../UI/fileBrowser'
 import CreateField from '../../UI/createField'
+import { BIDSDatabase } from '../../data'
 
 interface IBIDSFiles {
-	subject?: BIDSSubject
+	subject?: Record<string, any>
 	database?: BIDSDatabase
 }
 
@@ -85,28 +81,28 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
 	const [bidsFiles, setBidsFiles] = useState<File[]>()
 
-	useEffect(() => {
-		files('/').then(f => setFilesPanes([f]))
-	}, [])
+	// useEffect(() => {
+	// 	files('/').then(f => setFilesPanes([f]))
+	// }, [])
 
-	const files = async (path: string) => {
-		return await getFiles(path)
-	}
+	// const files = async (path: string) => {
+	// 	return await getFiles(path)
+	// }
 
 	const handleSelectedPath = async (pathes: string[]) => {
-		const path = pathes.join('')
-		setCurrentBidsFile(f => (f ? { ...f, path } : { path }))
+		// const path = pathes.join('')
+		// setCurrentBidsFile(f => (f ? { ...f, path } : { path }))
 
-		const result = await files(path)
-		setFilesPanes(prev => {
-			if (!prev) return [result]
+		// const result = await files(path)
+		// setFilesPanes(prev => {
+		// 	if (!prev) return [result]
 
-			prev[pathes.length - 1] = result
-			prev.splice(pathes.length)
+		// 	prev[pathes.length - 1] = result
+		// 	prev.splice(pathes.length)
 
-			return prev
-		})
-		forceUpdate()
+		// 	return prev
+		// })
+		// forceUpdate()
 	}
 
 	const handleAddFile = () => {
@@ -181,11 +177,11 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
 						value={currentBidsFile?.modality}
 						label='Modality'
 						onChange={event => {
-							setCurrentBidsFile(f =>
-								f
-									? { ...f, modality: event?.target.value }
-									: { modality: event.target.value }
-							)
+							// setCurrentBidsFile(f =>
+							// 	f
+							// 		? { ...f, modality: event?.target.value }
+							// 		: { modality: event.target.value }
+							// )
 						}}
 					>
 						{modalities.map(m => (
@@ -196,11 +192,11 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
 					<DynamicForm
 						fields={entities}
 						handleChangeFields={event => {
-							setCurrentBidsFile(f =>
-								f
-									? { ...f, entity: event?.target.value }
-									: { entity: event.target.value }
-							)
+							// setCurrentBidsFile(f =>
+							// 	f
+							// 		? { ...f, entity: event?.target.value }
+							// 		: { entity: event.target.value }
+							// )
 						}}
 					/>
 
@@ -220,10 +216,10 @@ const BIDSFiles = ({ subject, database }: IBIDSFiles) => {
 					</Box>
 				</Box>
 				<Box>
-					<FileBrowser
+					{/* <FileBrowser
 						nodesPanes={filesPanes}
 						handleSelectedPath={handleSelectedPath}
-					></FileBrowser>
+					></FileBrowser> */}
 					<Button
 						onClick={handleAddFile}
 						variant='contained'

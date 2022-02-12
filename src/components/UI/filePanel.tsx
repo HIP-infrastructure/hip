@@ -43,7 +43,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 			backgroundColor: theme.palette.action.hover,
 		},
 		'&.Mui-focused': {
-			backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.primary})`,
+			backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
 			color: 'var(--tree-view-color)',
 		},
 		'&.Mui-selected, &.Mui-selected.Mui-focused': {
@@ -140,9 +140,9 @@ const FilePanel = ({
 						nodeId={node.data.path}
 						labelText={node.label}
 						labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
-						labelInfo={
-							standalone || node.data.type !== 'dir' ? null : <ArrowRight />
-						}
+						// labelInfo={
+						// 	standalone || node.data.type !== 'dir' ? undefined : <ArrowRight />
+						// }
 					/>
 				))}
 			{nodes?.length === 0 && (

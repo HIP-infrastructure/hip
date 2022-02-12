@@ -16,12 +16,8 @@ import {
 import React, { useState, useEffect, ChangeEvent } from 'react'
 import TitleBar from './titleBar'
 import {
-	getJsonFileContent,
-	getFiles,
 	TreeNode,
 	search,
-	getFileContent,
-	createFolder,
 } from '../api/gatewayClientAPI'
 import FileBrowser from './UI/fileBrowser'
 import FilePanel from './UI/filePanel'
@@ -30,12 +26,7 @@ import DatabaseInfo from './workflows/bidsConverter/databaseInfo'
 import SubjectInfo from './workflows/bidsConverter/subjectInfo'
 import DynamicForm from './UI/dynamicForm'
 import BIDSFiles from './workflows/bidsConverter/bidFiles'
-export interface BIDSDatabase {
-	path?: string
-	resourceUrl?: string
-	participants?: Participant[]
-	description?: { [key: string]: string | number }
-}
+import { BIDSDatabase } from './data'
 export interface BIDSSubject {
 	id?: string
 	database?: BIDSDatabase
@@ -64,45 +55,45 @@ const BidsConverter = () => {
 		handleSelectedPath(['/'])
 	}, [])
 
-	const files = async (path: string) => {
-		return await getFiles(path)
-	}
+	// const files = async (path: string) => {
+	// 	return await getFiles(path)
+	// }
 
-	const folders = async (path: string) => {
-		const f = await files(path)
-		return f?.filter(f => f.data.type === 'dir')
-	}
+	// const folders = async (path: string) => {
+	// 	const f = await files(path)
+	// 	return f?.filter(f => f.data.type === 'dir')
+	// }
 
 	const handleSelectedPath = async (pathes: string[]) => {
-		const path = pathes.join('')
-		const description = await getJsonFileContent(
-			`${path}dataset_description.json`
-		)
-		const result = await folders(path)
+		// const path = pathes.join('')
+		// const description = await getJsonFileContent(
+		// 	`${path}dataset_description.json`
+		// )
+		// const result = await folders(path)
 
-		if (description) {
-			const participants = await readBIDSParticipants(`${path}participants.tsv`)
-			setFolderPanes(prev => {
-				if (!prev) return
-				prev.splice(pathes.length - 1)
+		// if (description) {
+		// 	// const participants = await readBIDSParticipants(`${path}participants.tsv`)
+		// 	setFolderPanes(prev => {
+		// 		if (!prev) return
+		// 		prev.splice(pathes.length - 1)
 
-				return prev
-			})
-			setDatabase({ path, participants, description })
-			setSubjectFolder(result)
-		} else {
-			setDatabase(undefined)
+		// 		return prev
+		// 	})
+		// 	// setDatabase({ path, participants, description })
+		// 	setSubjectFolder(result)
+		// } else {
+		// 	setDatabase(undefined)
 
-			setFolderPanes(prev => {
-				if (!prev) return [result]
+		// 	setFolderPanes(prev => {
+		// 		if (!prev) return [result]
 
-				prev[pathes.length - 1] = result
-				prev.splice(pathes.length)
+		// 		prev[pathes.length - 1] = result
+		// 		prev.splice(pathes.length)
 
-				return prev
-			})
-		}
-		forceUpdate()
+		// 		return prev
+		// 	})
+		// }
+		// forceUpdate()
 	}
 
 	const handleSelectedSubjectPath = async (pathes: string[]) => {
@@ -124,36 +115,14 @@ const BidsConverter = () => {
 		}))
 	}
 
-	const readBIDSParticipants = async (path: string) => {
-		const tsv = await getFileContent(path)
-		const [headers, ...rows] = tsv
-			.replaceAll('"', '')
-			.trim()
-			.split('\\n')
-			.map(r => r.split('\\t'))
-
-		const participants: Participant[] = rows.reduce(
-			(a, r) => [
-				...a,
-				Object.assign(
-					...r.map((x, i, _, c = x.trim()) => ({
-						[headers[i].trim()]: isNaN(c) ? c : Number(c),
-					}))
-				),
-			],
-			[] as Participant[]
-		)
-
-		return participants
-	}
 
 	const handleNewSubject = () => {
 		if (database?.participants) {
 			const headers = Object.keys(database?.participants[0])
-			setSubject(p => ({
-				...p,
-				participant: Object.assign(...headers.map(h => ({ [h]: '' }))),
-			}))
+			// setSubject(p => ({
+			// 	...p,
+			// 	participant: Object.assign(...headers.map(h => ({ [h]: '' }))),
+			// }))
 		}
 		// const bidsFolder = subject?.dbPath;
 		// if (bidsFolder)
