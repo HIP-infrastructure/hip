@@ -61,7 +61,12 @@ https://dev.to/leejianhowe/how-to-setup-eslint-for-react-typescript-projects-7ji
 Prettier Setup
 https://prettier.io/docs/en/install.html
 
-### Publish the app
+### Publish the app 
+On the master branch, `npm run publish` will produce a  Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build. 
+
+`docker-compose -f docker-compose-dev.yml run web npm run publish`
+
+The package can then be deployed as a NextCloud app by moving the hip folder inside nextcloud/apps/hip
 
 On the master branch, `npm run publish` will produce a Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build.
 

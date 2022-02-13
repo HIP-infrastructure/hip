@@ -1,15 +1,8 @@
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
-import {
-	Box,
-	Button,
-	IconButton,
-	Input,
-	InputAdornment,
-	Typography,
-} from '@mui/material'
+import { Box, Button, IconButton, Input, InputAdornment, Typography, } from '@mui/material'
 import { useAppStore } from '../store/appProvider'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface UserData {
 	login: string
@@ -17,20 +10,16 @@ interface UserData {
 }
 
 const WebdavForm = (): JSX.Element => {
-	const {
-		user: [user, setUser],
-	} = useAppStore()
+	const { user: [user, setUser] } = useAppStore()
 	const [showPassword, setShowPassword] = useState(false)
 
 	const handleClickShowPassword = () => {
 		setShowPassword(!showPassword)
-	}
+	};
 
-	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>
-	) => {
-		event.preventDefault()
-	}
+	const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+	};
 
 	const formik = useFormik({
 		initialValues: {
@@ -45,49 +34,46 @@ const WebdavForm = (): JSX.Element => {
 	return (
 		<>
 			<form onSubmit={formik.handleSubmit}>
-				<Typography gutterBottom variant='h6' noWrap component='div'>
+				<Typography gutterBottom variant="h6" noWrap component="div">
 					Data access
 				</Typography>
-				<Typography gutterBottom variant='subtitle1' component='div'>
+				<Typography gutterBottom variant="subtitle1" component="div">
 					For security reasons, we need your credentials for every data access
 				</Typography>
 				<Box>
 					<Input
-						id='login'
+						id="login"
 						disableUnderline
 						onChange={formik.handleChange}
 						value={user?.uid}
 						disabled
-						placeholder='Login'
+						placeholder="Login"
 					/>
 				</Box>
 				<Box>
 					<Input
-						id='password'
+						id="password"
 						type={showPassword ? 'text' : 'password'}
 						disableUnderline
 						onChange={formik.handleChange}
 						value={formik.values.password}
-						placeholder='Password'
+						placeholder="Password"
 						autoFocus
 						endAdornment={
-							<InputAdornment position='end'>
+							<InputAdornment position="end">
 								<IconButton
-									aria-label='toggle password visibility'
+									aria-label="toggle password visibility"
 									onClick={handleClickShowPassword}
 									onMouseDown={handleMouseDownPassword}
-									edge='end'
+									edge="end"
 								>
 									{showPassword ? <VisibilityOff /> : <Visibility />}
 								</IconButton>
 							</InputAdornment>
-						}
-					/>
+						} />
 				</Box>
 				<Box sx={{ pt: 2 }}>
-					<Button type='submit' variant='text'>
-						Submit
-					</Button>
+					<Button type='submit' variant="text" >Submit</Button>
 				</Box>
 			</form>
 		</>

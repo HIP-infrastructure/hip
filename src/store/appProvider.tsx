@@ -2,20 +2,16 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import {
-	API_CONTAINERS,
-	Application,
-	Container,
-	getAvailableAppList,
-	UserCredentials,
+	API_CONTAINERS, Application, Container, getAvailableAppList, UserCredentials
 } from '../api/gatewayClientAPI'
 export interface IAppState {
-	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
-	]
-	availableApps: { apps: Application[] | null; error: Error | null }
-	containers: [Container[] | null, Error | undefined]
+	];
+	availableApps: { apps: Application[] | null, error: Error | null };
+	containers: [Container[] | null, Error | undefined];
 }
 
 export const fetcher = async (url: string): Promise<void> => {
@@ -50,9 +46,7 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] = useState<
-		IAppState['availableApps']
-	>({ apps: [], error: null })
+	const [availableApps, setAvailableApps] = useState<IAppState["availableApps"]>({ apps: [], error: null })
 	const [user, setUser] = useState<UserCredentials | null>(null)
 
 	// Fetch Nextcloud user
@@ -60,9 +54,11 @@ export const AppStoreProvider = ({
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
 
-		getAvailableAppList().then(({ ...data }) => {
-			setAvailableApps(data)
-		})
+		getAvailableAppList().then(
+			({ ...data }) => {
+				setAvailableApps(data)
+			}
+		)
 
 		setInterval(() => {
 			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
@@ -82,7 +78,15 @@ export const AppStoreProvider = ({
 			availableApps,
 			containers: [data?.data || [], error],
 		}),
-		[debug, setDebug, user, setUser, data, error, availableApps]
+		[
+			debug,
+			setDebug,
+			user,
+			setUser,
+			data,
+			error,
+			availableApps
+		]
 	)
 
 	return <AppContext.Provider value={value}>{children}</AppContext.Provider>
