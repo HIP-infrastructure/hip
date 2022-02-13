@@ -1,56 +1,25 @@
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Modal } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Chip,
-	Modal,
-} from '@mui/material'
-import Typography from '@mui/material/Typography'
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Application, createSessionAndApp } from '../api/gatewayClientAPI'
-import anywaveLogo from '../assets/anywave__logo.png'
-import bidsManagerLogo from '../assets/bidsmanager__logo.png'
-import brainstormLogo from '../assets/brainstorm__logo.png'
-import dcm2niixLogo from '../assets/dcm2niix__logo.png'
-import freesurferLogo from '../assets/freesurfer__logo.png'
-import fslLogo from '../assets/fsl__logo.png'
-import hibopLogo from '../assets/hibop__logo.png'
-import localizerLogo from '../assets/localizer__logo.png'
-import mricroglLogo from '../assets/mrcicogl__logo.png'
-import slicerLogo from '../assets/slicer__logo.png'
-import { ROUTE_PREFIX } from '../constants'
-import { useAppStore } from '../store/appProvider'
-import TitleBar from './titleBar'
-import WebdavForm from './webdavLoginForm'
-
-const importedImages = [
-	anywaveLogo,
-	bidsManagerLogo,
-	brainstormLogo,
-	dcm2niixLogo,
-	freesurferLogo,
-	fslLogo,
-	hibopLogo,
-	localizerLogo,
-	mricroglLogo,
-	slicerLogo,
-]
-
-import {
-	Container,
-	ContainerType,
-	ContainerState,
-	AppContainer,
-	createApp,
-	createSession,
 	Application,
-} from '../api/gatewayClientAPI'
-import { useAppStore } from '../store/appProvider'
-import './apps.css'
+	createSessionAndApp
+} from '../api/gatewayClientAPI';
+import anywaveLogo from '../assets/anywave__logo.png';
+import bidsManagerLogo from '../assets/bidsmanager__logo.png';
+import brainstormLogo from '../assets/brainstorm__logo.png';
+import dcm2niixLogo from '../assets/dcm2niix__logo.png';
+import freesurferLogo from '../assets/freesurfer__logo.png';
+import fslLogo from '../assets/fsl__logo.png';
+import hibopLogo from '../assets/hibop__logo.png';
+import localizerLogo from '../assets/localizer__logo.png';
+import mricroglLogo from '../assets/mrcicogl__logo.png';
+import slicerLogo from '../assets/slicer__logo.png';
+import { ROUTE_PREFIX } from '../constants';
+import { useAppStore } from '../store/appProvider';
+import TitleBar from './titleBar';
+import WebdavForm from './webdavLoginForm';
 
 const importedImages = [
 	anywaveLogo,
@@ -65,212 +34,97 @@ const importedImages = [
 	slicerLogo,
 ]
 
-const Apps = (): JSX.Element => {
-	const appMenuRefs = useRef<(SlideMenu | null)[]>([])
-	const [shouldCreateSession, setShouldCreateSession] = useState(false)
-	const [sessionForNewApp, setSessionForNewApp] = useState<Container | null>()
-	const [newSessionForApp, setNewSessionForApp] = useState<Container | null>()
-	const [appName, setAppName] = useState('')
-	const [inAppPage, setInAppPage] = useState(false)
-	const [images, setImages] = useState<any[]>([])
-
+const Apps = () => {
+	const { availableApps } = useAppStore()
+	const [startApp, setStartApp] = useState<Application>()
+	const [showWedavForm, setShowWedavForm] = useState(false)
 	const {
-		showWedavForm: [showWedavForm, setShowWedavForm],
-		user: [user, setUser],
 		containers: [containers],
-		availableApps,
-		debug: [debug],
+		user: [user, setUser],
 	} = useAppStore()
+	const navigate = useNavigate();
 
-	// Import images
-	// useEffect(() => {
-	// 	availableApps?.map(app => {
-	// 		import(`../assets/${app.name}__logo.png`)
-	// 			.then(image => {
-	// 				console.log(image)
-	// 				// setImages((images: any[]) => [...images, image])
-	// 			});
-	// 	})
-	// }, [availableApps, setImages])
-
-	// create app in existing session
-	// or create new session
+	// Start an app in the session after getting user's password
 	useEffect(() => {
-		if (inAppPage && user?.password && showWedavForm) {
-			setShowWedavForm(false)
-
-			if (sessionForNewApp) {
-				createApp(sessionForNewApp, user, appName)
-				// Remove password after use
-				const { password, ...nextUser } = user
-				setUser(nextUser)
-				// setCurrentSession(sessionForNewApp)
-				setSessionForNewApp(null)
-				setInAppPage(false)
-			} else if (shouldCreateSession && user.uid) {
-				createSession(user.uid).then(session => {
-					setNewSessionForApp(session)
-					setShouldCreateSession(false)
-				})
-			}
+		if (!(startApp && user)) {
+			return;
 		}
-	}, [
-		user,
-		sessionForNewApp,
-		shouldCreateSession,
-		setShowWedavForm,
-		setSessionForNewApp,
-		setNewSessionForApp,
-		setShouldCreateSession,
-		// setCurrentSession,
-		setUser,
-		setInAppPage,
-		appName,
-		inAppPage,
-		showWedavForm,
-	])
 
-	// create app in new session
-	useEffect(() => {
-		if (inAppPage && newSessionForApp && user?.password) {
-			setShowWedavForm(false)
+		setShowWedavForm(false)
+		createSessionAndApp(user, startApp.name)
+			.then(container => {
+				navigate(`${ROUTE_PREFIX}/sessions/${container.id}`)
+			})
 
-			const container = containers?.find(
-				c => c.id === newSessionForApp?.id && c.state === ContainerState.RUNNING
-			)
+		// Remove password after use
+		const { password, ...nextUser } = user
+		setUser(nextUser)
+		setStartApp(undefined)
+	}, [user])
 
-			if (container) {
-				createApp(container, user, appName)
-				// Remove password after use
-				const { password, ...nextUser } = user
-				setUser(nextUser)
-				// setCurrentSession(container)
-				setNewSessionForApp(null)
-				setInAppPage(false)
-			}
-		}
-	}, [
-		user,
-		containers,
-		newSessionForApp,
-		// setCurrentSession,
-		setNewSessionForApp,
-		setUser,
-		appName,
-		inAppPage,
-		setShowWedavForm,
-	])
+	const handleCreateApp = (app: Application) => {
+		setStartApp(app)
+		setShowWedavForm(true)
+	}
 
-	const sessions =
-		containers
-			?.filter(
-				(container: Container) => container.type === ContainerType.SESSION
-			)
-			.map((container: Container) => ({
-				...container,
-				apps: (containers as AppContainer[]).filter(
-					a => a.parentId === container.id
-				),
-			})) || []
+	const modalStyle = {
+		position: 'absolute' as 'absolute',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: 240,
+		bgcolor: 'background.paper',
+		border: '1px solid #333',
+		boxShadow: 4,
+		p: 4,
+	};
 
-	const menuItems = (app: Application) =>
-		[
-			...(sessions || []).map((session: Container) => {
-				const runningApp = session?.apps?.find(
-					(sessionApp: AppContainer) =>
-						session.id === sessionApp.parentId && sessionApp.app === app.name
-				)
-				return {
-					label: runningApp
-						? `Open in #${session.name}`
-						: `Run in #${session.name}`,
-					icon: runningApp ? 'pi pi-eye' : 'pi pi-clone',
-					disabled: session.state !== ContainerState.RUNNING,
-					command: () => {
-						if (runningApp) {
-							// setCurrentSession(session)
-						} else {
-							setInAppPage(true)
-							setAppName(app.name)
-							setSessionForNewApp(session)
-							setShowWedavForm(true)
-						}
-					},
-				}
-			}),
-			{
-				separator: true,
-			},
-			{
-				label: 'Create in a new session',
-				icon: 'pi pi-clone',
-				command: () => {
-					setInAppPage(true)
-					setAppName(app.name)
-					setShouldCreateSession(true)
-					setShowWedavForm(true)
-				},
-			},
-			{
-				separator: true,
-			},
-			{
-				label: 'Documentation',
-				icon: 'pi pi-external-link',
-				command: () => {
-					window.open(app.url, '_blank')
-				},
-			},
-		] || []
+	return <>
+		<TitleBar title={'Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking start app'} />
+		<Modal
+			open={showWedavForm}
+			onClose={() => setShowWedavForm(false)}
+		>
+			<Box sx={modalStyle}>
+				<WebdavForm />
+			</Box>
+		</Modal>
+		<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+			{availableApps.error &&
+				<Typography gutterBottom variant="body2" color="error">
+					{availableApps.error.message}
+				</Typography>}
+			{availableApps.apps?.map((app, i) =>
+				<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={app.name}>
+					<CardMedia
+						component="img"
+						height="140"
+						src={importedImages[i]}
+						alt={app.label}
+					/>
+					<CardContent sx={{ flexGrow: 1 }}>
+						<Box sx={{ display: 'flex' }}>
+							<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
+								{app.label} {app.version}
+							</Typography>
+							<Chip label={app.state} color={app.state !== 'faulty' ? "success" : "error"} variant="outlined" />
+						</Box>
 
-	const AppItems = () => (
-		<>
-			{availableApps?.map((app, i) => {
-				return (
-					<div key={`${app.name}`}>
-						<Tooltip
-							placement="right"
-							title={
-								<React.Fragment>
-									<Typography color="inherit">{app.label} {app.version}</Typography>
-									{app.state !== 'ready' ? '(' + app.state + ')' : ''} <br />
-									{app.description}
-									<br />
-									<a href={app.url} target="_blank" rel="noreferrer">Website</a>
-								</React.Fragment>
-							}
-						>
-							<div className={`app__card app__card__${app.name} app__card-${app.state}`}>
-								<div className='app__card-img'>
-									<img
-										height="64px"
-										width="64px"
-										src={importedImages[i]} alt=''
-										onClick={event => appMenuRefs?.current[i]?.toggle(event)} />
-								</div>
-								<div className='apps__actions'>
-									{/* <SlideMenu
-										ref={ref => (appMenuRefs.current[i] = ref)}
-										model={menuItems(app)}
-										popup
-									/> */}
-									{/* <Button
-							style={{ width: '80px'}}
-							type='button'
-							className='p-button-sm p-button-link' 
-							label={app.name}
-							onClick={event => appMenuRefs?.current[i]?.toggle(event)}
-						/> */}
-								</div>
-							</div>
-						</Tooltip>
-					</div>
-				)
-			})}
-		</>
-	)
+						<Typography gutterBottom variant="body2" color="text.secondary">
+							{app.description}
+						</Typography>
+						<Typography variant="caption" color="text.secondary">
+							{app.url}
+						</Typography>
 
-	return <AppItems />
+					</CardContent>
+					<CardActions sx={{ p: 2, alignSelf: 'end' }} >
+						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button>
+						<Button size="small" onClick={() => handleCreateApp(app)}>Start</Button>
+					</CardActions>
+				</Card>
+			)}
+		</Box ></>
 }
 
 export default Apps
