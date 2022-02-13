@@ -124,14 +124,14 @@ export const forceRemove = (id: string): void => {
 // Gateway API
 
 export const search = async (term: string) => {
-	return fetch(`/api/v1/files/search/${term}`, {
+	return fetch(`${API_GATEWAY}/files/search/${term}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
 	}).then(data => data.json())
 }
 export const getBids = async (): Promise<BIDSDatabaseResponse> => {
-	return fetch(`/api/v1/files/bids`, {
+	return fetch(`${API_GATEWAY}/files/bids`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
