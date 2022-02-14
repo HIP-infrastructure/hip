@@ -15,7 +15,7 @@ const SessionInfo = ({ session }: { session?: Container }) => {
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="h5" gutterBottom component="div">
-                        Session #{session?.name}
+                        Desktop #{session?.name}
                     </Typography>
                     <Chip
                         label={

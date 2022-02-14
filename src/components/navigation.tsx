@@ -25,6 +25,11 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
 
                 },
                 {
+                    route: `${space.route}/apps`,
+                    label: 'App Catalog',
+                    icon: <Apps />
+                },
+                {
                     route: 'documentation',
                     label: 'Documentation',
                     icon: <HelpCenter />,
@@ -32,22 +37,12 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                 }]
         },
         {
-            label: `${space.label} Space`,
+            label: `${space.label}`,
             children: [
                 {
                     route: `${space.route}/sessions`,
-                    label: 'Sessions',
+                    label: 'Desktops',
                     icon: <Monitor />,
-                },
-                {
-                    route: `${space.route}/apps`,
-                    label: 'Applications',
-                    icon: <Apps />
-                },
-                {
-                    route: `${space.route}/workflows`,
-                    label: 'Workflows',
-                    icon: <Assignment />
                 },
                 {
                     route: `${space.route}/data`,
@@ -55,11 +50,17 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                     icon: <Folder />
                 },
                 {
+                    route: `${space.route}/workflows`,
+                    label: 'Workflows',
+                    icon: <Assignment />
+                },
+                {
                     route: `${space.route}/studies`,  // project ?
                     label: 'Studies',
                     icon: <Psychology />,
                     disabled: true
-                }]
+                },
+            ]
         },
 
     ]

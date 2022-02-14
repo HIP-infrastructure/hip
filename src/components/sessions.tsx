@@ -28,8 +28,8 @@ const Sessions = (): JSX.Element => {
 		if (!modalRef.current) return;
 
 		const reply = await modalRef.current.open(
-			'Remove session ?',
-			'Permanently remove this session and all its applications?'
+			'Remove virtual desktop ?',
+			'Permanently remove this virtual desktop and all its applications?'
 		);
 
 		if (reply) {
@@ -48,9 +48,9 @@ const Sessions = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={'My Sessions'}
-				description={'Sessions are remote virtual computers on secure infrastructure where you can launch apps on your data.'}
-				button={<Button variant="text" color="info" onClick={() => createSession(user?.uid || '')}>Create session</Button>}
+				title={'My Desktops'}
+				description={'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'}
+				button={<Button variant="contained" color="primary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{sessions?.length === 0 && <Typography variant="subtitle1">
@@ -73,7 +73,7 @@ const Sessions = (): JSX.Element => {
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
 									<Typography variant="h5">
-										{`Session #${session?.name}`}
+										{`Desktop #${session?.name}`}
 									</Typography>
 									<Typography gutterBottom variant="caption" color="text.secondary">
 										{session?.user}

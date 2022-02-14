@@ -1,11 +1,11 @@
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Modal } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import {
-	Application,
-	createSessionAndApp
-} from '../api/gatewayClientAPI';
+// import { useNavigate } from "react-router-dom";
+// import {
+// 	Application,
+// 	createSessionAndApp
+// } from '../api/gatewayClientAPI';
 import anywaveLogo from '../assets/anywave__logo.png';
 import bidsManagerLogo from '../assets/bidsmanager__logo.png';
 import brainstormLogo from '../assets/brainstorm__logo.png';
@@ -16,7 +16,7 @@ import hibopLogo from '../assets/hibop__logo.png';
 import localizerLogo from '../assets/localizer__logo.png';
 import mricroglLogo from '../assets/mrcicogl__logo.png';
 import slicerLogo from '../assets/slicer__logo.png';
-import { ROUTE_PREFIX } from '../constants';
+// import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
 import TitleBar from './titleBar';
 import WebdavForm from './webdavLoginForm';
@@ -36,36 +36,36 @@ const importedImages = [
 
 const Apps = () => {
 	const { availableApps } = useAppStore()
-	const [startApp, setStartApp] = useState<Application>()
+	// const [startApp, setStartApp] = useState<Application>()
 	const [showWedavForm, setShowWedavForm] = useState(false)
 	const {
 		containers: [containers],
-		user: [user, setUser],
+		// user: [user, setUser],
 	} = useAppStore()
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 
 	// Start an app in the session after getting user's password
-	useEffect(() => {
-		if (!(startApp && user)) {
-			return;
-		}
+	// useEffect(() => {
+	// 	if (!(startApp && user)) {
+	// 		return;
+	// 	}
 
-		setShowWedavForm(false)
-		createSessionAndApp(user, startApp.name)
-			.then(container => {
-				navigate(`${ROUTE_PREFIX}/sessions/${container.id}`)
-			})
+	// 	setShowWedavForm(false)
+	// 	createSessionAndApp(user, startApp.name)
+	// 		.then(container => {
+	// 			navigate(`${ROUTE_PREFIX}/sessions/${container.id}`)
+	// 		})
 
-		// Remove password after use
-		const { password, ...nextUser } = user
-		setUser(nextUser)
-		setStartApp(undefined)
-	}, [user])
+	// 	// Remove password after use
+	// 	const { password, ...nextUser } = user
+	// 	setUser(nextUser)
+	// 	setStartApp(undefined)
+	// }, [user])
 
-	const handleCreateApp = (app: Application) => {
-		setStartApp(app)
-		setShowWedavForm(true)
-	}
+	// const handleCreateApp = (app: Application) => {
+	// 	setStartApp(app)
+	// 	setShowWedavForm(true)
+	// }
 
 	const modalStyle = {
 		position: 'absolute' as 'absolute',
@@ -80,7 +80,7 @@ const Apps = () => {
 	};
 
 	return <>
-		<TitleBar title={'Applications'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session or by clicking start app'} />
+		<TitleBar title={'App Catalog'} description={'A list of all the applications made available to the HIP users. The applications can be started from an existing session'} />
 		<Modal
 			open={showWedavForm}
 			onClose={() => setShowWedavForm(false)}
@@ -95,7 +95,7 @@ const Apps = () => {
 					{availableApps.error.message}
 				</Typography>}
 			{availableApps.apps?.map((app, i) =>
-				<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={app.name}>
+				<Card sx={{ maxWidth: 288, display: 'flex', flexDirection: 'column' }} key={app.name}>
 					<CardMedia
 						component="img"
 						height="140"
@@ -120,7 +120,7 @@ const Apps = () => {
 					</CardContent>
 					<CardActions sx={{ p: 2, alignSelf: 'end' }} >
 						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button>
-						<Button size="small" onClick={() => handleCreateApp(app)}>Start</Button>
+						{/* <Button size="small" onClick={() => handleCreateApp(app)}>Start</Button> */}
 					</CardActions>
 				</Card>
 			)}

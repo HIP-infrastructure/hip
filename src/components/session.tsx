@@ -202,14 +202,14 @@ const Session = (): JSX.Element => {
 					<Box sx={{ flexGrow: 1 }} />
 					<Select
 						id="session-select"
-						aria-label="Select session"
+						aria-label="Select desktop"
 						IconComponent={() => <ExpandMore />}
 						value={session?.id || ''}
 						onChange={handleOnChange}
 						sx={{ color: 'white' }}
 					>
 						{
-							sessions?.map(s => <MenuItem value={s?.id} key={s?.id}>{`Session #${s?.name}`}</MenuItem>)
+							sessions?.map(s => <MenuItem value={s?.id} key={s?.id}>{`Desktop #${s?.name}`}</MenuItem>)
 						}
 					</Select>
 					<Box sx={{ flexGrow: 1 }} />
@@ -235,7 +235,7 @@ const Session = (): JSX.Element => {
 			<Box>
 				{!sessionIsAlive && (
 					<div
-						aria-label='Loading remote session'
+						aria-label='Loading remote desktop'
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
 							height: '100vh',
@@ -250,7 +250,7 @@ const Session = (): JSX.Element => {
 				{sessionIsAlive && session &&
 					<iframe
 						ref={fullScreenRef}
-						title='Session'
+						title='Desktop'
 						src={`${session.url}?${XPRA_PARAMS}`}
 						allowFullScreen
 						style={{

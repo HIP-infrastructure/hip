@@ -113,7 +113,7 @@ const Dahsboard = () => {
                         </Typography>
 
                         <Typography sx={{ mt: 2 }} variant="body2" color="text.secondary">
-                            {space.counts[0]} <em>Opened sessions</em>
+                            {space.counts[0]} <em>Opened desktop</em>
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {space.counts[1]} <em> BIDS databases</em>
