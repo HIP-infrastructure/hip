@@ -12,7 +12,7 @@ import { useAppStore } from '../store/appProvider';
 const spaces = [{
     label: 'Private',
     state: 'production',
-    route: `${ROUTE_PREFIX}/private`,
+    route: `${ROUTE_PREFIX}/private/sessions`,
     description: 'Password-protected space for each iEEG data provider to upload and curate own data.',
     image: PrivateImage,
     credit: 'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
@@ -20,7 +20,7 @@ const spaces = [{
 }, {
     label: 'Collaborative',
     state: 'not ready',
-    route: `${ROUTE_PREFIX}/collaborative`,
+    route: `${ROUTE_PREFIX}/collaborative/sessions`,
     description: 'Collaborative space where scientists accredited by the consortium of data providers perform iEEG data analyses on shared data.',
     image: CollaborativeImage,
     credit: 'Photo by Milad Fakurian on Unsplash, https://unsplash.com/@fakurian',
@@ -29,7 +29,7 @@ const spaces = [{
 {
     label: 'Public',
     state: 'not ready',
-    route: `${ROUTE_PREFIX}/public`,
+    route: `${ROUTE_PREFIX}/public/sessions`,
     description: 'Public space where public iEEG data are made available by individual iEEG data providers to be used by any scientist.',
     image: PublicImage,
     credit: 'Photo by  Jesse Martini on Unsplash, https://unsplash.com/@jessemartini',

@@ -48,7 +48,7 @@ const Layout = (): JSX.Element => {
 
 	const handleSelectSpace = (selectedSpace: number) => {
 		setSelectedSpace(selectedSpace)
-		navigate(SPACES_NAV[selectedSpace].route)
+		navigate(`${SPACES_NAV[selectedSpace].route}/sessions`)
 	}
 
 	const handleDrawerToggle = () => {
@@ -76,11 +76,6 @@ const Layout = (): JSX.Element => {
 				/>
 			</Box>
 			<Box sx={{ margin: '32px', width: 'inherit' }}>
-				<Box>
-					{/* <Alert severity="success" color="info">
-						This is a success alert — check it out!
-					</Alert> */}
-				</Box>
 				<Box sx={{ display: 'flex', marginBottom: '8px' }} >
 					<Tabs
 						value={selectedSpace}
@@ -104,6 +99,11 @@ const Layout = (): JSX.Element => {
 					}}>
 					<Outlet />
 				</Box >
+				<Box>
+					{/* <Alert severity="success" color="info">
+						This is a success alert — check it out!
+					</Alert> */}
+				</Box>
 			</Box>
 			<Box
 				component="footer"
@@ -118,8 +118,8 @@ const App = () =>
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
 			<Route index element={<Dashboard />} />
-			<Route path={`${ROUTE_PREFIX}/dashboard`} element={<Dashboard />} />
-			<Route path={`${ROUTE_PREFIX}/documentation`} element={<Documentation />} />
+			<Route path={'apps'} element={<Apps />} />
+			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'private'} element={<Outlet />}>
 				<Route index element={<Sessions />} />
 				<Route path={'sessions'} element={<Sessions />} />
@@ -128,20 +128,17 @@ const App = () =>
 					<Route index element={<Workflows />} />
 					<Route path={'bids'} element={<BidsConverter />} />
 				</Route>
-				<Route path={'apps'} element={<Apps />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<CollaborativeSessions />} />
 				<Route path={'sessions'} element={<CollaborativeSessions />} />
 				<Route path={'data'} element={<CollaborativeData />} />
-				<Route path={'apps'} element={<Apps />} />
 				<Route path={'workflows'} element={<CollaborativeWorkflows />} />
 			</Route>
 			<Route path={'public'} element={<Outlet />}>
 				<Route index element={<PublicSessions />} />
 				<Route path={'sessions'} element={<PublicSessions />} />
 				<Route path={'data'} element={<PublicData />} />
-				<Route path={'apps'} element={<Apps />} />
 				<Route path={'workflows'} element={<PublicWorkflows />} />
 			</Route>
 			<Route

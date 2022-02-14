@@ -19,13 +19,13 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
             label: 'HIP',
             children: [
                 {
-                    route: 'dashboard',
+                    route: '',
                     label: 'Dashboard',
                     icon: <Dashboard />,
 
                 },
                 {
-                    route: `${space.route}/apps`,
+                    route: 'apps',
                     label: 'App Catalog',
                     icon: <Apps />
                 },
@@ -70,6 +70,12 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
         const resolved = useResolvedPath(current);
         const match = useMatch({ path: resolved.pathname, end: true });
 
+        console.log(current)
+        if (match !== null) {
+            console.log(resolved, match)
+            console.log()
+        }
+
         return match !== null
     }
 
@@ -91,7 +97,11 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
                         </ListItem>
                         {children.map(({ label, route, icon, disabled }) => (
                             <ListItem disablePadding key={label}>
-                                <ListItemButton disabled={disabled} selected={isActive(route)} onClick={() => handleClick(route)}>
+                                <ListItemButton
+                                    disabled={disabled}
+                                    selected={isActive(route)}
+                                    onClick={() => handleClick(route)}
+                                >
                                     <ListItemIcon>{icon}</ListItemIcon>
                                     <ListItemText>{label}</ListItemText>
                                 </ListItemButton>
