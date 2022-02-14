@@ -69,13 +69,7 @@ const Navigation = (props: { space: Space, PaperProps: PaperProps }): JSX.Elemen
         const current = `${ROUTE_PREFIX}/${route}`
         const resolved = useResolvedPath(current);
         const match = useMatch({ path: resolved.pathname, end: true });
-
-        console.log(current)
-        if (match !== null) {
-            console.log(resolved, match)
-            console.log()
-        }
-
+        
         return match !== null
     }
 
