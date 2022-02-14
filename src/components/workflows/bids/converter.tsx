@@ -2,8 +2,9 @@ import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem,
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { BIDSDatabaseResponse, BIDSDatabase, Participant } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
-import Database from './database'
+import Databases from './databases'
 import Participants from './participants'
+import Files from './files'
 import { getBids } from '../../../api/gatewayClientAPI'
 
 // import {
@@ -19,8 +20,16 @@ import { getBids } from '../../../api/gatewayClientAPI'
 
 
 
-const steps = ['BIDS Database', 'Subject', 'Files', 'Run'];
-
+const steps = ['BIDS Database', 'Participant', 'Files', 'Run'];
+const boxStyle = {
+    border: 1,
+    borderColor: 'grey.400',
+    p: 2,
+    mr: 1,
+    display: 'flex',
+    flex: '1 0 auto',
+    flexFlow: 'column',
+}
 const BidsConverter = () => {
 
     const [activeStep, setActiveStep] = useState(0);
@@ -103,19 +112,11 @@ const BidsConverter = () => {
 
             {activeStep === 0 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
-                    <Box sx={{
-                        border: 1,
-                        borderColor: 'grey.400',
-                        p: 2,
-                        mr: 1,
-                        display: 'flex',
-                        flex: '1 0 auto',
-                        flexFlow: 'column'
-                    }} >
+                    <Box sx={boxStyle} >
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Select a BIDS Database Folder, or create a new one
                         </Typography>
-                        <Database
+                        <Databases
                             bidsDatabases={bidsDatabases}
                             handleSelectDatabase={setSelectedBidsDatabase}
                             selectedDatabase={selectedBidsDatabase} />
@@ -127,15 +128,7 @@ const BidsConverter = () => {
 
             {activeStep === 1 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
-                    <Box sx={{
-                        border: 1,
-                        borderColor: 'grey.400',
-                        p: 2,
-                        mr: 1,
-                        display: 'flex',
-                        flex: '1 0 auto',
-                        flexFlow: 'column'
-                    }} >
+                    <Box sx={boxStyle}  >
                         <Typography sx={{ mb: 2 }}>
                             Select a Participant or create a new one
                         </Typography>
@@ -151,25 +144,14 @@ const BidsConverter = () => {
             </>}
             {activeStep === 2 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
-                    <Box sx={{
-                        border: 1,
-                        borderColor: 'grey.400',
-                        p: 2,
-                        mr: 1,
-                        display: 'flex',
-                        flex: '1 0 auto',
-                        flexFlow: 'column',
-                        justifyContent: 'flex-start'
-                    }} >
+                    <Box sx={boxStyle}  >
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Add Files
                         </Typography>
-                        {/* <BIDSFiles subject={subject} database={database} /> */}
+                        <Files />
                         <StepNavigation activeStep={activeStep} />
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                        {/* <DatabaseInfo database={database} />
-                        <SubjectInfo subject={subject} /> */}
                     </Box>
                 </Box>
             </>}
@@ -224,5 +206,7 @@ const BidsConverter = () => {
         </Box>
     </>
 }
+
+BidsConverter.displayName = 'BidsConverter'
 
 export default BidsConverter

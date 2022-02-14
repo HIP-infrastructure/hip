@@ -1,5 +1,5 @@
 import { mutate } from 'swr'
-import { BIDSDatabase, BIDSDatabaseResponse, Container, Application, UserCredentials } from './types'
+import { BIDSDatabase, BIDSDatabaseResponse, Container, Application, UserCredentials, TreeNode } from './types'
 import { uniq } from './utils'
 
 
@@ -35,6 +35,15 @@ export const getBids = async (): Promise<BIDSDatabaseResponse> => {
 			requesttoken: window.OC.requestToken,
 		},
 	}).then(data => data.json())
+}
+
+export const getFiles = async (path: string): Promise<TreeNode[]> => {
+	//try {
+	const url = `/apps/hip/document/files?path=${path}`
+	const response = await fetch(url)
+	const node: TreeNode[] = await response.json()
+
+	return node
 }
 
 

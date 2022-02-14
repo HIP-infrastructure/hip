@@ -104,3 +104,22 @@ export interface BIDSDatabase {
 	participants?: Participant[],
 	Browse: string;
 }
+
+export interface ISearch {
+	name: string;
+	isPaginated: true
+	entries: ISearchResult[]
+}
+
+export interface ISearchResult {
+	thumbnailUrl: string;
+	title: string;
+	subline: string;
+	resourceUrl: string;
+	icon: string;
+	rounded: boolean,
+	attributes: {
+		fileId: string;
+		path: string;
+	}
+}

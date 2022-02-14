@@ -103,36 +103,37 @@ export default ({ nodes, handleSelectedPath, standalone = true }: ITreeSelect) =
     }
 
     return (
-        <TreeView
-            onNodeSelect={onNodeSelect}
-            aria-label="tree view"
-            // defaultExpanded={['3']}
-            defaultCollapseIcon={<ArrowDropDown />}
-            defaultExpandIcon={<ArrowRight />}
-            defaultEndIcon={<div style={{ width: 24 }} />}
-            sx={{
-                height: 292,
-                flexGrow: 1,
-                maxWidth: 400,
-                minWidth: 240,
-                mr: 1,
-                overflowY: 'auto',
-                border: 1,
-                borderColor: 'grey.400',
-            }}
-        >
-            {nodes && nodes.map((node: TreeNode) =>
-                <StyledTreeItem
-                    key={node.key}
-                    nodeId={node.data.path}
-                    labelText={node.label}
-                    labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
-                    labelInfo={standalone || node.data.type !== 'dir' ? null : <ArrowRight />}
-                />
-            )}
-            {nodes?.length === 0 && <Typography variant="body2" sx={{ fontWeight: 'inherit', p: 0.5 }}>
-                Empty
-            </Typography>}
-        </TreeView>
+        <>
+            <TreeView
+                onNodeSelect={onNodeSelect}
+                aria-label="tree view"
+                // defaultExpanded={['3']}
+                defaultCollapseIcon={<ArrowDropDown />}
+                defaultExpandIcon={<ArrowRight />}
+                defaultEndIcon={<div style={{ width: 24 }} />}
+                sx={{
+                    height: 292,
+                    maxWidth: 400,
+                    minWidth: 240,
+                    mr: 1,
+                    overflowY: 'auto',
+                    border: 1,
+                    borderColor: 'grey.400',
+                }}
+            >
+                {nodes && nodes.map((node: TreeNode) =>
+                    <StyledTreeItem
+                        key={node.key}
+                        nodeId={node.data.path}
+                        labelText={node.label}
+                        labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
+                        labelInfo={standalone || node.data.type !== 'dir' ? null : <ArrowRight />}
+                    />
+                )}
+                {nodes?.length === 0 && <Typography variant="body2" sx={{ fontWeight: 'inherit', p: 0.5 }}>
+                    Empty
+                </Typography>}
+            </TreeView>
+        </>
     );
 }
