@@ -10,7 +10,7 @@ interface Props {
 	selectedParticipant?: Participant
 }
 
-const Data = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Props): JSX.Element => {
+const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Props): JSX.Element => {
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
 	const navigate = useNavigate()
 
@@ -22,7 +22,9 @@ const Data = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Pr
 	}, [selectedParticipant])
 
 	useEffect(() => {
-		const selected = bidsDatabase?.participants?.find(b => b.id === selectionModel[0])
+		if (selectionModel.length === 0) return
+
+		const selected = bidsDatabase?.participants?.find(b => b.participant_id === selectionModel[0])
 		if (selected)
 			handleSelectParticipant(selected)
 
@@ -92,5 +94,6 @@ const Data = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Pr
 		</>
 	)
 }
+Participants.displayName = 'Participants'
 
-export default Data
+export default Participants
