@@ -1,29 +1,8 @@
 import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getBids } from '../../../api/gatewayClientAPI'
-import { Participant, BIDSDatabaseResponse } from '../../../api/types';
-import TitleBar from '../../UI/titleBar';
-
-export interface BIDSDatabase {
-	path: string;
-	Name: string;
-	BIDSVersion: string;
-	Licence: string;
-	Authors: string[];
-	Acknowledgements: string;
-	HowToAcknowledge: string;
-	Funding: string[];
-	ReferencesAndLinks: string[];
-	DatasetDOI: string;
-	participants?: Participant[],
-	Browse: string;
-}
-
-// interface ExtendedBIDSDatabase extends BIDSDatabase {
-// 	[key: string]: string[] | string | number
-// }
+import { BIDSDatabase, BIDSDatabaseResponse } from '../../../api/types';
 
 const columns: GridColDef[] = [
 	{
@@ -75,20 +54,31 @@ const columns: GridColDef[] = [
 
 ];
 
-// https://hip.local/apps/files/?dir=
+interface Props {
+	bidsDatabases?: BIDSDatabaseResponse;
+	handleSelectDatabase: (selected: BIDSDatabase) => void;
+	selectedDatabase?: BIDSDatabase
+}
 
-
-const Data = (): JSX.Element => {
-	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
+const Data = ({ bidsDatabases, handleSelectDatabase, selectedDatabase }: Props): JSX.Element => {
+	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		getBids().then(r => {
-			setBidsDatabase(r)
-		})
-	}, [])
+		if (selectedDatabase) {
+			const s = [selectedDatabase.id] as GridSelectionModel
+			setSelectionModel(s)
+		}
+	}, [selectedDatabase])
 
-	const rows = bidsDatabase?.data?.map(db => ({
+	useEffect(() => {
+		const selected = bidsDatabases?.data?.find(b => b.id === selectionModel[0])
+		if (selected)
+			handleSelectDatabase(selected)
+
+	}, [selectionModel, setSelectionModel])
+
+	const rows = bidsDatabases?.data?.map(db => ({
 		id: db.path,
 		Name: db.Name,
 		Authors: db.Authors,
@@ -101,38 +91,29 @@ const Data = (): JSX.Element => {
 
 	return (
 		<>
-			<TitleBar title='Data' />
 
-			{bidsDatabase?.error &&
-				<Alert severity="error">{bidsDatabase.error.message}</Alert>
+			{bidsDatabases?.error &&
+				<Alert severity="error">{bidsDatabases.error.message}</Alert>
 			}
-
-			<Box sx={{ mt: 2 }}>
-				<Typography variant="h6">
-					Private Data
-				</Typography>
-				<Typography variant="subtitle2">
-					Browse your data in <Link underline="always" href="/apps/files/" >
-						NextCloud Browser
-					</Link>
-				</Typography>
-			</Box>
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
 					BIDS Databases{' '}
-					{!bidsDatabase?.data &&
-						!bidsDatabase?.error &&
+					{!bidsDatabases?.data &&
+						!bidsDatabases?.error &&
 						<CircularProgress size={16} />}
 				</Typography>
 
-				<Box sx={{ height: 500, width: '100%' }}>
+				<Box sx={{ height: 400, width: '100%' }}>
 					<DataGrid
+						onSelectionModelChange={(newSelectionModel) => {
+							setSelectionModel(newSelectionModel);
+						}}
+						selectionModel={selectionModel}
 						rows={rows}
 						columns={columns}
 						pageSize={100}
 						rowsPerPageOptions={[100]}
-						disableSelectionOnClick
 					/>
 				</Box>
 			</Box >

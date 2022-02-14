@@ -1,8 +1,11 @@
 import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { BIDSDatabaseResponse } from '../../../api/types';
+import { BIDSDatabaseResponse, BIDSDatabase, Participant } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
 import Database from './database'
+import Participants from './participants'
+import { getBids } from '../../../api/gatewayClientAPI'
+
 // import {
 //     getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
 // } from '../../../api/gatewayClientAPI'
@@ -21,7 +24,10 @@ const steps = ['BIDS Database', 'Subject', 'Files', 'Run'];
 const BidsConverter = () => {
 
     const [activeStep, setActiveStep] = useState(0);
-	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
+    const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabaseResponse>()
+    const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
+    const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
+
     // const [subject, setSubject] = useState<BIDSSubject>()
     // const [searchResult1, setSearchResult1] = useState();
     // const [term, setTerm] = useState('')
@@ -30,7 +36,7 @@ const BidsConverter = () => {
     // see https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
     // const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
- 
+
 
     // const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     //     const term = event.target.value;
@@ -39,6 +45,13 @@ const BidsConverter = () => {
 
     //     setSearchResult1(result)
     // }
+
+    useEffect(() => {
+        getBids().then(r => {
+            setBidsDatabases(r)
+        })
+    }, [])
+
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -52,7 +65,7 @@ const BidsConverter = () => {
         setActiveStep(0);
     };
 
-    const StepNavigation = ({ activeStep }: { activeStep: number }) => <>
+    const StepNavigation = ({ activeStep, disabled = false }: { activeStep: number, disabled?: boolean }) => <>
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
                 variant='contained'
@@ -63,7 +76,7 @@ const BidsConverter = () => {
                 Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button sx={{ mr: 1 }} variant='contained' onClick={handleNext}>
+            <Button sx={{ mr: 1 }} variant='contained' disabled={disabled} onClick={handleNext}>
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
         </Box></>
@@ -102,20 +115,13 @@ const BidsConverter = () => {
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Select a BIDS Database Folder, or create a new one
                         </Typography>
-                        <Box sx={{ display: 'flex', flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
-                            <Database />
-                        </Box>
-                        <StepNavigation activeStep={activeStep} />
+                        <Database
+                            bidsDatabases={bidsDatabases}
+                            handleSelectDatabase={setSelectedBidsDatabase}
+                            selectedDatabase={selectedBidsDatabase} />
+                        <StepNavigation disabled={!selectedBidsDatabase} activeStep={activeStep} />
                     </Box>
-                    <Box sx={{
-                        minWidth: 240,
-                        maxWidth: 400
-                    }}></Box>
                 </Box>
-                {/* 
-                    <TextField id="search1" label="Search1" value={term} onChange={handleSearch} />
-                */}
-
             </>
             }
 
@@ -131,62 +137,15 @@ const BidsConverter = () => {
                         flexFlow: 'column'
                     }} >
                         <Typography sx={{ mb: 2 }}>
-                            Select a Subject or create a new one
+                            Select a Participant or create a new one
                         </Typography>
-                        <Box sx={{ display: 'flex', }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                {/* {subjectFolder &&
-                                    <FilePanel
-                                        nodes={subjectFolder}
-                                        handleSelectedPath={handleSelectedSubjectPath}
-                                    />
-                                }
-                                <Button 
-                                    sx={{ mt: 2, p: 1, mr: 1 }} 
-                                    onClick={handleNewSubject} 
-                                    variant="outlined">New Subject </Button> */}
-
-                            </Box>
-                            {subject && subject.participant &&
-                                <Box sx={{
-                                    overflowY: 'auto',
-                                    border: 1,
-                                    borderColor: 'grey.400',
-                                    width: '100%',
-                                    p: 2,
-                                    mr: 1
-                                }}>
-                                    <Typography gutterBottom variant='subtitle2'>
-                                        Subject
-                                    </Typography>
-                                    <Box>
-                                        {/* <DynamicForm
-                                            fields={subject.participant}
-                                            handleChangeFields={participant => {
-                                                setSubject(s => ({
-                                                    ...(s ? s : {}),
-                                                    participant
-                                                }))
-                                            }} />
-                                        <Box sx={{ m: 2 }}>
-                                            <CreateField handleCreateField={({ key, value }) => {
-                                                if (key && value)
-                                                    setSubject(s => ({
-                                                        ...s,
-                                                        participant: {
-                                                            ...s?.participant,
-                                                            [key]: isNaN(value) ? value : Number(value)
-                                                        }
-                                                    }))
-                                            }} />
-                                        </Box> */}
-                                    </Box>
-                                </Box>
-                            }
-                        </Box>
-                        <StepNavigation activeStep={activeStep} />
+                        <Participants
+                            bidsDatabase={selectedBidsDatabase}
+                            handleSelectParticipant={setSelectedParticipant}
+                            selectedParticipant={selectedParticipant}
+                        />
+                        <StepNavigation disabled={!selectedParticipant} activeStep={activeStep} />
                     </Box>
-                    {/* <DatabaseInfo database={database} /> */}
                 </Box>
 
             </>}

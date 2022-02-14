@@ -90,6 +90,7 @@ export interface Participant {
 }
 
 export interface BIDSDatabase {
+	id: string;
 	path: string;
 	Name: string;
 	BIDSVersion: string;
