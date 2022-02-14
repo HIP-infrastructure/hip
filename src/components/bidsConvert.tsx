@@ -22,7 +22,7 @@ export interface BIDSSubject {
     path?: string;
     participant?: Participant
 }
-interface Participant {
+export interface Participant {
     [key: string]: string | number
 }
 

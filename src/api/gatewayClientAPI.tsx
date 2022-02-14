@@ -88,6 +88,8 @@ export interface Tag {
 	id: number;
 }
 
+export type BIDSDatabaseResponse = { data?: BIDSDatabase[], error?: Error }
+
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	: `${window.location.protocol}//${window.location.host}`
@@ -107,117 +109,19 @@ export const forceRemove = (id: string): void => {
 
 // Gateway API
 
-export const getFiles = async (path: string): Promise<TreeNode[]> => {
-	//try {
-	const url = `/apps/hip/document/files?path=${path}`
-	const response = await fetch(url);
-	const node: TreeNode[] = await response.json()
-
-	// 			size: Math.round(s.size / 1024),
-	// 			updated: new Date(s.modifiedDate).toLocaleDateString('en-US', {
-	// 				day: 'numeric',
-	// 				month: 'short',
-	// 				year: 'numeric',
-	// 				hour: 'numeric',
-	// 				minute: 'numeric',
-	// 			}),
-
-	return node
-
-	// } catch (error: any) {
-	// 	return { data: null, error }
-	// }
-}
-
-export const getFileContent = async (path: string): Promise<string> => {
-	const response = await fetch(`/apps/hip/document/file?path=${path}`);
-
-	return await response.text()
-}
-
-export const getJsonFileContent = async (path: string): Promise<{ [key: string]: string | number }> => {
-
-	try {
-		const response = await fetch(`/apps/hip/document/file?path=${path}`);
-
-		const maybeJson = await response.json()
-		const j = maybeJson.replace(/\\n/g, '')
-
-		return JSON.parse(j)
-	} catch (e) {
-		console.log(e)
-
-		return
-	}
-}
-
-export const createFolder = async (parentPath: string, name: string): Promise<TreeNode[]> => {
-	const response = await fetch(`/apps/hip/document/folder?parentPath=${parentPath}&name=${name}`);
-	const node: TreeNode[] = await response.json()
-
-	return node
-}
-
 export const search = async (term: string) => {
-	return fetch(`/api/v1/files/search/${term}`, {
-		//return fetch(`/apps/hip/search/search?term=${term}`, {
+	return fetch(`${API_GATEWAY}/files/search/${term}`, {
 		headers: {
-			'requesttoken': window.OC.requestToken
-		}
-	}).then(data => data.json())
-}
-
-export const getBids = async () => {
-	return fetch(`/api/v1/files/bids`, {
-		headers: {
-			'requesttoken': window.OC.requestToken
-		}
-	}).then(data => data.json())
-}
-
-export const readBIDSParticipants = async (path: string) => {
-	const tsv = await getFileContent(path)
-	const [headers, ...rows] = tsv
-		.replaceAll('"', '')
-		.trim()
-		.split('\\n')
-		.map(r => r.split('\\t'))
-
-	const participants: Participant[] = rows.reduce((a, r) => [
-		...a,
-		Object.assign(
-			...(r.map((x, i, _, c = x.trim()) =>
-				({ [headers[i].trim()]: isNaN(c) ? c : Number(c) })
-			)))
-	], [] as Participant[])
-
-	return participants
-}
-
-
-const getTags = async () => {
-	try {
-		const response = await fetch(`/apps/hip/tag/list`);
-		const data = await response.json()
-		return { data, error: null }
-	} catch (error) {
-		return { data: null, error }
-	}
-}
-
-const handleChangeTag = async (data: Document, tag: Tag) => {
-	const method = data.tags.includes(tag.id) ? 'DELETE' : 'PUT';
-	await fetch(`/remote.php/dav/systemtags-relations/files/${data.id}/${tag.id}`, {
-		headers: {
-			"requesttoken": window.OC.requestToken,
+			requesttoken: window.OC.requestToken,
 		},
-		method
-	});
-
-	// await getFiles().then(({ data, error }) => {
-	// 	if (error) setFilesError(error?.message)
-	// 	if (data) setNodes(data as TreeNode[])
-	// })
+	}).then(data => data.json())
+}
+export const getBids = async (): Promise<BIDSDatabaseResponse> => {
+	return fetch(`${API_GATEWAY}/files/bids`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(data => data.json())
 }
 
 
