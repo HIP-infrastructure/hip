@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import AppList from './sessionAppList'
 import { useAppStore } from '../store/appProvider'
 import {
-	Container,
-	AppContainer,
-	Application,
 	createApp,
 	stopApp,
-	ContainerType,
 } from '../api/gatewayClientAPI'
 import WebdavForm from './webdavLoginForm'
 import SessionInfo from './sessionInfo'
@@ -19,6 +15,7 @@ import { ChevronLeft, ChevronRight, Menu, Fullscreen, ArrowBack, ExpandMore } fr
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
 import { createBrowserHistory } from 'history';
+import { Application, Container, ContainerType, AppContainer } from '../api/types';
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean;

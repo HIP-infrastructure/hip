@@ -2,8 +2,11 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import {
-	API_CONTAINERS, Application, Container, getAvailableAppList, UserCredentials
+	getAvailableAppList, API_CONTAINERS
 } from '../api/gatewayClientAPI'
+import {
+	Application, Container, UserCredentials
+} from '../api/types'
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 	user: [

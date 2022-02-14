@@ -3,13 +3,15 @@ import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularP
 import React, { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
-	loading, color, AppContainer, Container, ContainerState, ContainerType, createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
+	createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
 } from '../api/gatewayClientAPI';
 import SessionImage from '../assets/session-thumbnail.png';
 import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
 import TitleBar from './UI/titleBar';
 import Modal, { ModalComponentHandle } from './UI/Modal';
+import { Container, ContainerType, AppContainer, ContainerState } from '../api/types';
+import { loading, color } from '../api/utils'
 
 const Sessions = (): JSX.Element => {
 	const {
@@ -17,6 +19,7 @@ const Sessions = (): JSX.Element => {
 		containers: [containers, error],
 		debug: [debug],
 	} = useAppStore()
+
 	const modalRef = useRef<ModalComponentHandle>(null);
 	const navigate = useNavigate();
 

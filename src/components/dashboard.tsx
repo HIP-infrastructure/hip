@@ -2,7 +2,7 @@ import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } fr
 import { height } from '@mui/system';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppContainer, Container, ContainerType } from '../api/gatewayClientAPI';
+import { AppContainer, Container, ContainerType } from '../api/types';
 import CollaborativeImage from '../assets/dashboard__collaborative.png';
 import PrivateImage from '../assets/dashboard__private.png';
 import PublicImage from '../assets/dashboard__public.png';

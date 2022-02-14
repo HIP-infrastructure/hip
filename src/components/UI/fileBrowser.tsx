@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import { TreeNode } from '../../api/gatewayClientAPI';
+import { TreeNode } from '../../api/types';
 import FilePanel from './filePanel';
 
 interface ITreeSelect {

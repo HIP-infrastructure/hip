@@ -5,7 +5,7 @@ import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
 import { Typography, Button, Box } from '@mui/material';
 import { Folder, FolderOpen, InsertDriveFile, ArrowDropDown, ArrowRight } from '@mui/icons-material';
 import { SvgIconProps } from '@mui/material/SvgIcon';
-import { TreeNode } from '../../api/gatewayClientAPI';
+import { TreeNode } from '../../api/types';
 
 declare module 'react' {
     interface CSSProperties {

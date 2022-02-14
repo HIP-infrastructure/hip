@@ -2,10 +2,24 @@ import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getBids } from '../api/gatewayClientAPI'
-import { BIDSDatabaseResponse } from '../api/types';
-import TitleBar from './UI/titleBar';
+import { getBids } from '../../../api/gatewayClientAPI'
+import { Participant, BIDSDatabaseResponse } from '../../../api/types';
+import TitleBar from '../../UI/titleBar';
 
+export interface BIDSDatabase {
+	path: string;
+	Name: string;
+	BIDSVersion: string;
+	Licence: string;
+	Authors: string[];
+	Acknowledgements: string;
+	HowToAcknowledge: string;
+	Funding: string[];
+	ReferencesAndLinks: string[];
+	DatasetDOI: string;
+	participants?: Participant[],
+	Browse: string;
+}
 
 // interface ExtendedBIDSDatabase extends BIDSDatabase {
 // 	[key: string]: string[] | string | number

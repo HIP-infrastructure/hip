@@ -1,6 +1,8 @@
 import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
+import { BIDSDatabaseResponse } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
+import Database from './database'
 // import {
 //     getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
 // } from '../../../api/gatewayClientAPI'
@@ -12,28 +14,15 @@ import TitleBar from '../../UI/titleBar';
 // import DynamicForm from './UI/dynamicForm';
 // import BIDSFiles from './workflows/bidsConverter/bidFiles'
 
-export interface BIDSDatabase {
-    path?: string;
-    participants?: Participant[];
-    description?: { [key: string]: string | number }
-}
-export interface BIDSSubject {
-    id?: string;
-    database?: BIDSDatabase;
-    path?: string;
-    participant?: Participant
-}
-export interface Participant {
-    [key: string]: string | number
-}
+
 
 const steps = ['BIDS Database', 'Subject', 'Files', 'Run'];
 
 const BidsConverter = () => {
 
     const [activeStep, setActiveStep] = useState(0);
-    const [database, setDatabase] = useState<BIDSDatabase>()
-    const [subject, setSubject] = useState<BIDSSubject>()
+	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
+    // const [subject, setSubject] = useState<BIDSSubject>()
     // const [searchResult1, setSearchResult1] = useState();
     // const [term, setTerm] = useState('')
     // const [folderPanes, setFolderPanes] = useState<TreeNode[][]>();
@@ -114,15 +103,7 @@ const BidsConverter = () => {
                             Select a BIDS Database Folder, or create a new one
                         </Typography>
                         <Box sx={{ display: 'flex', flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
-                            {/* <FileBrowser
-                                nodesPanes={folderPanes}
-                                handleSelectedPath={handleSelectedPath}
-                            >
-                                <Button sx={{ mt: 2, p: 1, mr: 1 }} disabled variant='outlined'>New BIDS Database</Button>
-                            </FileBrowser>
-                            {database &&
-                                <DatabaseInfo database={database} />
-                            } */}
+                            <Database />
                         </Box>
                         <StepNavigation activeStep={activeStep} />
                     </Box>

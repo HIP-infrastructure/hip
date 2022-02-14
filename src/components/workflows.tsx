@@ -5,7 +5,7 @@ import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar';
 
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
-import { Workflow } from '../api/gatewayClientAPI';
+import { Workflow } from '../api/types';
 import { useNavigate } from 'react-router-dom';
 import WorkflowsStatus from './UI/workflowsStatus'
 

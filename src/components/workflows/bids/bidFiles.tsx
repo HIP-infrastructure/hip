@@ -2,14 +2,14 @@ import DynamicForm from '../bidsConverter/../../UI/dynamicForm';
 import { Box, Button, InputLabel, Select, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
-    getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
+ search
 } from '../../../api/gatewayClientAPI'
-import { BIDSDatabase, BIDSSubject } from '../../bidsConvert';
 import FileBrowser from '../../UI/fileBrowser';
 import CreateField from '../../UI/createField';
+import { BIDSDatabase } from '../../../api/types';
 
 interface IBIDSFiles {
-    subject?: BIDSSubject
+    subject?: Record<string, unknown>
     database?: BIDSDatabase
 }
 
