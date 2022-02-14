@@ -1,16 +1,17 @@
 import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import TitleBar from './titleBar';
-import {
-    getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
-} from '../api/gatewayClientAPI'
-import FileBrowser from './UI/fileBrowser'
-import FilePanel from './UI/filePanel'
-import CreateField from './UI/createField'
-import DatabaseInfo from './workflows/bidsConverter/databaseInfo';
-import SubjectInfo from './workflows/bidsConverter/subjectInfo';
-import DynamicForm from './UI/dynamicForm';
-import BIDSFiles from './workflows/bidsConverter/bidFiles'
+import TitleBar from '../../UI/titleBar';
+// import {
+//     getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
+// } from '../../../api/gatewayClientAPI'
+// import FileBrowser from '../../UI/fileBrowser'
+// import FilePanel from './UI/filePanel'
+// import CreateField from './UI/createField'
+// import DatabaseInfo from './workflows/bidsConverter/databaseInfo';
+// import SubjectInfo from './workflows/bidsConverter/subjectInfo';
+// import DynamicForm from './UI/dynamicForm';
+// import BIDSFiles from './workflows/bidsConverter/bidFiles'
+
 export interface BIDSDatabase {
     path?: string;
     participants?: Participant[];
@@ -35,118 +36,12 @@ const BidsConverter = () => {
     const [subject, setSubject] = useState<BIDSSubject>()
     // const [searchResult1, setSearchResult1] = useState();
     // const [term, setTerm] = useState('')
-    const [folderPanes, setFolderPanes] = useState<TreeNode[][]>();
-    const [subjectFolder, setSubjectFolder] = useState<TreeNode[]>()
+    // const [folderPanes, setFolderPanes] = useState<TreeNode[][]>();
+    // const [subjectFolder, setSubjectFolder] = useState<TreeNode[]>()
     // see https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
-    const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+    // const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-    // init
-    useEffect(() => {
-        handleSelectedPath(['/'])
-    }, [])
-
-    const files = async (path: string) => {
-        return await getFiles(path)
-    }
-
-    const folders = async (path: string) => {
-        const f = await files(path)
-        return f?.filter(f => f.data.type === 'dir')
-    }
-
-    const handleSelectedPath = async (pathes: string[]) => {
-        const path = pathes.join('')
-        const description = await getJsonFileContent(`${path}dataset_description.json`)
-        const result = await folders(path);
-
-        if (description) {
-            const participants = await readBIDSParticipants(`${path}participants.tsv`)
-            setFolderPanes(prev => {
-                if (!prev) return
-                prev.splice(pathes.length - 1)
-
-                return prev
-            })
-            setDatabase({ path, participants, description })
-            setSubjectFolder(result);
-
-        } else {
-            setDatabase(undefined)
-
-
-            setFolderPanes(prev => {
-                if (!prev) return [result];
-
-                prev[pathes.length - 1] = result
-                prev.splice(pathes.length)
-
-                return prev
-            })
-        }
-        forceUpdate();
-    }
-
-    const handleSelectedSubjectPath = async (pathes: string[]) => {
-        const path = pathes.join('')
-        const id = pathes[pathes.length - 1].replace('/', '')
-
-        setSubject(prevSubject => ({
-            ...prevSubject,
-            path,
-            id
-        }))
-
-        const participant = database?.participants?.find(p => p.participant_id === id)
-        setSubject(previousSubject => ({
-            ...previousSubject,
-            participant
-        }))
-    }
-
-    const readBIDSParticipants = async (path: string) => {
-        const tsv = await getFileContent(path)
-        const [headers, ...rows] = tsv
-            .replaceAll('"', '')
-            .trim()
-            .split('\\n')
-            .map(r => r.split('\\t'))
-
-        const participants: Participant[] = rows.reduce((a, r) => [
-            ...a,
-            Object.assign(
-                ...(r.map((x, i, _, c = x.trim()) =>
-                    ({ [headers[i].trim()]: isNaN(c) ? c : Number(c) })
-                )))
-        ], [] as Participant[])
-
-        return participants
-    }
-
-    const handleNewSubject = () => {
-
-        if (database?.participants) {
-            const headers = Object.keys(database?.participants[0])
-            setSubject(p => ({
-                ...p,
-                participant: Object.assign(
-                    ...(headers.map(h => ({ [h]: '' })))
-                )
-            }))
-        }
-        // const bidsFolder = subject?.dbPath;
-        // if (bidsFolder)
-        //     createFolder(bidsFolder, 'tata')
-    }
-
-    const handleChangeParticipant = (event: React.ChangeEvent<HTMLTextAreaElement>, key: string) => {
-        setSubject(previousState => ({
-            ...previousState,
-            participant: {
-                ...(previousState ? previousState.participant : {}),
-                [key]: event.target.value
-            }
-        }))
-    }
+ 
 
     // const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     //     const term = event.target.value;
@@ -219,7 +114,7 @@ const BidsConverter = () => {
                             Select a BIDS Database Folder, or create a new one
                         </Typography>
                         <Box sx={{ display: 'flex', flex: '0 1 auto', maxWidth: 'inherit', overflowY: 'auto' }} >
-                            <FileBrowser
+                            {/* <FileBrowser
                                 nodesPanes={folderPanes}
                                 handleSelectedPath={handleSelectedPath}
                             >
@@ -227,7 +122,7 @@ const BidsConverter = () => {
                             </FileBrowser>
                             {database &&
                                 <DatabaseInfo database={database} />
-                            }
+                            } */}
                         </Box>
                         <StepNavigation activeStep={activeStep} />
                     </Box>
@@ -259,7 +154,7 @@ const BidsConverter = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                {subjectFolder &&
+                                {/* {subjectFolder &&
                                     <FilePanel
                                         nodes={subjectFolder}
                                         handleSelectedPath={handleSelectedSubjectPath}
@@ -268,7 +163,7 @@ const BidsConverter = () => {
                                 <Button 
                                     sx={{ mt: 2, p: 1, mr: 1 }} 
                                     onClick={handleNewSubject} 
-                                    variant="outlined">New Subject </Button>
+                                    variant="outlined">New Subject </Button> */}
 
                             </Box>
                             {subject && subject.participant &&
@@ -284,7 +179,7 @@ const BidsConverter = () => {
                                         Subject
                                     </Typography>
                                     <Box>
-                                        <DynamicForm
+                                        {/* <DynamicForm
                                             fields={subject.participant}
                                             handleChangeFields={participant => {
                                                 setSubject(s => ({
@@ -303,14 +198,14 @@ const BidsConverter = () => {
                                                         }
                                                     }))
                                             }} />
-                                        </Box>
+                                        </Box> */}
                                     </Box>
                                 </Box>
                             }
                         </Box>
                         <StepNavigation activeStep={activeStep} />
                     </Box>
-                    <DatabaseInfo database={database} />
+                    {/* <DatabaseInfo database={database} /> */}
                 </Box>
 
             </>}
@@ -329,12 +224,12 @@ const BidsConverter = () => {
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Add Files
                         </Typography>
-                        <BIDSFiles subject={subject} database={database} />
+                        {/* <BIDSFiles subject={subject} database={database} /> */}
                         <StepNavigation activeStep={activeStep} />
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                        <DatabaseInfo database={database} />
-                        <SubjectInfo subject={subject} />
+                        {/* <DatabaseInfo database={database} />
+                        <SubjectInfo subject={subject} /> */}
                     </Box>
                 </Box>
             </>}
@@ -352,8 +247,8 @@ const BidsConverter = () => {
                                 BIDS Conversion Summary
                             </Typography>
                             <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                                <DatabaseInfo database={database} />
-                                <SubjectInfo subject={subject} />
+                                {/* <DatabaseInfo database={database} />
+                                <SubjectInfo subject={subject} /> */}
                             </Box>
                             {/* <Box>
                                 <Button variant="outlined" sx={{ mt: 2 }}>Cancel</Button>
@@ -376,8 +271,8 @@ const BidsConverter = () => {
                             All steps completed
                         </Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                            <DatabaseInfo database={database} />
-                            <SubjectInfo subject={subject} />
+                            {/* <DatabaseInfo database={database} />
+                            <SubjectInfo subject={subject} /> */}
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>

@@ -14,7 +14,7 @@ import Apps from './components/apps'
 import Workflows from './components/workflows';
 import Documentation from './components/documentation';
 import Dashboard from './components/dashboard';
-import BidsConverter from './components/bidsConvert';
+import BidsConverter from './components/workflows/bids/converter';
 import CollaborativeSessions from './components/collab/sessions'
 import CollaborativeData from './components/collab/data'
 import PublicSessions from './components/public/sessions'
@@ -117,7 +117,7 @@ const Layout = (): JSX.Element => {
 const App = () =>
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<Dashboard />} />
+			<Route index element={<BidsConverter />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'private'} element={<Outlet />}>

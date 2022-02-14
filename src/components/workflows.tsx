@@ -2,7 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip } from '@mui/material';
 import { useAppStore } from '../store/appProvider'
-import TitleBar from './titleBar';
+import TitleBar from './UI/titleBar';
 
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 import { Workflow } from '../api/gatewayClientAPI';

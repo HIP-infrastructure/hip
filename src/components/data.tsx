@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BIDSDatabaseResponse, getBids } from '../api/gatewayClientAPI'
 import { Participant } from './bidsConvert'
-import TitleBar from './titleBar';
+import TitleBar from './UI/titleBar';
 
 export interface BIDSDatabase {
 	path: string;

@@ -18,7 +18,7 @@ import mricroglLogo from '../assets/mrcicogl__logo.png';
 import slicerLogo from '../assets/slicer__logo.png';
 // import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
-import TitleBar from './titleBar';
+import TitleBar from './UI/titleBar';
 import WebdavForm from './webdavLoginForm';
 
 const importedImages = [

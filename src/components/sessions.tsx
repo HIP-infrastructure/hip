@@ -8,7 +8,7 @@ import {
 import SessionImage from '../assets/session-thumbnail.png';
 import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
-import TitleBar from './titleBar';
+import TitleBar from './UI/titleBar';
 import Modal, { ModalComponentHandle } from './UI/Modal';
 
 const Sessions = (): JSX.Element => {
@@ -50,7 +50,7 @@ const Sessions = (): JSX.Element => {
 			<TitleBar
 				title={'My Desktops'}
 				description={'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'}
-				button={<Button variant="contained" color="primary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
+				button={<Button variant="contained" color="secondary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{sessions?.length === 0 && <Typography variant="subtitle1">
