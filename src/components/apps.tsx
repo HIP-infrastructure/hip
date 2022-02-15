@@ -1,6 +1,6 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Modal } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Chip, Link, Modal } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 // import { useNavigate } from "react-router-dom";
 // import {
 // 	Application,
@@ -102,26 +102,28 @@ const Apps = () => {
 						src={importedImages[i]}
 						alt={app.label}
 					/>
-					<CardContent sx={{ flexGrow: 1 }}>
+					<CardContent sx={{ flexGrow: 1, pb: 0, mb: 0 }}>
 						<Box sx={{ display: 'flex' }}>
-							<Typography gutterBottom variant="h5" sx={{ flex: 1 }}>
-								{app.label} {app.version}
+							<Typography variant="h5" sx={{ flex: 1 }}>
+								{app.label}
 							</Typography>
+
 							<Chip label={app.state} color={app.state !== 'faulty' ? "success" : "error"} variant="outlined" />
 						</Box>
-
-						<Typography gutterBottom variant="body2" color="text.secondary">
+						<Typography gutterBottom variant="caption" >
+							version: {app.version}
+						</Typography>
+						<Typography sx={{ mb: 2, mt: 2 }} gutterBottom variant="body2" color="text.secondary">
 							{app.description}
 						</Typography>
-						<Typography variant="caption" color="text.secondary">
-							{app.url}
+						<Typography variant="caption" color="text.secondary" >
+							<Link href={app.url} target="_blanck">{app.url}</Link>
 						</Typography>
-
 					</CardContent>
-					<CardActions sx={{ p: 2, alignSelf: 'end' }} >
-						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button>
-						{/* <Button size="small" onClick={() => handleCreateApp(app)}>Start</Button> */}
-					</CardActions>
+					{/* <CardActions sx={{ alignSelf: 'end' }} >
+						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button> */}
+					{/* <Button size="small" onClick={() => handleCreateApp(app)}>Start</Button> */}
+					{/* </CardActions> */}
 				</Card>
 			)}
 		</Box ></>
