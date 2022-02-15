@@ -31,8 +31,8 @@ const Sessions = (): JSX.Element => {
 		if (!modalRef.current) return;
 
 		const reply = await modalRef.current.open(
-			'Remove virtual desktop ?',
-			'Permanently remove this virtual desktop and all its applications?'
+			'Remove desktop ?',
+			'Permanently remove this desktop and all its applications?'
 		);
 
 		if (reply) {
@@ -69,7 +69,7 @@ const Sessions = (): JSX.Element => {
 								alt={session.name}
 							/>
 							{[loading(session.state), ...session.apps.map(a => loading(a.state))].reduce((p, c) => p || c, false) &&
-								<CircularProgress size={32} sx={{ position: "absolute", top: 10, left: 10 }} />
+								<CircularProgress size={32} color='secondary' sx={{ position: "absolute", top: 10, left: 10 }} />
 							}
 						</Box>
 						<CardContent sx={{ flexGrow: 1 }}>
@@ -115,14 +115,27 @@ const Sessions = (): JSX.Element => {
 							)}
 
 							<Tooltip title="Shut down" placement="top">
-								<IconButton edge="end" color="info" aria-label="Shut down" onClick={() => confirmRemove(session.id)}>
+								<IconButton
+									disabled={
+										session.state !== ContainerState.RUNNING
+									}
+									edge="end"
+									color="info"
+									aria-label="Shut down"
+									onClick={() => confirmRemove(session.id)}
+								>
 									<PowerSettingsNew />
 								</IconButton>
 							</Tooltip>
 
 							{session.state === ContainerState.PAUSED &&
 								<Tooltip title="Resume the session" placement="top">
-									<IconButton edge="end" color="info" aria-label="Resume" onClick={(y) => resumeAppsAndSession(session.id, user?.uid || '')}>
+									<IconButton
+										edge="end"
+										color="info"
+										aria-label="Resume"
+										onClick={(y) => resumeAppsAndSession(session.id, user?.uid || '')}
+									>
 										<Replay />
 									</IconButton>
 								</Tooltip>
@@ -130,14 +143,31 @@ const Sessions = (): JSX.Element => {
 
 							{session.state !== ContainerState.PAUSED &&
 								<Tooltip title="Pause the session. You can resume it later" placement="top">
-									<IconButton edge="end" color="info" aria-label="pause" onClick={() => pauseAppsAndSession(session.id, user?.uid || '')}>
+									<IconButton
+										disabled={
+											session.state !== ContainerState.RUNNING
+										}
+										edge="end"
+										color="info"
+										aria-label="pause"
+										onClick={() => pauseAppsAndSession(session.id, user?.uid || '')}
+									>
 										<Pause />
 									</IconButton>
 								</Tooltip>
 							}
 
 							<Tooltip title="Open" placement="top">
-								<IconButton sx={{ ml: 0.6 }} edge="end" color="info" aria-label="Open" onClick={() => handleOpenSession(session.id)}>
+								<IconButton
+									disabled={
+										session.state !== ContainerState.RUNNING
+									}
+									sx={{ ml: 0.6 }}
+									edge="end"
+									color="info"
+									aria-label="Open"
+									onClick={() => handleOpenSession(session.id)}
+								>
 									<Visibility />
 								</IconButton>
 							</Tooltip>
