@@ -29,52 +29,43 @@ export default function Search() {
 
     return (
         <>
-            <Grid direction="column" container>
-                <Grid item xs={4}>
-                    <Autocomplete
-                        id="search-files"
-                        sx={{ width: 300 }}
-                        getOptionLabel={(option) => option.title}
-                        // filterOptions={(x) => x}
-                        options={options}
-                        autoComplete
-                        includeInputInList
-                        filterSelectedOptions
-                        value={value}
-                        onChange={(event: any, newValue: any | null) => {
-                            setOptions(options);
-                            setValue(newValue);
-                        }}
-                        onInputChange={(event, newInputValue) => {
-                            setInputValue(newInputValue);
-                        }}
-                        renderInput={(params) => (
-                            <TextField {...params} label="Add a file" fullWidth />
-                        )}
-                        renderOption={(props, option) => {
-                            return (
-                                <li {...props}>
-                                    <Grid container alignItems="center">
-                                        <Grid item xs>
-                                            <Typography variant="body1" color="text.primary">
-                                                {option.title}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {option.subline}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </li>
-                            );
-                        }}
-                    />
-                </Grid>
-                <Grid item xs={8}>
-                    <pre>
-                        {JSON.stringify(options, null, 2)}
-                    </pre>
-                </Grid>
-            </Grid>
+            <Autocomplete
+                id="search-files"
+                sx={{ width: 300 }}
+                getOptionLabel={(option) => option.title}
+                // filterOptions={(x) => x}
+                options={options}
+                autoComplete
+                includeInputInList
+                filterSelectedOptions
+                value={value}
+                onChange={(event: any, newValue: any | null) => {
+                    setOptions(options);
+                    setValue(newValue);
+                }}
+                onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                }}
+                renderInput={(params) => (
+                    <TextField {...params} label="Search" fullWidth />
+                )}
+                renderOption={(props, option) => {
+                    return (
+                        <li {...props}>
+                            <Grid container alignItems="center">
+                                <Grid item xs>
+                                    <Typography variant="body1" color="text.primary">
+                                        {option.title}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {option.subline}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </li>
+                    );
+                }}
+            />
         </>
     );
 }

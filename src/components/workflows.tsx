@@ -66,10 +66,7 @@ const Workflows = () => {
                 Running Workflows
             </Typography>
 
-            <Typography gutterBottom variant="body1">
-                You don't have any workflow in progress
-            </Typography>
-            {/* <WorkflowsStatus /> */}
+            <WorkflowsStatus />
         </Box>
     </>
 }

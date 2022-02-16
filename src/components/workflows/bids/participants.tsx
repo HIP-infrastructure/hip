@@ -12,6 +12,7 @@ interface Props {
 
 const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Props): JSX.Element => {
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+	const [rows, setRows] = useState<any>([])
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -22,6 +23,16 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 	}, [selectedParticipant])
 
 	useEffect(() => {
+		const rows = bidsDatabase?.participants?.map(p => ({
+			id: p.participant_id,
+			age: p.age,
+			sex: p.sex
+		})) || []
+
+		setRows(rows)
+	}, [bidsDatabase, setRows])
+
+	useEffect(() => {
 		if (selectionModel.length === 0) return
 
 		const selected = bidsDatabase?.participants?.find(b => b.participant_id === selectionModel[0])
@@ -29,6 +40,16 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 			handleSelectParticipant(selected)
 
 	}, [selectionModel, setSelectionModel])
+
+	const handleCreateParticipant = () => {
+		const newParticipant = {
+			id: '',
+			age: '',
+			sex: ''
+		}
+
+		setRows(r => [newParticipant, ...r])
+	}
 
 	const columns: GridColDef[] = [
 		{
@@ -61,18 +82,25 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 		// },
 
 	];
-	const rows = bidsDatabase?.participants?.map(p => ({
-		id: p.participant_id,
-		age: p.age,
-		sex: p.sex
-	})) || []
+
+
 
 	return (
 		<>
 			<Box sx={{ mt: 2 }}>
-				<Typography variant='h6'>
-					BIDS Databases Participants
-				</Typography>
+
+				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+					<Typography variant='h6'>
+						BIDS Databases Participants
+					</Typography>
+					<Button
+						sx={{ mt: 2, mb: 2 }}
+						variant='outlined'
+						onClick={handleCreateParticipant}
+					>
+						Create Participant
+					</Button>
+				</Box>
 
 				<Box sx={{ height: 400, width: '100%' }}>
 					<DataGrid

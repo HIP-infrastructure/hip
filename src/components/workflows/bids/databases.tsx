@@ -1,5 +1,5 @@
-import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
-import { DataGrid, GridColDef, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
+import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material'
+import { DataGrid, GridColDef, GridCellParams, GridRowsProp, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BIDSDatabase, BIDSDatabaseResponse } from '../../../api/types';
@@ -62,6 +62,7 @@ interface Props {
 
 const Databases = ({ bidsDatabases, handleSelectDatabase, selectedDatabase }: Props): JSX.Element => {
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+	const [rows, setRows] = useState<any>([])
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -78,32 +79,63 @@ const Databases = ({ bidsDatabases, handleSelectDatabase, selectedDatabase }: Pr
 
 	}, [selectionModel, setSelectionModel])
 
-	const rows = bidsDatabases?.data?.map(db => ({
-		id: db.path,
-		Name: db.Name,
-		Authors: db.Authors,
-		Participants: db.participants && db.participants.length,
-		Licence: db.Licence,
-		BIDSVersion: db.BIDSVersion,
-		Path: db.path,
-		Browse: db.path
-	})) || []
+	useEffect(() => {
+		setRows(bidsDatabases?.data?.map(db => ({
+			Browse: db.path,
+			id: db.path,
+			Name: db.Name,
+			Authors: db.Authors,
+			Participants: db.participants && db.participants.length,
+			Licence: db.Licence,
+			BIDSVersion: db.BIDSVersion,
+			Path: db.path,
+		})) || [])
+	}, [bidsDatabases])
+
+
+	const handleCreateDatabase = () => {
+		const newBidsDatabase = ({
+			id: '',
+			path: '',
+			Name: '',
+			BIDSVersion: '',
+			Licence: '',
+			Authors: [],
+			Acknowledgements: '',
+			HowToAcknowledge: '',
+			Funding: [],
+			ReferencesAndLinks: [],
+			DatasetDOI: '',
+			participants: [],
+			Browse: ''
+		})
+		setRows(r => [newBidsDatabase, ...r])
+	}
 
 	return (
 		<>
 
 			{bidsDatabases?.error &&
-				<Alert severity="error">{bidsDatabases.error.message}</Alert>
+				<Alert sx={{ mt: 1, mb: 1 }} severity="error">{bidsDatabases.error.message}</Alert>
 			}
 
 			<Box sx={{ mt: 2 }}>
-				<Typography variant='h6'>
-					BIDS Databases{' '}
-					{!bidsDatabases?.data &&
-						!bidsDatabases?.error &&
-						<CircularProgress size={16} />}
-				</Typography>
-
+				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+					<Typography variant='h6'>
+						BIDS Databases{' '}
+						{!bidsDatabases?.data &&
+							!bidsDatabases?.error &&
+							<CircularProgress size={16} />}
+					</Typography>
+					<Button
+						disabled={!bidsDatabases?.data}
+						sx={{ mt: 2, mb: 2 }}
+						variant='outlined'
+						onClick={handleCreateDatabase}
+					>
+						Create BIDS Database
+					</Button>
+				</Box>
 				<Box sx={{ height: 400, width: '100%' }}>
 					<DataGrid
 						onSelectionModelChange={(newSelectionModel) => {
@@ -114,7 +146,8 @@ const Databases = ({ bidsDatabases, handleSelectDatabase, selectedDatabase }: Pr
 						columns={columns}
 						pageSize={100}
 						rowsPerPageOptions={[100]}
-					/>
+						editMode="row"
+						isCellEditable={((params: GridCellParams<any, any, any>) => true)} />
 				</Box>
 			</Box >
 		</>

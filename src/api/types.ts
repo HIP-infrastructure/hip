@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 
 export interface Container {
 	id: string
@@ -86,7 +86,7 @@ export interface Tag {
 export type BIDSDatabaseResponse = { data?: BIDSDatabase[], error?: Error }
 
 export interface Participant {
-    [key: string]: string | number
+	[key: string]: string | number
 }
 
 export interface BIDSDatabase {
@@ -122,4 +122,23 @@ export interface ISearchResult {
 		fileId: string;
 		path: string;
 	}
+}
+
+export interface Modality {
+	name: string;
+	type: string;
+}
+
+export interface File {
+	path?: string;
+	modality?: string;
+	entities?: Entity[]
+}
+
+export interface Entity {
+    id: string;
+    label: string;
+    required: boolean;
+    type: "string" | "number",
+    value?: string | number
 }

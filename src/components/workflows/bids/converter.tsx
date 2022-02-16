@@ -1,26 +1,13 @@
-import { Box, Button, Card, CardContent, CircularProgress, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CircularProgress, Grid, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { BIDSDatabaseResponse, BIDSDatabase, Participant } from '../../../api/types';
+import { BIDSDatabaseResponse, BIDSDatabase, Participant, File } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
 import Databases from './databases'
 import Participants from './participants'
 import Files from './files'
 import { getBids } from '../../../api/gatewayClientAPI'
 
-// import {
-//     getJsonFileContent, getFiles, TreeNode, search, getFileContent, createFolder
-// } from '../../../api/gatewayClientAPI'
-// import FileBrowser from '../../UI/fileBrowser'
-// import FilePanel from './UI/filePanel'
-// import CreateField from './UI/createField'
-// import DatabaseInfo from './workflows/bidsConverter/databaseInfo';
-// import SubjectInfo from './workflows/bidsConverter/subjectInfo';
-// import DynamicForm from './UI/dynamicForm';
-// import BIDSFiles from './workflows/bidsConverter/bidFiles'
-
-
-
-const steps = ['BIDS Database', 'Participant', 'Files', 'Run'];
+const steps = ['BIDS Database', 'Participant', 'Files', 'Convert'];
 const boxStyle = {
     border: 1,
     borderColor: 'grey.400',
@@ -36,24 +23,7 @@ const BidsConverter = () => {
     const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabaseResponse>()
     const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
     const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
-
-    // const [subject, setSubject] = useState<BIDSSubject>()
-    // const [searchResult1, setSearchResult1] = useState();
-    // const [term, setTerm] = useState('')
-    // const [folderPanes, setFolderPanes] = useState<TreeNode[][]>();
-    // const [subjectFolder, setSubjectFolder] = useState<TreeNode[]>()
-    // see https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
-    // const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
-
-
-
-    // const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const term = event.target.value;
-    //     setTerm(term)
-    //     const result = await search(term)
-
-    //     setSearchResult1(result)
-    // }
+    const [selectedFiles, setSelectedFiles] = useState<File[]>()
 
     useEffect(() => {
         getBids().then(r => {
@@ -148,7 +118,13 @@ const BidsConverter = () => {
                         <Typography variant="subtitle1" sx={{ mb: 2 }}>
                             Add Files
                         </Typography>
-                        <Files />
+                        <Files
+                            bidsDatabase={selectedBidsDatabase}
+                            selectedParticipant={selectedParticipant}
+                            selectedFiles={selectedFiles}
+                            handleSelectFiles={setSelectedFiles}
+
+                        />
                         <StepNavigation activeStep={activeStep} />
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
@@ -168,38 +144,29 @@ const BidsConverter = () => {
                             <Typography>
                                 BIDS Conversion Summary
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                                {/* <DatabaseInfo database={database} />
-                                <SubjectInfo subject={subject} /> */}
-                            </Box>
-                            {/* <Box>
-                                <Button variant="outlined" sx={{ mt: 2 }}>Cancel</Button>
-                                <Button variant="outlined" sx={{ mt: 2 }}>Convert</Button>
-                            </Box> */}
+
+                            <Typography>
+                                {selectedBidsDatabase?.Name}
+                            </Typography>
+
+
+                            <Grid columns={{ md: 12 }} container>
+                                <Grid item>
+                                    <pre>{JSON.stringify(selectedParticipant, null, 2)}</pre>
+                                </Grid>
+                                <Grid item>
+                                    <pre>{JSON.stringify(selectedFiles, null, 2)}</pre>
+                                </Grid>
+                            </Grid>
+                            {<Box>
+
+                            </Box>}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleReset}>Reset</Button>
+                            {/* <Button onClick={handleReset}>Reset</Button> */}
+                            <Button variant="contained" sx={{ mt: 2 }}>Convert</Button>
                         </Box>
-                    </Box>
-                </>
-            )}
-
-            {activeStep === steps.length && (
-                <>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <CircularProgress size={16} />
-                        <Typography>
-                            All steps completed
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
-                            {/* <DatabaseInfo database={database} />
-                            <SubjectInfo subject={subject} /> */}
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Reset</Button>
                     </Box>
                 </>
             )}
