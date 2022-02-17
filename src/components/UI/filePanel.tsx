@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import { ArrowDropDown, ArrowRight, Folder, InsertDriveFile } from '@mui/icons-material';
+import TreeItem, { treeItemClasses, TreeItemProps } from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
-import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
-import { Typography, Button, Box } from '@mui/material';
-import { Folder, FolderOpen, InsertDriveFile, ArrowDropDown, ArrowRight } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { SvgIconProps } from '@mui/material/SvgIcon';
+import React from 'react';
 import { TreeNode } from '../../api/types';
 
 declare module 'react' {
@@ -91,49 +91,49 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 
 interface ITreeSelect {
     nodes?: TreeNode[]
-    handleSelectedPath: (selectedPath: string[]) => void
+    handleSelectedNode: (node?: TreeNode) => void
     standalone?: boolean
 }
 
-export default ({ nodes, handleSelectedPath, standalone = true }: ITreeSelect) => {
+export default ({ nodes, handleSelectedNode, standalone = true }: ITreeSelect) => {
 
-    const onNodeSelect = (event: React.SyntheticEvent, path: string) => {
-        const pathes = path.split('/').map(p => `${p}/`)
-        handleSelectedPath(pathes)
+    const onNodeSelect = (event: React.SyntheticEvent, nodeId: string | string[]) => {
+        const node = nodes?.find(n => n.key === (nodeId as string))
+
+        handleSelectedNode(node)
     }
 
     return (
-        <>
-            <TreeView
-                onNodeSelect={onNodeSelect}
-                aria-label="tree view"
-                // defaultExpanded={['3']}
-                defaultCollapseIcon={<ArrowDropDown />}
-                defaultExpandIcon={<ArrowRight />}
-                defaultEndIcon={<div style={{ width: 24 }} />}
-                sx={{
-                    height: 292,
-                    maxWidth: 400,
-                    minWidth: 240,
-                    mr: 1,
-                    overflowY: 'auto',
-                    border: 1,
-                    borderColor: 'grey.400',
-                }}
-            >
-                {nodes && nodes.map((node: TreeNode) =>
-                    <StyledTreeItem
-                        key={node.key}
-                        nodeId={node.data.path}
-                        labelText={node.label}
-                        labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
-                        labelInfo={standalone || node.data.type !== 'dir' ? null : <ArrowRight />}
-                    />
-                )}
-                {nodes?.length === 0 && <Typography variant="body2" sx={{ fontWeight: 'inherit', p: 0.5 }}>
+        <TreeView
+            onNodeSelect={onNodeSelect}
+            aria-label="tree view"
+            // defaultExpanded={['3']}
+            defaultCollapseIcon={<ArrowDropDown />}
+            defaultExpandIcon={<ArrowRight />}
+            defaultEndIcon={<div style={{ width: 24 }} />}
+            sx={{
+                height: 292,
+                maxWidth: 400,
+                minWidth: 240,
+                mr: 1,
+                overflowY: 'auto',
+                border: 1,
+                borderColor: 'grey.400',
+            }}
+        >
+            {nodes && nodes.map((node: TreeNode) =>
+                <StyledTreeItem
+                    key={node.key}
+                    nodeId={node.key}
+                    labelText={node.label}
+                    labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
+                    labelInfo={standalone || node.data.type !== 'dir' ? null : <ArrowRight />}
+                />
+            )}
+            {nodes?.length === 0 &&
+                <Typography variant="body2" sx={{ fontWeight: 'inherit', p: 0.5 }}>
                     Empty
                 </Typography>}
-            </TreeView>
-        </>
+        </TreeView>
     );
 }

@@ -1,8 +1,6 @@
-import { Box, TextField, Button } from '@mui/material';
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { TreeNode, File, Entity, Participant, BIDSDatabase } from '../../../api/types';
-
-
+import { Box, TextField } from '@mui/material';
+import React from 'react';
+import { Entity } from '../../api/types';
 
 interface IDynamicForm {
     fields: Entity[];
@@ -10,11 +8,6 @@ interface IDynamicForm {
 }
 
 const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
-    // const [nextFields, setNextFields] = useState(fields)
-
-    // useEffect(() => {
-    //     setNextFields(nextFields)
-    // }, [fields])
 
     const handleOnChange = (event: any, field: Entity) => {
         const value = event.target.value
@@ -38,16 +31,6 @@ const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
                 </Box>
             )}
         </Box>
-        {/* <Box sx={{ m: 2, float: 'right' }}>
-            <Button
-                onClick={() => setNextFields(fields)}
-                variant="outlined"
-                sx={{ mt: 2 }}
-            >
-                Cancel
-            </Button>
-            <Button onClick={() => handleChangeFields(nextFields)} variant="outlined" sx={{ mt: 2 }}>OK</Button>
-        </Box> */}
     </Box>
 }
 

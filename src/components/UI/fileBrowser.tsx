@@ -5,21 +5,20 @@ import FilePanel from './filePanel';
 
 interface ITreeSelect {
     nodesPanes?: TreeNode[][]
-    handleSelectedPath: (selectedPath: string[]) => void
-    children: React.ReactNode
+    handleSelectedNode: (node?: TreeNode) => void
 }
 
-export default ({ nodesPanes, handleSelectedPath, children }: ITreeSelect) => {
+export default ({ nodesPanes, handleSelectedNode }: ITreeSelect) => {
     const lastRef = useRef<HTMLDivElement>(null)
 
     // after every render
     useEffect(() => {
         if (lastRef?.current) //lastRef.current.scrollLeft = 1000
-        lastRef.current.scrollIntoView({
-            inline: 'end',
-            block: 'center',
-            behavior: "smooth",
-        })
+            lastRef.current.scrollIntoView({
+                inline: 'end',
+                block: 'center',
+                behavior: "smooth",
+            })
     })
 
     return <Box sx={{ display: 'flex' }}>
@@ -28,12 +27,9 @@ export default ({ nodesPanes, handleSelectedPath, children }: ITreeSelect) => {
                 <div ref={lastRef} >
                     <FilePanel
                         nodes={nodes}
-                        handleSelectedPath={handleSelectedPath} standalone={false} />
-                    {index === 0 && children}
+                        handleSelectedNode={handleSelectedNode} standalone={false} />
                 </div>
             </Box>
         )}
     </Box>
-
 }
-
