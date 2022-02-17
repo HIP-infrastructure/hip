@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import {
 	createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
 } from '../api/gatewayClientAPI';
+import { AppContainer, Container, ContainerState, ContainerType } from '../api/types';
+import { color, loading } from '../api/utils';
 import SessionImage from '../assets/session-thumbnail.png';
 import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
-import TitleBar from './UI/titleBar';
 import Modal, { ModalComponentHandle } from './UI/Modal';
-import { Container, ContainerType, AppContainer, ContainerState } from '../api/types';
-import { loading, color } from '../api/utils'
+import TitleBar from './UI/titleBar';
 
 const Sessions = (): JSX.Element => {
 	const {
@@ -55,10 +55,22 @@ const Sessions = (): JSX.Element => {
 				description={'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'}
 				button={<Button variant="contained" color="secondary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
 			/>
+
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{sessions?.length === 0 && <Typography variant="subtitle1">
-					There is no active session
-				</Typography>}
+				{sessions?.length === 0 &&
+					<Box sx={{ width: 1, height: 1, backgroundImage: SessionImage }}>
+						<Typography variant="subtitle1">
+							There is no active session
+						</Typography>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => createSession(user?.uid || '')}
+						>
+							Create Desktop</Button
+						>
+					</Box>
+				}
 				{sessions?.map((session, i) =>
 					<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={session.name}>
 						<Box sx={{ position: "relative" }}>

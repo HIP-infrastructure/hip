@@ -1,28 +1,26 @@
-import React from 'react'
-import { ROUTE_PREFIX, SPACES_NAV, DRAWER_WIDTH } from './constants'
-import { Routes, Route, Outlet } from "react-router-dom";
-import { useAppStore } from './store/appProvider'
-import Session from './components/session'
-import { useNavigate } from "react-router-dom";
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Alert, Box, Tab, Tabs, FormControlLabel, Switch, useMediaQuery, useTheme } from '@mui/material';
-import Navigation from './components/navigation'
-
-import Sessions from './components/sessions'
-import Data from './components/data'
-import Apps from './components/apps'
-import Workflows from './components/workflows';
-import Documentation from './components/documentation';
-import Dashboard from './components/dashboard';
-import BidsConverter from './components/workflows/bids/converter';
-import CollaborativeSessions from './components/collab/sessions'
-import CollaborativeData from './components/collab/data'
-import PublicSessions from './components/public/sessions'
-import PublicData from './components/public/data'
+import React from 'react';
+import { Outlet, Route, Routes } from "react-router-dom";
+import './App.css';
+import Apps from './components/apps';
+import CollaborativeData from './components/collab/data';
+import CollaborativeSessions from './components/collab/sessions';
 import CollaborativeWorkflows from './components/collab/workflows';
+import Dashboard from './components/dashboard';
+import Data from './components/data';
+import Documentation from './components/documentation';
+import Navigation from './components/navigation';
+import PublicData from './components/public/data';
+import PublicSessions from './components/public/sessions';
 import PublicWorkflows from './components/public/workflows';
-
-import './App.css'
+import Session from './components/session';
+import Sessions from './components/sessions';
+import Spaces from './components/spaces';
+import Workflows from './components/workflows';
+import BidsConverter from './components/workflows/bids/converter';
+import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants';
+import { useAppStore } from './store/appProvider';
 export interface Space {
 	label: string;
 	route: string;
@@ -40,16 +38,9 @@ const footerStyle = {
 
 const Layout = (): JSX.Element => {
 	const { debug: [debug, setDebug] } = useAppStore()
-	const [selectedSpace, setSelectedSpace] = React.useState(0)
 	const [mobileOpen, setMobileOpen] = React.useState(false);
-	const navigate = useNavigate();
 	const theme = useTheme();
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
-
-	const handleSelectSpace = (selectedSpace: number) => {
-		setSelectedSpace(selectedSpace)
-		navigate(`${SPACES_NAV[selectedSpace].route}/sessions`)
-	}
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -64,32 +55,17 @@ const Layout = (): JSX.Element => {
 			>
 				{isSmUp ? null : (
 					<Navigation
-						space={SPACES_NAV[selectedSpace]}
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
 					// open={mobileOpen}
 					// onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation
-					space={SPACES_NAV[selectedSpace]}
 					PaperProps={{ style: { width: DRAWER_WIDTH } }}
 				/>
 			</Box>
 			<Box sx={{ margin: '32px', width: 'inherit' }}>
 				<Box sx={{ display: 'flex', marginBottom: '8px' }} >
-					<Tabs
-						value={selectedSpace}
-						onChange={(_, value) => handleSelectSpace(value)}
-						sx={{ flex: 1, mb: 4 }}
-					>
-						{SPACES_NAV.map(n => <Tab label={n.label} key={n.route} />)}
-					</Tabs >
-
-					<FormControlLabel
-						control={<Switch
-							checked={debug}
-							onChange={() => setDebug(!debug)} />}
-						label="Debug" />
 				</Box>
 				<Box
 					sx={{
@@ -99,11 +75,6 @@ const Layout = (): JSX.Element => {
 					}}>
 					<Outlet />
 				</Box >
-				<Box>
-					{/* <Alert severity="success" color="info">
-						This is a success alert — check it out!
-					</Alert> */}
-				</Box>
 			</Box>
 			<Box
 				component="footer"
@@ -117,10 +88,10 @@ const Layout = (): JSX.Element => {
 const App = () =>
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<BidsConverter />} />
+			<Route index element={<Dashboard />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
-			<Route path={'private'} element={<Outlet />}>
+			<Route path={'private'} element={<Spaces />}>
 				<Route index element={<Sessions />} />
 				<Route path={'sessions'} element={<Sessions />} />
 				<Route path={'data'} element={<Data />} />
@@ -129,13 +100,13 @@ const App = () =>
 					<Route path={'bids'} element={<BidsConverter />} />
 				</Route>
 			</Route>
-			<Route path={'collaborative'} element={<Outlet />}>
+			<Route path={'collaborative'} element={<Spaces />}>
 				<Route index element={<CollaborativeSessions />} />
 				<Route path={'sessions'} element={<CollaborativeSessions />} />
 				<Route path={'data'} element={<CollaborativeData />} />
 				<Route path={'workflows'} element={<CollaborativeWorkflows />} />
 			</Route>
-			<Route path={'public'} element={<Outlet />}>
+			<Route path={'public'} element={<Spaces />}>
 				<Route index element={<PublicSessions />} />
 				<Route path={'sessions'} element={<PublicSessions />} />
 				<Route path={'data'} element={<PublicData />} />

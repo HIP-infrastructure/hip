@@ -1,5 +1,4 @@
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
-import { height } from '@mui/system';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContainer, Container, ContainerType } from '../api/types';
@@ -11,6 +10,7 @@ import { useAppStore } from '../store/appProvider';
 
 const spaces = [{
     label: 'Private',
+    buttonLabel: 'My private space',
     state: 'production',
     route: `${ROUTE_PREFIX}/private/sessions`,
     description: 'Password-protected space for each iEEG data provider to upload and curate own data.',
@@ -19,6 +19,7 @@ const spaces = [{
     counts: [2, 2, 34]
 }, {
     label: 'Collaborative',
+    buttonLabel: 'Collaborative space',
     state: 'not ready',
     route: `${ROUTE_PREFIX}/collaborative/sessions`,
     description: 'Collaborative space where scientists accredited by the consortium of data providers perform iEEG data analyses on shared data.',
@@ -28,6 +29,7 @@ const spaces = [{
 },
 {
     label: 'Public',
+    buttonLabel: 'Public space',
     state: 'not ready',
     route: `${ROUTE_PREFIX}/public/sessions`,
     description: 'Public space where public iEEG data are made available by individual iEEG data providers to be used by any scientist.',
@@ -126,7 +128,7 @@ const Dahsboard = () => {
                     <CardActions sx={{ p: 2, alignSelf: 'end' }}>
                         <Button onClick={() => {
                             navigate(space.route)
-                        }} variant="outlined">{space.label} Space</Button>
+                        }} variant="outlined">{space.buttonLabel}</Button>
                     </CardActions>
                 </Card>
             )}
