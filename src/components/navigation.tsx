@@ -6,7 +6,7 @@ import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
-    const [spaceIsOpen, setSpaceIsOpen] = useState<{ [key: string]: boolean }>({ 'hip': true });
+    const [spaceIsOpen, setSpaceIsOpen] = useState<{ [key: string]: boolean }>({ 'hip': true, 'private': true });
     const { debug: [debug, setDebug] } = useAppStore()
     const navigate = useNavigate();
 

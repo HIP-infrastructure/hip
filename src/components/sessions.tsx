@@ -53,7 +53,7 @@ const Sessions = (): JSX.Element => {
 			<TitleBar
 				title={'My Desktops'}
 				description={'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'}
-				button={<Button variant="contained" color="secondary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
+				button={<Button variant="contained" color="primary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
 			/>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>

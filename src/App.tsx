@@ -64,17 +64,10 @@ const Layout = (): JSX.Element => {
 					PaperProps={{ style: { width: DRAWER_WIDTH } }}
 				/>
 			</Box>
-			<Box sx={{ margin: '32px', width: 'inherit' }}>
-				<Box sx={{ display: 'flex', marginBottom: '8px' }} >
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						minWidth: '960px'
-					}}>
-					<Outlet />
-				</Box >
+			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
+
+
+				<Outlet />
 			</Box>
 			<Box
 				component="footer"
