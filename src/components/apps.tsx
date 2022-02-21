@@ -16,6 +16,7 @@ import hibopLogo from '../assets/hibop__logo.png';
 import localizerLogo from '../assets/localizer__logo.png';
 import mricroglLogo from '../assets/mrcicogl__logo.png';
 import slicerLogo from '../assets/slicer__logo.png';
+import tvbLogo from '../assets/tvb__logo.png';
 // import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider';
 import TitleBar from './UI/titleBar';
@@ -32,6 +33,7 @@ const importedImages = [
 	localizerLogo,
 	mricroglLogo,
 	slicerLogo,
+	tvbLogo
 ]
 
 const Apps = () => {

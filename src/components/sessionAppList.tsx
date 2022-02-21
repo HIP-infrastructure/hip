@@ -14,6 +14,7 @@ import hibop from '../assets/hibop__logo.png';
 import localizer from '../assets/localizer__logo.png';
 import mricrogl from '../assets/mrcicogl__logo.png';
 import slicer from '../assets/slicer__logo.png';
+import tvbLogo from '../assets/tvb__logo.png';
 import { useAppStore } from '../store/appProvider';
 
 interface Session {
@@ -28,7 +29,7 @@ const logos: { [key: string]: string } = {
     fsl,
     hibop,
     slicer,
-    mricrogl, freesurfer, dcm2niix, bidsmanager
+    mricrogl, freesurfer, dcm2niix, bidsmanager, tvbLogo
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
