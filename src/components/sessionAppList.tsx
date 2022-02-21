@@ -29,7 +29,7 @@ const logos: { [key: string]: string } = {
     fsl,
     hibop,
     slicer,
-    mricrogl, freesurfer, dcm2niix, bidsmanager, tvbLogo
+    mricrogl, freesurfer, dcm2niix, bidsmanager, tvb
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
