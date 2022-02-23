@@ -116,4 +116,24 @@ class DocumentService
 
         return $this->getFiles($parentPath);
     }
+
+    public function createBidsDatabase($path, $data) {
+
+        // $json= json_decode(file_get_contents('php://input'), true);
+
+        if (!$this->userFolder->nodeExists($path)) {
+            $parentFolder = $this->userFolder->get('/');
+            $parentFolder->newFolder($path);
+
+            $newFolder = $this->userFolder->get($path);
+            $file = $newFolder->newFile('dataset_description.json');
+            $file->fopen('w');
+            $file->putContent($data);
+
+        }
+
+        return $this->getFiles('/');
+
+        // return "ok";
+    }
 }

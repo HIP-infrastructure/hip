@@ -44,4 +44,15 @@ class DocumentController extends Controller
     {
         return $this->service->createFolder($parentPath, $name);
     }
+
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function createBids(string $path)
+    {
+        $data= file_get_contents('php://input');
+
+        return $this->service->createBidsDatabase($path, $data);
+    }
 }
