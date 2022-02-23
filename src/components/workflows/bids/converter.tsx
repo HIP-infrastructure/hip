@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
+import { Alert, Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { getBids } from '../../../api/gatewayClientAPI';
 import { BIDSDatabase, File, Participant } from '../../../api/types';
@@ -6,8 +6,9 @@ import TitleBar from '../../UI/titleBar';
 import Databases from './databases';
 import Files from './files';
 import Participants from './participants';
+import Summary from './summary';
 
-const steps = ['BIDS Database', 'Participant', 'Files', 'Convert'];
+const steps = ['BIDS Database', 'Participant', 'Files', 'Summary'];
 const boxStyle = {
     border: 1,
     borderColor: 'grey.400',
@@ -61,7 +62,7 @@ const BidsConverter = () => {
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button sx={{ mr: 1 }} variant='contained' disabled={disabled} onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? 'Convert' : 'Next'}
             </Button>
         </Box></>
 
@@ -89,7 +90,7 @@ const BidsConverter = () => {
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
                     <Box sx={boxStyle} >
                         <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                            <strong>Select a BIDS Database Folder, or create a new one</strong>
+                            <strong>Select a BIDS Database, or create a new one</strong>
                         </Typography>
                         {error &&
                             <Alert sx={{ mt: 1, mb: 1 }} severity="error">{error.message}</Alert>
@@ -129,7 +130,7 @@ const BidsConverter = () => {
                             <strong>Select files, modalities and entities</strong>
                         </Typography>
                         <Files
-                            bidsDatabase={selectedBidsDatabase}
+                            selectedBidsDatabase={selectedBidsDatabase}
                             selectedParticipant={selectedParticipant}
                             selectedFiles={selectedFiles}
                             handleSelectFiles={setSelectedFiles}
@@ -148,21 +149,11 @@ const BidsConverter = () => {
                         <Typography variant="subtitle1" sx={{ mb: 1 }}>
                             <strong> BIDS Conversion Summary</strong>
                         </Typography>
-
-
-                        <Typography>
-                            {selectedBidsDatabase?.Name}
-                        </Typography>
-
-
-                        <Grid columns={{ md: 12 }} container>
-                            <Grid item>
-                                <pre>{JSON.stringify(selectedParticipant, null, 2)}</pre>
-                            </Grid>
-                            <Grid item>
-                                <pre>{JSON.stringify(selectedFiles, null, 2)}</pre>
-                            </Grid>
-                        </Grid>
+                        <Summary
+                            selectedBidsDatabase={selectedBidsDatabase}
+                            selectedParticipant={selectedParticipant}
+                            selectedFiles={selectedFiles}
+                        />
                         <StepNavigation activeStep={activeStep} />
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>

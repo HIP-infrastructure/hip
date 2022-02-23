@@ -150,6 +150,7 @@ const Participants = ({ selectedBidsDatabase, setBidsDatabases, handleSelectPart
 		}
 
 		apiRef.current.setRowMode(id, 'view');
+		handleSelectParticipant(newParticipant)
 
 		// createBIDSDatabase({ path: newRow.Name.value as string, database })
 		setSnackbar({ children: 'Participant successfully saved', severity: 'success' });

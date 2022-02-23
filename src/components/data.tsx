@@ -1,9 +1,9 @@
-import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
+import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getBids } from '../api/gatewayClientAPI'
-import { BIDSDatabaseResponse } from '../api/types';
+import { getBids, getFiles } from '../api/gatewayClientAPI';
+import { BIDSDatabaseResponse, TreeNode } from '../api/types';
 import TitleBar from './UI/titleBar';
 
 
@@ -66,13 +66,34 @@ const columns: GridColDef[] = [
 
 const Data = (): JSX.Element => {
 	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
+	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>();
+	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		getBids().then(r => {
 			setBidsDatabase(r)
 		})
+		// files('/').then(f => setFilesPanes([f]))
 	}, [])
+
+	const files = async (path: string) => {
+		return await getFiles(path)
+	}
+
+	const handleSelectedPath = async (pathes: string[]) => {
+		const path = pathes.join('')
+		const result = await files(path);
+		setFilesPanes(prev => {
+			if (!prev) return [result];
+
+			prev[pathes.length - 1] = result
+			prev.splice(pathes.length)
+
+			return prev
+		})
+		forceUpdate();
+	}
 
 	const rows = bidsDatabase?.data?.map(db => ({
 		id: db.path,
@@ -102,6 +123,20 @@ const Data = (): JSX.Element => {
 						NextCloud Browser
 					</Link>
 				</Typography>
+				{/* <Box sx={{
+                    width: '960',
+                    border: 1,
+                    borderColor: 'grey.300',
+                    overflowY: 'auto',
+                    p: 1
+                }}>
+                    <FileBrowser
+                        nodesPanes={filesPanes}
+                        handleSelectedPath={handleSelectedPath}
+                    >
+
+                    </FileBrowser>
+                </Box> */}
 			</Box>
 
 			<Box sx={{ mt: 2 }}>

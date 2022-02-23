@@ -140,5 +140,6 @@ export interface Entity {
     label: string;
     required: boolean;
     type: "string" | "number",
-    value?: string | number
+    value?: string | number,
+	modalities?: string[]
 }

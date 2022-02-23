@@ -14,7 +14,7 @@ const availableWorkflows: Workflow[] = [
         id: 'bids-converter',
         label: 'BIDS converter',
         description: 'BIDS tools to convert user\'s data to BIDS format',
-        state: 'ready',
+        state: 'faulty',
         enabled: true
     }
 ];

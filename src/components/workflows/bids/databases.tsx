@@ -64,7 +64,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 
 	const onRowEditCommit = (id: GridRowId) => {
 		const model = apiRef?.current.getEditRowsModel(); // This object contains all rows that are being edited
-		const newRow: { [key: string]: { value: string | string[] } } = model[id]
+		const newRow: { [key: string]: { value: string | string[] | Participant[] } } = model[id]
 		newRow['id'] = { value: id };
 
 		// console.log(apiRef.current.getRowModels());
@@ -98,6 +98,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 		}
 
 		apiRef.current.setRowMode(id, 'view');
+		handleSelectDatabase(newDb)
 
 		// createBIDSDatabase({ path: newRow.Name.value as string, database })
 		setSnackbar({ children: 'Database successfully created', severity: 'success' });

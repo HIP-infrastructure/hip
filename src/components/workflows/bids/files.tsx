@@ -4,6 +4,7 @@ import { getFiles } from '../../../api/gatewayClientAPI';
 import { BIDSDatabase, Entity, File, Participant, TreeNode } from '../../../api/types';
 import DynamicForm from '../../UI/dynamicForm';
 import FileBrowser from '../../UI/fileBrowser';
+import Search from './search';
 
 export const bIDSEntity = {
     subject: {
@@ -15,16 +16,26 @@ export const bIDSEntity = {
         id: 'session',
         label: 'Session',
         format: 'ses-',
+        modalities: [
+            'presurgery',
+            'postsurgery'
+        ]
     },
     task: {
         id: 'task',
         label: 'Task',
-        format: 'task-'
+        format: 'task-',
+        modalities: [
+            'eyesclosed'
+        ]
     },
     acquisition: {
         id: 'acquisition',
         label: 'Acquisition',
-        format: 'acq-'
+        format: 'acq-',
+        modalities: [
+            'lowres'
+        ]
     },
     reconstruction: {
         id: 'reconstruction',
@@ -113,7 +124,6 @@ const modalities = [
     { name: 'coordsystem', type: 'ieeg' },
     { name: 'photo', type: 'ieeg' },
 ]
-
 interface Props {
     selectedBidsDatabase?: BIDSDatabase;
     selectedParticipant?: Participant;
@@ -186,6 +196,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                         required: e.required,
                         type: 'string',
                         value: '',
+                        modalities: e.entity.modalities ? e.entity.modalities : undefined
                     }))
 
             if (entities) {
@@ -223,6 +234,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
 
         populateEntities('T1w')
     }
+
 
     const boxStyle = {
         border: 1,
@@ -262,7 +274,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                 }
             </Box>
             <Box sx={{ width: 960 }}>
-                {/* <Search /> */}
+                <Search />
                 <Box sx={{
                     width: 960,
                     border: 1,
