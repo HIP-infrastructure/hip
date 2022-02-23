@@ -90,8 +90,10 @@ export interface Participant {
 }
 
 export interface BIDSDatabase {
-	id: string;
-	path: string;
+	id?: string;
+	Path?: string;
+	Browse?: string;
+	Participants?: Participant[],
 	Name: string;
 	BIDSVersion: string;
 	Licence: string;
@@ -101,8 +103,6 @@ export interface BIDSDatabase {
 	Funding: string[];
 	ReferencesAndLinks: string[];
 	DatasetDOI: string;
-	participants?: Participant[],
-	Browse: string;
 }
 
 export interface ISearch {

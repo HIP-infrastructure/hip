@@ -23,7 +23,7 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 	}, [selectedParticipant])
 
 	useEffect(() => {
-		const rows = bidsDatabase?.participants?.map(p => ({
+		const rows = bidsDatabase?.Participants?.map(p => ({
 			id: p.participant_id,
 			age: p.age,
 			sex: p.sex
@@ -35,7 +35,7 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 	useEffect(() => {
 		if (selectionModel.length === 0) return
 
-		const selected = bidsDatabase?.participants?.find(b => b.participant_id === selectionModel[0])
+		const selected = bidsDatabase?.Participants?.find(b => b.participant_id === selectionModel[0])
 		if (selected)
 			handleSelectParticipant(selected)
 

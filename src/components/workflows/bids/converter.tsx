@@ -1,11 +1,11 @@
-import { Box, Button, Card, CardContent, CircularProgress, Grid, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { BIDSDatabaseResponse, BIDSDatabase, Participant, File } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
 import Databases from './databases'
 import Participants from './participants'
 import Files from './files'
-import { getBids } from '../../../api/gatewayClientAPI'
+import { getBids, createBIDSDatabase } from '../../../api/gatewayClientAPI'
 
 const steps = ['BIDS Database', 'Participant', 'Files', 'Convert'];
 const boxStyle = {
@@ -20,14 +20,19 @@ const boxStyle = {
 const BidsConverter = () => {
 
     const [activeStep, setActiveStep] = useState(0);
-    const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabaseResponse>()
+    const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[]>()
     const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
     const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
     const [selectedFiles, setSelectedFiles] = useState<File[]>()
+    const [error, setError] = useState<Error>()
 
     useEffect(() => {
         getBids().then(r => {
-            setBidsDatabases(r)
+            const db = r.data;
+
+            if (r.error) setError(r.error)
+
+            if (db) setBidsDatabases(db)
         })
     }, [])
 
@@ -83,11 +88,15 @@ const BidsConverter = () => {
             {activeStep === 0 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
                     <Box sx={boxStyle} >
-                        <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                            Select a BIDS Database Folder, or create a new one
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            <strong>Select a BIDS Database Folder, or create a new one</strong>
                         </Typography>
+                        {error &&
+                            <Alert sx={{ mt: 1, mb: 1 }} severity="error">{error.message}</Alert>
+                        }
                         <Databases
                             bidsDatabases={bidsDatabases}
+                            setBidsDatabases={setBidsDatabases}
                             handleSelectDatabase={setSelectedBidsDatabase}
                             selectedDatabase={selectedBidsDatabase} />
                         <StepNavigation disabled={!selectedBidsDatabase} activeStep={activeStep} />
@@ -99,8 +108,8 @@ const BidsConverter = () => {
             {activeStep === 1 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
                     <Box sx={boxStyle}  >
-                        <Typography sx={{ mb: 2 }}>
-                            Select a Participant or create a new one
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            <strong> Select a Participant or create a new one</strong>
                         </Typography>
                         <Participants
                             bidsDatabase={selectedBidsDatabase}
@@ -115,8 +124,8 @@ const BidsConverter = () => {
             {activeStep === 2 && <>
                 <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
                     <Box sx={boxStyle}  >
-                        <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                            Add Files
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            <strong>Select files, modalities and entities</strong>
                         </Typography>
                         <Files
                             bidsDatabase={selectedBidsDatabase}
@@ -132,43 +141,33 @@ const BidsConverter = () => {
                 </Box>
             </>}
 
-            {activeStep === 3 && (
-                <>
-                    <Box sx={{ mt: 2 }}>
-                        <Box sx={{
-                            border: 1,
-                            borderColor: 'grey.400',
-                            p: 2,
-                            mr: 1,
-                        }} >
-                            <Typography>
-                                BIDS Conversion Summary
-                            </Typography>
-
-                            <Typography>
-                                {selectedBidsDatabase?.Name}
-                            </Typography>
+            {activeStep === 3 && (<>
+                <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
+                    <Box sx={boxStyle}  >
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            <strong> BIDS Conversion Summary</strong>
+                        </Typography>
 
 
-                            <Grid columns={{ md: 12 }} container>
-                                <Grid item>
-                                    <pre>{JSON.stringify(selectedParticipant, null, 2)}</pre>
-                                </Grid>
-                                <Grid item>
-                                    <pre>{JSON.stringify(selectedFiles, null, 2)}</pre>
-                                </Grid>
+                        <Typography>
+                            {selectedBidsDatabase?.Name}
+                        </Typography>
+
+
+                        <Grid columns={{ md: 12 }} container>
+                            <Grid item>
+                                <pre>{JSON.stringify(selectedParticipant, null, 2)}</pre>
                             </Grid>
-                            {<Box>
-
-                            </Box>}
-                        </Box>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Box sx={{ flex: '1 1 auto' }} />
-                            {/* <Button onClick={handleReset}>Reset</Button> */}
-                            <Button variant="contained" sx={{ mt: 2 }}>Convert</Button>
-                        </Box>
+                            <Grid item>
+                                <pre>{JSON.stringify(selectedFiles, null, 2)}</pre>
+                            </Grid>
+                        </Grid>
+                        <StepNavigation activeStep={activeStep} />
                     </Box>
-                </>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', columnGap: 2 }}>
+                    </Box>
+                </Box>
+            </>
             )}
         </Box>
     </>
