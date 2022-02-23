@@ -3,6 +3,15 @@
     overflow-x: hidden;
 }
 
+button:not(.button-vue),
+.button,
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+}
+
 
 /* * {
     outline: 1px solid goldenrod !important;
