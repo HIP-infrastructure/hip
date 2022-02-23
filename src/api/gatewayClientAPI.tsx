@@ -37,6 +37,21 @@ export const getBids = async (): Promise<BIDSDatabaseResponse> => {
 	}).then(data => data.json())
 }
 
+export const createBIDSDatabase = async ({ path, database }:{ path: string, database: BIDSDatabase }): Promise<BIDSDatabaseResponse> => {
+
+	const url = `${API_GATEWAY}/files/bids/create/${path}`
+	const data = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify({data: database }),
+	}).then(data => data.json())
+
+	return data
+}
+
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
 	const url = `/apps/hip/document/files?path=${path}`
