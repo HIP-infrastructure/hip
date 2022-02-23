@@ -1,11 +1,11 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { BIDSDatabaseResponse, BIDSDatabase, Participant, File } from '../../../api/types';
+import { Alert, Box, Button, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { getBids } from '../../../api/gatewayClientAPI';
+import { BIDSDatabase, File, Participant } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
-import Databases from './databases'
-import Participants from './participants'
-import Files from './files'
-import { getBids, createBIDSDatabase } from '../../../api/gatewayClientAPI'
+import Databases from './databases';
+import Files from './files';
+import Participants from './participants';
 
 const steps = ['BIDS Database', 'Participant', 'Files', 'Convert'];
 const boxStyle = {
@@ -112,7 +112,8 @@ const BidsConverter = () => {
                             <strong> Select a Participant or create a new one</strong>
                         </Typography>
                         <Participants
-                            bidsDatabase={selectedBidsDatabase}
+                            selectedBidsDatabase={selectedBidsDatabase}
+                            setBidsDatabases={setBidsDatabases}
                             handleSelectParticipant={setSelectedParticipant}
                             selectedParticipant={selectedParticipant}
                         />

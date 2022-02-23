@@ -1,18 +1,25 @@
-import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material'
-import { DataGrid, GridColDef, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import { Alert, AlertProps, Box, Button, Snackbar } from '@mui/material';
+import { DataGrid, GridApiRef, GridColDef, GridRowsProp, GridSelectionModel, GridToolbarContainer } from '@mui/x-data-grid';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BIDSDatabase, BIDSDatabaseResponse, Participant } from '../../../api/types';
+import { BIDSDatabase, Participant } from '../../../api/types';
 
 interface Props {
-	bidsDatabase?: BIDSDatabase;
+	selectedBidsDatabase?: BIDSDatabase;
+	setBidsDatabases: React.Dispatch<React.SetStateAction<BIDSDatabase[] | undefined>>;
 	handleSelectParticipant: (selected: Participant) => void;
 	selectedParticipant?: Participant
 }
 
-const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipant }: Props): JSX.Element => {
+const Participants = ({ selectedBidsDatabase, setBidsDatabases, handleSelectParticipant, selectedParticipant }: Props): JSX.Element => {
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
-	const [rows, setRows] = useState<any>([])
+	const [rows, setRows] = useState<GridRowsProp>([])
+	const [snackbar, setSnackbar] = React.useState<Pick<
+		AlertProps,
+		'children' | 'severity'
+	> | null>(null);
+	const apiRef = useRef<GridApiRef>(null);
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -23,101 +30,170 @@ const Participants = ({ bidsDatabase, handleSelectParticipant, selectedParticipa
 	}, [selectedParticipant])
 
 	useEffect(() => {
-		const rows = bidsDatabase?.Participants?.map(p => ({
+		const rows = selectedBidsDatabase?.Participants?.map(p => ({
 			id: p.participant_id,
 			age: p.age,
 			sex: p.sex
 		})) || []
 
 		setRows(rows)
-	}, [bidsDatabase, setRows])
+	}, [selectedBidsDatabase, setRows])
 
 	useEffect(() => {
 		if (selectionModel.length === 0) return
 
-		const selected = bidsDatabase?.Participants?.find(b => b.participant_id === selectionModel[0])
+		const selected = selectedBidsDatabase?.Participants?.find(b => b.participant_id === selectionModel[0])
 		if (selected)
 			handleSelectParticipant(selected)
 
 	}, [selectionModel, setSelectionModel])
 
-	const handleCreateParticipant = () => {
-		const newParticipant = {
-			id: '',
-			age: '',
-			sex: ''
-		}
-
-		setRows(r => [newParticipant, ...r])
-	}
 
 	const columns: GridColDef[] = [
 		{
 			field: 'id',
 			headerName: 'id',
 			width: 320,
+			editable: true,
+			renderCell: (params: any) => {
+				// This is a hack to assign access to the internal Grid API
+				apiRef.current = params.api;
+				return params.value
+			}
 		}, {
 			field: 'age',
 			headerName: 'age',
 			width: 320,
+			editable: true
 		},
 		{
 			field: 'sex',
 			headerName: 'sex',
 			width: 320,
+			editable: true
 		},
-		// {
-		// 	field: 'Browse',
-		// 	headerName: 'Browse',
-		// 	sortable: false,
-		// 	renderCell: (params: { value: string }) => (
-		// 		<Link
-		// 			target="_blank"
-		// 			href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
-		// 		>
-		// 			Browse
-		// 		</Link>
-		// 	),
-		// 	width: 150
-		// },
 
 	];
 
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+	function generateString(length: number) {
+		let result = ' ';
+		const charactersLength = characters.length;
+		for (let i = 0; i < length; i++) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+
+		return result;
+	}
+
+	const handleCreateParticipant = () => {
+		const id = generateString(5);
+		apiRef?.current?.updateRows([{ id, isNew: true }]);
+		apiRef.current.setRowMode(id, 'edit');
+		// Wait for the grid to render with the new row
+		setTimeout(() => {
+			apiRef.current.scrollToIndexes({
+				rowIndex: apiRef.current.getRowsCount() - 1,
+			});
+			apiRef.current.setCellFocus(id, 'id');
+		});
+	}
+
+	const onRowEditCommit = (id: GridRowId) => {
+		const model = apiRef?.current.getEditRowsModel(); // This object contains all rows that are being edited
+		const newRow: { [key: string]: { value: string | number } } = model[id]
+		newRow['participant_id'] = { value: id };
+
+		// console.log(apiRef.current.getRowModels());
+		const newParticipant = Object.keys(newRow)
+			.map(k => ({
+				[k]: newRow[k].value || 'n/a'
+			}))
+			.reduce((p, c) => Object.assign(p, c), {})
+
+		const isEditingExistingParticipant = rows.find(r => r.participant_id === id)
+		if (isEditingExistingParticipant) {
+			setRows(previousRows => ([
+				...previousRows.map(p =>
+					p.participant_id === id ? newParticipant : p
+				)
+			]))
+
+			// setBidsDatabases(b => ([
+			// 	...b.map(p =>
+			// 		p.id === id ? newDb : p
+			// 	)
+			// ]))
+		} else {
+			setRows(previousRows => ([
+				...previousRows,
+				newParticipant
+			]))
+			const newSelectedBidsDatabase = {
+				...selectedBidsDatabase,
+				Participants: [
+					...selectedBidsDatabase?.Participants,
+					newParticipant
+				]
+			}
+
+			setBidsDatabases(previousBidsDatabases => ([
+				...previousBidsDatabases.map(b => b.id === newSelectedBidsDatabase.id ?
+					newSelectedBidsDatabase : b)
+			]))
+
+			// setBidsDatabases(b => ([
+			// 	...(b || []),
+			// 	newDb
+			// ]))
+		}
+
+		apiRef.current.setRowMode(id, 'view');
+
+		// createBIDSDatabase({ path: newRow.Name.value as string, database })
+		setSnackbar({ children: 'Participant successfully saved', severity: 'success' });
+
+	}
 
 	return (
 		<>
 			<Box sx={{ mt: 2 }}>
-
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-					<Typography variant='h6'>
-						BIDS Databases Participants
-					</Typography>
-					<Button
-						sx={{ mt: 2, mb: 2 }}
-						variant='outlined'
-						onClick={handleCreateParticipant}
-					>
-						Create Participant
-					</Button>
-				</Box>
 
 				<Box sx={{ height: 400, width: '100%' }}>
 					<DataGrid
 						onSelectionModelChange={(newSelectionModel) => {
 							setSelectionModel(newSelectionModel);
 						}}
+						onRowEditCommit={onRowEditCommit}
 						selectionModel={selectionModel}
 						rows={rows}
 						columns={columns}
 						pageSize={100}
 						rowsPerPageOptions={[100]}
+						editMode="row"
+						components={{
+							Toolbar: () =>
+								<GridToolbarContainer>
+									<Button
+										color="primary"
+										size='small'
+										sx={{ mt: 0.5, mb: 0.5 }}
+										startIcon={<AddIcon />}
+										onClick={handleCreateParticipant}
+										variant={'outlined'}
+									>
+										Create Participant
+									</Button>
+								</GridToolbarContainer>,
+						}}
 					/>
+					{!!snackbar && (
+						<Snackbar open onClose={() => setSnackbar(null)} autoHideDuration={6000}>
+							<Alert {...snackbar} onClose={() => setSnackbar(null)} />
+						</Snackbar>
+					)}
 				</Box>
-				{/* <Button
-					sx={{ mt: 2, p: 1, mr: 1 }}
-					onClick={handleNewSubject}
-					variant="outlined">New Participant </Button> */}
 			</Box >
 		</>
 	)

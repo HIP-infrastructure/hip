@@ -1,10 +1,9 @@
-import { Snackbar, AlertProps, Select, MenuItem, Alert, Box, Button, CircularProgress, Link, Typography, NativeSelect } from '@mui/material'
-import { GridToolbarContainer, GridRenderCellParams, DataGrid, GridColDef, GridRowId, GridCellParams, GridRowsProp, GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import { Alert, AlertProps, Box, Button, CircularProgress, Link, NativeSelect, Snackbar, Typography } from '@mui/material';
+import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridRowId, GridRowsProp, GridSelectionModel, GridToolbarContainer } from '@mui/x-data-grid';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BIDSDatabase, Participant } from '../../../api/types';
-import AddIcon from '@mui/icons-material/Add';
-import { createBIDSDatabase } from '../../../api/gatewayClientAPI';
 
 interface Props {
 	bidsDatabases?: BIDSDatabase[];
@@ -101,7 +100,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 		apiRef.current.setRowMode(id, 'view');
 
 		// createBIDSDatabase({ path: newRow.Name.value as string, database })
-		setSnackbar({ children: 'Database successfully saved', severity: 'success' });
+		setSnackbar({ children: 'Database successfully created', severity: 'success' });
 
 	}
 
