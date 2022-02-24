@@ -33,7 +33,8 @@ const Participants = ({ selectedBidsDatabase, setBidsDatabases, handleSelectPart
 		const rows = selectedBidsDatabase?.Participants?.map(p => ({
 			id: p.participant_id,
 			age: p.age,
-			sex: p.sex
+			sex: p.sex, 
+			...p
 		})) || []
 
 		setRows(rows)
@@ -49,6 +50,7 @@ const Participants = ({ selectedBidsDatabase, setBidsDatabases, handleSelectPart
 	}, [selectionModel, setSelectionModel])
 
 
+	const constantsColumns = ['participant_id', 'age', 'sex']
 	const columns: GridColDef[] = [
 		{
 			field: 'id',
@@ -72,6 +74,15 @@ const Participants = ({ selectedBidsDatabase, setBidsDatabases, handleSelectPart
 			width: 320,
 			editable: true
 		},
+		...selectedBidsDatabase?.Participants
+			.reduce((a, c) => Array.from(new Set([...a, ...Object.keys(c)])), [])
+			.filter(key => !constantsColumns.includes(key))
+			.map(key => ({
+				field: key,
+				headerName: key,
+				width: 320,
+				editable: true
+			}))
 
 	];
 
