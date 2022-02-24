@@ -96,14 +96,14 @@ const Data = (): JSX.Element => {
 	}
 
 	const rows = bidsDatabase?.data?.map(db => ({
-		id: db.path,
+		id: db.Path,
 		Name: db.Name,
 		Authors: db.Authors,
-		Participants: db.participants && db.participants.length,
+		Participants: db.Participants && db.Participants.length,
 		Licence: db.Licence,
 		BIDSVersion: db.BIDSVersion,
-		Path: db.path,
-		Browse: db.path
+		Path: db.Path,
+		Browse: db.Path
 	})) || []
 
 	return (
