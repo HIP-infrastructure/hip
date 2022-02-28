@@ -1,10 +1,21 @@
-import AddIcon from '@mui/icons-material/Add';
+import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import { Alert, AlertProps, Box, Button, CircularProgress, Link, NativeSelect, Snackbar, Typography } from '@mui/material';
-import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridRowId, GridRowsProp, GridSelectionModel, GridToolbarContainer } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColumns, GridEventListener, GridEvents, GridRenderCellParams, GridRowParams, GridRowsProp, GridSelectionModel, GridToolbarContainer, MuiEvent } from '@mui/x-data-grid';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BIDSDatabase, Participant } from '../../../api/types';
 
+interface GridApiRef {
+	updateRows: (params: [{ id?: number, isNew?: boolean, _action?: string }]) => void
+	setRowMode: (id: number, mode: string) => void
+	scrollToIndexes: ({ rowIndex }: { rowIndex: number }) => void
+	setCellFocus: (id: number, mode: string) => void
+	getRowsCount: (id?: number) => number
+	getRow: (id: number) => { isNew?: boolean }
+	commitRowChange: (id: number) => void
+	getRowMode: (id: number) => string
+	getEditRowsModel: () => any
+}
 interface Props {
 	bidsDatabases?: BIDSDatabase[];
 	setBidsDatabases: React.Dispatch<React.SetStateAction<BIDSDatabase[] | undefined>>;
@@ -19,7 +30,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 		AlertProps,
 		'children' | 'severity'
 	> | null>(null);
-	const apiRef = useRef(null);
+	const apiRef = useRef<GridApiRef>(null);
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -48,62 +59,116 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 	const handleCreateDatabase = () => {
 		const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 		apiRef?.current?.updateRows([{ id, isNew: true }]);
-		apiRef.current.setRowMode(id, 'edit');
+		apiRef?.current?.setRowMode(id, 'edit');
 		// Wait for the grid to render with the new row
 		setTimeout(() => {
-			apiRef.current.scrollToIndexes({
-				rowIndex: apiRef.current.getRowsCount() - 1,
+			apiRef?.current?.scrollToIndexes({
+				rowIndex: apiRef?.current?.getRowsCount() - 1,
 			});
-			apiRef.current.setCellFocus(id, 'Name');
+			apiRef?.current?.setCellFocus(id, 'Name');
 		});
 	}
 
-	const handleCellFocusOut = (params: any) => {
-		// console.log(params)
-	}
+	const handleRowEditStart = (
+		params: GridRowParams,
+		event: MuiEvent<React.SyntheticEvent>,
+	) => {
+		event.defaultMuiPrevented = true;
+	};
 
-	const onRowEditCommit = (id: GridRowId) => {
-		const model = apiRef?.current.getEditRowsModel(); // This object contains all rows that are being edited
-		const newRow: { [key: string]: { value: string | string[] | Participant[] } } = model[id]
-		newRow['id'] = { value: id };
+	const handleRowEditStop: GridEventListener<GridEvents.rowEditStop> = (
+		params,
+		event,
+	) => {
+		event.defaultMuiPrevented = true;
+	};
 
-		// console.log(apiRef.current.getRowModels());
-		const newDb = Object.keys(newRow)
-			.map(k => ({
-				[k]: newRow[k].value || 'n/a'
-			}))
-			.reduce((p, c) => Object.assign(p, c), {})
+	const handleCellFocusOut: GridEventListener<GridEvents.cellFocusOut> = (
+		params,
+		event,
+	) => {
+		event.defaultMuiPrevented = true;
+	};
 
-		const isEditingExistingDb = rows.find(r => r.id === id)
-		if (isEditingExistingDb) {
-			setRows(previousRows => ([
-				...previousRows.map(p =>
-					p.id === id ? newDb : p
-				)
-			]))
-			setBidsDatabases(b => ([
-				...b.map(p =>
-					p.id === id ? newDb : p
-				)
-			]))
-		} else {
-			setRows(previousRows => ([
-				...previousRows,
-				newDb
-			]))
-			setBidsDatabases(b => ([
-				...(b || []),
-				newDb
-			]))
+	const handleEditClick = (id: number) => (event: any) => {
+		event.stopPropagation();
+		apiRef?.current?.setRowMode(id, 'edit');
+	};
+
+	const handleSaveClick = (id: number) => async (event: any) => {
+		event.stopPropagation();
+		// Wait for the validation to run
+		const isValid = await apiRef?.current?.commitRowChange(id);
+		if (isValid) {
+			apiRef?.current?.setRowMode(id, 'view');
+			const row = apiRef?.current?.getRow(id);
+			apiRef?.current?.updateRows([{ ...row, isNew: false }]);
+
+			setSnackbar({ children: 'Database successfully saved', severity: 'success' });
+
 		}
+	};
 
-		apiRef.current.setRowMode(id, 'view');
-		handleSelectDatabase(newDb)
+	const handleDeleteClick = (id: number) => (event: any) => {
+		event.stopPropagation();
+		apiRef?.current?.updateRows([{ id, _action: 'delete' }]);
 
-		// createBIDSDatabase({ path: newRow.Name.value as string, database })
-		setSnackbar({ children: 'Database successfully created', severity: 'success' });
+		setSnackbar({ children: 'Database successfully deleted', severity: 'success' });
 
-	}
+	};
+
+	const handleCancelClick = (id: number) => (event: any) => {
+		event.stopPropagation();
+		apiRef?.current?.setRowMode(id, 'view');
+
+		const row = apiRef?.current?.getRow(id);
+		if (row!.isNew) {
+			apiRef?.current?.updateRows([{ id, _action: 'delete' }]);
+		}
+	};
+
+	// const onRowEditCommit = (id: GridRowId) => {
+	// 	const model = apiRef?.current?.getEditRowsModel(); // This object contains all rows that are being edited
+	// 	const newRow: { [key: string]: { value: string | string[] | Participant[] } } = model[id]
+	// 	newRow['id'] = { value: id as string };
+
+	// 	// console.log(apiRef?.current?.getRowModels());
+	// 	const newDb = Object.keys(newRow)
+	// 		.map(k => ({
+	// 			[k]: newRow[k].value || 'n/a'
+	// 		}))
+	// 		.reduce((p, c) => Object.assign(p, c), {})
+
+	// 	const isEditingExistingDb = rows.find(r => r.id === id)
+	// 	if (isEditingExistingDb) {
+	// 		setRows(previousRows => ([
+	// 			...previousRows.map(p =>
+	// 				p.id === id ? newDb : p
+	// 			)
+	// 		]))
+	// 		setBidsDatabases(b => ([
+	// 			...b.map(p =>
+	// 				p.id === id ? newDb : p
+	// 			)
+	// 		]))
+	// 	} else {
+	// 		setRows(previousRows => ([
+	// 			...previousRows,
+	// 			newDb
+	// 		]))
+	// 		setBidsDatabases(b => ([
+	// 			...(b || []),
+	// 			newDb
+	// 		]))
+	// 	}
+
+	// 	apiRef?.current?.setRowMode(id as string, 'view');
+	// 	handleSelectDatabase(newDb)
+
+	// 	// createBIDSDatabase({ path: newRow.Name.value as string, database })
+	// 	setSnackbar({ children: 'Database successfully created', severity: 'success' });
+
+	// }
 
 	function renderVersionEditCell(props: GridRenderCellParams<string>) {
 		const { id, value, api, field } = props;
@@ -149,7 +214,51 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 		);
 	}
 
-	const columns: GridColDef[] = [
+	const columns: GridColumns = [
+		{
+			field: 'actions',
+			type: 'actions',
+			headerName: 'Actions',
+			width: 120,
+			cellClassName: 'actions',
+			getActions: ({ id }: { id: any }) => {
+				const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit';
+
+				if (isInEditMode) {
+					return [
+						<GridActionsCellItem
+							icon={<Save />}
+							label="Save"
+							onClick={handleSaveClick(id)}
+							color="primary"
+						/>,
+						<GridActionsCellItem
+							icon={<Cancel />}
+							label="Cancel"
+							className="textPrimary"
+							onClick={handleCancelClick(id)}
+							color="inherit"
+						/>,
+					];
+				}
+
+				return [
+					<GridActionsCellItem
+						icon={<Edit />}
+						label="Edit"
+						className="textPrimary"
+						onClick={handleEditClick(id)}
+						color="inherit"
+					/>,
+					<GridActionsCellItem
+						icon={<Delete />}
+						label="Delete"
+						onClick={handleDeleteClick(id)}
+						color="inherit"
+					/>,
+				];
+			},
+		},
 		{
 			field: 'Browse',
 			headerName: 'See Data',
@@ -284,9 +393,9 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 						onSelectionModelChange={(newSelectionModel) => {
 							setSelectionModel(newSelectionModel);
 						}}
-						onRowEditCommit={onRowEditCommit}
-						// onRowEditStart={handleRowEditStart}
-						// onRowEditStop={handleRowEditStop}
+						// onRowEditCommit={onRowEditCommit}
+						onRowEditStart={handleRowEditStart}
+						onRowEditStop={handleRowEditStop}
 						onCellFocusOut={handleCellFocusOut}
 						selectionModel={selectionModel}
 						rows={rows}
@@ -302,7 +411,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 										color="primary"
 										size='small'
 										sx={{ mt: 0.5, mb: 0.5 }}
-										startIcon={<AddIcon />}
+										startIcon={<Add />}
 										onClick={handleCreateDatabase}
 										variant={'outlined'}
 									>
@@ -310,7 +419,10 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 									</Button>
 								</GridToolbarContainer>,
 						}}
-						isCellEditable={((params: GridCellParams<any, any, any>) => true)}
+						componentsProps={{
+							toolbar: { apiRef },
+						}}
+					// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
 					/>
 					{!!snackbar && (
 						<Snackbar open onClose={() => setSnackbar(null)} autoHideDuration={6000}>
