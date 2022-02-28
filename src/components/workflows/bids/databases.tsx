@@ -3,19 +3,9 @@ import { Alert, AlertProps, Box, Button, CircularProgress, Link, NativeSelect, S
 import { DataGrid, GridActionsCellItem, GridColumns, GridEventListener, GridEvents, GridRenderCellParams, GridRowParams, GridRowsProp, GridSelectionModel, GridToolbarContainer, MuiEvent } from '@mui/x-data-grid';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BIDSDatabase, Participant } from '../../../api/types';
+import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types';
 
-interface GridApiRef {
-	updateRows: (params: [{ id?: number, isNew?: boolean, _action?: string }]) => void
-	setRowMode: (id: number, mode: string) => void
-	scrollToIndexes: ({ rowIndex }: { rowIndex: number }) => void
-	setCellFocus: (id: number, mode: string) => void
-	getRowsCount: (id?: number) => number
-	getRow: (id: number) => { isNew?: boolean }
-	commitRowChange: (id: number) => void
-	getRowMode: (id: number) => string
-	getEditRowsModel: () => any
-}
+
 interface Props {
 	bidsDatabases?: BIDSDatabase[];
 	setBidsDatabases: React.Dispatch<React.SetStateAction<BIDSDatabase[] | undefined>>;
@@ -378,8 +368,6 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 
 	return (
 		<>
-
-
 			<Box sx={{ mt: 2 }}>
 				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 					<Typography variant='h6'>
