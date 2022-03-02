@@ -133,9 +133,17 @@ const Summary = ({ selectedBidsDatabase, selectedParticipant, selectedFiles }: P
     return <Box>
 
         <Box>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>BIDS Database: </strong>{selectedBidsDatabase?.Name}
+            <Typography variant="subtitle1" sx={{ mb: 2, mt: 2 }}>
+                <em>BIDS Database:</em> {selectedBidsDatabase?.Name}
             </Typography>
+            {/* {selectedBidsDatabase &&
+                Object.keys(selectedBidsDatabase)
+                    .filter(k => k !== 'Participants')
+                    .map((k: string) =>
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                            <em>{k}:</em> {JSON.stringify(selectedBidsDatabase[k], null, 2)}
+                        </Typography>
+                    )} */}
         </Box>
         <Box sx={{ mt: 4, mb: 4 }}>
             <TableContainer component={Paper}>

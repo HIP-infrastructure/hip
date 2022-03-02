@@ -13,7 +13,8 @@ const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
 
     const handleOnChange = (event: any, field: Entity) => {
         const value = event.target.value
-        const nextField: Entity = { ...field, value }
+        const modality = field.modalities && field.modalities[value]
+        const nextField: Entity = { ...field, value: modality }
 
         handleChangeFields(fields.map(f =>
             f.id === nextField.id ? nextField : f)
@@ -35,10 +36,10 @@ const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
                                 const filtered = filter(options, params);
 
                                 // Suggest the creation of a new value
-                                const isExisting = options.some((option) => params === option);
-                                if (params !== '' && !isExisting) {
+                                const isExisting = options.some((option) => params.inputValue === option);
+                                if (params.inputValue !== '' && !isExisting) {
                                     filtered.push(
-                                        `Add "${params}"`,
+                                        `Add "${params.inputValue}"`,
                                     );
                                 }
 

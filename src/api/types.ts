@@ -143,3 +143,15 @@ export interface Entity {
     value?: string | number,
 	modalities?: string[]
 }
+
+export interface GridApiRef {
+	updateRows: (params: [{ id?: number, isNew?: boolean, _action?: string }]) => void
+	setRowMode: (id: number, mode: string) => void
+	scrollToIndexes: ({ rowIndex }: { rowIndex: number }) => void
+	setCellFocus: (id: number, mode: string) => void
+	getRowsCount: (id?: number) => number
+	getRow: (id: number) => { isNew?: boolean }
+	commitRowChange: (id: number) => void
+	getRowMode: (id: number) => string
+	getEditRowsModel: () => any
+}

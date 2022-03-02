@@ -1,4 +1,5 @@
-import { Box, Button, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Button, InputLabel, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { getFiles } from '../../../api/gatewayClientAPI';
 import { BIDSDatabase, Entity, File, Participant, TreeNode } from '../../../api/types';
@@ -174,7 +175,6 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
             })
             forceUpdate();
         }
-
     }
 
     const populateEntities = (modality: string) => {
@@ -189,7 +189,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                         required: e.required,
                         type: 'string',
                         value: selectedParticipant?.participant_id,
-                        disabled: true
+                        modalities: selectedBidsDatabase?.Participants?.map(p => p.participant_id)
                     }) : ({
                         id: e.entity.id,
                         label: e.entity.label,
@@ -248,10 +248,9 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
 
     return <Box>
         <Box sx={boxStyle}>
-            <InputLabel id="ids-modality">Modality</InputLabel>
+            <InputLabel id="bids-modality">Modality</InputLabel>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '0px 8px', mb: 2 }}>
                 <Box>
-
                     <Select
                         labelId="bids-modality"
                         id="bids-modality-select"
@@ -274,7 +273,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                 }
             </Box>
             <Box sx={{ width: 960 }}>
-                <Search />
+                {/* <Search /> */}
                 <Box sx={{
                     width: 960,
                     border: 1,
@@ -308,6 +307,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                 <Table size="small" sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
+                            <TableCell>Actions</TableCell>
                             <TableCell>Modality</TableCell>
                             <TableCell>Path</TableCell>
                             {Object.keys(bIDSEntity).map((k: any) =>
@@ -316,7 +316,7 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                                     {bIDSEntity[k].label}
                                 </TableCell>
                             )}
-                            <TableCell>Actions</TableCell>
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -325,17 +325,22 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
                                 key={file.path}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
+                                <TableCell align="right">
+                                    <IconButton color="primary" aria-label="edit">
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton color="primary" aria-label="delete">
+                                        <Delete />
+                                    </IconButton>
+                                </TableCell>
                                 <TableCell>{file.modality}</TableCell>
                                 <TableCell>{file.path}</TableCell>
                                 {Object.keys(bIDSEntity).map((k: string) =>
                                     <TableCell key={k}>
                                         {file?.entities?.find(f =>
-                                            f.id === bIDSEntity[k].id)?.value}
+                                            f.id === bIDSEntity[k].id)?.value || ''}
                                     </TableCell>)}
-                                <TableCell align="right">
-                                    <Button variant="outlined" size="small" sx={{ mt: 2 }}>Edit</Button>
-                                    <Button variant="outlined" size="small" sx={{ mt: 2 }}>Delete</Button>
-                                </TableCell>
+
                             </TableRow>
                         ))}
                     </TableBody>
