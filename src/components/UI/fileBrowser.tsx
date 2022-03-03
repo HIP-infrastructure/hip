@@ -11,6 +11,8 @@ interface ITreeSelect {
 export default ({ nodesPanes, handleSelectedNode }: ITreeSelect) => {
     const lastRef = useRef<HTMLDivElement>(null)
 
+
+
     // after every render
     useEffect(() => {
         if (lastRef?.current) //lastRef.current.scrollLeft = 1000
@@ -21,7 +23,8 @@ export default ({ nodesPanes, handleSelectedNode }: ITreeSelect) => {
             })
     })
 
-    return <Box sx={{ display: 'flex' }}>
+
+    return <Box sx={{ display: 'flex' }} >
         {nodesPanes && nodesPanes.map((nodes, index) =>
             <Box key={`${index}`} sx={{ display: 'flex', flexDirection: 'column' }}>
                 <div ref={lastRef} >

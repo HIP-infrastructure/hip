@@ -1,11 +1,10 @@
-import { Box, Button, InputLabel, IconButton, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
+import { Box, Button, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { getFiles } from '../../../api/gatewayClientAPI';
-import { BIDSDatabase, Entity, File, Participant, TreeNode } from '../../../api/types';
+import { BIDSDatabase, Entity, File as IFile, Participant, TreeNode } from '../../../api/types';
 import DynamicForm from '../../UI/dynamicForm';
 import FileBrowser from '../../UI/fileBrowser';
-import Search from './search';
 
 export const bIDSEntity = {
     subject: {
@@ -128,14 +127,14 @@ const modalities = [
 interface Props {
     selectedBidsDatabase?: BIDSDatabase;
     selectedParticipant?: Participant;
-    selectedFiles: File[];
-    handleSelectFiles: (files: File[]) => void;
+    selectedFiles?: IFile[];
+    handleSelectFiles: (files: IFile[]) => void;
 }
 
 const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handleSelectFiles }: Props): JSX.Element => {
     const [filesPanes, setFilesPanes] = useState<TreeNode[][]>();
     const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
-    const [currentBidsFile, setCurrentBidsFile] = useState<File>()
+    const [currentBidsFile, setCurrentBidsFile] = useState<IFile>()
 
     useEffect(() => {
         populateEntities('T1w')
@@ -235,6 +234,19 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
         populateEntities('T1w')
     }
 
+    const handleFileUploadError = (error: Error) => {
+        // Do something...
+    }
+
+    const handleFileChange = (file: File) => {
+        if (currentBidsFile && handleSelectFiles) {
+            handleSelectFiles([...(selectedFiles || []), {
+                ...currentBidsFile,
+                path: file.path || '/new file'
+            }])
+        }
+    }
+
 
     const boxStyle = {
         border: 1,
@@ -274,12 +286,14 @@ const Files = ({ selectedBidsDatabase, selectedParticipant, selectedFiles, handl
             </Box>
             <Box sx={{ width: 960 }}>
                 {/* <Search /> */}
+
                 <Box sx={{
                     width: 960,
                     border: 1,
                     borderColor: 'grey.300',
                     overflowY: 'auto',
-                    p: 1
+                    p: 1,
+                    display: "flex"
                 }}>
                     <FileBrowser
                         nodesPanes={filesPanes}

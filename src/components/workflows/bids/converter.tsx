@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { getBids } from '../../../api/gatewayClientAPI';
-import { BIDSDatabase, File, Participant } from '../../../api/types';
+import { BIDSDatabase, File as IFile, Participant } from '../../../api/types';
 import TitleBar from '../../UI/titleBar';
 import Databases from './databases';
 import Files from './files';
@@ -24,7 +24,7 @@ const BidsConverter = () => {
     const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[]>()
     const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
     const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
-    const [selectedFiles, setSelectedFiles] = useState<File[]>()
+    const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
     const [error, setError] = useState<Error>()
 
     useEffect(() => {
