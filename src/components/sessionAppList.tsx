@@ -1,9 +1,8 @@
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material';
 import { Avatar, CircularProgress, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
 import React from 'react';
 import { Application, Container, ContainerState } from '../api/types';
-import { loading, color, } from '../api/utils';
+import { color, loading } from '../api/utils';
 import anywave from '../assets/anywave__logo.png';
 import bidsmanager from '../assets/bidsmanager__logo.png';
 import brainstorm from '../assets/brainstorm__logo.png';
@@ -64,6 +63,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
             sx={{ cursor: 'pointer' }}
             aria-label={label}
             title={label}
+            disabled={session?.state !== ContainerState.RUNNING}
             onClick={() => handleToggleApp && handleToggleApp(app)}            >
             <ListItemIcon>
                 <AppAvatar name={app.name} label={app.label} />

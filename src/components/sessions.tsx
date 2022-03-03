@@ -1,6 +1,6 @@
 import { Clear, Pause, PowerSettingsNew, Replay, Visibility } from '@mui/icons-material';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
 	createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
@@ -21,7 +21,16 @@ const Sessions = (): JSX.Element => {
 	} = useAppStore()
 
 	const modalRef = useRef<ModalComponentHandle>(null);
+	const [shouldCreateSession, setShouldCreateSession] = useState(true)
 	const navigate = useNavigate();
+
+	// create an empty session at start
+	useEffect(() => {
+		const sessions = containers?.filter((container: Container) => container.type === ContainerType.SESSION)
+		if (sessions?.length === 0 && user?.uid && shouldCreateSession) {
+			createSession(user.uid)
+		}
+	}, [containers, shouldCreateSession])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
@@ -36,6 +45,7 @@ const Sessions = (): JSX.Element => {
 		);
 
 		if (reply) {
+			setShouldCreateSession(false)
 			removeAppsAndSession(sessionId, user?.uid || '')
 		}
 	}
@@ -74,12 +84,16 @@ const Sessions = (): JSX.Element => {
 				{sessions?.map((session, i) =>
 					<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={session.name}>
 						<Box sx={{ position: "relative" }}>
-							<CardMedia
-								component="img"
-								height="140"
-								src={SessionImage}
-								alt={session.name}
-							/>
+							<Tooltip title={`Open Desktop #${session.name}`} placement="bottom">
+								<CardMedia
+									sx={{ cursor: session.state !== ContainerState.RUNNING ? "default" : "pointer" }}
+									component="img"
+									height="140"
+									src={SessionImage}
+									alt={`Open ${session.name}`}
+									onClick={() => session.state === ContainerState.RUNNING && handleOpenSession(session.id)}
+								/>
+							</Tooltip>
 							{[loading(session.state), ...session.apps.map(a => loading(a.state))].reduce((p, c) => p || c, false) &&
 								<CircularProgress size={32} color='secondary' sx={{ position: "absolute", top: 10, left: 10 }} />
 							}
