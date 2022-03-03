@@ -151,13 +151,14 @@ const Summary = ({ selectedBidsDatabase, selectedParticipant, selectedFiles }: P
                     <TableHead>
                         <TableRow>
                             <TableCell>Modality</TableCell>
-                            <TableCell>Path</TableCell>
+
                             {Object.keys(bIDSEntity).map((k: any) =>
                                 <TableCell
                                     key={bIDSEntity[k].id}>
                                     {bIDSEntity[k].label}
                                 </TableCell>
                             )}
+                            <TableCell>Path</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -167,12 +168,12 @@ const Summary = ({ selectedBidsDatabase, selectedParticipant, selectedFiles }: P
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell>{file.modality}</TableCell>
-                                <TableCell>{file.path}</TableCell>
                                 {Object.keys(bIDSEntity).map((k: string) =>
                                     <TableCell key={k}>
                                         {file?.entities?.find(f =>
                                             f.id === bIDSEntity[k].id)?.value}
                                     </TableCell>)}
+                                <TableCell>{file.path}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

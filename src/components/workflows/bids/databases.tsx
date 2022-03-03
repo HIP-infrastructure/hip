@@ -250,23 +250,6 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			},
 		},
 		{
-			field: 'Browse',
-			headerName: 'See Data',
-			sortable: false,
-			renderCell: (params: any) => {
-				// This is a hack to assign access to the internal Grid API
-				apiRef.current = params.api;
-				return <Link
-					target="_blank"
-					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
-				>
-					Browse
-				</Link>
-			}
-			,
-			width: 96
-		},
-		{
 			field: 'Name',
 			headerName: 'Name',
 			width: 160,
@@ -301,7 +284,23 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			renderEditCell: renderVersionEditCell
 
 		},
-
+		{
+			field: 'Path',
+			headerName: 'Path',
+			sortable: false,
+			width: 240,
+			editable: false,
+			renderCell: (params: any) => {
+				// This is a hack to assign access to the internal Grid API
+				apiRef.current = params.api;
+				return <Link
+					target="_blank"
+					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
+				>
+					{params.value}
+				</Link>
+			},
+		},
 		{
 			field: 'Licence',
 			headerName: 'Licence',
@@ -356,13 +355,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			width: 120,
 			editable: true
 		},
-		{
-			field: 'Path',
-			headerName: 'Path',
-			sortable: false,
-			width: 320,
-			editable: false
-		},
+
 
 	];
 
