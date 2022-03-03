@@ -144,14 +144,16 @@ export interface Entity {
 	modalities?: string[]
 }
 
+type CellId = string | number
+
 export interface GridApiRef {
-	updateRows: (params: [{ id?: number, isNew?: boolean, _action?: string }]) => void
-	setRowMode: (id: number, mode: string) => void
+	updateRows: (params: [{ id?: CellId, isNew?: boolean, _action?: string }]) => void
+	setRowMode: (id: CellId, mode: string) => void
 	scrollToIndexes: ({ rowIndex }: { rowIndex: number }) => void
-	setCellFocus: (id: number, mode: string) => void
-	getRowsCount: (id?: number) => number
-	getRow: (id: number) => { isNew?: boolean }
-	commitRowChange: (id: number) => void
-	getRowMode: (id: number) => string
+	setCellFocus: (id: CellId, mode: string) => void
+	getRowsCount: (id?: CellId) => number
+	getRow: (id: CellId) => { isNew?: boolean }
+	commitRowChange: (id: CellId) => void
+	getRowMode: (id: CellId) => string
 	getEditRowsModel: () => any
 }
