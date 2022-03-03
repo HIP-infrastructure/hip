@@ -41,7 +41,6 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
                     route: 'documentation',
                     label: 'Documentation',
                     icon: <HelpCenter />,
-                    disabled: true
                 }]
         },
         {
