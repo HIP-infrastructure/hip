@@ -252,9 +252,9 @@ const Session = (): JSX.Element => {
 						allowFullScreen
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
-							height: drawerOpen ? '90vh' : '100vh',
+							height: 'calc(100vh - 100px)',
 							backgroundColor: '#333',
-							marginTop: '32px'
+							marginTop: '54px'
 						}}
 					/>
 				}
