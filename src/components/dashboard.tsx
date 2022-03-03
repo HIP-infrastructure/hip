@@ -55,9 +55,9 @@ const Dahsboard = () => {
         }))
 
     return <Box sx={{ width: 0.75 }}>
-        <Box sx={{ ml: 2, mb: 6 }}>
+        <Box sx={{ mb: 6 }}>
             <Typography variant='h2'>The Human Intracerebral EEG Platform</Typography>
-            <Typography sx={{ ml: 1 }}variant='h5'>The HIP - a platform for state-of-the-art processing and international sharing of HUMAN intracerebral EEG data</Typography>
+            <Typography sx={{ ml: 0.5 }} variant='h5'>The HIP - a platform for state-of-the-art processing and international sharing of HUMAN intracerebral EEG data</Typography>
             {/* <Link href="https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/">Website</Link> */}
         </Box>
         <Box sx={{
@@ -67,8 +67,7 @@ const Dahsboard = () => {
             justifyContent: 'start',
             flexWrap: 'wrap',
             gap: '64px 64px',
-            alignItems: 'start',
-            ml: 4
+            alignItems: 'start'
         }}>
             {spaces?.map((space, i) =>
                 <Card sx={{ width: 320, height: 480, display: 'flex', flexDirection: 'column' }} key={space.label}>
