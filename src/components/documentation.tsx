@@ -40,7 +40,7 @@ const Documentation = () => {
     return <>
         <TitleBar title='Documentation' />
 
-        <Box sx={{ width: 0.75, mt: 2 }}>
+        <Box sx={{ width: 0.75, mt: 4 }}>
             <Box sx={{
                 display: 'flex',
                 width: '75vw',
