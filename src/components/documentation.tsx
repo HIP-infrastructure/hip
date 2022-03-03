@@ -34,7 +34,7 @@ const Documentation = () => {
         description: 'HIP official webpage on the Human Brain Project',
         image: WebsiteDocumentation,
         credit: 'Photo by Austin Chan on Unsplash, https://unsplash.com/@austinchan',
-    }]  
+    }]
 
 
     return <>
@@ -71,6 +71,7 @@ const Documentation = () => {
                                 {doc.description}
                             </Typography>
                             <Typography
+                                sx={{ wordWrap: "break-word" }}
                                 onClick={() => { handleClickLink(doc.url) }}
                                 gutterBottom
                                 variant="caption"

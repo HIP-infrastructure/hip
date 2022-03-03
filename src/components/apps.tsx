@@ -118,8 +118,8 @@ const Apps = () => {
 						<Typography sx={{ mb: 2, mt: 2 }} gutterBottom variant="body2" color="text.secondary">
 							{app.description}
 						</Typography>
-						<Typography variant="caption" color="text.secondary" >
-							<Link href={app.url} target="_blanck">{app.url}</Link>
+						<Typography variant="caption" color="text.secondary" sx={{ wordWrap: "break-word" }} >
+							<Link href={app.url} target="_blank">{app.url}</Link>
 						</Typography>
 					</CardContent>
 					{/* <CardActions sx={{ alignSelf: 'end' }} >
