@@ -38,16 +38,16 @@ You will need Docker, docker-compose, nodejs and npm installed on your machine
 5. `cp templates/index.dev.php index.php`
 6. On the main folder, create a .env with  
    HOSTNAME=example.com
-   GATEWAY_API=https://example.com
-   GATEWAY_API_PREFIX=/api/v1
+   GATEWAY_API=https://example.com/api/v1
 
    REMOTE_APP_API=https://example.com/api
    REMOTE_APP_BASIC_AUTH=Basic pass
 
-   PRIVATE_WEBDAV_URL=https://example.com
-   COLLAB_WEBDAV_URL=https://example.com
-   COLLAB_WEBDAV_USERNAME=user
-   COLLAB_WEBDAV_PASSWORD=password
+   HIP_ADMIN=hipadmin
+
+   NODE_ENV=development
+   NEXTCLOUD_VERSION=22.2.5-fpm
+   NEXTCLOUD_VIRTUAL_HOST=dev.thehip.app
 
 7. Copy the `docker-compose.yml` file to the top folder
 8. `docker-compose up -d`
@@ -61,8 +61,9 @@ https://dev.to/leejianhowe/how-to-setup-eslint-for-react-typescript-projects-7ji
 Prettier Setup
 https://prettier.io/docs/en/install.html
 
-### Publish the app 
-On the master branch, `npm run publish` will produce a  Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build. 
+### Publish the app
+
+On the master branch, `npm run publish` will produce a Nextcloud app, compiling all assets, css, images and JS code into a static folder and create a templates/index.php which refers to the build.
 
 `docker-compose -f docker-compose-dev.yml run web npm run publish`
 

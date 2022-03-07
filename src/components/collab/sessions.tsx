@@ -8,5 +8,5 @@ const CollaborativeSessions = () => (
 	/>
 )
 
-CollaborativeSessions.DisplayName = 'CollaborativeSessions'
+CollaborativeSessions.displayName = 'CollaborativeSessions'
 export default CollaborativeSessions

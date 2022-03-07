@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { BIDSDatabase, File, Participant } from '../../../api/types'
+import { EntityIndex } from './files'
 
 export const bIDSEntity = {
 	subject: {
@@ -157,9 +158,9 @@ const Summary = ({
 							<TableRow>
 								<TableCell>Modality</TableCell>
 
-								{Object.keys(bIDSEntity).map((k: any) => (
-									<TableCell key={bIDSEntity[k].id}>
-										{bIDSEntity[k].label}
+								{Object.keys(bIDSEntity).map((k: string) => (
+									<TableCell key={bIDSEntity[(k as EntityIndex)].id}>
+										{bIDSEntity[(k as EntityIndex)].label}
 									</TableCell>
 								))}
 								<TableCell>Path</TableCell>
@@ -175,7 +176,7 @@ const Summary = ({
 									{Object.keys(bIDSEntity).map((k: string) => (
 										<TableCell key={k}>
 											{
-												file?.entities?.find(f => f.id === bIDSEntity[k].id)
+												file?.entities?.find(f => f.id === bIDSEntity[(k as EntityIndex)].id)
 													?.value
 											}
 										</TableCell>

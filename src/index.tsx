@@ -10,12 +10,13 @@ const DebugRouter = ({ children }: { children: JSX.Element }) => {
 	const location = useLocation()
 
 	if (process.env.NODE_ENV === 'development') {
-		/* tslint:disable-next-line */
+		/* eslint-disable no-console */
 		console.log(
 			`Route: ${location.pathname}${location.search}, State: ${JSON.stringify(
 				location.state
 			)}`
 		)
+		/* eslint-enable no-console */
 	}
 
 	return children

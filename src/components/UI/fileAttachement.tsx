@@ -1,10 +1,9 @@
-import React from 'react'
-import { useTheme } from '@mui/material/styles'
-import { Typography, Paper, Avatar, IconButton } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined'
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
+import { Avatar, Paper, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import React from 'react'
 
 function FileAttachment({ file, size }: { file: File; size: string }) {
 	const theme = useTheme()
@@ -32,7 +31,7 @@ function FileAttachment({ file, size }: { file: File; size: string }) {
 			>
 				<Avatar
 					alt=''
-					src={file.path}
+					src={`file.path`}
 					variant='rounded'
 					sx={{
 						m: 0.5,
@@ -52,7 +51,7 @@ function FileAttachment({ file, size }: { file: File; size: string }) {
 						{file?.name}
 					</Typography>
 					<Typography variant='caption' noWrap>
-						<b>{size}</b> | <b>{file?.extension?.toLowerCase()}</b>
+						<b>{size}</b> | <b>{`file?.extension?.toLowerCase()`}</b>
 					</Typography>
 				</Typography>
 			</Typography>

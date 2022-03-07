@@ -195,11 +195,12 @@ const BidsConverter = () => {
 								<Typography variant='subtitle1' sx={{ mb: 1 }}>
 									<strong> BIDS Conversion Summary</strong>
 								</Typography>
-								<Summary
-									selectedBidsDatabase={selectedBidsDatabase}
-									selectedParticipant={selectedParticipant}
-									selectedFiles={selectedFiles}
-								/>
+								{selectedFiles &&
+									<Summary
+										selectedBidsDatabase={selectedBidsDatabase}
+										selectedParticipant={selectedParticipant}
+										selectedFiles={selectedFiles}
+									/>}
 								<StepNavigation activeStep={activeStep} />
 							</Box>
 							<Box

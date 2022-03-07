@@ -24,7 +24,6 @@ import {
 	MuiEvent,
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
 
 interface Props {
@@ -48,8 +47,7 @@ const Databases = ({
 		AlertProps,
 		'children' | 'severity'
 	> | null>(null)
-	const apiRef = useRef<GridApiRef>(null)
-	const navigate = useNavigate()
+	const apiRef = useRef<GridApiRef | null>(null)
 
 	useEffect(() => {
 		if (selectedDatabase) {
@@ -190,16 +188,19 @@ const Databases = ({
 
 	// }
 
-	function renderVersionEditCell(props: GridRenderCellParams<string>) {
+	function renderVersionEditCell(props: any) { // props: GridRenderCellParams<string>)
 		const { id, value, api, field } = props
 
 		const handleChange = async (event: any) => {
-			api.setEditCellValue({ id, field, value: event.target.value }, event)
+
+			if (!id || !field) return
+
+			api?.setEditCellValue({ id, field, value: event.target.value }, event)
 			// Check if the event is not from the keyboard
 			// https://github.com/facebook/react/issues/7407
 			if (event.nativeEvent.clientX !== 0 && event.nativeEvent.clientY !== 0) {
 				// Wait for the validation to run
-				const isValid = await api.commitCellChange({ id, field })
+				const isValid = await api?.commitCellChange({ id, field })
 				if (isValid) {
 					// api.setCellMode(id, field, 'view');
 				}
@@ -222,7 +223,7 @@ const Databases = ({
 					id: 'bids-version-select',
 				}}
 			>
-				{Array.from(new Set(bidsDatabases?.data?.map(b => b?.BIDSVersion))).map(
+				{Array.from(new Set(bidsDatabases?.map(b => b?.BIDSVersion))).map(
 					version => (
 						<option value={version} key={version}>
 							{version}

@@ -43,5 +43,5 @@ const FileBrowser = ({ nodesPanes, handleSelectedNode }: ITreeSelect) => {
 	)
 }
 
-FileBrowser.DisplayName = 'FileBrowser'
+FileBrowser.displayName = 'FileBrowser'
 export default FileBrowser

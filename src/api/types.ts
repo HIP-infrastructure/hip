@@ -141,7 +141,7 @@ export interface Entity {
 	required: boolean
 	type: 'string' | 'number'
 	value?: string | number
-	modalities?: string[]
+	modalities?: any
 }
 
 type CellId = string | number

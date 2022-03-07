@@ -90,5 +90,5 @@ const ModalComponent = forwardRef<ModalComponentHandle, Props>(
 	}
 )
 
-ModalComponent.DisplayName = 'ModalComponent'
+ModalComponent.displayName = 'ModalComponent'
 export default ModalComponent

@@ -8,5 +8,5 @@ const CollaborativeWorkflows = () => (
 	/>
 )
 
-CollaborativeWorkflows.DisplayName = 'CollaborativeWorkflows'
+CollaborativeWorkflows.displayName = 'CollaborativeWorkflows'
 export default CollaborativeWorkflows

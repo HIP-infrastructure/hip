@@ -1,10 +1,8 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import * as React from 'react'
 import { search } from '../../../api/gatewayClientAPI'
 import { ISearch, ISearchResult } from '../../../api/types'
 

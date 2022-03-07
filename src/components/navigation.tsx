@@ -80,16 +80,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					route: '',
 					label: 'Dashboard',
 					icon: <Dashboard />,
+					disabled: false,
 				},
 				{
 					route: 'apps',
 					label: 'App Catalog',
 					icon: <Apps />,
+					disabled: false,
 				},
 				{
 					route: 'documentation',
 					label: 'Documentation',
 					icon: <HelpCenter />,
+					disabled: false,
 				},
 			],
 		},
@@ -103,16 +106,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					route: 'private/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
+					disabled: false,
 				},
 				{
 					route: 'private/data',
 					label: 'Data',
 					icon: <Folder />,
+					disabled: false,
 				},
 				{
 					route: 'private/workflows',
 					label: 'Workflows',
 					icon: <Assignment />,
+					disabled: false,
 				},
 				{
 					route: 'private/studies', // project ?
@@ -132,16 +138,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					route: 'collaborative/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
+					disabled: false,
 				},
 				{
 					route: 'collaborative/data',
 					label: 'Data',
 					icon: <Folder />,
+					disabled: false,
 				},
 				{
 					route: 'collaborative/workflows',
 					label: 'Workflows',
 					icon: <Assignment />,
+					disabled: false,
 				},
 				{
 					route: 'collaborative/studies', // project ?
@@ -161,16 +170,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					route: 'public/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
+					disabled: false,
 				},
 				{
 					route: 'public/data',
 					label: 'Data',
 					icon: <Folder />,
+					disabled: false,
 				},
 				{
 					route: 'public/workflows',
 					label: 'Workflows',
 					icon: <Assignment />,
+					disabled: false,
 				},
 				{
 					route: 'public/studies', // project ?

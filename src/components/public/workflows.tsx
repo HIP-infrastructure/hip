@@ -5,5 +5,5 @@ const PublicWorkflows = () => (
 	<TitleBar title={'Public Workflows'} description={'Not yet implemented'} />
 )
 
-PublicWorkflows.DisplayName = 'PublicWorkflows'
+PublicWorkflows.displayName = 'PublicWorkflows'
 export default PublicWorkflows

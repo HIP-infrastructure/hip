@@ -36,7 +36,7 @@ const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
 								sx={{ width: 300 }}
 								freeSolo
 								filterOptions={(options, params) => {
-									const filtered = filter(options, params)
+									const filtered = filter(options as string[], params)
 
 									// Suggest the creation of a new value
 									const isExisting = options.some(

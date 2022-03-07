@@ -49,7 +49,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 			backgroundColor: theme.palette.action.hover,
 		},
 		'&.Mui-focused': {
-			backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.primary})`,
+			backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.focus})`,
 			color: 'var(--tree-view-color)',
 		},
 		'&.Mui-selected, &.Mui-selected.Mui-focused': {
@@ -143,9 +143,9 @@ const FilePanel = ({
 	) => {
 		setAnimate(false)
 		setError(null)
-		if (!filesTab && event?.target?.files) {
-			filesTab = event?.target?.files
-		}
+		// if (!filesTab && event?.target?.files) {
+		// 	filesTab = event?.target?.files
+		// }
 		if (!filesTab) {
 			// return onError(`Empty file input`)
 		}
@@ -169,14 +169,14 @@ const FilePanel = ({
 							extension: extension?.toLowerCase(),
 							contentType: file.type,
 						}
-						files.push(obj)
+						// files.push(obj)
 						setFiles([...files])
 					},
 					false
 				)
 				reader.readAsDataURL(file)
 			}
-			event?.dataTransfer?.clearData()
+			// event?.dataTransfer?.clearData()
 		}
 	}
 
@@ -225,23 +225,23 @@ const FilePanel = ({
 	useEffect(() => {
 		const dragDiv = filesCardRef.current
 		if (dragDiv) {
-			dragDiv.ondragenter = handleDragEnter
-			dragDiv.ondragover = handleDragOver
-			dragDiv.ondrop = handleDrop
-			dragDiv.ondragleave = handleDragLeave
+			// dragDiv.ondragenter = handleDragEnter
+			// dragDiv.ondragover = handleDragOver
+			// dragDiv.ondrop = handleDrop
+			// dragDiv.ondragleave = handleDragLeave
 		}
 	}, [filesCardRef.current])
 
-	const background = animate ? theme.palette.text.disabled : theme.palette.grey
+	// const background = animate ? theme.palette.grey : theme.palette.grey
 
 	return (
 		<ThemeProvider theme={theme}>
 			<Box
 				ref={filesCardRef}
-				sx={{
-					transition: 500,
-					background,
-				}}
+				// sx={{
+				// 	transition: 500,
+				// 	background: background
+				// }}
 			>
 				<TreeView
 					onNodeSelect={onNodeSelect}
@@ -268,7 +268,7 @@ const FilePanel = ({
 								labelText={node.label}
 								labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
 								labelInfo={
-									standalone || node.data.type !== 'dir' ? null : <ArrowRight />
+									standalone || node.data.type !== 'dir' ? undefined : ">"
 								}
 							/>
 						))}
@@ -283,5 +283,5 @@ const FilePanel = ({
 	)
 }
 
-FilePanel.DisplayName = 'FilePanel'
+FilePanel.displayName = 'FilePanel'
 export default FilePanel

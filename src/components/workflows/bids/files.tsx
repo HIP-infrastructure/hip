@@ -32,6 +32,7 @@ export const bIDSEntity = {
 		id: 'subject',
 		label: 'Subject',
 		format: 'sub-',
+		modalities: undefined
 	},
 	session: {
 		id: 'session',
@@ -55,23 +56,29 @@ export const bIDSEntity = {
 		id: 'reconstruction',
 		label: 'Reconstruction',
 		format: 'rec-',
+		modalities: undefined
 	},
 	run: {
 		id: 'run',
 		label: 'Run',
 		format: 'run-',
+		modalities: undefined
 	},
 	correspondingmodality: {
 		id: 'correspondingmodality',
 		label: 'Corresponding Modality',
 		format: 'mod-',
+		modalities: undefined
 	},
 	echo: {
 		id: 'echo',
 		label: 'Echo',
 		format: 'echo-',
+		modalities: undefined
 	},
 }
+
+export type EntityIndex = 'subject' | 'session' | 'task' | 'acquisition'
 
 export const bIDSDataType = [
 	{
@@ -197,23 +204,23 @@ const Files = ({
 			const entities: Entity[] | undefined = dataTypes?.map(e =>
 				e.entity.id === 'subject'
 					? {
-							id: e.entity.id,
-							label: e.entity.label,
-							required: e.required,
-							type: 'string',
-							value: selectedParticipant?.participant_id,
-							modalities: selectedBidsDatabase?.Participants?.map(
-								p => p.participant_id
-							),
-					  }
+						id: e.entity.id,
+						label: e.entity.label,
+						required: e.required,
+						type: 'string',
+						value: selectedParticipant?.participant_id,
+						modalities: selectedBidsDatabase?.Participants?.map(
+							p => p.participant_id
+						),
+					}
 					: {
-							id: e.entity.id,
-							label: e.entity.label,
-							required: e.required,
-							type: 'string',
-							value: '',
-							modalities: e.entity.modalities ? e.entity.modalities : undefined,
-					  }
+						id: e.entity.id,
+						label: e.entity.label,
+						required: e.required,
+						type: 'string',
+						value: '',
+						modalities: e.entity.modalities ? e.entity.modalities : undefined,
+					}
 			)
 
 			if (entities) {
@@ -261,7 +268,7 @@ const Files = ({
 				...(selectedFiles || []),
 				{
 					...currentBidsFile,
-					path: file.path || '/new file',
+					path: `file.path` || '/new file',
 				},
 			])
 		}
@@ -350,9 +357,9 @@ const Files = ({
 								<TableCell>Actions</TableCell>
 								<TableCell>Modality</TableCell>
 								<TableCell>Path</TableCell>
-								{Object.keys(bIDSEntity).map((k: any) => (
-									<TableCell key={bIDSEntity[k].id}>
-										{bIDSEntity[k].label}
+								{Object.keys(bIDSEntity).map((k: string) => (
+									<TableCell key={bIDSEntity[(k as EntityIndex)].id}>
+										{bIDSEntity[(k as EntityIndex)].label}
 									</TableCell>
 								))}
 							</TableRow>
@@ -375,7 +382,7 @@ const Files = ({
 									<TableCell>{file.path}</TableCell>
 									{Object.keys(bIDSEntity).map((k: string) => (
 										<TableCell key={k}>
-											{file?.entities?.find(f => f.id === bIDSEntity[k].id)
+											{file?.entities?.find(f => f.id === bIDSEntity[(k as EntityIndex)].id)
 												?.value || ''}
 										</TableCell>
 									))}

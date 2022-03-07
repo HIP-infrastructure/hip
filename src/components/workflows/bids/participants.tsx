@@ -10,10 +10,9 @@ import {
 	GridRowsProp,
 	GridSelectionModel,
 	GridToolbarContainer,
-	MuiEvent,
+	MuiEvent
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
 
 interface Props {
@@ -37,8 +36,7 @@ const Participants = ({
 		AlertProps,
 		'children' | 'severity'
 	> | null>(null)
-	const apiRef = useRef<GridApiRef>(null)
-	const navigate = useNavigate()
+	const apiRef = useRef<GridApiRef | null>(null)
 
 	useEffect(() => {
 		if (selectedParticipant) {
@@ -205,7 +203,7 @@ const Participants = ({
 		},
 		...(selectedBidsDatabase?.Participants?.reduce(
 			(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
-			[]
+			[] as string[]
 		)
 			.filter((key: string) => !constantsColumns.includes(key))
 			.map((key: string) => ({
@@ -213,7 +211,7 @@ const Participants = ({
 				headerName: key,
 				width: 320,
 				editable: true,
-			})) || {}),
+			})) || []),
 	]
 
 	const characters =
