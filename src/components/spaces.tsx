@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { Outlet, useNavigate } from "react-router-dom";
-import { ROUTE_PREFIX, SPACES_NAV } from '../constants';
+import * as React from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { ROUTE_PREFIX, SPACES_NAV } from '../constants'
 
 const Spaces = () => {
-    const navigate = useNavigate();
-    const [selectedSpace, setSelectedSpace] = React.useState(0)
+	const navigate = useNavigate()
+	const [selectedSpace, setSelectedSpace] = React.useState(0)
 
-    const handleSelectSpace = (selectedSpace: number) => {
-        setSelectedSpace(selectedSpace)
-        navigate(`${ROUTE_PREFIX}/${SPACES_NAV[selectedSpace].route}/sessions`)
-    }
+	const handleSelectSpace = (selectedSpace: number) => {
+		setSelectedSpace(selectedSpace)
+		navigate(`${ROUTE_PREFIX}/${SPACES_NAV[selectedSpace].route}/sessions`)
+	}
 
-    return <>
-        {/* <Tabs
+	return (
+		<>
+			{/* <Tabs
             value={selectedSpace}
             onChange={(_, value) => handleSelectSpace(value)}
             sx={{ flex: 1, mb: 4 }}
@@ -21,8 +22,9 @@ const Spaces = () => {
                 <Tab label={n.label} key={n.route} />)
             }
         </Tabs > */}
-        <Outlet />
-    </>
+			<Outlet />
+		</>
+	)
 }
 
 Spaces.displayName = 'Spaces'

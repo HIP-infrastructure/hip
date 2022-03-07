@@ -1,4 +1,9 @@
 import * as React from 'react'
 import TitleBar from '../UI/titleBar'
 
-export default () => <TitleBar title={'Public data'} description={'Not yet implemented'} />
+const PublicData = () => (
+	<TitleBar title={'Public data'} description={'Not yet implemented'} />
+)
+
+PublicData.SessionName = 'PublicData'
+export default PublicData

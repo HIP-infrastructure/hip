@@ -1,26 +1,54 @@
-import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
-import { Alert, AlertProps, Box, Button, CircularProgress, Link, NativeSelect, Snackbar, Typography } from '@mui/material';
-import { DataGrid, GridActionsCellItem, GridColumns, GridEventListener, GridEvents, GridRenderCellParams, GridRowParams, GridRowsProp, GridSelectionModel, GridToolbarContainer, MuiEvent } from '@mui/x-data-grid';
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types';
-
+import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material'
+import {
+	Alert,
+	AlertProps,
+	Box,
+	Button,
+	CircularProgress,
+	Link,
+	NativeSelect,
+	Snackbar,
+	Typography,
+} from '@mui/material'
+import {
+	DataGrid,
+	GridActionsCellItem,
+	GridColumns,
+	GridEventListener,
+	GridEvents,
+	GridRenderCellParams,
+	GridRowParams,
+	GridRowsProp,
+	GridSelectionModel,
+	GridToolbarContainer,
+	MuiEvent,
+} from '@mui/x-data-grid'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
 
 interface Props {
-	bidsDatabases?: BIDSDatabase[];
-	setBidsDatabases: React.Dispatch<React.SetStateAction<BIDSDatabase[] | undefined>>;
-	handleSelectDatabase: (selected: BIDSDatabase) => void;
+	bidsDatabases?: BIDSDatabase[]
+	setBidsDatabases: React.Dispatch<
+		React.SetStateAction<BIDSDatabase[] | undefined>
+	>
+	handleSelectDatabase: (selected: BIDSDatabase) => void
 	selectedDatabase?: BIDSDatabase
 }
 
-const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, selectedDatabase }: Props): JSX.Element => {
-	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+const Databases = ({
+	bidsDatabases,
+	setBidsDatabases,
+	handleSelectDatabase,
+	selectedDatabase,
+}: Props): JSX.Element => {
+	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([])
 	const [rows, setRows] = useState<GridRowsProp>([])
 	const [snackbar, setSnackbar] = React.useState<Pick<
 		AlertProps,
 		'children' | 'severity'
-	> | null>(null);
-	const apiRef = useRef<GridApiRef>(null);
+	> | null>(null)
+	const apiRef = useRef<GridApiRef>(null)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -32,90 +60,92 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 
 	useEffect(() => {
 		const selected = bidsDatabases?.find(b => b.id === selectionModel[0])
-		if (selected)
-			handleSelectDatabase(selected)
-
+		if (selected) handleSelectDatabase(selected)
 	}, [selectionModel, setSelectionModel])
 
 	useEffect(() => {
-		setRows(bidsDatabases?.map(db =>
-		({
-			Browse: db.Path,
-			...db
-		})) || [])
+		setRows(
+			bidsDatabases?.map(db => ({
+				Browse: db.Path,
+				...db,
+			})) || []
+		)
 	}, [bidsDatabases])
 
-
 	const handleCreateDatabase = () => {
-		const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-		apiRef?.current?.updateRows([{ id, isNew: true }]);
-		apiRef?.current?.setRowMode(id, 'edit');
+		const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+		apiRef?.current?.updateRows([{ id, isNew: true }])
+		apiRef?.current?.setRowMode(id, 'edit')
 		// Wait for the grid to render with the new row
 		setTimeout(() => {
 			apiRef?.current?.scrollToIndexes({
 				rowIndex: apiRef?.current?.getRowsCount() - 1,
-			});
-			apiRef?.current?.setCellFocus(id, 'Name');
-		});
+			})
+			apiRef?.current?.setCellFocus(id, 'Name')
+		})
 	}
 
 	const handleRowEditStart = (
 		params: GridRowParams,
-		event: MuiEvent<React.SyntheticEvent>,
+		event: MuiEvent<React.SyntheticEvent>
 	) => {
-		event.defaultMuiPrevented = true;
-	};
+		event.defaultMuiPrevented = true
+	}
 
 	const handleRowEditStop: GridEventListener<GridEvents.rowEditStop> = (
 		params,
-		event,
+		event
 	) => {
-		event.defaultMuiPrevented = true;
-	};
+		event.defaultMuiPrevented = true
+	}
 
 	const handleCellFocusOut: GridEventListener<GridEvents.cellFocusOut> = (
 		params,
-		event,
+		event
 	) => {
-		event.defaultMuiPrevented = true;
-	};
+		event.defaultMuiPrevented = true
+	}
 
 	const handleEditClick = (id: number) => (event: any) => {
-		event.stopPropagation();
-		apiRef?.current?.setRowMode(id, 'edit');
-	};
+		event.stopPropagation()
+		apiRef?.current?.setRowMode(id, 'edit')
+	}
 
 	const handleSaveClick = (id: number) => async (event: any) => {
-		event.stopPropagation();
+		event.stopPropagation()
 		// Wait for the validation to run
-		const isValid = await apiRef?.current?.commitRowChange(id);
+		const isValid = await apiRef?.current?.commitRowChange(id)
 		if (isValid) {
-			apiRef?.current?.setRowMode(id, 'view');
-			const row = apiRef?.current?.getRow(id);
-			apiRef?.current?.updateRows([{ ...row, isNew: false }]);
+			apiRef?.current?.setRowMode(id, 'view')
+			const row = apiRef?.current?.getRow(id)
+			apiRef?.current?.updateRows([{ ...row, isNew: false }])
 
-			setSnackbar({ children: 'Database successfully saved', severity: 'success' });
-
+			setSnackbar({
+				children: 'Database successfully saved',
+				severity: 'success',
+			})
 		}
-	};
+	}
 
 	const handleDeleteClick = (id: number) => (event: any) => {
-		event.stopPropagation();
-		apiRef?.current?.updateRows([{ id, _action: 'delete' }]);
+		event.stopPropagation()
+		apiRef?.current?.updateRows([{ id, _action: 'delete' }])
 
-		setSnackbar({ children: 'Database successfully deleted', severity: 'success' });
-
-	};
+		setSnackbar({
+			children: 'Database successfully deleted',
+			severity: 'success',
+		})
+	}
 
 	const handleCancelClick = (id: number) => (event: any) => {
-		event.stopPropagation();
-		apiRef?.current?.setRowMode(id, 'view');
+		event.stopPropagation()
+		apiRef?.current?.setRowMode(id, 'view')
 
-		const row = apiRef?.current?.getRow(id);
+		const row = apiRef?.current?.getRow(id)
 		if (row!.isNew) {
-			apiRef?.current?.updateRows([{ id, _action: 'delete' }]);
+			apiRef?.current?.updateRows([{ id, _action: 'delete' }])
 		}
-	};
+	}
 
 	// const onRowEditCommit = (id: GridRowId) => {
 	// 	const model = apiRef?.current?.getEditRowsModel(); // This object contains all rows that are being edited
@@ -161,20 +191,20 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 	// }
 
 	function renderVersionEditCell(props: GridRenderCellParams<string>) {
-		const { id, value, api, field } = props;
+		const { id, value, api, field } = props
 
 		const handleChange = async (event: any) => {
-			api.setEditCellValue({ id, field, value: event.target.value }, event);
+			api.setEditCellValue({ id, field, value: event.target.value }, event)
 			// Check if the event is not from the keyboard
 			// https://github.com/facebook/react/issues/7407
 			if (event.nativeEvent.clientX !== 0 && event.nativeEvent.clientY !== 0) {
 				// Wait for the validation to run
-				const isValid = await api.commitCellChange({ id, field });
+				const isValid = await api.commitCellChange({ id, field })
 				if (isValid) {
 					// api.setCellMode(id, field, 'view');
 				}
 			}
-		};
+		}
 
 		// const handleRef = (element) => {
 		// 	if (element) {
@@ -192,16 +222,15 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 					id: 'bids-version-select',
 				}}
 			>
-				{Array.from(new Set(bidsDatabases?.data?.map(b => b?.BIDSVersion)))
-					.map(version =>
-						<option
-							value={version}
-							key={version}>
+				{Array.from(new Set(bidsDatabases?.data?.map(b => b?.BIDSVersion))).map(
+					version => (
+						<option value={version} key={version}>
 							{version}
-						</option>)
-				}
+						</option>
+					)
+				)}
 			</NativeSelect>
-		);
+		)
 	}
 
 	const columns: GridColumns = [
@@ -212,48 +241,52 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			width: 120,
 			cellClassName: 'actions',
 			getActions: ({ id }: { id: any }) => {
-				const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit';
+				const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit'
 
 				if (isInEditMode) {
 					return [
 						<GridActionsCellItem
 							icon={<Save />}
-							label="Save"
+							key={`save-${id}`}
+							label='Save'
 							onClick={handleSaveClick(id)}
-							color="primary"
+							color='primary'
 						/>,
 						<GridActionsCellItem
 							icon={<Cancel />}
-							label="Cancel"
-							className="textPrimary"
+							key={`cancel-${id}`}
+							label='Cancel'
+							className='textPrimary'
 							onClick={handleCancelClick(id)}
-							color="inherit"
+							color='inherit'
 						/>,
-					];
+					]
 				}
 
 				return [
 					<GridActionsCellItem
 						icon={<Edit />}
-						label="Edit"
-						className="textPrimary"
+						key={`edit-${id}`}
+						label='Edit'
+						className='textPrimary'
 						onClick={handleEditClick(id)}
-						color="inherit"
+						color='inherit'
 					/>,
 					<GridActionsCellItem
 						icon={<Delete />}
-						label="Delete"
+						key={`delete-${id}`}
+						label='Delete'
 						onClick={handleDeleteClick(id)}
-						color="inherit"
+						color='inherit'
 					/>,
-				];
+				]
 			},
 		},
 		{
 			field: 'Name',
 			headerName: 'Name',
 			width: 160,
-			editable: true
+			editable: true,
 		},
 		{
 			field: 'Participants',
@@ -261,19 +294,17 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			sortable: false,
 			align: 'right',
 			renderCell: (params: { value: Participant[] | undefined }) =>
-				`${params.value?.length || 0}`
-			,
-			width: 120
+				`${params.value?.length || 0}`,
+			width: 120,
 		},
 		{
 			field: 'Authors',
 			headerName: 'Authors',
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
-				`${params.value?.toString()}`
-			,
+				`${params.value?.toString()}`,
 			width: 160,
-			editable: true
+			editable: true,
 		},
 		{
 			field: 'BIDSVersion',
@@ -281,8 +312,7 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			width: 96,
 			editable: true,
 			align: 'right',
-			renderEditCell: renderVersionEditCell
-
+			renderEditCell: renderVersionEditCell,
 		},
 		{
 			field: 'Path',
@@ -292,13 +322,15 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			editable: false,
 			renderCell: (params: any) => {
 				// This is a hack to assign access to the internal Grid API
-				apiRef.current = params.api;
-				return <Link
-					target="_blank"
-					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
-				>
-					{params.value}
-				</Link>
+				apiRef.current = params.api
+				return (
+					<Link
+						target='_blank'
+						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
+					>
+						{params.value}
+					</Link>
+				)
 			},
 		},
 		{
@@ -306,73 +338,69 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 			headerName: 'Licence',
 			sortable: false,
 			width: 120,
-			editable: true
+			editable: true,
 		},
 		{
 			field: 'Acknowledgements',
 			headerName: 'Acknowledgements',
 			sortable: false,
 			width: 120,
-			editable: true
-		}
-		,
+			editable: true,
+		},
 		{
 			field: 'HowToAcknowledge',
 			headerName: 'How To Acknowledge',
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
-				`${params.value?.toString()}`
-			,
+				`${params.value?.toString()}`,
 			width: 120,
-			editable: true
-		}
-		,
+			editable: true,
+		},
 		{
 			field: 'Funding',
 			headerName: 'Funding',
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
-				`${params.value?.toString()}`
-			,
+				`${params.value?.toString()}`,
 			width: 120,
-			editable: true
-		}
-		,
+			editable: true,
+		},
 		{
 			field: 'ReferencesAndLinks',
 			headerName: 'References And Links',
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
-				`${params.value?.toString()}`
-			,
+				`${params.value?.toString()}`,
 			width: 120,
-			editable: true
+			editable: true,
 		},
 		{
 			field: 'DatasetDOI',
 			headerName: 'datasetDOI',
 			sortable: false,
 			width: 120,
-			editable: true
+			editable: true,
 		},
-
-
-	];
+	]
 
 	return (
 		<>
 			<Box sx={{ mt: 2 }}>
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
 					<Typography variant='h6'>
-						BIDS Databases{' '}
-						{!bidsDatabases &&
-							<CircularProgress size={16} />}
+						BIDS Databases {!bidsDatabases && <CircularProgress size={16} />}
 					</Typography>
 				</Box>
 				<Box sx={{ height: 500, width: '100%' }}>
 					<DataGrid
-						onSelectionModelChange={(newSelectionModel) => {
-							setSelectionModel(newSelectionModel);
+						onSelectionModelChange={newSelectionModel => {
+							setSelectionModel(newSelectionModel)
 						}}
 						// onRowEditCommit={onRowEditCommit}
 						onRowEditStart={handleRowEditStart}
@@ -384,12 +412,12 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 						// density="compact"
 						pageSize={100}
 						rowsPerPageOptions={[100]}
-						editMode="row"
+						editMode='row'
 						components={{
-							Toolbar: () =>
+							Toolbar: () => (
 								<GridToolbarContainer>
 									<Button
-										color="primary"
+										color='primary'
 										size='small'
 										sx={{ mt: 0.5, mb: 0.5 }}
 										startIcon={<Add />}
@@ -398,20 +426,25 @@ const Databases = ({ bidsDatabases, setBidsDatabases, handleSelectDatabase, sele
 									>
 										Create BIDS Database
 									</Button>
-								</GridToolbarContainer>,
+								</GridToolbarContainer>
+							),
 						}}
 						componentsProps={{
 							toolbar: { apiRef },
 						}}
-					// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
+						// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
 					/>
 					{!!snackbar && (
-						<Snackbar open onClose={() => setSnackbar(null)} autoHideDuration={6000}>
+						<Snackbar
+							open
+							onClose={() => setSnackbar(null)}
+							autoHideDuration={6000}
+						>
 							<Alert {...snackbar} onClose={() => setSnackbar(null)} />
 						</Snackbar>
 					)}
 				</Box>
-			</Box >
+			</Box>
 		</>
 	)
 }

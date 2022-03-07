@@ -1,17 +1,44 @@
-import { Clear, Pause, PowerSettingsNew, Replay, Visibility } from '@mui/icons-material';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import {
-	createSession, forceRemove, pauseAppsAndSession, removeAppsAndSession, resumeAppsAndSession
-} from '../api/gatewayClientAPI';
-import { AppContainer, Container, ContainerState, ContainerType } from '../api/types';
-import { color, loading } from '../api/utils';
-import SessionImage from '../assets/session-thumbnail.png';
-import { ROUTE_PREFIX } from '../constants';
-import { useAppStore } from '../store/appProvider';
-import Modal, { ModalComponentHandle } from './UI/Modal';
-import TitleBar from './UI/titleBar';
+	Clear,
+	Pause,
+	PowerSettingsNew,
+	Replay,
+	Visibility,
+} from '@mui/icons-material'
+import {
+	Box,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardMedia,
+	Chip,
+	CircularProgress,
+	IconButton,
+	Tooltip,
+	Typography,
+} from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+	createSession,
+	forceRemove,
+	pauseAppsAndSession,
+	removeAppsAndSession,
+	resumeAppsAndSession,
+} from '../api/gatewayClientAPI'
+import {
+	AppContainer,
+	Container,
+	ContainerState,
+	ContainerType,
+} from '../api/types'
+import { color, loading } from '../api/utils'
+import SessionImage from '../assets/session-thumbnail.png'
+import { ROUTE_PREFIX } from '../constants'
+import { useAppStore } from '../store/appProvider'
+import Modal, { ModalComponentHandle } from './UI/Modal'
+import TitleBar from './UI/titleBar'
 
 const Sessions = (): JSX.Element => {
 	const {
@@ -20,13 +47,15 @@ const Sessions = (): JSX.Element => {
 		debug: [debug],
 	} = useAppStore()
 
-	const modalRef = useRef<ModalComponentHandle>(null);
+	const modalRef = useRef<ModalComponentHandle>(null)
 	const [shouldCreateSession, setShouldCreateSession] = useState(true)
-	const navigate = useNavigate();
+	const navigate = useNavigate()
 
 	// create an empty session at start
 	useEffect(() => {
-		const sessions = containers?.filter((container: Container) => container.type === ContainerType.SESSION)
+		const sessions = containers?.filter(
+			(container: Container) => container.type === ContainerType.SESSION
+		)
 		if (sessions?.length === 0 && user?.uid && shouldCreateSession) {
 			createSession(user.uid)
 		}
@@ -37,12 +66,12 @@ const Sessions = (): JSX.Element => {
 	}
 
 	const confirmRemove = async (sessionId: string) => {
-		if (!modalRef.current) return;
+		if (!modalRef.current) return
 
 		const reply = await modalRef.current.open(
 			'Remove desktop ?',
 			'Permanently remove this desktop and all its applications?'
-		);
+		)
 
 		if (reply) {
 			setShouldCreateSession(false)
@@ -62,65 +91,112 @@ const Sessions = (): JSX.Element => {
 			<Modal ref={modalRef} />
 			<TitleBar
 				title={'My Desktops'}
-				description={'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'}
-				button={<Button variant="contained" color="primary" onClick={() => createSession(user?.uid || '')}>Create Desktop</Button>}
+				description={
+					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
+				}
+				button={
+					<Button
+						variant='contained'
+						color='primary'
+						onClick={() => createSession(user?.uid || '')}
+					>
+						Create Desktop
+					</Button>
+				}
 			/>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{sessions?.length === 0 &&
+				{sessions?.length === 0 && (
 					<Box sx={{ width: 1, height: 1, backgroundImage: SessionImage }}>
-						<Typography variant="subtitle1">
+						<Typography variant='subtitle1'>
 							There is no active session
 						</Typography>
 						<Button
-							variant="contained"
-							color="primary"
+							variant='contained'
+							color='primary'
 							onClick={() => createSession(user?.uid || '')}
 						>
-							Create Desktop</Button
-						>
+							Create Desktop
+						</Button>
 					</Box>
-				}
-				{sessions?.map((session, i) =>
-					<Card sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }} key={session.name}>
-						<Box sx={{ position: "relative" }}>
-							<Tooltip title={`Open Desktop #${session.name}`} placement="bottom">
+				)}
+				{sessions?.map((session, i) => (
+					<Card
+						sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }}
+						key={session.name}
+					>
+						<Box sx={{ position: 'relative' }}>
+							<Tooltip
+								title={`Open Desktop #${session.name}`}
+								placement='bottom'
+							>
 								<CardMedia
-									sx={{ cursor: session.state !== ContainerState.RUNNING ? "default" : "pointer" }}
-									component="img"
-									height="140"
+									sx={{
+										cursor:
+											session.state !== ContainerState.RUNNING
+												? 'default'
+												: 'pointer',
+									}}
+									component='img'
+									height='140'
 									src={SessionImage}
 									alt={`Open ${session.name}`}
-									onClick={() => session.state === ContainerState.RUNNING && handleOpenSession(session.id)}
+									onClick={() =>
+										session.state === ContainerState.RUNNING &&
+										handleOpenSession(session.id)
+									}
 								/>
 							</Tooltip>
-							{[loading(session.state), ...session.apps.map(a => loading(a.state))].reduce((p, c) => p || c, false) &&
-								<CircularProgress size={32} color='secondary' sx={{ position: "absolute", top: 10, left: 10 }} />
-							}
+							{[
+								loading(session.state),
+								...session.apps.map(a => loading(a.state)),
+							].reduce((p, c) => p || c, false) && (
+								<CircularProgress
+									size={32}
+									color='secondary'
+									sx={{ position: 'absolute', top: 10, left: 10 }}
+								/>
+							)}
 						</Box>
 						<CardContent sx={{ flexGrow: 1 }}>
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
-									<Typography variant="h5">
+									<Typography variant='h5'>
 										{`Desktop #${session?.name}`}
 									</Typography>
-									<Typography gutterBottom variant="caption" color="text.secondary">
+									<Typography
+										gutterBottom
+										variant='caption'
+										color='text.secondary'
+									>
 										{session?.user}
 									</Typography>
 								</Box>
 								<Box>
 									<Chip
 										label={
-											<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+											<Box
+												sx={{
+													display: 'flex',
+													justifyContent: 'space-between',
+													alignItems: 'center',
+												}}
+											>
 												{session.state}
-											</Box>}
+											</Box>
+										}
 										color={color(session.state)}
-										variant="outlined"
+										variant='outlined'
 									/>
 								</Box>
 							</Box>
 
-							<Typography sx={{ mt: 2 }} gutterBottom variant="body2" color="text.secondary">
+							<Typography
+								sx={{ mt: 2 }}
+								gutterBottom
+								variant='body2'
+								color='text.secondary'
+							>
 								{session.error?.message}
 								{session.apps.map(app => (
 									<span key={app.name}>
@@ -133,65 +209,71 @@ const Sessions = (): JSX.Element => {
 						</CardContent>
 						<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
 							{debug && (
-								<Tooltip title="Force remove" placement="top">
-									<IconButton edge="end" color="info" aria-label="force remove" onClick={() => forceRemove(session.id)}>
+								<Tooltip title='Force remove' placement='top'>
+									<IconButton
+										edge='end'
+										color='info'
+										aria-label='force remove'
+										onClick={() => forceRemove(session.id)}
+									>
 										<Clear />
 									</IconButton>
 								</Tooltip>
 							)}
 
-							<Tooltip title="Shut down" placement="top">
+							<Tooltip title='Shut down' placement='top'>
 								<IconButton
-									disabled={
-										session.state !== ContainerState.RUNNING
-									}
-									edge="end"
-									color="info"
-									aria-label="Shut down"
+									disabled={session.state !== ContainerState.RUNNING}
+									edge='end'
+									color='info'
+									aria-label='Shut down'
 									onClick={() => confirmRemove(session.id)}
 								>
 									<PowerSettingsNew />
 								</IconButton>
 							</Tooltip>
 
-							{session.state === ContainerState.PAUSED &&
-								<Tooltip title="Resume the session" placement="top">
+							{session.state === ContainerState.PAUSED && (
+								<Tooltip title='Resume the session' placement='top'>
 									<IconButton
-										edge="end"
-										color="info"
-										aria-label="Resume"
-										onClick={(y) => resumeAppsAndSession(session.id, user?.uid || '')}
+										edge='end'
+										color='info'
+										aria-label='Resume'
+										onClick={y =>
+											resumeAppsAndSession(session.id, user?.uid || '')
+										}
 									>
 										<Replay />
 									</IconButton>
 								</Tooltip>
-							}
+							)}
 
-							{session.state !== ContainerState.PAUSED &&
-								<Tooltip title="Pause the session. You can resume it later" placement="top">
+							{session.state !== ContainerState.PAUSED && (
+								<Tooltip
+									title='Pause the session. You can resume it later'
+									placement='top'
+								>
 									<IconButton
-										disabled={
-											session.state !== ContainerState.RUNNING
+										disabled={session.state !== ContainerState.RUNNING}
+										edge='end'
+										color='info'
+										aria-label='pause'
+										onClick={() =>
+											pauseAppsAndSession(session.id, user?.uid || '')
 										}
-										edge="end"
-										color="info"
-										aria-label="pause"
-										onClick={() => pauseAppsAndSession(session.id, user?.uid || '')}
 									>
 										<Pause />
 									</IconButton>
 								</Tooltip>
-							}
+							)}
 
-							<Tooltip title="Open" placement="top">
+							<Tooltip title='Open' placement='top'>
 								<IconButton
-									disabled={
-										session.state !== ContainerState.RUNNING
-									}
+									disabled={session.state !== ContainerState.RUNNING}
 									sx={{ ml: 0.6 }}
-									edge="end"
-									color="info"
-									aria-label="Open"
+									edge='end'
+									color='info'
+									aria-label='Open'
 									onClick={() => handleOpenSession(session.id)}
 								>
 									<Visibility />
@@ -199,11 +281,11 @@ const Sessions = (): JSX.Element => {
 							</Tooltip>
 						</CardActions>
 					</Card>
-				)}
+				))}
 			</Box>
 		</>
 	)
 }
 
-Sessions.displayName = 'Sessions';
+Sessions.displayName = 'Sessions'
 export default Sessions

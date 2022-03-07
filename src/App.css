@@ -1,6 +1,6 @@
 .body-fixed {
-    overflow-y: hidden;
-    overflow-x: hidden;
+	overflow-y: hidden;
+	overflow-x: hidden;
 }
 
 button:not(.button-vue),
@@ -8,10 +8,9 @@ button:not(.button-vue),
 input[type='button'],
 input[type='submit'],
 input[type='reset'] {
-    font-weight: 500 !important;
-    border-radius: 4px !important;
+	font-weight: 500 !important;
+	border-radius: 4px !important;
 }
-
 
 /* * {
     outline: 1px solid goldenrod !important;

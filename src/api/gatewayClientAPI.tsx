@@ -1,7 +1,13 @@
 import { mutate } from 'swr'
-import { BIDSDatabase, BIDSDatabaseResponse, Container, Application, UserCredentials, TreeNode } from './types'
+import {
+	BIDSDatabase,
+	BIDSDatabaseResponse,
+	Container,
+	Application,
+	UserCredentials,
+	TreeNode,
+} from './types'
 import { uniq } from './utils'
-
 
 const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
@@ -37,8 +43,13 @@ export const getBids = async (): Promise<BIDSDatabaseResponse> => {
 	}).then(data => data.json())
 }
 
-export const createBIDSDatabase = async ({ path, database }:{ path: string, database: BIDSDatabase }): Promise<BIDSDatabaseResponse> => {
-
+export const createBIDSDatabase = async ({
+	path,
+	database,
+}: {
+	path: string
+	database: BIDSDatabase
+}): Promise<BIDSDatabaseResponse> => {
 	const url = `${API_GATEWAY}/files/bids/create/${path}`
 	const data = fetch(url, {
 		method: 'POST',
@@ -46,7 +57,7 @@ export const createBIDSDatabase = async ({ path, database }:{ path: string, data
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify({data: database }),
+		body: JSON.stringify({ data: database }),
 	}).then(data => data.json())
 
 	return data
@@ -61,17 +72,21 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	return node
 }
 
-
 // Sessions & apps
 
-export const getAvailableAppList = (): Promise<{ apps: Application[] | null, error: Error | null }> => {
+export const getAvailableAppList = (): Promise<{
+	apps: Application[] | null
+	error: Error | null
+}> => {
 	const url = `${API_REMOTE_APP}/apps`
 	const availableApps = fetch(url)
 		.then(a => a.json())
 		.catch(error => ({ apps: null, error }))
-		.then(json => json.statusCode ?
-			({ apps: null, error: json }) :
-			({ apps: (json as Application[]), error: null }))
+		.then(json =>
+			json.statusCode
+				? { apps: null, error: json }
+				: { apps: json as Application[], error: null }
+		)
 
 	return availableApps
 }

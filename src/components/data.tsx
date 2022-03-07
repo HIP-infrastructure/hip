@@ -1,11 +1,10 @@
-import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getBids, getFiles } from '../api/gatewayClientAPI';
-import { BIDSDatabaseResponse, TreeNode } from '../api/types';
-import TitleBar from './UI/titleBar';
-
+import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getBids, getFiles } from '../api/gatewayClientAPI'
+import { BIDSDatabaseResponse, TreeNode } from '../api/types'
+import TitleBar from './UI/titleBar'
 
 // interface ExtendedBIDSDatabase extends BIDSDatabase {
 // 	[key: string]: string[] | string | number
@@ -30,22 +29,21 @@ const columns: GridColDef[] = [
 		sortable: false,
 		renderCell: (params: { value: string }) => (
 			<Link
-				target="_blank"
+				target='_blank'
 				href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
 			>
 				Browse
 			</Link>
 		),
-		width: 150
+		width: 150,
 	},
 	{
 		field: 'Authors',
 		headerName: 'Authors',
 		sortable: false,
 		renderCell: (params: { value: string[] | undefined }) =>
-			`${params.value?.toString()}`
-		,
-		width: 320
+			`${params.value?.toString()}`,
+		width: 320,
 	},
 	{
 		field: 'BIDSVersion',
@@ -56,18 +54,16 @@ const columns: GridColDef[] = [
 		field: 'Path',
 		headerName: 'Path',
 		sortable: false,
-		width: 320
+		width: 320,
 	},
-
-];
+]
 
 // https://hip.local/apps/files/?dir=
 
-
 const Data = (): JSX.Element => {
 	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabaseResponse>()
-	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>();
-	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>()
+	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -83,43 +79,43 @@ const Data = (): JSX.Element => {
 
 	const handleSelectedPath = async (pathes: string[]) => {
 		const path = pathes.join('')
-		const result = await files(path);
+		const result = await files(path)
 		setFilesPanes(prev => {
-			if (!prev) return [result];
+			if (!prev) return [result]
 
 			prev[pathes.length - 1] = result
 			prev.splice(pathes.length)
 
 			return prev
 		})
-		forceUpdate();
+		forceUpdate()
 	}
 
-	const rows = bidsDatabase?.data?.map(db => ({
-		id: db.Path,
-		Name: db.Name,
-		Authors: db.Authors,
-		Participants: db.Participants && db.Participants.length,
-		Licence: db.Licence,
-		BIDSVersion: db.BIDSVersion,
-		Path: db.Path,
-		Browse: db.Path
-	})) || []
+	const rows =
+		bidsDatabase?.data?.map(db => ({
+			id: db.Path,
+			Name: db.Name,
+			Authors: db.Authors,
+			Participants: db.Participants && db.Participants.length,
+			Licence: db.Licence,
+			BIDSVersion: db.BIDSVersion,
+			Path: db.Path,
+			Browse: db.Path,
+		})) || []
 
 	return (
 		<>
 			<TitleBar title='Data' />
 
-			{bidsDatabase?.error &&
-				<Alert severity="error">{bidsDatabase.error.message}</Alert>
-			}
+			{bidsDatabase?.error && (
+				<Alert severity='error'>{bidsDatabase.error.message}</Alert>
+			)}
 
 			<Box sx={{ mt: 2 }}>
-				<Typography variant="h6">
-					Private Data
-				</Typography>
-				<Typography variant="subtitle2">
-					Browse your data in <Link underline="always" href="/apps/files/" >
+				<Typography variant='h6'>Private Data</Typography>
+				<Typography variant='subtitle2'>
+					Browse your data in{' '}
+					<Link underline='always' href='/apps/files/'>
 						NextCloud Browser
 					</Link>
 				</Typography>
@@ -142,9 +138,9 @@ const Data = (): JSX.Element => {
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
 					BIDS Databases{' '}
-					{!bidsDatabase?.data &&
-						!bidsDatabase?.error &&
-						<CircularProgress size={16} />}
+					{!bidsDatabase?.data && !bidsDatabase?.error && (
+						<CircularProgress size={16} />
+					)}
 				</Typography>
 
 				<Box sx={{ height: 500, width: '100%' }}>
@@ -156,7 +152,7 @@ const Data = (): JSX.Element => {
 						disableSelectionOnClick
 					/>
 				</Box>
-			</Box >
+			</Box>
 		</>
 	)
 }

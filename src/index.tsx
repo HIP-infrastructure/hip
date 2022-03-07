@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { AppStoreProvider } from './store/appProvider'
-import { BrowserRouter, useLocation } from "react-router-dom";
+import { BrowserRouter, useLocation } from 'react-router-dom'
 import Theme from './components/theme'
-
 
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
 	const location = useLocation()
 
-	if (process.env.NODE_ENV === "development") {
+	if (process.env.NODE_ENV === 'development') {
+		/* tslint:disable-next-line */
 		console.log(
 			`Route: ${location.pathname}${location.search}, State: ${JSON.stringify(
-				location.state,
-			)}`,
+				location.state
+			)}`
 		)
 	}
 
@@ -32,7 +32,7 @@ ReactDOM.render(
 				</DebugRouter>
 			</BrowserRouter>
 		</AppStoreProvider>
-	</React.StrictMode >,
+	</React.StrictMode>,
 	document.getElementById('hip-root')
 )
 
