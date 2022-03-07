@@ -43,9 +43,11 @@ class PageController extends Controller
 		$csp = new ContentSecurityPolicy();
 		$csp->addAllowedFrameDomain('gpu1.thehip.app');
 		$csp->addAllowedFrameDomain('backend.thehip.app');
+		$csp->addAllowedFrameDomain('iam.ebrains.eu');
 		$csp->addAllowedFrameDomain('hipapp.local');
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('backend.thehip.app');
+		$csp->addAllowedConnectDomain('iam.ebrain.eu');
 		$csp->addAllowedConnectDomain('hipapp.local');
 		$response->setContentSecurityPolicy($csp);
 
