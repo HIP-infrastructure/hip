@@ -56,10 +56,10 @@ const Sessions = (): JSX.Element => {
 		const sessions = containers?.filter(
 			(container: Container) => container.type === ContainerType.SESSION
 		)
-		if (sessions?.length === 0 && user?.uid && shouldCreateSession) {
+		if ((sessions?.length === 0) && user?.uid && shouldCreateSession) {
 			createSession(user.uid)
 		}
-	}, [containers, shouldCreateSession])
+	}, [])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
