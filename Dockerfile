@@ -13,8 +13,11 @@ COPY . .
 
 RUN apt update && apt install -y gettext
 
-RUN chown -R node:node /base
-USER node
+# RUN chown -R node:node /base
+# USER node
+
+RUN mkdir node_modules/.cache
+RUN chmod -R 777 node_modules/.cache
 
 
 FROM base AS build
