@@ -22,6 +22,7 @@ import hibop from '../assets/hibop__logo.png'
 import localizer from '../assets/localizer__logo.png'
 import mricrogl from '../assets/mrcicogl__logo.png'
 import slicer from '../assets/slicer__logo.png'
+import mrideface from '../assets/mrideface__logo.png'
 import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 
@@ -41,6 +42,7 @@ const logos: { [key: string]: string } = {
 	freesurfer,
 	dcm2niix,
 	bidsmanager,
+	mrideface,
 	tvb,
 }
 
