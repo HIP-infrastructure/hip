@@ -129,6 +129,12 @@ const Apps = () => {
 
 								<Chip
 									label={app.state}
+									color={
+										app.state === 'ready' ?
+											'success' :
+											app.state === 'beta' ?
+												'warning' :
+												'error'
 									}
 									variant='outlined'
 								/>
