@@ -24,6 +24,7 @@ import hibopLogo from '../assets/hibop__logo.png'
 import localizerLogo from '../assets/localizer__logo.png'
 import mricroglLogo from '../assets/mrcicogl__logo.png'
 import slicerLogo from '../assets/slicer__logo.png'
+import mridefaceLogo from '../assets/mrideface__logo.png'
 import tvbLogo from '../assets/tvb__logo.png'
 // import { ROUTE_PREFIX } from '../constants';
 import { useAppStore } from '../store/appProvider'
@@ -40,6 +41,7 @@ const importedImages = [
 	hibopLogo,
 	localizerLogo,
 	mricroglLogo,
+	mridefaceLogo,
 	slicerLogo,
 	tvbLogo,
 ]
@@ -127,7 +129,7 @@ const Apps = () => {
 
 								<Chip
 									label={app.state}
-									color={app.state !== 'faulty' ? 'success' : 'error'}
+									}
 									variant='outlined'
 								/>
 							</Box>
