@@ -1,11 +1,11 @@
 import { ContainerState } from './types'
 
 export const uniq = (type = 'session'): string => {
-	const uniqid = `${type === 'session' ? 'session' : 'app'}-${Date.now()
+	const uniqueId = `${type === 'session' ? 'session' : 'app'}-${Date.now()
 		.toString()
 		.slice(-3)}`
 
-	return uniqid
+	return uniqueId
 }
 
 export const loading = (state: ContainerState) =>
@@ -14,12 +14,13 @@ export const loading = (state: ContainerState) =>
 		ContainerState.LOADING,
 		ContainerState.STOPPING,
 	].includes(state)
+
 export const color = (state?: ContainerState) =>
 	state &&
-	[
-		ContainerState.RUNNING,
-		ContainerState.CREATED,
-		ContainerState.LOADING,
-	].includes(state)
+		[
+			ContainerState.RUNNING,
+			ContainerState.CREATED,
+			ContainerState.LOADING,
+		].includes(state)
 		? 'success'
 		: 'error'

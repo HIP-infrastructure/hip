@@ -65,7 +65,7 @@ export interface TreeNode {
 	label: string
 	icon: string
 	data: Document
-	children?: TreeNode[]
+	children?: boolean
 }
 
 export interface Document {

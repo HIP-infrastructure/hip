@@ -27,7 +27,7 @@ const boxStyle = {
 	flexFlow: 'column',
 }
 const BidsConverter = () => {
-	const [activeStep, setActiveStep] = useState(0)
+	const [activeStep, setActiveStep] = useState(2)
 	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[]>()
 	const [selectedBidsDatabase, setSelectedBidsDatabase] =
 		useState<BIDSDatabase>()
