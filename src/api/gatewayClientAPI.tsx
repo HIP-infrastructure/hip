@@ -1,15 +1,10 @@
 import { mutate } from 'swr'
 import {
-	BIDSDatabase,
-	BIDSDatabaseResponse,
-	Container,
-	Application,
-	UserCredentials,
-	TreeNode,
+	Application, Container, TreeNode, UserCredentials
 } from './types'
 import { uniq } from './utils'
 
-const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
+export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	: `${window.location.protocol}//${window.location.host}`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
@@ -35,33 +30,8 @@ export const search = async (term: string) => {
 		},
 	}).then(data => data.json())
 }
-export const getBids = async (): Promise<BIDSDatabaseResponse> => {
-	return fetch(`${API_GATEWAY}/files/bids`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	}).then(data => data.json())
-}
 
-export const createBIDSDatabase = async ({
-	path,
-	database,
-}: {
-	path: string
-	database: BIDSDatabase
-}): Promise<BIDSDatabaseResponse> => {
-	const url = `${API_GATEWAY}/files/bids/create/${path}`
-	const data = fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ data: database }),
-	}).then(data => data.json())
 
-	return data
-}
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
@@ -219,3 +189,4 @@ export const stopApp = (
 		})
 		.then(j => j.data)
 }
+

@@ -159,3 +159,40 @@ export interface GridApiRef {
 	getRowMode: (id: CellId) => string
 	getEditRowsModel: () => any
 }
+
+export interface CreateBidsDatabaseDto {
+	readonly owner: string
+	readonly database: string
+	readonly DatasetDescJSON: {
+		readonly Name: string,
+		readonly BIDSVersion: string
+		readonly License: string
+		readonly Authors: string[]
+		readonly Acknowledgements: string
+		readonly Funding: string
+		readonly ReferencesAndLinks: string
+		readonly DatasetDOI: string
+	}
+}
+
+export interface CreateSubjectDto {
+	readonly owner: string
+	readonly database: string
+	readonly subjects: [{
+		sub: string
+		age: string
+		sex: string
+		hospital: string
+	}]
+	readonly files: [{
+		modality: string
+		subject: string
+		path: string
+		entities: {
+			sub: string
+			ses: string
+			task: string
+			acq: string
+		}
+	}]
+}

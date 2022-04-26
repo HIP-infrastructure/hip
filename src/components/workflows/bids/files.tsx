@@ -1,4 +1,4 @@
-import { Delete, Edit } from '@mui/icons-material'
+import { Delete, Edit, Folder } from '@mui/icons-material'
 import {
 	Autocomplete,
 	Box,
@@ -15,7 +15,7 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TextField,
+	TextField
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getFiles } from '../../../api/gatewayClientAPI'
@@ -24,17 +24,16 @@ import {
 	Entity,
 	File as IFile,
 	Participant,
-	TreeNode,
+	TreeNode
 } from '../../../api/types'
 import DynamicForm from '../../UI/dynamicForm'
-import FileBrowser from '../../UI/fileBrowser'
 
 export const bIDSEntity = {
 	subject: {
 		id: 'subject',
 		label: 'Subject',
 		format: 'sub-',
-		modalities: undefined
+		modalities: undefined,
 	},
 	session: {
 		id: 'session',
@@ -58,25 +57,25 @@ export const bIDSEntity = {
 		id: 'reconstruction',
 		label: 'Reconstruction',
 		format: 'rec-',
-		modalities: undefined
+		modalities: undefined,
 	},
 	run: {
 		id: 'run',
 		label: 'Run',
 		format: 'run-',
-		modalities: undefined
+		modalities: undefined,
 	},
 	correspondingmodality: {
 		id: 'correspondingmodality',
 		label: 'Corresponding Modality',
 		format: 'mod-',
-		modalities: undefined
+		modalities: undefined,
 	},
 	echo: {
 		id: 'echo',
 		label: 'Echo',
 		format: 'echo-',
-		modalities: undefined
+		modalities: undefined,
 	},
 }
 
@@ -161,104 +160,117 @@ const Files = ({
 	handleSelectFiles,
 }: Props): JSX.Element => {
 	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>()
-	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0)
+	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
 	const [currentBidsFile, setCurrentBidsFile] = useState<IFile>()
 	const [tree, setTree] = useState<TreeNode[]>()
 	// const [selectedNode, setSelectedNode] = useState<TreeNode>()
 	const [options, setOptions] = React.useState<string[]>()
 	const [inputValue, setInputValue] = React.useState<string>('')
 
-
 	useEffect(() => {
 		populateEntities('T1w')
 		getFiles('/').then(f => {
 			setFilesPanes([f])
 			setTree(f)
-
 		})
 	}, [])
 
-
 	useEffect(() => {
-		console.log(tree?.map(t => t.data.path))
-		const selectedNode = tree?.find(node => node.data.path === inputValue)
+		// console.log(tree?.map((t: { data: { path: any } }) => t.data.path))
+		const selectedNode = tree?.find(
+			(node: { data: { path: any } }) => node.data.path === inputValue
+		)
+		const selectedPath = selectedNode?.data.path.split('/') || ['']
+		const parentNode = tree?.find((node: TreeNode) => {
+			const parentPath = selectedNode?.data.path.split('/')
+			parentPath?.pop()
 
-		const selectedPath = selectedNode?.data.path.split('/') || []
-		const parentNode = tree?.find(node => {
-			const parentPath = node.data.path.split('/').splice(0, selectedPath.length - 1).join('/')
-			console.log(node.data.path, parentPath, node.data.path === parentPath)
-
-			return node.data.path === parentPath
-
+			return node.data.path === parentPath?.join('/')
 		})
 
 		const nextOptions = [
-			...(parentNode ? [parentNode] : [{
-				key: 'root',
-				label: '../',
-				icon: 'dir',
-				data: {
-					path: '/',
-					type: 'dir',
-					size: 0,
-					updated: 'string',
-					name: '../',
-					tags: [],
-					id: 0
-				}
-			}]),
+			...(parentNode
+				? [parentNode]
+				: [
+					{
+						key: 'root',
+						label: '../',
+						icon: 'dir',
+						data: {
+							path: '/',
+							type: 'dir',
+							size: 0,
+							updated: 'string',
+							name: '../',
+							tags: [],
+							id: 0,
+						},
+					},
+				]),
 			...(tree
-				?.filter(node => (new RegExp(inputValue)).test(node.data.path))
-				?.sort((a, b) => -b.data.path.localeCompare(a.data.path)) || [])
+				?.filter((node: { data: { path: string } }) =>
+					new RegExp(inputValue).test(node.data.path)
+				)
+				?.filter((node) => {
+					const pathes = node?.data.path.split('/')
+					if (pathes.length <= selectedPath.length + 1) return true
+
+					return false
+				})
+				?.sort(
+					(a: { data: { path: any } }, b: { data: { path: string } }) =>
+						-b.data.path.localeCompare(a.data.path)
+				) || []),
 		]?.map(node => node.data.path)
 
+		// console.log(nextOptions)
 
 		setOptions(nextOptions)
-		console.log(nextOptions)
 	}, [tree])
 
 	const handleSelectedPath = async (newInputValue: string) => {
-		console.time('handleSelectedPath')
-		const selectedNode = tree?.find(node => node.data.path === newInputValue)
+		const selectedNode = tree?.find(
+			(node: { data: { path: string } }) => node.data.path === newInputValue
+		)
 
 		if (newInputValue === '/' || selectedNode?.data.type === 'dir') {
-
 			if (selectedNode && !selectedNode?.children) {
 				const nextNodes = await getFiles(newInputValue)
-				setTree(nodes => ([
+				setTree((nodes: TreeNode[]) => [
 					...nextNodes,
-					...(nodes && nodes.map(node => node.data.path === selectedNode.data.path ? ({ ...node, children: true }) : node) || [])
-				]))
+					...((nodes &&
+						nodes.map((node: { data: { path: any } }) =>
+							node.data.path === selectedNode.data.path
+								? { ...node, children: true }
+								: node
+						)) ||
+						[]),
+				])
+			} else {
+				setTree((nodes: TreeNode[]) => [
+					...((nodes && nodes.map((t: TreeNode) => t)) || []),
+				])
 			}
-			else {
-				setTree(nodes => ([
-					...(nodes && nodes.map(t => t) || [])
-				]))
-			}
-
-
-			console.timeEnd('handleSelectedPath')
 		} else {
 			handleSelectedNode(selectedNode)
 		}
-
 	}
 
 	const handleSelectedNode = async (node?: TreeNode) => {
 		if (node?.data.type === 'file') {
-			setCurrentBidsFile(f => ({ ...f, path: node?.data.path }))
+			setCurrentBidsFile((f: any) => ({ ...f, path: node?.data.path }))
 
 			return
 		}
 
-		setCurrentBidsFile(f => ({ ...f, path: undefined }))
+		setCurrentBidsFile((f: any) => ({ ...f, path: undefined }))
 		const pathes = node?.data.path.split('/').map(p => `${p}/`)
 		const path = node?.data.path
 
 		if (pathes && path) {
 			const result = await getFiles(path)
 
-			setFilesPanes(prev => {
+			setFilesPanes((prev: any[]) => {
 				if (!prev) return [result]
 
 				prev[pathes.length - 1] = result
@@ -311,7 +323,7 @@ const Files = ({
 	}
 
 	const handleChangeEntities = (entities: Entity[]) => {
-		setCurrentBidsFile(f => ({ ...f, entities }))
+		setCurrentBidsFile((f: any) => ({ ...f, entities }))
 	}
 
 	const handleAddFile = () => {
@@ -319,7 +331,7 @@ const Files = ({
 			handleSelectFiles([...(selectedFiles || []), currentBidsFile])
 		}
 
-		setFilesPanes(prev => {
+		setFilesPanes((prev: any[]) => {
 			if (!prev) return []
 
 			prev.splice(1)
@@ -346,10 +358,6 @@ const Files = ({
 			])
 		}
 	}
-
-
-
-
 
 	const boxStyle = {
 		border: 1,
@@ -410,22 +418,26 @@ const Files = ({
 						<Autocomplete
 							options={options || []}
 							inputValue={inputValue}
-							onInputChange={(event, newInputValue) => {
-								console.log('onInputChange', event)
-
+							onInputChange={(event: any, newInputValue: string) => {
 								handleSelectedPath(newInputValue)
 								setInputValue(newInputValue)
 							}}
-							disableCloseOnSelect 
-							// disableCloseOnSelect={tree?.find(node => node.data.path === inputValue)
-							// 	?.data.type === 'dir'
-							// }
-							id="grouped-demo"
-							// groupBy={(option) => option}
-							// getOptionLabel={(option) => option.label}
+							disableCloseOnSelect
+							id='input-tree-view'
 							sx={{ width: 640 }}
-							renderInput={(params) =>
-								<TextField {...params} label="Files" />}
+							renderInput={(params: unknown) => (
+								<TextField {...params} label='Files' />
+							)}
+							renderOption={(props, option) => {
+								const node = tree?.find(node => node.data.path === option)
+
+								return node?.data.type === 'dir' ?
+									<Box component="li" sx={{ '& > button': { mr: 2, flexShrink: 0 } }} {...props}>
+										<Folder />
+										{option}
+									</Box> :
+									<Box component="li" sx={{ ml: 2 }}  {...props}>{option}</Box>
+							}}
 						/>
 					</Box>
 					<Box>
@@ -455,8 +467,8 @@ const Files = ({
 								<TableCell>Modality</TableCell>
 								<TableCell>Path</TableCell>
 								{Object.keys(bIDSEntity).map((k: string) => (
-									<TableCell key={bIDSEntity[(k as EntityIndex)].id}>
-										{bIDSEntity[(k as EntityIndex)].label}
+									<TableCell key={bIDSEntity[k as EntityIndex].id}>
+										{bIDSEntity[k as EntityIndex].label}
 									</TableCell>
 								))}
 							</TableRow>
@@ -478,19 +490,19 @@ const Files = ({
 									<TableCell>{file.path}</TableCell>
 									{Object.keys(bIDSEntity).map((k: string) => (
 										<TableCell key={k}>
-											{file?.entities?.find(f => f.id === bIDSEntity[(k as EntityIndex)].id)
-												?.value || ''}
+											{file?.entities?.find(
+												f => f.id === bIDSEntity[k as EntityIndex].id
+											)?.value || ''}
 										</TableCell>
 									))}
 									<TableCell>{file.modality}</TableCell>
-
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
 				</TableContainer>
 			</Box>
-		</Box>
+		</Box >
 	)
 }
 
