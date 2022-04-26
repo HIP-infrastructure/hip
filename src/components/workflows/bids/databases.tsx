@@ -1,32 +1,25 @@
-import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material'
+import { Add } from '@mui/icons-material'
 import {
 	Alert,
 	AlertProps,
 	Box,
 	Button,
-	CircularProgress,
-	Link,
-	NativeSelect,
-	Snackbar,
-	Typography,
+	CircularProgress, Snackbar,
+	Typography
 } from '@mui/material'
 import {
-	DataGrid,
-	GridActionsCellItem,
-	GridColumns,
+	DataGrid, GridColumns,
 	GridEventListener,
-	GridEvents,
-	GridRenderCellParams,
-	GridRowParams,
+	GridEvents, GridRowParams,
 	GridRowsProp,
 	GridSelectionModel,
 	GridToolbarContainer,
-	MuiEvent,
+	MuiEvent
 } from '@mui/x-data-grid'
-import { createBidsDatabase } from '../../../api/bids'
-import { CreateBidsDatabaseDto } from '../../../api/types'
 import React, { useEffect, useRef, useState } from 'react'
-import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
+import { createBidsDatabase } from '../../../api/bids'
+import { BIDSDatabase, CreateBidsDatabaseDto, GridApiRef } from '../../../api/types'
+import CreateDatabase from './forms/CreateDatabase'
 
 interface Props {
 	bidsDatabases?: BIDSDatabase[]
@@ -50,39 +43,44 @@ const Databases = ({
 		'children' | 'severity'
 	> | null>(null)
 	const apiRef = useRef<GridApiRef | null>(null)
+	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	useEffect(() => {
 		if (selectedDatabase) {
-			const s = [selectedDatabase.id] as GridSelectionModel
+			const s = [selectedDatabase.Name] as GridSelectionModel
 			setSelectionModel(s)
 		}
 	}, [selectedDatabase])
 
 	useEffect(() => {
-		const selected = bidsDatabases?.find(b => b.id === selectionModel[0])
+		const selected = bidsDatabases?.find(b => b.Name === selectionModel[0])
 		if (selected) handleSelectDatabase(selected)
 	}, [selectionModel, setSelectionModel])
 
 	useEffect(() => {
-		setRows(
-			bidsDatabases?.map(db => ({
-				Browse: db.Path,
-				...db,
-			})) || []
-		)
+		// setRows(
+		// 	bidsDatabases?.map(db => ({
+		// 		Browse: db.Path,
+		// 		...db,
+		// 	})) || []
+		// )
+
+		if (bidsDatabases) setRows(bidsDatabases)
 	}, [bidsDatabases])
 
 	const handleCreateDatabase = () => {
-		const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
-		apiRef?.current?.updateRows([{ id, isNew: true }])
-		apiRef?.current?.setRowMode(id, 'edit')
-		// Wait for the grid to render with the new row
-		setTimeout(() => {
-			apiRef?.current?.scrollToIndexes({
-				rowIndex: apiRef?.current?.getRowsCount() - 1,
-			})
-			apiRef?.current?.setCellFocus(id, 'Name')
-		})
+		setIsModalOpen(true)
+
+		// const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+		// apiRef?.current?.updateRows([{ id, isNew: true }])
+		// apiRef?.current?.setRowMode(id, 'edit')
+		// // Wait for the grid to render with the new row
+		// setTimeout(() => {
+		// 	apiRef?.current?.scrollToIndexes({
+		// 		rowIndex: apiRef?.current?.getRowsCount() - 1,
+		// 	})
+		// 	apiRef?.current?.setCellFocus(id, 'Name')
+		// })
 	}
 
 	const handleRowEditStart = (
@@ -209,116 +207,116 @@ const Databases = ({
 
 	// }
 
-	function renderVersionEditCell(props: any) { // props: GridRenderCellParams<string>)
-		const { id, value, api, field } = props
+	// function renderVersionEditCell(props: any) { // props: GridRenderCellParams<string>)
+	// 	const { id, value, api, field } = props
 
-		const handleChange = async (event: any) => {
+	// 	const handleChange = async (event: any) => {
 
-			if (!id || !field) return
+	// 		if (!id || !field) return
 
-			api?.setEditCellValue({ id, field, value: event.target.value }, event)
-			// Check if the event is not from the keyboard
-			// https://github.com/facebook/react/issues/7407
-			if (event.nativeEvent.clientX !== 0 && event.nativeEvent.clientY !== 0) {
-				// Wait for the validation to run
-				const isValid = await api?.commitCellChange({ id, field })
-				if (isValid) {
-					// api.setCellMode(id, field, 'view');
-				}
-			}
-		}
+	// 		api?.setEditCellValue({ id, field, value: event.target.value }, event)
+	// 		// Check if the event is not from the keyboard
+	// 		// https://github.com/facebook/react/issues/7407
+	// 		if (event.nativeEvent.clientX !== 0 && event.nativeEvent.clientY !== 0) {
+	// 			// Wait for the validation to run
+	// 			const isValid = await api?.commitCellChange({ id, field })
+	// 			if (isValid) {
+	// 				// api.setCellMode(id, field, 'view');
+	// 			}
+	// 		}
+	// 	}
 
-		// const handleRef = (element) => {
-		// 	if (element) {
-		// 		element.querySelector(`input[value="${value}"]`).focus();
-		// 	}
-		// };
+	// 	// const handleRef = (element) => {
+	// 	// 	if (element) {
+	// 	// 		element.querySelector(`input[value="${value}"]`).focus();
+	// 	// 	}
+	// 	// };
 
-		return (
-			<NativeSelect
-				// defaultValue={value}
-				value={value}
-				onChange={handleChange}
-				inputProps={{
-					name: 'bIDSVersion',
-					id: 'bids-version-select',
-				}}
-			>
-				{Array.from(new Set(bidsDatabases?.map(b => b?.BIDSVersion))).map(
-					version => (
-						<option value={version} key={version}>
-							{version}
-						</option>
-					)
-				)}
-			</NativeSelect>
-		)
-	}
+	// 	return (
+	// 		<NativeSelect
+	// 			// defaultValue={value}
+	// 			value={value}
+	// 			onChange={handleChange}
+	// 			inputProps={{
+	// 				name: 'bIDSVersion',
+	// 				id: 'bids-version-select',
+	// 			}}
+	// 		>
+	// 			{Array.from(new Set(bidsDatabases?.map(b => b?.BIDSVersion))).map(
+	// 				version => (
+	// 					<option value={version} key={version}>
+	// 						{version}
+	// 					</option>
+	// 				)
+	// 			)}
+	// 		</NativeSelect>
+	// 	)
+	// }
 
 	const columns: GridColumns = [
-		{
-			field: 'actions',
-			type: 'actions',
-			headerName: 'Actions',
-			width: 120,
-			cellClassName: 'actions',
-			getActions: ({ id }: { id: any }) => {
-				const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit'
+		// {
+		// 	field: 'actions',
+		// 	type: 'actions',
+		// 	headerName: 'Actions',
+		// 	width: 120,
+		// 	cellClassName: 'actions',
+		// 	getActions: ({ id }: { id: any }) => {
+		// 		const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit'
 
-				if (isInEditMode) {
-					return [
-						<GridActionsCellItem
-							icon={<Save />}
-							key={`save-${id}`}
-							label='Save'
-							onClick={handleSaveClick(id)}
-							color='primary'
-						/>,
-						<GridActionsCellItem
-							icon={<Cancel />}
-							key={`cancel-${id}`}
-							label='Cancel'
-							className='textPrimary'
-							onClick={handleCancelClick(id)}
-							color='inherit'
-						/>,
-					]
-				}
+		// 		if (isInEditMode) {
+		// 			return [
+		// 				<GridActionsCellItem
+		// 					icon={<Save />}
+		// 					key={`save-${id}`}
+		// 					label='Save'
+		// 					onClick={handleSaveClick(id)}
+		// 					color='primary'
+		// 				/>,
+		// 				<GridActionsCellItem
+		// 					icon={<Cancel />}
+		// 					key={`cancel-${id}`}
+		// 					label='Cancel'
+		// 					className='textPrimary'
+		// 					onClick={handleCancelClick(id)}
+		// 					color='inherit'
+		// 				/>,
+		// 			]
+		// 		}
 
-				return [
-					<GridActionsCellItem
-						icon={<Edit />}
-						key={`edit-${id}`}
-						label='Edit'
-						className='textPrimary'
-						onClick={handleEditClick(id)}
-						color='inherit'
-					/>,
-					<GridActionsCellItem
-						icon={<Delete />}
-						key={`delete-${id}`}
-						label='Delete'
-						onClick={handleDeleteClick(id)}
-						color='inherit'
-					/>,
-				]
-			},
-		},
+		// 		return [
+		// 			<GridActionsCellItem
+		// 				icon={<Edit />}
+		// 				key={`edit-${id}`}
+		// 				label='Edit'
+		// 				className='textPrimary'
+		// 				onClick={handleEditClick(id)}
+		// 				color='inherit'
+		// 			/>,
+		// 			<GridActionsCellItem
+		// 				icon={<Delete />}
+		// 				key={`delete-${id}`}
+		// 				label='Delete'
+		// 				onClick={handleDeleteClick(id)}
+		// 				color='inherit'
+		// 			/>,
+		// 		]
+		// 	},
+		// },
 		{
 			field: 'Name',
 			headerName: 'Name',
 			width: 160,
 			editable: true,
 		},
-		{
-			field: 'Participants',
-			headerName: 'Participants',
-			sortable: false,
-			align: 'right',
-			renderCell: (params: { value: Participant[] | undefined }) =>
-				`${params.value?.length || 0}`,
-			width: 120,
-		},
+		// {
+		// 	field: 'Participants',
+		// 	headerName: 'Participants',
+		// 	sortable: false,
+		// 	align: 'right',
+		// 	renderCell: (params: { value: Participant[] | undefined }) =>
+		// 		`${params.value?.length || 0}`,
+		// 	width: 120,
+		// },
 		{
 			field: 'Authors',
 			headerName: 'Authors',
@@ -334,27 +332,27 @@ const Databases = ({
 			width: 96,
 			editable: true,
 			align: 'right',
-			renderEditCell: renderVersionEditCell,
+			// renderEditCell: renderVersionEditCell,
 		},
-		{
-			field: 'Path',
-			headerName: 'Path',
-			sortable: false,
-			width: 240,
-			editable: false,
-			renderCell: (params: any) => {
-				// This is a hack to assign access to the internal Grid API
-				apiRef.current = params.api
-				return (
-					<Link
-						target='_blank'
-						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
-					>
-						{params.value}
-					</Link>
-				)
-			},
-		},
+		// {
+		// 	field: 'Path',
+		// 	headerName: 'Path',
+		// 	sortable: false,
+		// 	width: 240,
+		// 	editable: false,
+		// 	renderCell: (params: any) => {
+		// 		// This is a hack to assign access to the internal Grid API
+		// 		apiRef.current = params.api
+		// 		return (
+		// 			<Link
+		// 				target='_blank'
+		// 				href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
+		// 			>
+		// 				{params.value}
+		// 			</Link>
+		// 		)
+		// 	},
+		// },
 		{
 			field: 'Licence',
 			headerName: 'Licence',
@@ -421,6 +419,7 @@ const Databases = ({
 				</Box>
 				<Box sx={{ height: 500, width: '100%' }}>
 					<DataGrid
+						getRowId={(params) => params.Name}
 						onSelectionModelChange={newSelectionModel => {
 							setSelectionModel(newSelectionModel)
 						}}
@@ -467,6 +466,10 @@ const Databases = ({
 					)}
 				</Box>
 			</Box>
+			<CreateDatabase
+				open={isModalOpen}
+				handleClose={() => setIsModalOpen(!isModalOpen)}
+			/>
 		</>
 	)
 }

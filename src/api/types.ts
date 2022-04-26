@@ -90,19 +90,15 @@ export interface Participant {
 }
 
 export interface BIDSDatabase {
-	id?: string
-	Path?: string
-	Browse?: string
-	Participants?: Participant[]
-	Name: string
-	BIDSVersion: string
-	Licence: string
-	Authors: string[]
-	Acknowledgements: string
-	HowToAcknowledge: string
-	Funding: string[]
-	ReferencesAndLinks: string[]
-	DatasetDOI: string
+	Name?: string
+	BIDSVersion?: string
+	Licence?: string
+	Authors?: string[]
+	Acknowledgements?: string
+	HowToAcknowledge?: string
+	Funding?: string[]
+	ReferencesAndLinks?: string[]
+	DatasetDOI?: string
 }
 
 export interface ISearch {
