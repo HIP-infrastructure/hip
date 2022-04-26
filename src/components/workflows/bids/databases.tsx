@@ -23,6 +23,8 @@ import {
 	GridToolbarContainer,
 	MuiEvent,
 } from '@mui/x-data-grid'
+import { createBidsDatabase } from '../../../api/bids'
+import { CreateBidsDatabaseDto } from '../../../api/types'
 import React, { useEffect, useRef, useState } from 'react'
 import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
 
@@ -111,12 +113,31 @@ const Databases = ({
 
 	const handleSaveClick = (id: number) => async (event: any) => {
 		event.stopPropagation()
+
 		// Wait for the validation to run
 		const isValid = await apiRef?.current?.commitRowChange(id)
 		if (isValid) {
 			apiRef?.current?.setRowMode(id, 'view')
-			const row = apiRef?.current?.getRow(id)
+			const row = apiRef?.current?.getRow(id) as Record<string, string>
 			apiRef?.current?.updateRows([{ ...row, isNew: false }])
+
+			console.log(row)
+			const data: CreateBidsDatabaseDto = {
+				owner: "guspuhle",
+				database: row.Name,
+				DatasetDescJSON: {
+					Name: row.Name,
+					BIDSVersion: row.BIDSVersion,
+					License: row.Licence,
+					Authors: [row.Authors],
+					Acknowledgements: row.Acknowledgements,
+					Funding: row.Funding,
+					ReferencesAndLinks: row.ReferencesAndLinks,
+					DatasetDOI: row.DatasetDOI,
+				}
+			}
+			const db = await createBidsDatabase(data)
+			console.log({ db })
 
 			setSnackbar({
 				children: 'Database successfully saved',
@@ -433,7 +454,7 @@ const Databases = ({
 						componentsProps={{
 							toolbar: { apiRef },
 						}}
-						// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
+					// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
 					/>
 					{!!snackbar && (
 						<Snackbar

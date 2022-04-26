@@ -8,7 +8,7 @@ import {
 	Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { getBids } from '../../../api/gatewayClientAPI'
+import { getBids } from '../../../api/bids'
 import { BIDSDatabase, File as IFile, Participant } from '../../../api/types'
 import TitleBar from '../../UI/titleBar'
 import Databases from './databases'
@@ -29,8 +29,7 @@ const boxStyle = {
 const BidsConverter = () => {
 	const [activeStep, setActiveStep] = useState(2)
 	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[]>()
-	const [selectedBidsDatabase, setSelectedBidsDatabase] =
-		useState<BIDSDatabase>()
+	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
 	const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
 	const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
 	const [error, setError] = useState<Error>()

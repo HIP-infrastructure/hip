@@ -52,7 +52,11 @@ const Participants = ({
 				age: p.age,
 				sex: p.sex,
 				...p,
-			})) || []
+			})) || [{
+				id: '',
+				age: '',
+				sex: '',
+			}]
 
 		setRows(rows)
 	}, [selectedBidsDatabase, setRows])
@@ -228,6 +232,8 @@ const Participants = ({
 	}
 
 	const handleCreateParticipant = () => {
+		// setCreateSubModalOpen(true)
+
 		const id = generateString(5)
 		apiRef?.current?.updateRows([{ id, isNew: true }])
 		apiRef?.current?.setRowMode(id, 'edit')
@@ -297,11 +303,31 @@ const Participants = ({
 
 	// }
 
+	const modalStyle = {
+		position: 'absolute' as 'const',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		minWidth: 480,
+		maxWidth: 640,
+		bgcolor: 'background.paper',
+		boxShadow: 4,
+		p: 4,
+	}
+
 	return (
 		<>
+			{/* <Modal
+				open={createSubModalOpen}
+				onClose={() =>
+					setCreateSubModalOpen(false)}>
+				<Box sx={modalStyle}>
+					<CreateSubject />
+				</Box>
+			</Modal> */}
 			<Box sx={{ mt: 2 }}>
 				<Box
-					sx={{
+					sx={{	
 						height: 500,
 						width: '100%',
 						'& .actions': {
