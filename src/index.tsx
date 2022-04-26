@@ -1,10 +1,21 @@
-import * as React from 'react'
+import {
+	CheckCircle, Error, Info, Warning
+} from '@mui/icons-material'
+import { SnackbarProvider } from 'notistack'
+import React, { lazy, Suspense, useEffect } from 'react';
+
 import ReactDOM from 'react-dom'
-import App from './App'
-import reportWebVitals from './reportWebVitals'
-import { AppStoreProvider } from './store/appProvider'
 import { BrowserRouter, useLocation } from 'react-router-dom'
+import App from './App'
 import Theme from './components/theme'
+import { AppStoreProvider } from './store/appProvider'
+import { Slide } from '@mui/material';
+
+const iconsStyle = {
+	icon: {
+	  mr: 1,
+	},
+  };
 
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
 	const location = useLocation()
@@ -28,7 +39,20 @@ ReactDOM.render(
 			<BrowserRouter>
 				<DebugRouter>
 					<Theme>
-						<App />
+						<SnackbarProvider
+							maxSnack={3}
+							autoHideDuration={4000}
+							TransitionComponent={Slide}
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+							iconVariant={{
+								success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
+								error: <Error sx={{ ...iconsStyle.icon }} />,
+								warning: <Warning sx={{ ...iconsStyle.icon }} />,
+								info: <Info sx={{ ...iconsStyle.icon }} />,
+							}}
+						>
+							<App />
+						</SnackbarProvider>
 					</Theme>
 				</DebugRouter>
 			</BrowserRouter>
