@@ -55,6 +55,7 @@ const Databases = ({
 
 	useEffect(() => {
 		if (dataBaseCreated) {
+			setBidsDatabases(undefined)
 			getBids().then((response) => {
 				if (response.error) {
 					throw new Error(response.error.message)
@@ -72,13 +73,6 @@ const Databases = ({
 	}, [selectionModel, setSelectionModel])
 
 	useEffect(() => {
-		// setRows(
-		// 	bidsDatabases?.map(db => ({
-		// 		Browse: db.Path,
-		// 		...db,
-		// 	})) || []
-		// )
-
 		if (bidsDatabases) setRows(bidsDatabases)
 	}, [bidsDatabases])
 
