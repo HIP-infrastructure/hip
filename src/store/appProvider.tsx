@@ -1,8 +1,9 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
+import { getBids } from '../api/bids'
 import { getAvailableAppList, API_CONTAINERS } from '../api/gatewayClientAPI'
-import { Application, Container, UserCredentials } from '../api/types'
+import { Application, Container, UserCredentials, BIDSDatabase } from '../api/types'
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	user: [
@@ -10,7 +11,8 @@ export interface IAppState {
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
 	availableApps: { apps: Application[] | null; error: Error | null }
-	containers: [Container[] | null, Error | undefined]
+	containers: [Container[] | null, Error | undefined],
+	bidsDatabases: [BIDSDatabase[] | null, React.Dispatch<React.SetStateAction<BIDSDatabase[] | null>>]
 }
 
 export const fetcher = async (url: string): Promise<void> => {
@@ -49,8 +51,14 @@ export const AppStoreProvider = ({
 		IAppState['availableApps']
 	>({ apps: [], error: null })
 	const [user, setUser] = useState<UserCredentials | null>(null)
+	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(null)
 
-	// Fetch Nextcloud user
+	const { data, error } = useSWR<any, Error | undefined>(
+		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
+		fetcher
+	)
+
+	// Fetch initial data
 	React.useEffect(() => {
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
@@ -59,16 +67,19 @@ export const AppStoreProvider = ({
 			setAvailableApps(data)
 		})
 
+		getBids().then((response ) => {
+
+			if (response.error) {
+				throw new Error(error?.message)
+			}
+
+			if (response.data) setBidsDatabases(response.data)
+		})
+
 		setInterval(() => {
 			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
 		}, 3 * 1000)
 	}, [])
-
-	// Start polling containers fetch
-	const { data, error } = useSWR<any, Error | undefined>(
-		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
-		fetcher
-	)
 
 	const value: IAppState = React.useMemo(
 		() => ({
@@ -76,8 +87,9 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			availableApps,
 			containers: [data?.data || [], error],
+			bidsDatabases: [bidsDatabases, setBidsDatabases]
 		}),
-		[debug, setDebug, user, setUser, data, error, availableApps]
+		[debug, setDebug, user, setUser, data, error, availableApps, bidsDatabases, setBidsDatabases]
 	)
 
 	return <AppContext.Provider value={value}>{children}</AppContext.Provider>
