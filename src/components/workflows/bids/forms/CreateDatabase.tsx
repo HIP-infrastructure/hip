@@ -1,10 +1,11 @@
-import { Close } from '@mui/icons-material'
+import { Close, Save } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import {
     Button,
-    Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField
+    Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { createBidsDatabase } from '../../../../api/bids'
 import { CreateBidsDatabaseDto } from '../../../../api/types'
@@ -36,12 +37,13 @@ interface ICreateDatabase {
 
 const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDatabase) => {
     const { showNotif } = useNotification()
-    const { user: [user, setUser] } = useAppStore()
+    const [submitted, setSubmitted] = useState(false)
+    const { user: [user] } = useAppStore()
 
     return (
-        <Dialog open={open} maxWidth="sm" sx={{ display: 'flex', justifyContent: 'space-between' }} fullWidth>
-            <DialogTitle>
-                Create a New BIDS Database
+        <Dialog open={open} sx={{ minWidth: '360'}}>
+            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6">Create BIDS Database</Typography>
                 <IconButton onClick={handleClose}>
                     <Close />
                 </IconButton>
@@ -50,10 +52,9 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={async (values, { resetForm, setSubmitting }) => {
+                onSubmit={async (values) => {
                     if (user && user.uid) {
-                        setSubmitting(true)
-                        
+                        setSubmitted(true)
                         const createBidsDatabaseDto: CreateBidsDatabaseDto = {
                             owner: user.uid,
                             database: values.Name,
@@ -64,11 +65,12 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                         const cd = await createBidsDatabase(createBidsDatabaseDto)
                         if (cd.error) {
                             showNotif('Database not created, please try again', 'error')
+                            setSubmitted(false)
+
+                            return
                         }
 
-                        setSubmitting(false)
                         showNotif('Database created. Wait for reload', 'success')
-                        resetForm({ values: initialValues })
                         setDatabaseCreated(true)
                         handleClose()
                     }
@@ -77,9 +79,10 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                 {({ errors, handleChange, touched, values }) => (
                     <Form>
                         <DialogContent dividers>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="Name"
                                         label="Name"
                                         value={values.Name}
@@ -90,6 +93,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="BIDSVersion"
                                         label="BIDSVersion"
                                         value={values.BIDSVersion}
@@ -102,6 +106,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="Licence"
                                         label="Licence"
                                         value={values.Licence}
@@ -112,6 +117,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="Authors"
                                         label="Authors"
                                         value={values.Authors}
@@ -124,6 +130,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="Acknowledgements"
                                         label="Acknowledgements"
                                         value={values.Acknowledgements}
@@ -134,6 +141,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="HowToAcknowledge"
                                         label="HowToAcknowledge"
                                         value={values.HowToAcknowledge}
@@ -146,6 +154,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="Funding"
                                         label="Funding"
                                         value={values.Funding}
@@ -156,6 +165,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="ReferencesAndLinks"
                                         label="ReferencesAndLinks"
                                         value={values.ReferencesAndLinks}
@@ -168,6 +178,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
+                                        disabled={submitted}
                                         name="DatasetDOI"
                                         label="DatasetDOI"
                                         value={values.DatasetDOI}
@@ -180,12 +191,19 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                         </DialogContent>
 
                         <DialogActions>
-                            <Button color="error" onClick={handleClose}>
+                            <Button disabled={submitted} color="error" onClick={handleClose}>
                                 Close
                             </Button>
-                            <Button type="submit" color="primary" variant="contained">
-                                Create
-                            </Button>
+                            <LoadingButton
+                                color="primary"
+                                type="submit"
+                                loading={submitted}
+                                loadingPosition="start"
+                                startIcon={<Save />}
+                                variant="contained"
+                            >
+                                Save
+                            </LoadingButton>
                         </DialogActions>
                     </Form>
                 )}
