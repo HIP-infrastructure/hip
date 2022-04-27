@@ -8,8 +8,8 @@ import {
 	Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { getBids } from '../../../api/bids'
 import { BIDSDatabase, File as IFile, Participant } from '../../../api/types'
+import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
 import Databases from './databases'
 import Files from './files'
@@ -28,21 +28,15 @@ const boxStyle = {
 }
 const BidsConverter = () => {
 	const [activeStep, setActiveStep] = useState(2)
-	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[]>()
 	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
 	const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
 	const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
 	const [error, setError] = useState<Error>()
-
-	useEffect(() => {
-		getBids().then(r => {
-			const db = r.data
-
-			if (r.error) setError(r.error)
-
-			if (db) setBidsDatabases(db)
-		})
-	}, [])
+	const {
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases]
+	} = useAppStore()
 
 	const handleNext = () => {
 		setActiveStep(prevActiveStep => prevActiveStep + 1)

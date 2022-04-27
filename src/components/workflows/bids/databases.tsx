@@ -17,7 +17,7 @@ import {
 	MuiEvent
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { createBidsDatabase } from '../../../api/bids'
+import { createBidsDatabase, getBids } from '../../../api/bids'
 import { BIDSDatabase, CreateBidsDatabaseDto, GridApiRef } from '../../../api/types'
 import CreateDatabase from './forms/CreateDatabase'
 
@@ -44,6 +44,7 @@ const Databases = ({
 	> | null>(null)
 	const apiRef = useRef<GridApiRef | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [dataBaseCreated, setDatabaseCreated] = useState(false)
 
 	useEffect(() => {
 		if (selectedDatabase) {
@@ -51,6 +52,19 @@ const Databases = ({
 			setSelectionModel(s)
 		}
 	}, [selectedDatabase])
+
+	useEffect(() => {
+		if (dataBaseCreated) {
+			getBids().then((response) => {
+				if (response.error) {
+					throw new Error(response.error.message)
+				}
+
+				if (response.data) setBidsDatabases(response.data)
+			})
+			setDatabaseCreated(false)
+		}
+	}, [dataBaseCreated])
 
 	useEffect(() => {
 		const selected = bidsDatabases?.find(b => b.Name === selectionModel[0])
@@ -469,6 +483,7 @@ const Databases = ({
 			<CreateDatabase
 				open={isModalOpen}
 				handleClose={() => setIsModalOpen(!isModalOpen)}
+				setDatabaseCreated={setDatabaseCreated}
 			/>
 		</>
 	)

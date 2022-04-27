@@ -1,8 +1,7 @@
 import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
-import { getBids } from '../api/bids'
-import { BIDSDatabase, BIDSDatabaseResponse } from '../api/types'
+import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 
 // interface ExtendedBIDSDatabase extends BIDSDatabase {
@@ -60,44 +59,14 @@ const columns: GridColDef[] = [
 // https://hip.local/apps/files/?dir=
 
 const Data = (): JSX.Element => {
-	const [bidsDatabase, setBidsDatabase] = useState<BIDSDatabase[]>()
 	const [error, setError] = useState<Error | null>()
 	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0)
-
-
-	useEffect(() => {
-		getBids().then((r: BIDSDatabaseResponse) => {
-
-			if (r.error) {
-				setError(error)
-				return
-			}
-
-			setBidsDatabase(r.data)
-		})
-		// files('/').then(f => setFilesPanes([f]))
-	}, [])
-
-	// const files = async (path: string) => {
-	// 	return await getFiles(path)
-	// }
-
-	// const handleSelectedPath = async (pathes: string[]) => {
-	// 	const path = pathes.join('')
-	// 	const result = await files(path)
-	// 	setFilesPanes(prev => {
-	// 		if (!prev) return [result]
-
-	// 		prev[pathes.length - 1] = result
-	// 		prev.splice(pathes.length)
-
-	// 		return prev
-	// 	})
-	// 	forceUpdate()
-	// }
-
-
-
+	const {
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases]
+	} = useAppStore()
+	
 	return (
 		<>
 			<TitleBar title='Data' />
@@ -133,7 +102,7 @@ const Data = (): JSX.Element => {
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
 					BIDS Databases{' '}
-					{!bidsDatabase && !error && (
+					{!bidsDatabases && !error && (
 						<CircularProgress size={16} />
 					)}
 				</Typography>
@@ -141,7 +110,7 @@ const Data = (): JSX.Element => {
 				<Box sx={{ height: 500, width: '100%' }}>
 					<DataGrid
 						getRowId={(params) => params.Name}
-						rows={bidsDatabase || []}
+						rows={bidsDatabases || []}
 						columns={columns}
 						pageSize={100}
 						rowsPerPageOptions={[100]}

@@ -165,8 +165,9 @@ export interface CreateBidsDatabaseDto {
 		readonly License: string
 		readonly Authors: string[]
 		readonly Acknowledgements: string
-		readonly Funding: string
-		readonly ReferencesAndLinks: string
+		readonly HowToAcknowledge: string;
+		readonly Funding: string[]
+		readonly ReferencesAndLinks: string[]
 		readonly DatasetDOI: string
 	}
 }

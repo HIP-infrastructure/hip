@@ -1,30 +1,45 @@
 import { Close } from '@mui/icons-material'
 import {
     Button,
-    Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography
+    Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import * as Yup from 'yup'
+import { createBidsDatabase } from '../../../../api/bids'
+import { CreateBidsDatabaseDto } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
+import { useAppStore } from '../../../../store/appProvider'
 
 const validationSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
     BIDSVersion: Yup.string().required('BIDS Version is required'),
 })
 
-const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) => {
-    const { showNotif } = useNotification()
-    const [isSubmitted, setIsSubmitted] = useState(false)
+const initialValues = {
+    Name: '',
+    BIDSVersion: '',
+    Licence: '',
+    Authors: [],
+    Acknowledgements: '',
+    HowToAcknowledge: '',
+    Funding: [],
+    ReferencesAndLinks: [],
+    DatasetDOI: ''
+}
 
-    useEffect(() => {
-        if (isSubmitted) {
-            handleClose()
-        }
-    }, [isSubmitted])
+interface ICreateDatabase {
+    open: boolean
+    handleClose: () => void
+    setDatabaseCreated: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDatabase) => {
+    const { showNotif } = useNotification()
+    const { user: [user, setUser] } = useAppStore()
 
     return (
-        <Dialog open={open} maxWidth="sm" fullWidth>
+        <Dialog open={open} maxWidth="sm" sx={{ display: 'flex', justifyContent: 'space-between' }} fullWidth>
             <DialogTitle>
                 Create a New BIDS Database
                 <IconButton onClick={handleClose}>
@@ -33,36 +48,38 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
             </DialogTitle>
 
             <Formik
-                initialValues={{
-                    Name: '',
-                    BIDSVersion: '',
-                    Licence: '',
-                    Authors: [],
-                    Acknowledgements: '',
-                    HowToAcknowledge: '',
-                    Funding: [],
-                    ReferencesAndLinks: [],
-                    DatasetDOI: ''
-                }}
+                initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={async (values, { resetForm, setSubmitting }) => {
-                    if (true) {
-                        setSubmitting(false)
-                        resetForm({ values: '' })
+                    if (user && user.uid) {
+                        setSubmitting(true)
+                        
+                        const createBidsDatabaseDto: CreateBidsDatabaseDto = {
+                            owner: user.uid,
+                            database: values.Name,
+                            DatasetDescJSON: {
+                                ...values
+                            }
+                        }
+                        const cd = await createBidsDatabase(createBidsDatabaseDto)
+                        if (cd.error) {
+                            showNotif('Database not created, please try again', 'error')
+                        }
 
-                        setIsSubmitted(true)
+                        setSubmitting(false)
                         showNotif('Database created. Wait for reload', 'success')
+                        resetForm({ values: initialValues })
+                        setDatabaseCreated(true)
+                        handleClose()
                     }
                 }}
             >
-                {({ errors, handleChange, touched, values }: { errors: any, handleChange: any, touched: any, values: any }) => (
+                {({ errors, handleChange, touched, values }) => (
                     <Form>
                         <DialogContent dividers>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="Name"
                                         label="Name"
                                         value={values.Name}
@@ -73,8 +90,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="BIDSVersion"
                                         label="BIDSVersion"
                                         value={values.BIDSVersion}
@@ -87,9 +102,7 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
-                                        name="name"
+                                        name="Licence"
                                         label="Licence"
                                         value={values.Licence}
                                         onChange={handleChange}
@@ -99,8 +112,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="Authors"
                                         label="Authors"
                                         value={values.Authors}
@@ -113,8 +124,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="Acknowledgements"
                                         label="Acknowledgements"
                                         value={values.Acknowledgements}
@@ -125,8 +134,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="HowToAcknowledge"
                                         label="HowToAcknowledge"
                                         value={values.HowToAcknowledge}
@@ -139,8 +146,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="Funding"
                                         label="Funding"
                                         value={values.Funding}
@@ -151,8 +156,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="ReferencesAndLinks"
                                         label="ReferencesAndLinks"
                                         value={values.ReferencesAndLinks}
@@ -165,8 +168,6 @@ const CreateDatabase = ({ open, handleClose }: { open: any, handleClose: any }) 
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
-                                        size="small"
-                                        variant="standard"
                                         name="DatasetDOI"
                                         label="DatasetDOI"
                                         value={values.DatasetDOI}
