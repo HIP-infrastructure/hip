@@ -1,8 +1,8 @@
 import { API_GATEWAY } from './gatewayClientAPI'
-import { BIDSDatabaseResponse, CreateBidsDatabaseDto, CreateSubjectDto } from "./types"
+import { BidsDatabaseDefinitionDto, BIDSDatabaseResponse, CreateBidsDatabaseDto, CreateSubjectDto, GetBidsDatabaseDto, Participant } from "./types"
 
 
-export const getBids = async (): Promise<BIDSDatabaseResponse> => {
+export const getBidsDatabases = async (): Promise<BIDSDatabaseResponse> => {
     return fetch(`${API_GATEWAY}/files/bids`, {
         headers: {
             requesttoken: window.OC.requestToken,
@@ -28,6 +28,34 @@ export const createBidsDatabase = async (
     return data
 }
 
+export const getBidsDatabase = async (getBidsDatabaseDto: GetBidsDatabaseDto): Promise<BidsDatabaseDefinitionDto> => {
+    const url = `${API_GATEWAY}/tools/bids/database`
+    const data = fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            requesttoken: window.OC.requestToken,
+        },
+        body: JSON.stringify(getBidsDatabaseDto),
+    }).then(data => data.json())
+
+    return data
+}
+
+export const getParticipants = async (path: string): Promise<Participant[]> => {
+    const url = `${API_GATEWAY}/tools/bids/database/participants?path=${path}`
+    const data = fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            requesttoken: window.OC.requestToken,
+        },
+    })
+        .catch(error => { throw new Error(error.message) })
+        .then(data => data.json())
+
+    return data
+}
+
 export const createSubject = async (createSubject: CreateSubjectDto): Promise<CreateSubjectDto> => {
     const { database } = createSubject
     const url = `${API_GATEWAY}/tools/bids/database/${database}/subject`
@@ -41,5 +69,4 @@ export const createSubject = async (createSubject: CreateSubjectDto): Promise<Cr
     }).then(data => data.json())
 
     return data
-
 }
