@@ -90,6 +90,7 @@ export interface Participant {
 }
 
 export interface BIDSDatabase {
+	path?: string
 	Name?: string
 	BIDSVersion?: string
 	Licence?: string
@@ -179,7 +180,6 @@ export interface CreateSubjectDto {
 		sub: string
 		age: string
 		sex: string
-		hospital: string
 	}]
 	readonly files: [{
 		modality: string
@@ -192,4 +192,47 @@ export interface CreateSubjectDto {
 			acq: string
 		}
 	}]
+}
+
+export interface GetBidsDatabaseDto {
+	readonly owner: string
+	readonly database: string
+	BIDS_definitions: string[]
+}
+
+export class BidsDatabaseDefinitionDto {
+    "BIDS_definitions": {
+        "Anat": {
+            "keylist": string[],
+            "required_keys": string[],
+            "allowed_modalities": string[],
+            "allowed_file_formats": string[],
+            "readable_file_formats": string[],
+            "required_protocol_keys": []
+        },
+        "AnatJSON": {
+            "keylist": string[]
+        },
+        "Ieeg": {
+            "keylist": string[],
+            "required_keys": string[],
+            "allowed_modalities": string[],
+            "allowed_file_formats": string[],
+            "readable_file_formats": string[],
+            "channel_type": string[],
+            "mod_channel_type": string[],
+            "required_protocol_keys": []
+        },
+        "IeegJSON": {
+            "keylist": string[],
+            "required_keys": string[]
+        },
+        "DatasetDescJSON": {
+            "keylist": string[],
+            "required_keys": string[],
+            "filename": string,
+            "bids_version": string
+        }
+
+    }
 }

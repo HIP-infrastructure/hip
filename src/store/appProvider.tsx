@@ -1,9 +1,16 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
-import { getBids } from '../api/bids'
-import { getAvailableAppList, API_CONTAINERS } from '../api/gatewayClientAPI'
-import { Application, Container, UserCredentials, BIDSDatabase } from '../api/types'
+import { getBidsDatabases } from '../api/bids'
+import { API_CONTAINERS, getAvailableAppList } from '../api/gatewayClientAPI'
+import {
+	Application,
+	BIDSDatabase,
+	Container,
+	File as IFile,
+	Participant,
+	UserCredentials,
+} from '../api/types'
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	user: [
@@ -11,8 +18,24 @@ export interface IAppState {
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
 	availableApps: { apps: Application[] | null; error: Error | null }
-	containers: [Container[] | null, Error | undefined],
-	bidsDatabases: [BIDSDatabase[] | null, React.Dispatch<React.SetStateAction<BIDSDatabase[] | null>>]
+	containers: [Container[] | null, Error | undefined]
+	bidsDatabases: [
+		BIDSDatabase[] | null,
+		React.Dispatch<React.SetStateAction<BIDSDatabase[] | null>>
+	]
+	selectedBidsDatabase: [
+		BIDSDatabase,
+		React.Dispatch<React.SetStateAction<BIDSDatabase>>
+	]
+	participants: [
+		Participant[] | null,
+		React.Dispatch<React.SetStateAction<Participant[] | null>>
+	]
+	selectedParticipant: [
+		Participant,
+		React.Dispatch<React.SetStateAction<Participant>>
+	]
+	selectedFiles: [IFile[], React.Dispatch<React.SetStateAction<IFile[]>>]
 }
 
 export const fetcher = async (url: string): Promise<void> => {
@@ -51,7 +74,17 @@ export const AppStoreProvider = ({
 		IAppState['availableApps']
 	>({ apps: [], error: null })
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(null)
+	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(
+		null
+	)
+	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<
+		BIDSDatabase
+	>()
+	const [participants, setParticipants] = useState<
+		Participant[]
+	>()
+	const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
+	const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
 
 	const { data, error } = useSWR<any, Error | undefined>(
 		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
@@ -67,8 +100,7 @@ export const AppStoreProvider = ({
 			setAvailableApps(data)
 		})
 
-		getBids().then((response ) => {
-
+		getBidsDatabases().then(response => {
 			if (response.error) {
 				throw new Error(error?.message)
 			}
@@ -87,9 +119,31 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			availableApps,
 			containers: [data?.data || [], error],
-			bidsDatabases: [bidsDatabases, setBidsDatabases]
+			bidsDatabases: [bidsDatabases, setBidsDatabases],
+			selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+			participants: [participants, setParticipants],
+			selectedParticipant: [selectedParticipant, setSelectedParticipant],
+			selectedFiles: [selectedFiles, setSelectedFiles],
 		}),
-		[debug, setDebug, user, setUser, data, error, availableApps, bidsDatabases, setBidsDatabases]
+		[
+			debug,
+			setDebug,
+			user,
+			setUser,
+			data,
+			error,
+			availableApps,
+			bidsDatabases,
+			setBidsDatabases,
+			selectedBidsDatabase,
+			setSelectedBidsDatabase,
+			participants,
+			setParticipants,
+			selectedParticipant,
+			setSelectedParticipant,
+			selectedFiles,
+			setSelectedFiles,
+		]
 	)
 
 	return <AppContext.Provider value={value}>{children}</AppContext.Provider>
