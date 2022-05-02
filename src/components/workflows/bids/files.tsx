@@ -18,6 +18,7 @@ import {
 	TextField
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { getBidsDatabase } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import {
 	BIDSDatabase,
@@ -26,6 +27,7 @@ import {
 	Participant,
 	TreeNode
 } from '../../../api/types'
+import { useAppStore } from '../../../store/appProvider'
 import DynamicForm from '../../UI/dynamicForm'
 
 export const bIDSEntity = {
@@ -153,12 +155,7 @@ interface Props {
 	handleSelectFiles: (files: IFile[]) => void
 }
 
-const Files = ({
-	selectedBidsDatabase,
-	selectedParticipant,
-	selectedFiles,
-	handleSelectFiles,
-}: Props): JSX.Element => {
+const Files = (): JSX.Element => {
 	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>()
 	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
 	const [currentBidsFile, setCurrentBidsFile] = useState<IFile>()
@@ -167,12 +164,31 @@ const Files = ({
 	const [options, setOptions] = React.useState<string[]>()
 	const [inputValue, setInputValue] = React.useState<string>('')
 
+	const {
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		participants: [participants, setParticipants],
+		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedFiles: [selectedFiles, setSelectedFiles]
+	} = useAppStore()
+	
+
 	useEffect(() => {
 		populateEntities('T1w')
 		getFiles('/').then(f => {
 			setFilesPanes([f])
 			setTree(f)
 		})
+	}, [])
+
+	useEffect(() => {
+		getBidsDatabase({
+			owner: '',
+			database: '',
+			BIDS_definitions: ['']
+		}).then(response => console.log(response))
 	}, [])
 
 	useEffect(() => {
@@ -294,7 +310,7 @@ const Files = ({
 						required: e.required,
 						type: 'string',
 						value: selectedParticipant?.participant_id,
-						modalities: selectedBidsDatabase?.Participants?.map(
+						modalities: participants?.map(
 							p => p.participant_id
 						),
 					}

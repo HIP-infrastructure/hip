@@ -41,7 +41,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
     const { user: [user] } = useAppStore()
 
     return (
-        <Dialog open={open} sx={{ minWidth: '360'}}>
+        <Dialog open={open} sx={{ minWidth: '360' }}>
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h6">Create BIDS Database</Typography>
                 <IconButton onClick={handleClose}>
@@ -79,7 +79,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                 {({ errors, handleChange, touched, values }) => (
                     <Form>
                         <DialogContent dividers>
-                            <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            <Grid container columnSpacing={2} rowSpacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
@@ -102,8 +102,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                         helperText={touched.BIDSVersion && errors.BIDSVersion ? errors.BIDSVersion : null}
                                     />
                                 </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
+
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
@@ -126,8 +125,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                         helperText={touched.Authors && errors.Authors ? errors.Authors : null}
                                     />
                                 </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
+
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
@@ -150,8 +148,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                         helperText={touched.HowToAcknowledge && errors.HowToAcknowledge ? errors.HowToAcknowledge : null}
                                     />
                                 </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
+
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
@@ -174,8 +171,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                         helperText={touched.ReferencesAndLinks && errors.ReferencesAndLinks ? errors.ReferencesAndLinks : null}
                                     />
                                 </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
+
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}

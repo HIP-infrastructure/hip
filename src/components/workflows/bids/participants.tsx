@@ -1,5 +1,5 @@
 import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material'
-import { Alert, AlertProps, Box, Button, Snackbar } from '@mui/material'
+import { Alert, AlertProps, Box, Button, CircularProgress, Snackbar, Typography } from '@mui/material'
 import {
 	DataGrid,
 	GridActionsCellItem,
@@ -14,6 +14,9 @@ import {
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
 import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
+import { useAppStore } from '../../../store/appProvider'
+import CreateParticipant from './forms/CreateParticipant'
 
 interface Props {
 	selectedBidsDatabase?: BIDSDatabase
@@ -24,164 +27,46 @@ interface Props {
 	selectedParticipant?: Participant
 }
 
-const Participants = ({
-	selectedBidsDatabase,
-	setBidsDatabases,
-	handleSelectParticipant,
-	selectedParticipant,
-}: Props): JSX.Element => {
+const Participants = (): JSX.Element => {
+	const { showNotif } = useNotification()
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([])
 	const [rows, setRows] = useState<GridRowsProp>([])
-	const [snackbar, setSnackbar] = React.useState<Pick<
-		AlertProps,
-		'children' | 'severity'
-	> | null>(null)
 	const apiRef = useRef<GridApiRef | null>(null)
-
-	useEffect(() => {
-		if (selectedParticipant) {
-			const s = [selectedParticipant.participant_id] as GridSelectionModel
-			setSelectionModel(s)
-		}
-	}, [selectedParticipant])
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [dataBaseCreated, setDatabaseCreated] = useState(false)
+	const {
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		participants: [participants, setParticipants],
+		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedFiles: [selectedFiles, setSelectedFiles]
+	} = useAppStore()
 
 	useEffect(() => {
 		const rows =
-			selectedBidsDatabase?.Participants?.map(p => ({
+			participants?.map(p => ({
 				id: p.participant_id,
 				age: p.age,
 				sex: p.sex,
 				...p,
-			})) || [{
-				id: '',
-				age: '',
-				sex: '',
-			}]
-
-		setRows(rows)
-	}, [selectedBidsDatabase, setRows])
+			}))
+		if (rows) setRows(rows)
+	}, [participants, setRows])
 
 	useEffect(() => {
 		if (selectionModel.length === 0) return
 
-		const selected = selectedBidsDatabase?.Participants?.find(
+		const selected = participants?.find(
 			b => b.participant_id === selectionModel[0]
 		)
-		if (selected) handleSelectParticipant(selected)
-	}, [selectionModel, setSelectionModel])
+		if (selected) setSelectedParticipant(selected)
+	}, [selectionModel])
 
-	const handleRowEditStart = (
-		params: GridRowParams,
-		event: MuiEvent<React.SyntheticEvent>
-	) => {
-		event.defaultMuiPrevented = true
-	}
-
-	const handleRowEditStop: GridEventListener<GridEvents.rowEditStop> = (
-		params,
-		event
-	) => {
-		event.defaultMuiPrevented = true
-	}
-
-	const handleCellFocusOut: GridEventListener<GridEvents.cellFocusOut> = (
-		params,
-		event
-	) => {
-		event.defaultMuiPrevented = true
-	}
-
-	const handleEditClick = (id: number) => (event: any) => {
-		event.stopPropagation()
-		apiRef?.current?.setRowMode(id, 'edit')
-	}
-
-	const handleSaveClick = (id: number) => async (event: any) => {
-		event.stopPropagation()
-		// Wait for the validation to run
-		const isValid = await apiRef?.current?.commitRowChange(id)
-		if (isValid) {
-			apiRef?.current?.setRowMode(id, 'view')
-			const row = apiRef?.current?.getRow(id)
-			apiRef?.current?.updateRows([{ ...row, isNew: false }])
-
-			setSnackbar({
-				children: 'Participant successfully saved',
-				severity: 'success',
-			})
-		}
-	}
-
-	const handleDeleteClick = (id: number) => (event: any) => {
-		event.stopPropagation()
-		apiRef?.current?.updateRows([{ id, _action: 'delete' }])
-
-		setSnackbar({
-			children: 'Participant successfully deleted',
-			severity: 'success',
-		})
-	}
-
-	const handleCancelClick = (id: number) => (event: any) => {
-		event.stopPropagation()
-		apiRef?.current?.setRowMode(id, 'view')
-
-		const row = apiRef?.current?.getRow(id)
-		if (row!.isNew) {
-			apiRef?.current?.updateRows([{ id, _action: 'delete' }])
-		}
-	}
 
 	const constantsColumns = ['participant_id', 'age', 'sex']
 	const columns: GridColumns = [
-		{
-			field: 'actions',
-			type: 'actions',
-			headerName: 'Actions',
-			width: 120,
-			cellClassName: 'actions',
-			getActions: ({ id }: { id: any }) => {
-				const isInEditMode = apiRef?.current?.getRowMode(id) === 'edit'
-
-				if (isInEditMode) {
-					return [
-						<GridActionsCellItem
-							key={`save-${id}`}
-							icon={<Save />}
-							label='Save'
-							onClick={handleSaveClick(id)}
-							color='primary'
-						/>,
-						<GridActionsCellItem
-							key={`cancel-${id}`}
-							icon={<Cancel />}
-							label='Cancel'
-							className='textPrimary'
-							onClick={handleCancelClick(id)}
-							color='inherit'
-						/>,
-					]
-				}
-
-				return [
-					<GridActionsCellItem
-						icon={<Edit />}
-						key={`edit-${id}`}
-						label='Edit'
-						className='textPrimary'
-						onClick={handleEditClick(id)}
-						color='inherit'
-					/>,
-					<GridActionsCellItem
-						icon={<Delete />}
-						key={`delete-${id}`}
-						label='Delete'
-						onClick={handleDeleteClick(id)}
-						color='inherit'
-					/>,
-				]
-			},
-		},
 		{
 			field: 'id',
 			headerName: 'id',
@@ -205,7 +90,7 @@ const Participants = ({
 			width: 320,
 			editable: true,
 		},
-		...(selectedBidsDatabase?.Participants?.reduce(
+		...(participants?.reduce(
 			(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
 			[] as string[]
 		)
@@ -232,102 +117,25 @@ const Participants = ({
 	}
 
 	const handleCreateParticipant = () => {
-		// setCreateSubModalOpen(true)
-
-		const id = generateString(5)
-		apiRef?.current?.updateRows([{ id, isNew: true }])
-		apiRef?.current?.setRowMode(id, 'edit')
-		// Wait for the grid to render with the new row
-		setTimeout(() => {
-			apiRef?.current?.scrollToIndexes({
-				rowIndex: apiRef?.current?.getRowsCount() - 1,
-			})
-			apiRef?.current?.setCellFocus(id, 'id')
-		})
-	}
-
-	// const onRowEditCommit = (id: GridRowId) => {
-	// 	const model = apiRef?.current.getEditRowsModel(); // This object contains all rows that are being edited
-	// 	const newRow: { [key: string]: { value: string | number } } = model[id]
-	// 	newRow['participant_id'] = { value: id };
-
-	// 	// console.log(apiRef?.current?.getRowModels());
-	// 	const newParticipant = Object.keys(newRow)
-	// 		.map(k => ({
-	// 			[k]: newRow[k].value || 'n/a'
-	// 		}))
-	// 		.reduce((p, c) => Object.assign(p, c), {})
-
-	// 	const isEditingExistingParticipant = rows.find(r => r.participant_id === id)
-	// 	if (isEditingExistingParticipant) {
-	// 		setRows(previousRows => ([
-	// 			...previousRows.map(p =>
-	// 				p.participant_id === id ? newParticipant : p
-	// 			)
-	// 		]))
-
-	// 		// setBidsDatabases(b => ([
-	// 		// 	...b.map(p =>
-	// 		// 		p.id === id ? newDb : p
-	// 		// 	)
-	// 		// ]))
-	// 	} else {
-	// 		setRows(previousRows => ([
-	// 			...previousRows,
-	// 			newParticipant
-	// 		]))
-	// 		const newSelectedBidsDatabase = {
-	// 			...selectedBidsDatabase,
-	// 			Participants: [
-	// 				...selectedBidsDatabase?.Participants,
-	// 				newParticipant
-	// 			]
-	// 		}
-
-	// 		setBidsDatabases(previousBidsDatabases => ([
-	// 			...previousBidsDatabases.map(b => b.id === newSelectedBidsDatabase.id ?
-	// 				newSelectedBidsDatabase : b)
-	// 		]))
-
-	// 		// setBidsDatabases(b => ([
-	// 		// 	...(b || []),
-	// 		// 	newDb
-	// 		// ]))
-	// 	}
-
-	// 	apiRef?.current?.setRowMode(id, 'view');
-	// 	handleSelectParticipant(newParticipant)
-
-	// 	// createBIDSDatabase({ path: newRow.Name.value as string, database })
-	// 	setSnackbar({ children: 'Participant successfully saved', severity: 'success' });
-
-	// }
-
-	const modalStyle = {
-		position: 'absolute' as 'const',
-		top: '50%',
-		left: '50%',
-		transform: 'translate(-50%, -50%)',
-		minWidth: 480,
-		maxWidth: 640,
-		bgcolor: 'background.paper',
-		boxShadow: 4,
-		p: 4,
+		setIsModalOpen(true)
 	}
 
 	return (
 		<>
-			{/* <Modal
-				open={createSubModalOpen}
-				onClose={() =>
-					setCreateSubModalOpen(false)}>
-				<Box sx={modalStyle}>
-					<CreateSubject />
-				</Box>
-			</Modal> */}
 			<Box sx={{ mt: 2 }}>
 				<Box
-					sx={{	
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					<Typography variant='h6'>
+						Participants in {selectedBidsDatabase?.Name} {!participants && <CircularProgress size={16} />}
+					</Typography>
+				</Box>
+				<Box
+					sx={{
 						height: 500,
 						width: '100%',
 						'& .actions': {
@@ -339,14 +147,10 @@ const Participants = ({
 					}}
 				>
 					<DataGrid
+						// getRowId={(params) => params?.participant_id}
 						onSelectionModelChange={newSelectionModel => {
 							setSelectionModel(newSelectionModel)
 						}}
-						// onRowEditCommit={onRowEditCommit}
-						onRowEditStart={handleRowEditStart}
-						onRowEditStop={handleRowEditStop}
-						onCellFocusOut={handleCellFocusOut}
-						selectionModel={selectionModel}
 						rows={rows}
 						columns={columns}
 						pageSize={100}
@@ -372,17 +176,13 @@ const Participants = ({
 							toolbar: { apiRef },
 						}}
 					/>
-					{!!snackbar && (
-						<Snackbar
-							open
-							onClose={() => setSnackbar(null)}
-							autoHideDuration={6000}
-						>
-							<Alert {...snackbar} onClose={() => setSnackbar(null)} />
-						</Snackbar>
-					)}
 				</Box>
 			</Box>
+			<CreateParticipant
+				open={isModalOpen}
+				handleClose={() => setIsModalOpen(!isModalOpen)}
+				setDatabaseCreated={setDatabaseCreated}
+			/>
 		</>
 	)
 }

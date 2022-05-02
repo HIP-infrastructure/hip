@@ -7,8 +7,7 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { BIDSDatabase, File as IFile, Participant } from '../../../api/types'
+import React, { useState } from 'react'
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
 import Databases from './databases'
@@ -28,14 +27,14 @@ const boxStyle = {
 }
 const BidsConverter = () => {
 	const [activeStep, setActiveStep] = useState(2)
-	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<BIDSDatabase>()
-	const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
-	const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
 	const [error, setError] = useState<Error>()
 	const {
 		containers: [containers],
 		user: [user, setUser],
-		bidsDatabases: [bidsDatabases, setBidsDatabases]
+		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	const handleNext = () => {
@@ -117,12 +116,7 @@ const BidsConverter = () => {
 										{error.message}
 									</Alert>
 								)}
-								<Databases
-									bidsDatabases={bidsDatabases}
-									setBidsDatabases={setBidsDatabases}
-									handleSelectDatabase={setSelectedBidsDatabase}
-									selectedDatabase={selectedBidsDatabase}
-								/>
+								<Databases />
 								<StepNavigation
 									disabled={!selectedBidsDatabase}
 									activeStep={activeStep}
@@ -141,12 +135,7 @@ const BidsConverter = () => {
 								<Typography variant='subtitle1' sx={{ mb: 1 }}>
 									<strong> Select a Participant or create a new one</strong>
 								</Typography>
-								<Participants
-									selectedBidsDatabase={selectedBidsDatabase}
-									setBidsDatabases={setBidsDatabases}
-									handleSelectParticipant={setSelectedParticipant}
-									selectedParticipant={selectedParticipant}
-								/>
+								<Participants />
 								<StepNavigation
 									disabled={!selectedParticipant}
 									activeStep={activeStep}
@@ -164,12 +153,7 @@ const BidsConverter = () => {
 								<Typography variant='subtitle1' sx={{ mb: 1 }}>
 									<strong>Select files, modalities and entities</strong>
 								</Typography>
-								<Files
-									selectedBidsDatabase={selectedBidsDatabase}
-									selectedParticipant={selectedParticipant}
-									selectedFiles={selectedFiles}
-									handleSelectFiles={setSelectedFiles}
-								/>
+								<Files />
 								<StepNavigation activeStep={activeStep} />
 							</Box>
 							<Box
@@ -188,12 +172,13 @@ const BidsConverter = () => {
 								<Typography variant='subtitle1' sx={{ mb: 1 }}>
 									<strong> BIDS Conversion Summary</strong>
 								</Typography>
-								{selectedFiles &&
+								{selectedFiles && (
 									<Summary
 										selectedBidsDatabase={selectedBidsDatabase}
 										selectedParticipant={selectedParticipant}
 										selectedFiles={selectedFiles}
-									/>}
+									/>
+								)}
 								<StepNavigation activeStep={activeStep} />
 							</Box>
 							<Box

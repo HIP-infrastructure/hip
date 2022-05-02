@@ -17,9 +17,11 @@ import {
 	MuiEvent
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { createBidsDatabase, getBids } from '../../../api/bids'
+import { createBidsDatabase, getBidsDatabases } from '../../../api/bids'
 import { BIDSDatabase, CreateBidsDatabaseDto, GridApiRef } from '../../../api/types'
+import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
+import { getParticipants } from '../../../api/bids'
 
 interface Props {
 	bidsDatabases?: BIDSDatabase[]
@@ -30,12 +32,7 @@ interface Props {
 	selectedDatabase?: BIDSDatabase
 }
 
-const Databases = ({
-	bidsDatabases,
-	setBidsDatabases,
-	handleSelectDatabase,
-	selectedDatabase,
-}: Props): JSX.Element => {
+const Databases = (): JSX.Element => {
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([])
 	const [rows, setRows] = useState<GridRowsProp>([])
 	const [snackbar, setSnackbar] = React.useState<Pick<
@@ -45,18 +42,27 @@ const Databases = ({
 	const apiRef = useRef<GridApiRef | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
+	const {
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		participants: [participants, setParticipants],
+		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedFiles: [selectedFiles, setSelectedFiles]
+	} = useAppStore()
 
 	useEffect(() => {
-		if (selectedDatabase) {
-			const s = [selectedDatabase.Name] as GridSelectionModel
+		if (selectedBidsDatabase) {
+			const s = [selectedBidsDatabase.Name] as GridSelectionModel
 			setSelectionModel(s)
 		}
-	}, [selectedDatabase])
+	}, [selectedBidsDatabase])
 
 	useEffect(() => {
 		if (dataBaseCreated) {
-			setBidsDatabases(undefined)
-			getBids().then((response) => {
+			setBidsDatabases(null)
+			getBidsDatabases().then((response) => {
 				if (response.error) {
 					throw new Error(response.error.message)
 				}
@@ -69,8 +75,18 @@ const Databases = ({
 
 	useEffect(() => {
 		const selected = bidsDatabases?.find(b => b.Name === selectionModel[0])
-		if (selected) handleSelectDatabase(selected)
-	}, [selectionModel, setSelectionModel])
+		if (selected?.Name) {
+			setSelectedBidsDatabase(selected)
+
+			if (selected?.path && selected.path !== selectedBidsDatabase?.path) {
+				setParticipants(null)
+
+				getParticipants(selected?.path)
+					.then(response => { setParticipants(response) })
+			}
+
+		}
+	}, [selectionModel])
 
 	useEffect(() => {
 		if (bidsDatabases) setRows(bidsDatabases)
