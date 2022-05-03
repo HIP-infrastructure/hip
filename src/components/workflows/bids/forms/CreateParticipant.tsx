@@ -5,7 +5,7 @@ import {
     Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, MenuItem, TextField, Typography
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { createBidsDatabase } from '../../../../api/bids'
 import { CreateBidsDatabaseDto } from '../../../../api/types'
@@ -13,15 +13,18 @@ import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
 
 const validationSchema = Yup.object().shape({
-    Name: Yup.string().required('Name is required'),
-    BIDSVersion: Yup.string().required('BIDS Version is required'),
+    participant_id: Yup.string().required('ID is required'),
+    age: Yup.string().required('Age is required'),
+    sex: Yup.string().required('Sex is required'),
 })
 
-const initialValues = {
-    sub: '',
+
+const defaultValues = {
+    participant_id: '',
     age: '',
     sex: '',
 }
+
 
 interface ICreateDatabase {
     open: boolean
@@ -32,54 +35,77 @@ interface ICreateDatabase {
 const CreateParticipant = ({ open, handleClose, setDatabaseCreated }: ICreateDatabase) => {
     const { showNotif } = useNotification()
     const [submitted, setSubmitted] = useState(false)
-    const { user: [user] } = useAppStore()
+    const [fields, setFields] = useState<string[]>(null)
+    const {
+        containers: [containers],
+        user: [user, setUser],
+        bidsDatabases: [bidsDatabases, setBidsDatabases],
+        selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+        participants: [participants, setParticipants],
+        selectedParticipant: [selectedParticipant, setSelectedParticipant],
+        selectedFiles: [selectedFiles, setSelectedFiles]
+    } = useAppStore()
+
+    useEffect(() => {
+        if (participants) {
+            const one = participants.pop()
+            if (one) {
+                const participantFields = Object.keys(one)
+                setFields(participantFields)
+            }
+        }
+    }, [participants])
+
+
+    const initialValues = fields?.reduce((a, f) => ({ ...a, [f]: '' }), {})
+
 
     return (
         <Dialog open={open} sx={{ minWidth: '360' }}>
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography component="h6">Create Participant</Typography>
+                <Typography variant="h6" >Create Participant</Typography>
                 <IconButton onClick={handleClose}>
                     <Close />
                 </IconButton>
             </DialogTitle>
 
-            <Formik
+            {initialValues && <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={async (values) => {
-
+                onSubmit={async (values, { resetForm }) => {
                     setSubmitted(true)
-                    showNotif('Database created. Wait for reload', 'success')
-                    handleClose()
+                    const nextParticipants = [...(participants || []), values]
+                    if (nextParticipants)
+                        setParticipants(nextParticipants)
 
+                    resetForm()
+                    showNotif('Participant created.', 'success')
+                    handleClose()
                 }}
             >
                 {({ errors, handleChange, touched, values }) => (
                     <Form>
                         <DialogContent dividers>
                             <Grid container columnSpacing={2} rowSpacing={2}>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        disabled={submitted}
-                                        name="sub"
-                                        label="Sub"
-                                        value={values.sub}
-                                        onChange={handleChange}
-                                        error={touched.sub && errors.sub ? true : false}
-                                        helperText={touched.sub && errors.sub ? errors.sub : null}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        disabled={submitted}
-                                        name="age"
-                                        label="Age"
-                                        value={values.age}
-                                        onChange={handleChange}
-                                        error={touched.age && errors.age ? true : false}
-                                        helperText={touched.age && errors.age ? errors.age : null}
-                                    />
-                                </Grid>
+                                {fields?.map(field => {
+
+                                    return <Grid item xs={6}>
+                                        <TextField
+                                            key={field}
+                                            disabled={submitted}
+                                            size="small"
+                                            fullWidth
+                                            name={field}
+                                            label={field}
+                                            value={values[field]}
+                                            onChange={handleChange}
+                                            error={touched[field] && errors[field] ? true : false}
+                                            helperText={touched[field] && errors[field] ? errors[field] : null}
+                                        />
+                                    </Grid>
+                                })}
+                                {
+                                /* 
                                 <Grid item xs={6}>
                                     <TextField
                                         select
@@ -98,7 +124,7 @@ const CreateParticipant = ({ open, handleClose, setDatabaseCreated }: ICreateDat
                                             M
                                         </MenuItem>
                                     </TextField>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </DialogContent>
 
@@ -120,6 +146,7 @@ const CreateParticipant = ({ open, handleClose, setDatabaseCreated }: ICreateDat
                     </Form>
                 )}
             </Formik>
+            }
         </Dialog>
     )
 }

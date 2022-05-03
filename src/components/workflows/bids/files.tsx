@@ -1,14 +1,11 @@
-import { Delete, Edit, Folder } from '@mui/icons-material'
+import { Delete, Edit, Folder, Save, Article } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
 	Box,
 	Button,
-	IconButton,
-	InputLabel,
-	MenuItem,
-	Paper,
-	Select,
-	SelectChangeEvent,
+	Grid,
+	IconButton, MenuItem, Paper, SelectChangeEvent,
 	Table,
 	TableBody,
 	TableCell,
@@ -17,152 +14,42 @@ import {
 	TableRow,
 	TextField
 } from '@mui/material'
+import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { getBidsDatabase } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import {
 	BIDSDatabase,
-	Entity,
-	File as IFile,
+	BidsDatabaseDefinitionDto,
+	CreateSubjectDto,
+	File,
 	Participant,
 	TreeNode
 } from '../../../api/types'
+import * as Yup from 'yup'
+
+import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
-import DynamicForm from '../../UI/dynamicForm'
 
-export const bIDSEntity = {
-	subject: {
-		id: 'subject',
-		label: 'Subject',
-		format: 'sub-',
-		modalities: undefined,
-	},
-	session: {
-		id: 'session',
-		label: 'Session',
-		format: 'ses-',
-		modalities: ['presurgery', 'postsurgery'],
-	},
-	task: {
-		id: 'task',
-		label: 'Task',
-		format: 'task-',
-		modalities: ['eyesclosed'],
-	},
-	acquisition: {
-		id: 'acquisition',
-		label: 'Acquisition',
-		format: 'acq-',
-		modalities: ['lowres'],
-	},
-	reconstruction: {
-		id: 'reconstruction',
-		label: 'Reconstruction',
-		format: 'rec-',
-		modalities: undefined,
-	},
-	run: {
-		id: 'run',
-		label: 'Run',
-		format: 'run-',
-		modalities: undefined,
-	},
-	correspondingmodality: {
-		id: 'correspondingmodality',
-		label: 'Corresponding Modality',
-		format: 'mod-',
-		modalities: undefined,
-	},
-	echo: {
-		id: 'echo',
-		label: 'Echo',
-		format: 'echo-',
-		modalities: undefined,
-	},
-}
+const validationSchema = Yup.object().shape({
+	subject: Yup.string().required('Subject is required'),
+	modality: Yup.string().required('Modality is required'),
+})
 
-export type EntityIndex = 'subject' | 'session' | 'task' | 'acquisition'
-
-export const bIDSDataType = [
-	{
-		name: 'anat',
-		entities: [
-			{
-				entity: bIDSEntity.subject,
-				required: true,
-			},
-			{
-				entity: bIDSEntity.session,
-				required: false,
-			},
-			{
-				entity: bIDSEntity.acquisition,
-				required: false,
-			},
-		],
-	},
-	{
-		name: 'ieeg',
-		entities: [
-			{
-				entity: bIDSEntity.subject,
-				required: true,
-			},
-			{
-				entity: bIDSEntity.session,
-				required: false,
-			},
-			{
-				entity: bIDSEntity.task,
-				required: false,
-			},
-			{
-				entity: bIDSEntity.acquisition,
-				required: false,
-			},
-			{
-				entity: bIDSEntity.run,
-				required: false,
-			},
-		],
-		// dwi = 'dwi',
-		// fmap = 'fmap',
-		// func = 'func',
-		// perf = 'perf',
-		// ieeg = 'ieeg',
-		// meg = 'meg',
-		// pet = 'pet',
-		// beh = 'beh'
-	},
-]
-
-const modalities = [
-	{ name: 'T1w', type: 'anat' },
-	{ name: 'T2w', type: 'anat' },
-	{ name: 'T1rho', type: 'anat' },
-	{ name: 'T2start', type: 'anat' },
-	{ name: 'FLAIR', type: 'anat' },
-	{ name: 'CT', type: 'anat' },
-	{ name: 'ieeg', type: 'ieeg' },
-	{ name: 'electrodes', type: 'ieeg' },
-	{ name: 'coordsystem', type: 'ieeg' },
-	{ name: 'photo', type: 'ieeg' },
-]
-interface Props {
-	selectedBidsDatabase?: BIDSDatabase
-	selectedParticipant?: Participant
-	selectedFiles?: IFile[]
-	handleSelectFiles: (files: IFile[]) => void
+const initialValues = {
+	subject: '',
+	modality: ''
 }
 
 const Files = (): JSX.Element => {
-	const [filesPanes, setFilesPanes] = useState<TreeNode[][]>()
 	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
-	const [currentBidsFile, setCurrentBidsFile] = useState<IFile>()
 	const [tree, setTree] = useState<TreeNode[]>()
-	// const [selectedNode, setSelectedNode] = useState<TreeNode>()
 	const [options, setOptions] = React.useState<string[]>()
 	const [inputValue, setInputValue] = React.useState<string>('')
+	const [submitted, setSubmitted] = useState(false)
+	const { showNotif } = useNotification()
+	const [definitions, setDefinitions] = useState<BidsDatabaseDefinitionDto>()
+	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
 
 	const {
 		containers: [containers],
@@ -173,23 +60,27 @@ const Files = (): JSX.Element => {
 		selectedParticipant: [selectedParticipant, setSelectedParticipant],
 		selectedFiles: [selectedFiles, setSelectedFiles]
 	} = useAppStore()
-	
+
 
 	useEffect(() => {
-		populateEntities('T1w')
 		getFiles('/').then(f => {
-			setFilesPanes([f])
 			setTree(f)
 		})
 	}, [])
 
 	useEffect(() => {
-		getBidsDatabase({
-			owner: '',
-			database: '',
-			BIDS_definitions: ['']
-		}).then(response => console.log(response))
-	}, [])
+		if (user && selectedBidsDatabase) {
+			const getBidsDatabaseDto = {
+				owner: user.uid!,
+				database: selectedBidsDatabase.path!,
+				BIDS_definitions: ['Anat']
+			}
+
+			getBidsDatabase(getBidsDatabaseDto).then(response => {
+				setDefinitions(response)
+			})
+		}
+	}, [user, selectedBidsDatabase])
 
 	useEffect(() => {
 		// console.log(tree?.map((t: { data: { path: any } }) => t.data.path))
@@ -298,193 +189,174 @@ const Files = (): JSX.Element => {
 		}
 	}
 
-	const populateEntities = (modality: string) => {
-		if (modality) {
-			const type = modalities.find(b => b.name === modality)?.type
-			const dataTypes = bIDSDataType.find(b => b.name === type)?.entities
-			const entities: Entity[] | undefined = dataTypes?.map(e =>
-				e.entity.id === 'subject'
-					? {
-						id: e.entity.id,
-						label: e.entity.label,
-						required: e.required,
-						type: 'string',
-						value: selectedParticipant?.participant_id,
-						modalities: participants?.map(
-							p => p.participant_id
-						),
-					}
-					: {
-						id: e.entity.id,
-						label: e.entity.label,
-						required: e.required,
-						type: 'string',
-						value: '',
-						modalities: e.entity.modalities ? e.entity.modalities : undefined,
-					}
-			)
-
-			if (entities) {
-				setCurrentBidsFile({
-					modality,
-					entities,
-				})
-			}
-		}
-	}
-
-	const handleSelectModality = (event: SelectChangeEvent) => {
-		const modality = event?.target.value
-		populateEntities(modality)
-	}
-
-	const handleChangeEntities = (entities: Entity[]) => {
-		setCurrentBidsFile((f: any) => ({ ...f, entities }))
-	}
-
-	const handleAddFile = () => {
-		if (currentBidsFile) {
-			handleSelectFiles([...(selectedFiles || []), currentBidsFile])
-		}
-
-		setFilesPanes((prev: any[]) => {
-			if (!prev) return []
-
-			prev.splice(1)
-
-			return prev
-		})
-		forceUpdate()
-
-		populateEntities('T1w')
-	}
-
-	const handleFileUploadError = (error: Error) => {
-		// Do something...
-	}
-
-	const handleFileChange = (file: File) => {
-		if (currentBidsFile && handleSelectFiles) {
-			handleSelectFiles([
-				...(selectedFiles || []),
-				{
-					...currentBidsFile,
-					path: `file.path` || '/new file',
-				},
-			])
-		}
-	}
-
-	const boxStyle = {
-		border: 1,
-		borderColor: 'grey.400',
-		p: 2,
-		mr: 1,
-		display: 'flex',
-		flex: '1 0 auto',
-		flexFlow: 'column',
-	}
+	const anatKeyList = definitions?.BIDS_definitions.Anat.keylist
+		.filter(k => !['sub', 'modality', 'fileLoc', 'AnatJSON'].includes(k))
 
 	return (
-		<Box>
-			<Box sx={boxStyle}>
-				<InputLabel id='bids-modality'>Modality</InputLabel>
-				<Box
-					sx={{ display: 'flex', alignItems: 'center', gap: '0px 8px', mb: 2 }}
-				>
-					<Box>
-						<Select
-							labelId='bids-modality'
-							id='bids-modality-select'
-							value={currentBidsFile?.modality || 'T1w'}
-							label='Modality'
-							onChange={handleSelectModality}
-						>
-							{modalities.map(m => (
-								<MenuItem key={m.name} value={m.name}>
-									{m.name}
-								</MenuItem>
-							))}
-						</Select>
-					</Box>
-					{currentBidsFile?.entities && (
-						<DynamicForm
-							fields={currentBidsFile?.entities}
-							handleChangeFields={handleChangeEntities}
-						/>
-					)}
-				</Box>
-				<Box sx={{ width: 960 }}>
-					{/* <Search /> */}
+		<Box sx={{ maxWidth: '100%', width: '100%' }}>
+			<Formik
+				initialValues={initialValues}
+				validationSchema={validationSchema}
+				onSubmit={async (values, { resetForm }) => {
+					setSubmitted(true)
 
-					<Box
-						sx={{
-							width: 960,
-							border: 1,
-							borderColor: 'grey.300',
-							overflowY: 'auto',
-							p: 1,
-							display: 'flex',
-						}}
-					>
-						{/* <FileBrowser
-							nodesPanes={filesPanes}
-							handleSelectedNode={handleSelectedNode}
-						/> */}
-						<Autocomplete
-							options={options || []}
-							inputValue={inputValue}
-							onInputChange={(event: any, newInputValue: string) => {
-								handleSelectedPath(newInputValue)
-								setInputValue(newInputValue)
-							}}
-							disableCloseOnSelect
-							id='input-tree-view'
-							sx={{ width: 640 }}
-							renderInput={(params: unknown) => (
-								<TextField {...params} label='Files' />
-							)}
-							renderOption={(props, option) => {
-								const node = tree?.find(node => node.data.path === option)
+					// const data: CreateSubjectDto = {
+					// 	owner: user?.uid,
+					// 	database: selectedBidsDatabase.path,
+					// 	subjects: [],
+					// 	files: [
+					// 		modality: values.modality,
+					// 		subject: '',
+					// 		path: 'values.files',
+					// 		entities: anatKeyList.reduce((a, k) => {}, [])
+					// 	]
+					// }
 
-								return node?.data.type === 'dir' ?
-									<Box component="li" sx={{ '& > button': { mr: 2, flexShrink: 0 } }} {...props}>
-										<Folder />
-										{option}
-									</Box> :
-									<Box component="li" sx={{ ml: 2 }}  {...props}>{option}</Box>
-							}}
-						/>
-					</Box>
-					<Box>
-						<Button
-							disabled={
-								!(
-									currentBidsFile?.entities &&
-									currentBidsFile?.modality &&
-									currentBidsFile?.path
-								)
+					const file: File = {
+						modality: values.modality,
+						subject: values.subject,
+						path: '',
+						entities: anatKeyList?.reduce((a, k) => ({ ...a, [k]: values[k] }), {})
+					}
+
+					setSelectedFiles(f => [...f, file])
+
+					console.log(values)
+
+					resetForm()
+					showNotif('Participant created.', 'success')
+
+					setSubmitted(false)
+				}}
+			>
+				{({ errors, handleChange, touched, values }) => (
+					<Form>
+						<Grid container columnSpacing={2} rowSpacing={2}>
+							{participants &&
+								<Grid item xs={6}>
+									<TextField
+										fullWidth
+										select
+										size="small"
+										disabled={submitted}
+										name="subject"
+										label="Subject"
+										value={values.subject}
+										onChange={handleChange}
+										error={touched.subject && errors.subject ? true : false}
+										helperText={touched.subject && errors.subject ? errors.subject : null}
+									>
+										{participants?.map(p =>
+											<MenuItem key={p.participant_id} value={p.participant_id}>
+												{p.participant_id} ({p.sex}/{p.age})
+											</MenuItem>)}
+									</TextField>
+								</Grid>
 							}
-							sx={{ float: 'right', mt: 2, mb: 2 }}
-							variant='contained'
-							onClick={handleAddFile}
-						>
-							Add file
-						</Button>
-					</Box>
-				</Box>
-			</Box>
-			<Box sx={{ mt: 4, mb: 4 }}>
+
+							{definitions &&
+								<Grid item xs={6}>
+									<TextField
+										fullWidth
+										select
+										size="small"
+										disabled={submitted}
+										name="modality"
+										label="Modality"
+										value={values.modality}
+										onChange={handleChange}
+										error={touched.modality && errors.modality ? true : false}
+										helperText={touched.modality && errors.modality ? errors.modality : null}
+									>
+										{definitions.BIDS_definitions.Anat.allowed_modalities?.map(m =>
+											<MenuItem key={m} value={m}>
+												{m}
+											</MenuItem>)}
+									</TextField>
+								</Grid>
+							}
+							<Grid item xs={12}>
+								<Autocomplete
+									options={options || []}
+									inputValue={inputValue}
+									onInputChange={(event: any, newInputValue: string) => {
+										handleSelectedPath(newInputValue)
+										setInputValue(newInputValue)
+									}}
+									disableCloseOnSelect
+									id='input-tree-view'
+									sx={{ width: 640 }}
+									renderInput={(params: unknown) => (
+										<TextField {...params} label='Files' />
+									)}
+									renderOption={(props, option) => {
+										const node = tree?.find(node => node.data.path === option)
+
+										return node?.data.type === 'dir' ?
+											<Box component="li" sx={{ '& > svg': { mr: 1, flexShrink: 0 } }} {...props}>
+												<Folder />
+												{option}
+											</Box> :
+											<Box component="li" sx={{ '& > svg': { mr: 1, flexShrink: 0 } }} {...props}>
+												<Article />
+												{option}
+											</Box>
+									}}
+
+								/>
+							</Grid>
+
+							{anatKeyList &&
+								anatKeyList
+									.map(k =>
+										<Grid item xs={2}>
+											<TextField
+												size="small"
+												disabled={submitted}
+												name={k}
+												label={k}
+												value={values[k]}
+												onChange={handleChange}
+												error={touched[k] && errors[k] ? true : false}
+												helperText={touched[k] && errors[k] ? errors[k] : null}
+											/>
+										</Grid>)
+
+							}
+
+
+
+							<Grid xs={12}>
+								<LoadingButton
+									color="primary"
+									type="submit"
+									loading={submitted}
+									loadingPosition="start"
+									startIcon={<Save />}
+									variant="contained"
+								>
+									Add
+								</LoadingButton>
+							</Grid>
+						</Grid>
+					</Form>
+				)}
+			</Formik>
+
+
+
+			< Box sx={{ mt: 4, mb: 4 }}>
 				<TableContainer component={Paper}>
 					<Table size='small' sx={{ minWidth: 650 }} aria-label='simple table'>
 						<TableHead>
 							<TableRow>
 								<TableCell>Actions</TableCell>
+								<TableCell>Subject</TableCell>
 								<TableCell>Modality</TableCell>
 								<TableCell>Path</TableCell>
-								{Object.keys(bIDSEntity).map((k: string) => (
-									<TableCell key={bIDSEntity[k as EntityIndex].id}>
-										{bIDSEntity[k as EntityIndex].label}
+								{anatKeyList?.map((k: string) => (
+									<TableCell key={k}>
+										{k}
 									</TableCell>
 								))}
 							</TableRow>
@@ -503,21 +375,21 @@ const Files = (): JSX.Element => {
 											<Delete />
 										</IconButton>
 									</TableCell>
+									<TableCell>{file.subject}</TableCell>
+									<TableCell>{file.modality}</TableCell>
 									<TableCell>{file.path}</TableCell>
-									{Object.keys(bIDSEntity).map((k: string) => (
+									{anatKeyList?.map((k: string) => (
 										<TableCell key={k}>
-											{file?.entities?.find(
-												f => f.id === bIDSEntity[k as EntityIndex].id
-											)?.value || ''}
+											{k}
 										</TableCell>
 									))}
-									<TableCell>{file.modality}</TableCell>
+
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
 				</TableContainer>
-			</Box>
+			</Box >
 		</Box >
 	)
 }

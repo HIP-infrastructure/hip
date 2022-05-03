@@ -121,17 +121,6 @@ export interface ISearchResult {
 	}
 }
 
-export interface Modality {
-	name: string
-	type: string
-}
-
-export interface File {
-	path?: string
-	modality?: string
-	entities?: Entity[]
-}
-
 export interface Entity {
 	id: string
 	label: string
@@ -173,6 +162,7 @@ export interface CreateBidsDatabaseDto {
 	}
 }
 
+
 export interface CreateSubjectDto {
 	readonly owner: string
 	readonly database: string
@@ -181,17 +171,19 @@ export interface CreateSubjectDto {
 		age: string
 		sex: string
 	}]
-	readonly files: [{
-		modality: string
-		subject: string
-		path: string
-		entities: {
-			sub: string
-			ses: string
-			task: string
-			acq: string
-		}
-	}]
+	readonly files: File[]
+}
+
+export interface File {
+	modality: string
+	subject: string
+	path: string
+	entities: {
+		sub: string
+		ses: string
+		task: string
+		acq: string
+	}
 }
 
 export interface GetBidsDatabaseDto {
