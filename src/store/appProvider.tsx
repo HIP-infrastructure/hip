@@ -7,7 +7,7 @@ import {
 	Application,
 	BIDSDatabase,
 	Container,
-	File as IFile,
+	File,
 	Participant,
 	UserCredentials,
 } from '../api/types'
@@ -35,7 +35,7 @@ export interface IAppState {
 		Participant,
 		React.Dispatch<React.SetStateAction<Participant>>
 	]
-	selectedFiles: [IFile[], React.Dispatch<React.SetStateAction<IFile[]>>]
+	selectedFiles: [File[], React.Dispatch<React.SetStateAction<File[]>>]
 }
 
 export const fetcher = async (url: string): Promise<void> => {

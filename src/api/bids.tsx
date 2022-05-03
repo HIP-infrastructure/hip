@@ -1,5 +1,6 @@
 import { API_GATEWAY } from './gatewayClientAPI'
 import { BidsDatabaseDefinitionDto, BIDSDatabaseResponse, CreateBidsDatabaseDto, CreateSubjectDto, GetBidsDatabaseDto, Participant } from "./types"
+import { stringify, parse } from 'query-string';
 
 
 export const getBidsDatabases = async (): Promise<BIDSDatabaseResponse> => {
@@ -29,14 +30,13 @@ export const createBidsDatabase = async (
 }
 
 export const getBidsDatabase = async (getBidsDatabaseDto: GetBidsDatabaseDto): Promise<BidsDatabaseDefinitionDto> => {
-    const url = `${API_GATEWAY}/tools/bids/database`
+    const query = stringify(getBidsDatabaseDto, { arrayFormat: 'bracket' });
+    const url = `${API_GATEWAY}/tools/bids/database?${query}`
     const data = fetch(url, {
-        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             requesttoken: window.OC.requestToken,
-        },
-        body: JSON.stringify(getBidsDatabaseDto),
+        }
     }).then(data => data.json())
 
     return data

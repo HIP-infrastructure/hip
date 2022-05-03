@@ -26,7 +26,7 @@ const boxStyle = {
 	flexFlow: 'column',
 }
 const BidsConverter = () => {
-	const [activeStep, setActiveStep] = useState(2)
+	const [activeStep, setActiveStep] = useState(0)
 	const [error, setError] = useState<Error>()
 	const {
 		containers: [containers],
@@ -137,7 +137,7 @@ const BidsConverter = () => {
 								</Typography>
 								<Participants />
 								<StepNavigation
-									disabled={!selectedParticipant}
+									// disabled={!selectedParticipant}
 									activeStep={activeStep}
 								/>
 							</Box>

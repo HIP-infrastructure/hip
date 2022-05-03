@@ -59,8 +59,8 @@ const Layout = (): JSX.Element => {
 				{isSmUp ? null : (
 					<Navigation
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-						// open={mobileOpen}
-						// onClose={handleDrawerToggle}
+					// open={mobileOpen}
+					// onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation PaperProps={{ style: { width: DRAWER_WIDTH } }} />

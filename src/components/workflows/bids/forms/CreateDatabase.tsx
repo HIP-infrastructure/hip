@@ -52,7 +52,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={async (values) => {
+                onSubmit={async (values, { resetForm }) => {
                     if (user && user.uid) {
                         setSubmitted(true)
                         const createBidsDatabaseDto: CreateBidsDatabaseDto = {
@@ -69,7 +69,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
 
                             return
                         }
-
+                        resetForm()
                         showNotif('Database created. Wait for reload', 'success')
                         setDatabaseCreated(true)
                         handleClose()
@@ -83,6 +83,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="Name"
                                         label="Name"
                                         value={values.Name}
@@ -94,6 +96,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="BIDSVersion"
                                         label="BIDSVersion"
                                         value={values.BIDSVersion}
@@ -106,6 +110,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="Licence"
                                         label="Licence"
                                         value={values.Licence}
@@ -117,6 +123,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="Authors"
                                         label="Authors"
                                         value={values.Authors}
@@ -129,6 +137,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="Acknowledgements"
                                         label="Acknowledgements"
                                         value={values.Acknowledgements}
@@ -140,6 +150,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="HowToAcknowledge"
                                         label="HowToAcknowledge"
                                         value={values.HowToAcknowledge}
@@ -152,6 +164,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="Funding"
                                         label="Funding"
                                         value={values.Funding}
@@ -163,6 +177,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="ReferencesAndLinks"
                                         label="ReferencesAndLinks"
                                         value={values.ReferencesAndLinks}
@@ -175,6 +191,8 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                                 <Grid item xs={6}>
                                     <TextField
                                         disabled={submitted}
+                                        size="small"
+                                        fullWidth
                                         name="DatasetDOI"
                                         label="DatasetDOI"
                                         value={values.DatasetDOI}
