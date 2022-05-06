@@ -31,9 +31,9 @@ export interface IAppState {
 		Participant[] | null,
 		React.Dispatch<React.SetStateAction<Participant[] | null>>
 	]
-	selectedParticipant: [
-		Participant,
-		React.Dispatch<React.SetStateAction<Participant>>
+	selectedParticipants: [
+		Participant[],
+		React.Dispatch<React.SetStateAction<Participant[]>>
 	]
 	selectedFiles: [File[], React.Dispatch<React.SetStateAction<File[]>>]
 }
@@ -83,8 +83,8 @@ export const AppStoreProvider = ({
 	const [participants, setParticipants] = useState<
 		Participant[]
 	>()
-	const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
-	const [selectedFiles, setSelectedFiles] = useState<IFile[]>()
+	const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>()
+	const [selectedFiles, setSelectedFiles] = useState<File[]>()
 
 	const { data, error } = useSWR<any, Error | undefined>(
 		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
@@ -100,7 +100,7 @@ export const AppStoreProvider = ({
 			setAvailableApps(data)
 		})
 
-		getBidsDatabases().then(response => {
+		getBidsDatabases(currentUser.uid).then(response => {
 			if (response.error) {
 				throw new Error(error?.message)
 			}
@@ -122,7 +122,7 @@ export const AppStoreProvider = ({
 			bidsDatabases: [bidsDatabases, setBidsDatabases],
 			selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 			participants: [participants, setParticipants],
-			selectedParticipant: [selectedParticipant, setSelectedParticipant],
+			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
 		}),
 		[
@@ -139,8 +139,8 @@ export const AppStoreProvider = ({
 			setSelectedBidsDatabase,
 			participants,
 			setParticipants,
-			selectedParticipant,
-			setSelectedParticipant,
+			selectedParticipants,
+			setSelectedParticipants,
 			selectedFiles,
 			setSelectedFiles,
 		]
