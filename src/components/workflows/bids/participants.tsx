@@ -24,7 +24,7 @@ interface Props {
 		React.SetStateAction<BIDSDatabase[] | undefined>
 	>
 	handleSelectParticipant: (selected: Participant) => void
-	selectedParticipant?: Participant
+	selectedParticipants?: Participant
 }
 
 const Participants = (): JSX.Element => {
@@ -40,7 +40,7 @@ const Participants = (): JSX.Element => {
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
-		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles]
 	} = useAppStore()
 
@@ -56,13 +56,17 @@ const Participants = (): JSX.Element => {
 	}, [participants, setRows])
 
 	useEffect(() => {
-		if (selectionModel.length === 0) return
+		console.log(participants)
+	}, [participants])
 
-		const selected = participants?.find(
-			b => b.participant_id === selectionModel[0]
-		)
-		if (selected) setSelectedParticipant(selected)
-	}, [selectionModel])
+	// useEffect(() => {
+	// 	if (selectionModel.length === 0) return
+
+	// 	const selected = participants?.find(
+	// 		b => b.participant_id === selectionModel[0]
+	// 	)
+	// 	if (selected) setSelectedParticipants(selected)
+	// }, [selectionModel])
 
 
 	const constantsColumns = ['participant_id', 'age', 'sex']
@@ -148,9 +152,9 @@ const Participants = (): JSX.Element => {
 				>
 					<DataGrid
 						// getRowId={(params) => params?.participant_id}
-						onSelectionModelChange={newSelectionModel => {
-							setSelectionModel(newSelectionModel)
-						}}
+						// onSelectionModelChange={newSelectionModel => {
+						// 	setSelectionModel(newSelectionModel)
+						// }}
 						rows={rows}
 						columns={columns}
 						pageSize={100}

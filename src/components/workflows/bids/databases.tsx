@@ -22,23 +22,14 @@ import { BIDSDatabase, CreateBidsDatabaseDto, GridApiRef } from '../../../api/ty
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
 import { getParticipants } from '../../../api/bids'
+import { useNotification } from '../../../hooks/useNotification'
 
-interface Props {
-	bidsDatabases?: BIDSDatabase[]
-	setBidsDatabases: React.Dispatch<
-		React.SetStateAction<BIDSDatabase[] | undefined>
-	>
-	handleSelectDatabase: (selected: BIDSDatabase) => void
-	selectedDatabase?: BIDSDatabase
-}
 
 const Databases = (): JSX.Element => {
+	const { showNotif } = useNotification()
+
 	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([])
 	const [rows, setRows] = useState<GridRowsProp>([])
-	const [snackbar, setSnackbar] = React.useState<Pick<
-		AlertProps,
-		'children' | 'severity'
-	> | null>(null)
 	const apiRef = useRef<GridApiRef | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
@@ -48,7 +39,7 @@ const Databases = (): JSX.Element => {
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
-		selectedParticipant: [selectedParticipant, setSelectedParticipant],
+		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles]
 	} = useAppStore()
 
@@ -62,7 +53,7 @@ const Databases = (): JSX.Element => {
 	useEffect(() => {
 		if (dataBaseCreated) {
 			setBidsDatabases(null)
-			getBidsDatabases().then((response) => {
+			getBidsDatabases(user?.uid).then((response) => {
 				if (response.error) {
 					throw new Error(response.error.message)
 				}
@@ -81,12 +72,20 @@ const Databases = (): JSX.Element => {
 			if (selected?.path && selected.path !== selectedBidsDatabase?.path) {
 				setParticipants(null)
 
-				getParticipants(selected?.path)
-					.then(response => { setParticipants(response) })
+				if (user?.uid) {
+					getParticipants(selected?.path, user.uid)
+						.then(response => {
+							setParticipants(response)
+						})
+				}
 			}
 
 		}
 	}, [selectionModel])
+
+	useEffect(() => {
+		console.log(participants)
+	}, [participants])
 
 	useEffect(() => {
 		if (bidsDatabases) setRows(bidsDatabases)
@@ -161,10 +160,7 @@ const Databases = (): JSX.Element => {
 			const db = await createBidsDatabase(data)
 			console.log({ db })
 
-			setSnackbar({
-				children: 'Database successfully saved',
-				severity: 'success',
-			})
+			showNotif('Database successfully saved', 'success')
 		}
 	}
 
@@ -172,10 +168,7 @@ const Databases = (): JSX.Element => {
 		event.stopPropagation()
 		apiRef?.current?.updateRows([{ id, _action: 'delete' }])
 
-		setSnackbar({
-			children: 'Database successfully deleted',
-			severity: 'success',
-		})
+		showNotif('Database successfully deleted', 'success')
 	}
 
 	const handleCancelClick = (id: number) => (event: any) => {
@@ -479,15 +472,6 @@ const Databases = (): JSX.Element => {
 						}}
 					// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
 					/>
-					{!!snackbar && (
-						<Snackbar
-							open
-							onClose={() => setSnackbar(null)}
-							autoHideDuration={6000}
-						>
-							<Alert {...snackbar} onClose={() => setSnackbar(null)} />
-						</Snackbar>
-					)}
 				</Box>
 			</Box>
 			<CreateDatabase

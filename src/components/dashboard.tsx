@@ -5,6 +5,8 @@ import {
 	CardActions,
 	CardContent,
 	CardMedia,
+	CircularProgress,
+	Grid,
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
@@ -14,6 +16,7 @@ import CollaborativeImage from '../assets/dashboard__collaborative.png'
 import PrivateImage from '../assets/dashboard__private.png'
 import PublicImage from '../assets/dashboard__public.png'
 import { ROUTE_PREFIX } from '../constants'
+import { useNotification } from '../hooks/useNotification'
 import { useAppStore } from '../store/appProvider'
 
 const spaces = [
@@ -28,6 +31,7 @@ const spaces = [
 		credit:
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
 		counts: [2, 2, 34],
+		disabled: false,
 	},
 	{
 		label: 'Collaborative',
@@ -40,6 +44,7 @@ const spaces = [
 		credit:
 			'Photo by Milad Fakurian on Unsplash, https://unsplash.com/@fakurian',
 		counts: [2, 4, 54],
+		disabled: true,
 	},
 	{
 		label: 'Public',
@@ -52,14 +57,20 @@ const spaces = [
 		credit:
 			'Photo by  Jesse Martini on Unsplash, https://unsplash.com/@jessemartini',
 		counts: [1, 4, 17],
+		disabled: true,
 	},
 ]
 
 const Dahsboard = () => {
+	const { showNotif } = useNotification()
 	const {
-		user: [user],
-		containers: [containers, error],
-		debug: [debug],
+		containers: [containers],
+		user: [user, setUser],
+		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		participants: [participants, setParticipants],
+		selectedParticipants: [selectedParticipants, setSelectedParticipants],
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 	const navigate = useNavigate()
 
@@ -153,13 +164,24 @@ const Dahsboard = () => {
 							</Typography>
 
 							<Typography sx={{ mt: 2 }} variant='body2' color='text.secondary'>
-								{space.counts[0]} <em>Opened desktop</em>
+								{containers?.length} <em>Opened desktop</em>
+							</Typography>
+							<Typography
+								variant='body2'
+								color='text.secondary'
+							>
+								<Box sx={{ display: 'flex', alignItems: 'center'}}>
+									<Box sx={{ mr: 0.5 }}>
+										{!bidsDatabases && <CircularProgress size={12} />}
+										{bidsDatabases?.length}
+									</Box>
+									<Box>
+										<em> BIDS databases</em>
+									</Box>
+								</Box>
 							</Typography>
 							<Typography variant='body2' color='text.secondary'>
-								{space.counts[1]} <em> BIDS databases</em>
-							</Typography>
-							<Typography variant='body2' color='text.secondary'>
-								{space.counts[2]} <em>subjects</em>
+								n/a <em>subjects</em>
 							</Typography>
 						</CardContent>
 
@@ -168,6 +190,7 @@ const Dahsboard = () => {
 								onClick={() => {
 									navigate(space.route)
 								}}
+								disabled={space.disabled}
 								variant='outlined'
 							>
 								{space.buttonLabel}
