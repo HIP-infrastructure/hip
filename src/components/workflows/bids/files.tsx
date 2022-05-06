@@ -5,18 +5,21 @@ import {
 	Box,
 	Button,
 	Grid,
-	IconButton, MenuItem, Paper, SelectChangeEvent,
+	IconButton,
+	MenuItem,
+	Paper,
+	SelectChangeEvent,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
-	TextField
+	TextField,
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { getBidsDatabase } from '../../../api/bids'
+import { importSubject, getBidsDatabase } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import {
 	BIDSDatabase,
@@ -24,12 +27,12 @@ import {
 	CreateSubjectDto,
 	File,
 	Participant,
-	TreeNode
+	TreeNode,
 } from '../../../api/types'
 import * as Yup from 'yup'
-
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
+import { ENTITIES, MODALITIES } from '../../../constants'
 
 const validationSchema = Yup.object().shape({
 	subject: Yup.string().required('Subject is required'),
@@ -38,7 +41,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
 	subject: '',
-	modality: ''
+	modality: '',
 }
 
 const Files = (): JSX.Element => {
@@ -57,30 +60,15 @@ const Files = (): JSX.Element => {
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
-		selectedParticipant: [selectedParticipant, setSelectedParticipant],
-		selectedFiles: [selectedFiles, setSelectedFiles]
+		selectedParticipants: [selectedParticipants, setSelectedParticipants],
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
-
 
 	useEffect(() => {
 		getFiles('/').then(f => {
 			setTree(f)
 		})
 	}, [])
-
-	useEffect(() => {
-		if (user && selectedBidsDatabase) {
-			const getBidsDatabaseDto = {
-				owner: user.uid!,
-				database: selectedBidsDatabase.path!,
-				BIDS_definitions: ['Anat']
-			}
-
-			getBidsDatabase(getBidsDatabaseDto).then(response => {
-				setDefinitions(response)
-			})
-		}
-	}, [user, selectedBidsDatabase])
 
 	useEffect(() => {
 		// console.log(tree?.map((t: { data: { path: any } }) => t.data.path))
@@ -118,7 +106,7 @@ const Files = (): JSX.Element => {
 				?.filter((node: { data: { path: string } }) =>
 					new RegExp(inputValue).test(node.data.path)
 				)
-				?.filter((node) => {
+				?.filter(node => {
 					const pathes = node?.data.path.split('/')
 					if (pathes.length <= selectedPath.length + 1) return true
 
@@ -137,7 +125,7 @@ const Files = (): JSX.Element => {
 
 	const handleSelectedPath = async (newInputValue: string) => {
 		const selectedNode = tree?.find(
-			(node: { data: { path: string } }) => node.data.path === newInputValue
+			node => node.data.path === newInputValue
 		)
 
 		if (newInputValue === '/' || selectedNode?.data.type === 'dir') {
@@ -159,205 +147,201 @@ const Files = (): JSX.Element => {
 				])
 			}
 		} else {
-			handleSelectedNode(selectedNode)
+			if (selectedNode?.data.type === 'file') {
+				setCurrentBidsFile((f: any) => ({ ...f, path: selectedNode?.data.path }))
+			}
 		}
 	}
 
-	const handleSelectedNode = async (node?: TreeNode) => {
-		if (node?.data.type === 'file') {
-			setCurrentBidsFile((f: any) => ({ ...f, path: node?.data.path }))
-
-			return
-		}
-
-		setCurrentBidsFile((f: any) => ({ ...f, path: undefined }))
-		const pathes = node?.data.path.split('/').map(p => `${p}/`)
-		const path = node?.data.path
-
-		if (pathes && path) {
-			const result = await getFiles(path)
-
-			setFilesPanes((prev: any[]) => {
-				if (!prev) return [result]
-
-				prev[pathes.length - 1] = result
-				prev.splice(pathes.length)
-
-				return prev
-			})
-			forceUpdate()
-		}
+	const handleDeleteFile = (file: File) => {
+		const nextFiles = selectedFiles.filter(f => f.path !== file.path)
+		setSelectedFiles(nextFiles)
 	}
 
-	const anatKeyList = definitions?.BIDS_definitions.Anat.keylist
-		.filter(k => !['sub', 'modality', 'fileLoc', 'AnatJSON'].includes(k))
+	const handleEditFile = (file: File) => {
+		const nextFiles = selectedFiles.filter(f => f.path !== file.path)
+
+	}
 
 	return (
-		<Box sx={{ maxWidth: '100%', width: '100%' }}>
-			<Formik
-				initialValues={initialValues}
-				validationSchema={validationSchema}
-				onSubmit={async (values, { resetForm }) => {
-					setSubmitted(true)
+		<Box >
+			<Box sx={{ maxWidth: '680px' }}>
+				<Formik
+					initialValues={initialValues}
+					validationSchema={validationSchema}
+					onSubmit={async (values, { resetForm }) => {
+						setSubmitted(true)
 
-					// const data: CreateSubjectDto = {
-					// 	owner: user?.uid,
-					// 	database: selectedBidsDatabase.path,
-					// 	subjects: [],
-					// 	files: [
-					// 		modality: values.modality,
-					// 		subject: '',
-					// 		path: 'values.files',
-					// 		entities: anatKeyList.reduce((a, k) => {}, [])
-					// 	]
-					// }
+						const participant = participants?.find(p => p.participant_id === values.subject)
+						if (participant &&
+							!selectedParticipants?.map(s => s.participant_id).includes(participant.participant_id)
+						) {
+							setSelectedParticipants(s => ([
+								...(s || []),
+								participant
+							]))
+						}
 
-					const file: File = {
-						modality: values.modality,
-						subject: values.subject,
-						path: '',
-						entities: anatKeyList?.reduce((a, k) => ({ ...a, [k]: values[k] }), {})
-					}
+						const file: File = {
+							modality: values.modality,
+							subject: values.subject.replace('sub-', ''),
+							path: currentBidsFile?.path?.substring(1),
+							entities: {
+								sub: values.subject.replace('sub-', ''),
+								...ENTITIES?.reduce(
+									(a, k) => ({
+										...a,
+										...((values as any)[k] ? { [k]: (values as any)[k] } : {}),
+									}),
+									{}
+								)
+							},
+						}
 
-					setSelectedFiles(f => [...f, file])
+						setSelectedFiles(f => [...(f || []), file])
 
-					console.log(values)
+						// resetForm()
+						showNotif('File added.', 'success')
 
-					resetForm()
-					showNotif('Participant created.', 'success')
+						setSubmitted(false)
+					}}
+				>
+					{({ errors, handleChange, touched, values }) => (
+						<Form>
+							<Grid container columnSpacing={2} rowSpacing={2}>
+								{participants && (
+									<Grid item xs={6}>
+										<TextField
+											fullWidth
+											select
+											size='small'
+											disabled={submitted}
+											name='subject'
+											label='Subject'
+											value={values.subject}
+											onChange={handleChange}
+											error={touched.subject && errors.subject ? true : false}
+											helperText={
+												touched.subject && errors.subject ? errors.subject : null
+											}
+										>
+											{participants?.map(p => (
+												<MenuItem key={p.participant_id} value={p.participant_id}>
+													{p.participant_id}
+												</MenuItem>
+											))}
+										</TextField>
+									</Grid>
+								)}
 
-					setSubmitted(false)
-				}}
-			>
-				{({ errors, handleChange, touched, values }) => (
-					<Form>
-						<Grid container columnSpacing={2} rowSpacing={2}>
-							{participants &&
 								<Grid item xs={6}>
 									<TextField
 										fullWidth
 										select
-										size="small"
+										size='small'
 										disabled={submitted}
-										name="subject"
-										label="Subject"
-										value={values.subject}
-										onChange={handleChange}
-										error={touched.subject && errors.subject ? true : false}
-										helperText={touched.subject && errors.subject ? errors.subject : null}
-									>
-										{participants?.map(p =>
-											<MenuItem key={p.participant_id} value={p.participant_id}>
-												{p.participant_id} ({p.sex}/{p.age})
-											</MenuItem>)}
-									</TextField>
-								</Grid>
-							}
-
-							{definitions &&
-								<Grid item xs={6}>
-									<TextField
-										fullWidth
-										select
-										size="small"
-										disabled={submitted}
-										name="modality"
-										label="Modality"
+										name='modality'
+										label='Modality'
 										value={values.modality}
 										onChange={handleChange}
 										error={touched.modality && errors.modality ? true : false}
-										helperText={touched.modality && errors.modality ? errors.modality : null}
+										helperText={
+											touched.modality && errors.modality
+												? errors.modality
+												: null
+										}
 									>
-										{definitions.BIDS_definitions.Anat.allowed_modalities?.map(m =>
-											<MenuItem key={m} value={m}>
-												{m}
-											</MenuItem>)}
+										{MODALITIES?.map(
+											m => (
+												<MenuItem value={m}>
+													{m}
+												</MenuItem>
+											)
+										)}
 									</TextField>
 								</Grid>
-							}
-							<Grid item xs={12}>
-								<Autocomplete
-									options={options || []}
-									inputValue={inputValue}
-									onInputChange={(event: any, newInputValue: string) => {
-										handleSelectedPath(newInputValue)
-										setInputValue(newInputValue)
-									}}
-									disableCloseOnSelect
-									id='input-tree-view'
-									sx={{ width: 640 }}
-									renderInput={(params: unknown) => (
-										<TextField {...params} label='Files' />
-									)}
-									renderOption={(props, option) => {
-										const node = tree?.find(node => node.data.path === option)
 
-										return node?.data.type === 'dir' ?
-											<Box component="li" sx={{ '& > svg': { mr: 1, flexShrink: 0 } }} {...props}>
-												<Folder />
-												{option}
-											</Box> :
-											<Box component="li" sx={{ '& > svg': { mr: 1, flexShrink: 0 } }} {...props}>
-												<Article />
-												{option}
-											</Box>
-									}}
 
-								/>
+								{ENTITIES.map(k => (
+									<Grid item xs={2} key={k} >
+										<TextField
+											size='small'
+											disabled={submitted}
+											name={k}
+											label={k}
+											value={(values as Record<string, string>)[k]}
+											onChange={handleChange}
+											error={(touched as Record<string, string>)[k] && (errors as Record<string, string>)[k] ? true : false}
+											helperText={(touched as Record<string, string>)[k] && (errors as Record<string, string>)[k] ? (errors as Record<string, string>)[k] : null}
+										/>
+									</Grid>
+								))}
+								<Grid item xs={8}>
+									<Autocomplete
+										options={options || []}
+										inputValue={inputValue}
+										onInputChange={(event: any, newInputValue: string) => {
+											handleSelectedPath(newInputValue)
+											setInputValue(newInputValue)
+										}}
+										disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
+										id='input-tree-view'
+										renderInput={(params: unknown) => (
+											<TextField {...params} label='Files' />
+										)}
+										renderOption={(props, option) => {
+											const node = tree?.find(node => node.data.path === option)
+
+											return node?.data.type === 'dir' ? (
+												<Box
+													component='li'
+													sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
+													{...props}
+												>
+													<Folder color='action' />
+													{option}
+												</Box>
+											) : (
+												<Box
+													component='li'
+													sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
+													{...props}
+												>
+													<Article color='action' />
+													{option}
+												</Box>
+											)
+										}}
+									/>
+								</Grid>
+								<Grid item xs={4}>
+									<LoadingButton
+										color='primary'
+										type='submit'
+										loading={submitted}
+										loadingPosition='start'
+										startIcon={<Save />}
+										variant='contained'
+									>
+										Add file
+									</LoadingButton>
+								</Grid>
 							</Grid>
-
-							{anatKeyList &&
-								anatKeyList
-									.map(k =>
-										<Grid item xs={2}>
-											<TextField
-												size="small"
-												disabled={submitted}
-												name={k}
-												label={k}
-												value={values[k]}
-												onChange={handleChange}
-												error={touched[k] && errors[k] ? true : false}
-												helperText={touched[k] && errors[k] ? errors[k] : null}
-											/>
-										</Grid>)
-
-							}
-
-
-
-							<Grid xs={12}>
-								<LoadingButton
-									color="primary"
-									type="submit"
-									loading={submitted}
-									loadingPosition="start"
-									startIcon={<Save />}
-									variant="contained"
-								>
-									Add
-								</LoadingButton>
-							</Grid>
-						</Grid>
-					</Form>
-				)}
-			</Formik>
-
-
-
-			< Box sx={{ mt: 4, mb: 4 }}>
+						</Form>
+					)}
+				</Formik>
+			</Box>
+			<Box sx={{ mt: 4, mb: 4 }}>
 				<TableContainer component={Paper}>
-					<Table size='small' sx={{ minWidth: 650 }} aria-label='simple table'>
+					<Table size='small' aria-label='simple table'>
 						<TableHead>
 							<TableRow>
 								<TableCell>Actions</TableCell>
 								<TableCell>Subject</TableCell>
 								<TableCell>Modality</TableCell>
 								<TableCell>Path</TableCell>
-								{anatKeyList?.map((k: string) => (
-									<TableCell key={k}>
-										{k}
-									</TableCell>
+								{ENTITIES?.map((k: string) => (
+									<TableCell key={k}>{k}</TableCell>
 								))}
 							</TableRow>
 						</TableHead>
@@ -368,29 +352,29 @@ const Files = (): JSX.Element => {
 									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 								>
 									<TableCell align='right'>
-										<IconButton color='primary' aria-label='edit'>
-											<Edit />
-										</IconButton>
+										{/* <IconButton color='primary' aria-label='edit'>
+											<Edit onClick={() => handleEditFile(file)}/>
+										</IconButton> */}
 										<IconButton color='primary' aria-label='delete'>
-											<Delete />
+											<Delete onClick={() => handleDeleteFile(file)} />
 										</IconButton>
 									</TableCell>
 									<TableCell>{file.subject}</TableCell>
 									<TableCell>{file.modality}</TableCell>
 									<TableCell>{file.path}</TableCell>
-									{anatKeyList?.map((k: string) => (
-										<TableCell key={k}>
-											{k}
-										</TableCell>
-									))}
-
+									{
+										file.entities &&
+										ENTITIES.map(k => (
+											<TableCell key={k}>{file.entities ? file.entities[k] : ''}</TableCell>
+										))
+									}
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
 				</TableContainer>
-			</Box >
-		</Box >
+			</Box>
+		</Box>
 	)
 }
 

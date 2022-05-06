@@ -19,13 +19,6 @@ const validationSchema = Yup.object().shape({
 })
 
 
-const defaultValues = {
-    participant_id: '',
-    age: '',
-    sex: '',
-}
-
-
 interface ICreateDatabase {
     open: boolean
     handleClose: () => void
@@ -42,16 +35,18 @@ const CreateParticipant = ({ open, handleClose, setDatabaseCreated }: ICreateDat
         bidsDatabases: [bidsDatabases, setBidsDatabases],
         selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
         participants: [participants, setParticipants],
-        selectedParticipant: [selectedParticipant, setSelectedParticipant],
+        selectedParticipants: [selectedParticipants, setSelectedParticipants],
         selectedFiles: [selectedFiles, setSelectedFiles]
     } = useAppStore()
 
     useEffect(() => {
         if (participants) {
-            const one = participants.pop()
+            const one = JSON.parse(JSON.stringify(participants)).pop()
             if (one) {
                 const participantFields = Object.keys(one)
                 setFields(participantFields)
+            } else {
+                setFields(['participant_id', 'age', 'sex'])
             }
         }
     }, [participants])
@@ -71,15 +66,18 @@ const CreateParticipant = ({ open, handleClose, setDatabaseCreated }: ICreateDat
 
             {initialValues && <Formik
                 initialValues={initialValues}
-                validationSchema={validationSchema}
+                // validationSchema={validationSchema}
                 onSubmit={async (values, { resetForm }) => {
                     setSubmitted(true)
+                    setSelectedParticipants([values])
+
                     const nextParticipants = [...(participants || []), values]
                     if (nextParticipants)
                         setParticipants(nextParticipants)
 
                     resetForm()
                     showNotif('Participant created.', 'success')
+                    setSubmitted(false)
                     handleClose()
                 }}
             >
