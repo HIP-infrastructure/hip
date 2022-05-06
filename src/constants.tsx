@@ -17,3 +17,24 @@ export const SPACES_NAV = [
 		label: 'Public Space',
 	},
 ]
+
+
+export const MODALITIES = [
+	"T1w",
+	"T2w",
+	"T1rho",
+	"T2star",
+	"FLAIR",
+	"PD",
+	"CT",
+	"ieeg"
+]
+
+export const ENTITIES = [
+	"ses",
+	"acq",
+	"ce",
+	"rec",
+	"run",
+	"task",
+]

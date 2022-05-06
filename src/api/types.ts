@@ -86,7 +86,7 @@ export interface Tag {
 export type BIDSDatabaseResponse = { data?: BIDSDatabase[]; error?: Error }
 
 export interface Participant {
-	[key: string]: string | number
+	[key: string]: string
 }
 
 export interface BIDSDatabase {
@@ -166,11 +166,7 @@ export interface CreateBidsDatabaseDto {
 export interface CreateSubjectDto {
 	readonly owner: string
 	readonly database: string
-	readonly subjects: [{
-		sub: string
-		age: string
-		sex: string
-	}]
+	subjects: Participant[]
 	readonly files: File[]
 }
 
@@ -178,11 +174,8 @@ export interface File {
 	modality: string
 	subject: string
 	path: string
-	entities: {
-		sub: string
-		ses: string
-		task: string
-		acq: string
+	entities?: {
+		[key: string]: string
 	}
 }
 
