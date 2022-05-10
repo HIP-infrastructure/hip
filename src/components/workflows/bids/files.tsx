@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { importSubject, getBidsDatabase } from '../../../api/bids'
+// import { importSubject, getBidsDatabase } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import {
 	BIDSDatabase,
@@ -201,7 +201,7 @@ const Files = (): JSX.Element => {
 						setSelectedFiles(f => [...(f || []), file])
 
 						// resetForm()
-						showNotif('File added.', 'success')
+						// showNotif('File added.', 'success')
 
 						setSubmitted(false)
 					}}

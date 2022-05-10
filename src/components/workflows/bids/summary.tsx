@@ -1,16 +1,8 @@
 import {
 	Box,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
+	CircularProgress, Typography
 } from '@mui/material'
 import React from 'react'
-import { BIDSDatabase, File, Participant } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 
 
@@ -31,6 +23,8 @@ const Summary = (): JSX.Element => {
 				<Typography variant='subtitle1' sx={{ mb: 2, mt: 2 }}>
 					<em>BIDS Database:</em> {selectedBidsDatabase?.Name}
 				</Typography>
+
+				<CircularProgress size={16} />
 				{/* {selectedBidsDatabase &&
                 Object.keys(selectedBidsDatabase)
                     .filter(k => k !== 'Participants')

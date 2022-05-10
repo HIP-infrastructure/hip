@@ -21,11 +21,11 @@ const initialValues = {
     Name: '',
     BIDSVersion: '',
     Licence: '',
-    Authors: [],
+    Authors: '',
     Acknowledgements: '',
     HowToAcknowledge: '',
-    Funding: [],
-    ReferencesAndLinks: [],
+    Funding: '',
+    ReferencesAndLinks: '',
     DatasetDOI: ''
 }
 
@@ -58,8 +58,17 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                         const createBidsDatabaseDto: CreateBidsDatabaseDto = {
                             owner: user.uid,
                             database: values.Name,
+                            path: '',
                             DatasetDescJSON: {
-                                ...values
+                                Name: values.Name,
+                                BIDSVersion: values.BIDSVersion,
+                                Licence: values.Licence,
+                                Authors: values.Authors.split(','),
+                                Acknowledgements: values.Acknowledgements,
+                                HowToAcknowledge: values.HowToAcknowledge,
+                                Funding: values.Funding?.split(','),
+                                ReferencesAndLinks: values.ReferencesAndLinks?.split(','),
+                                DatasetDOI: values.DatasetDOI
                             }
                         }
                         const cd = await createBidsDatabase(createBidsDatabaseDto)
@@ -69,6 +78,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
 
                             return
                         }
+                        
                         resetForm()
                         showNotif('Database created. Wait for reload', 'success')
                         setDatabaseCreated(true)
