@@ -149,6 +149,7 @@ export interface GridApiRef {
 export interface CreateBidsDatabaseDto {
 	readonly owner: string
 	readonly database: string
+	readonly path: string
 	readonly DatasetDescJSON: {
 		readonly Name: string,
 		readonly BIDSVersion: string
@@ -166,6 +167,7 @@ export interface CreateBidsDatabaseDto {
 export interface CreateSubjectDto {
 	readonly owner: string
 	readonly database: string
+	readonly path: string
 	subjects: Participant[]
 	readonly files: File[]
 }
@@ -182,6 +184,7 @@ export interface File {
 export interface GetBidsDatabaseDto {
 	readonly owner: string
 	readonly database: string
+	readonly path: string
 	BIDS_definitions: string[]
 }
 

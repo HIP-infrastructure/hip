@@ -28,18 +28,18 @@ export const createBidsDatabase = async (
     return data
 }
 
-export const getBidsDatabase = async (getBidsDatabaseDto: GetBidsDatabaseDto): Promise<BidsDatabaseDefinitionDto> => {
-    const query = stringify(getBidsDatabaseDto, { arrayFormat: 'bracket' });
-    const url = `${API_GATEWAY}/tools/bids/database?${query}`
-    const data = fetch(url, {
-        headers: {
-            'Content-Type': 'application/json',
-            requesttoken: window.OC.requestToken,
-        }
-    }).then(data => data.json())
+// export const getBidsDatabase = async (getBidsDatabaseDto: GetBidsDatabaseDto): Promise<BidsDatabaseDefinitionDto> => {
+//     const query = stringify(getBidsDatabaseDto, { arrayFormat: 'bracket' });
+//     const url = `${API_GATEWAY}/tools/bids/database?${query}`
+//     const data = fetch(url, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//             requesttoken: window.OC.requestToken,
+//         }
+//     }).then(data => data.json())
 
-    return data
-}
+//     return data
+// }
 
 export const getParticipants = async (path: string, userId: string): Promise<Participant[]> => {
     const url = `${API_GATEWAY}/tools/bids/participants?path=${path}&owner=${userId}`
