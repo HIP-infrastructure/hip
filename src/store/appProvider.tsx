@@ -11,13 +11,15 @@ import {
 	Participant,
 	UserCredentials,
 } from '../api/types'
+
+
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	availableApps: { apps: Application[] | null; error: Error | null }
+	availableApps: Application[] | null
 	containers: [Container[] | null, Error | undefined]
 	bidsDatabases: [
 		BIDSDatabase[] | null,
@@ -72,7 +74,7 @@ export const AppStoreProvider = ({
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<
 		IAppState['availableApps']
-	>({ apps: [], error: null })
+	>([])
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(
 		null
@@ -80,10 +82,10 @@ export const AppStoreProvider = ({
 	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<
 		BIDSDatabase
 	>()
-	const [participants, setParticipants] = useState<
+	const [participants, setParticipants] = useState<Participant[]>()
+	const [selectedParticipants, setSelectedParticipants] = useState<
 		Participant[]
 	>()
-	const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
 
 	const { data, error } = useSWR<any, Error | undefined>(
@@ -96,9 +98,11 @@ export const AppStoreProvider = ({
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
 
-		getAvailableAppList().then(({ ...data }) => {
-			setAvailableApps(data)
-		})
+		getAvailableAppList()
+			.then(data => {
+				console.log(data)
+				setAvailableApps(data)
+			})
 
 		getBidsDatabases(currentUser.uid).then(response => {
 			if (response.error) {

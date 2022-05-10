@@ -105,12 +105,12 @@ const Apps = () => {
 				</Box>
 			</Modal>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{availableApps.error && (
+				{/* {availableApps.error && (
 					<Typography gutterBottom variant='body2' color='error'>
 						{availableApps.error.message}
 					</Typography>
-				)}
-				{availableApps.apps?.map((app, i) => (
+				)} */}
+				{availableApps?.map((app, i) => (
 					<Card
 						sx={{ maxWidth: 288, display: 'flex', flexDirection: 'column' }}
 						key={app.name}

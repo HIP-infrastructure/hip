@@ -1,7 +1,5 @@
 import { mutate } from 'swr'
-import {
-	Application, Container, TreeNode, UserCredentials
-} from './types'
+import { Application, Container, TreeNode, UserCredentials } from './types'
 import { uniq } from './utils'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
@@ -9,6 +7,14 @@ export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	: `${window.location.protocol}//${window.location.host}`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
+
+function CheckError(response: Response) {
+	if (response.status >= 200 && response.status <= 299) {
+		return response.json()
+	} else {
+		throw Error(response.statusText)
+	}
+}
 
 // Debug functions
 export const fetchRemote = (): void => {
@@ -31,8 +37,6 @@ export const search = async (term: string) => {
 	}).then(data => data.json())
 }
 
-
-
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
 	const url = `/apps/hip/document/files?path=${path}`
@@ -44,21 +48,16 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 
 // Sessions & apps
 
-export const getAvailableAppList = (): Promise<{
-	apps: Application[] | null
-	error: Error | null
-}> => {
+export const getAvailableAppList = (): Promise<Application[] | null> => {
 	const url = `${API_REMOTE_APP}/apps`
 	const availableApps = fetch(url)
-		.then(a => a.json())
-		.catch(error => ({ apps: null, error }))
-		.then(json =>
-			json.statusCode
-				? { apps: null, error: json }
-				: { apps: json as Application[], error: null }
-		)
+		.then(CheckError)
+		.then(jsonResponse => {
+			return jsonResponse
+		})
+		.catch(error => {})
 
-	return availableApps
+		return availableApps
 }
 
 export const createSession = (userId: string): Promise<Container> => {
@@ -189,4 +188,3 @@ export const stopApp = (
 		})
 		.then(j => j.data)
 }
-
