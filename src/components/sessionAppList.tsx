@@ -93,12 +93,12 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	return (
 		<List>
 			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
-			{availableApps.error && (
+			{/* {availableApps.error && (
 				<Typography gutterBottom variant='body2' color='error'>
 					{availableApps.error.message}
 				</Typography>
-			)}
-			{availableApps.apps?.map((app, index) => (
+			)} */}
+			{availableApps?.map((app, index) => (
 				<Button app={app} key={app.name} />
 			))}
 		</List>
