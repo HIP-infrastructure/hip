@@ -60,7 +60,7 @@ const BidsConverter = () => {
 		}
 
 		const subjects = selectedParticipants.map(s => {
-			const {participant_id, ...other} = s
+			const { participant_id, ...other } = s
 
 			return {
 				...other,
@@ -70,7 +70,8 @@ const BidsConverter = () => {
 
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
-			database: selectedBidsDatabase?.path?.substring(1),
+			database: selectedBidsDatabase?.Name,
+			path: selectedBidsDatabase?.path?.substring(1),
 			files: selectedFiles,
 			subjects
 		}
@@ -78,7 +79,10 @@ const BidsConverter = () => {
 		handleNext()
 
 		const newSubject = await importSubject((createSubjectDto as CreateSubjectDto))
-		console.log(newSubject)
+		if (newSubject)
+			showNotif('Subject imported', 'success')
+		else
+			showNotif('Subject importation failed', 'error')
 	}
 
 

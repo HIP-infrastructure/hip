@@ -46,6 +46,9 @@ const Databases = (): JSX.Element => {
 	useEffect(() => {
 		if (selectedBidsDatabase) {
 			const s = [selectedBidsDatabase.Name] as GridSelectionModel
+
+			setSelectedFiles([])
+			setSelectedParticipants([])
 			setSelectionModel(s)
 		}
 	}, [selectedBidsDatabase])
@@ -132,54 +135,57 @@ const Databases = (): JSX.Element => {
 		apiRef?.current?.setRowMode(id, 'edit')
 	}
 
-	const handleSaveClick = (id: number) => async (event: any) => {
-		event.stopPropagation()
+	// const handleSaveClick = (id: number) => async (event: any) => {
+	// 	event.stopPropagation()
 
-		// Wait for the validation to run
-		const isValid = await apiRef?.current?.commitRowChange(id)
-		if (isValid) {
-			apiRef?.current?.setRowMode(id, 'view')
-			const row = apiRef?.current?.getRow(id) as Record<string, string>
-			apiRef?.current?.updateRows([{ ...row, isNew: false }])
+	// 	// Wait for the validation to run
+	// 	const isValid = await apiRef?.current?.commitRowChange(id)
+	// 	if (isValid && user?.uid) {
+	// 		apiRef?.current?.setRowMode(id, 'view')
+	// 		const row = apiRef?.current?.getRow(id) as Record<string, string>
+	// 		apiRef?.current?.updateRows([{ ...row, isNew: false }])
 
-			console.log(row)
-			const data: CreateBidsDatabaseDto = {
-				owner: "guspuhle",
-				database: row.Name,
-				DatasetDescJSON: {
-					Name: row.Name,
-					BIDSVersion: row.BIDSVersion,
-					License: row.Licence,
-					Authors: [row.Authors],
-					Acknowledgements: row.Acknowledgements,
-					Funding: row.Funding,
-					ReferencesAndLinks: row.ReferencesAndLinks,
-					DatasetDOI: row.DatasetDOI,
-				}
-			}
-			const db = await createBidsDatabase(data)
-			console.log({ db })
 
-			showNotif('Database successfully saved', 'success')
-		}
-	}
+	// 		const data: CreateBidsDatabaseDto = {
+	// 			owner: user.uid,
+	// 			database: row.Name,
+	// 			path: row.path,
+	// 			DatasetDescJSON: {
+	// 				Name: row.Name,
+	// 				BIDSVersion: row.BIDSVersion,
+	// 				License: row.Licence,
+	// 				Authors: [row.Authors],
+	// 				Acknowledgements: row.Acknowledgements,
+	// 				HowToAcknowledge: row.HowToAcknowledge,
+	// 				Funding: row.Funding.split(','),
+	// 				ReferencesAndLinks: row.ReferencesAndLinks.split(','),
+	// 				DatasetDOI: row.DatasetDOI,
+	// 			}
+	// 		}
 
-	const handleDeleteClick = (id: number) => (event: any) => {
-		event.stopPropagation()
-		apiRef?.current?.updateRows([{ id, _action: 'delete' }])
+	// 		const db = await createBidsDatabase(data)
+	// 		console.log({ db })
 
-		showNotif('Database successfully deleted', 'success')
-	}
+	// 		showNotif('Database successfully saved', 'success')
+	// 	}
+	// }
 
-	const handleCancelClick = (id: number) => (event: any) => {
-		event.stopPropagation()
-		apiRef?.current?.setRowMode(id, 'view')
+	// const handleDeleteClick = (id: number) => (event: any) => {
+	// 	event.stopPropagation()
+	// 	apiRef?.current?.updateRows([{ id, _action: 'delete' }])
 
-		const row = apiRef?.current?.getRow(id)
-		if (row!.isNew) {
-			apiRef?.current?.updateRows([{ id, _action: 'delete' }])
-		}
-	}
+	// 	showNotif('Database successfully deleted', 'success')
+	// }
+
+	// const handleCancelClick = (id: number) => (event: any) => {
+	// 	event.stopPropagation()
+	// 	apiRef?.current?.setRowMode(id, 'view')
+
+	// 	const row = apiRef?.current?.getRow(id)
+	// 	if (row!.isNew) {
+	// 		apiRef?.current?.updateRows([{ id, _action: 'delete' }])
+	// 	}
+	// }
 
 	// const onRowEditCommit = (id: GridRowId) => {
 	// 	const model = apiRef?.current?.getEditRowsModel(); // This object contains all rows that are being edited
