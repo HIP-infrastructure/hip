@@ -276,7 +276,7 @@ const Files = (): JSX.Element => {
 										/>
 									</Grid>
 								))}
-								<Grid item xs={8}>
+								<Grid item xs={10}>
 									<Autocomplete
 										options={options || []}
 										inputValue={inputValue}
@@ -314,7 +314,7 @@ const Files = (): JSX.Element => {
 										}}
 									/>
 								</Grid>
-								<Grid item xs={4}>
+								<Grid item xs={2}>
 									<LoadingButton
 										color='primary'
 										type='submit'
