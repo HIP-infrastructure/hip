@@ -45,7 +45,6 @@ export const getParticipants = async (path: string, userId: string): Promise<Par
     const url = `${API_GATEWAY}/tools/bids/participants?path=${path}&owner=${userId}`
     const data = fetch(url, {
         headers: {
-            'Content-Type': 'application/json',
             requesttoken: window.OC.requestToken,
         },
     })

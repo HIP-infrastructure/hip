@@ -80,6 +80,7 @@ const CreateDatabase = ({ open, handleClose, setDatabaseCreated }: ICreateDataba
                         }
                         
                         resetForm()
+                        setSubmitted(false)
                         showNotif('Database created. Wait for reload', 'success')
                         setDatabaseCreated(true)
                         handleClose()
