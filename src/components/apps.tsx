@@ -5,79 +5,46 @@ import {
 	CardMedia,
 	Chip,
 	Link,
-	Modal,
+	Modal
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
-// import { useNavigate } from "react-router-dom";
-// import {
-// 	Application,
-// 	createSessionAndApp
-// } from '../api/gatewayClientAPI';
-import anywaveLogo from '../assets/anywave__logo.png'
-import bidsManagerLogo from '../assets/bidsmanager__logo.png'
-import brainstormLogo from '../assets/brainstorm__logo.png'
-import dcm2niixLogo from '../assets/dcm2niix__logo.png'
-import freesurferLogo from '../assets/freesurfer__logo.png'
-import fslLogo from '../assets/fsl__logo.png'
-import hibopLogo from '../assets/hibop__logo.png'
-import localizerLogo from '../assets/localizer__logo.png'
-import mricroglLogo from '../assets/mrcicogl__logo.png'
-import slicerLogo from '../assets/slicer__logo.png'
-import mridefaceLogo from '../assets/mrideface__logo.png'
-import tvbLogo from '../assets/tvb__logo.png'
-// import { ROUTE_PREFIX } from '../constants';
+import anywave from '../assets/anywave__logo.png'
+import brainstorm from '../assets/brainstorm__logo.png'
+import dcm2niix from '../assets/dcm2niix__logo.png'
+import freesurfer from '../assets/freesurfer__logo.png'
+import fsl from '../assets/fsl__logo.png'
+import hibop from '../assets/hibop__logo.png'
+import localizer from '../assets/localizer__logo.png'
+import mricrogl from '../assets/mrcicogl__logo.png'
+import mrideface from '../assets/mrideface__logo.png'
+import slicer from '../assets/slicer__logo.png'
+import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 import WebdavForm from './webdavLoginForm'
+import mne from '../assets/mne__logo.png'
+import bidsmanager from '../assets/bidsmanager__logo.png'
 
-const importedImages = [
-	anywaveLogo,
-	bidsManagerLogo,
-	brainstormLogo,
-	dcm2niixLogo,
-	freesurferLogo,
-	fslLogo,
-	hibopLogo,
-	localizerLogo,
-	mricroglLogo,
-	mridefaceLogo,
-	slicerLogo,
-	tvbLogo,
-]
+const s: { [key: string]: string } = {
+	brainstorm,
+	anywave,
+	localizer,
+	fsl,
+	hibop,
+	slicer,
+	mricrogl,
+	freesurfer,
+	dcm2niix,
+	bidsmanager,
+	mrideface,
+	tvb,
+	mne,
+}
 
 const Apps = () => {
 	const { availableApps } = useAppStore()
-	// const [startApp, setStartApp] = useState<Application>()
 	const [showWedavForm, setShowWedavForm] = useState(false)
-	const {
-		containers: [containers],
-		// user: [user, setUser],
-	} = useAppStore()
-	// const navigate = useNavigate();
-
-	// Start an app in the session after getting user's password
-	// useEffect(() => {
-	// 	if (!(startApp && user)) {
-	// 		return;
-	// 	}
-
-	// 	setShowWedavForm(false)
-	// 	createSessionAndApp(user, startApp.name)
-	// 		.then(container => {
-	// 			navigate(`${ROUTE_PREFIX}/sessions/${container.id}`)
-	// 		})
-
-	// 	// Remove password after use
-	// 	const { password, ...nextUser } = user
-	// 	setUser(nextUser)
-	// 	setStartApp(undefined)
-	// }, [user])
-
-	// const handleCreateApp = (app: Application) => {
-	// 	setStartApp(app)
-	// 	setShowWedavForm(true)
-	// }
 
 	const modalStyle = {
 		position: 'absolute' as 'const',
@@ -105,11 +72,6 @@ const Apps = () => {
 				</Box>
 			</Modal>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{/* {availableApps.error && (
-					<Typography gutterBottom variant='body2' color='error'>
-						{availableApps.error.message}
-					</Typography>
-				)} */}
 				{availableApps?.map((app, i) => (
 					<Card
 						sx={{ maxWidth: 288, display: 'flex', flexDirection: 'column' }}
@@ -118,7 +80,7 @@ const Apps = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={importedImages[i]}
+							src={s[app.name]}
 							alt={app.label}
 						/>
 						<CardContent sx={{ flexGrow: 1, pb: 0, mb: 0 }}>
@@ -130,11 +92,11 @@ const Apps = () => {
 								<Chip
 									label={app.state}
 									color={
-										app.state === 'ready' ?
-											'success' :
-											app.state === 'beta' ?
-												'warning' :
-												'error'
+										app.state === 'ready'
+											? 'success'
+											: app.state === 'beta'
+											? 'warning'
+											: 'error'
 									}
 									variant='outlined'
 								/>
@@ -160,10 +122,6 @@ const Apps = () => {
 								</Link>
 							</Typography>
 						</CardContent>
-						{/* <CardActions sx={{ alignSelf: 'end' }} >
-						<Button size="small" onClick={() => { window.open(app.url, '_blank') }}>App Website</Button> */}
-						{/* <Button size="small" onClick={() => handleCreateApp(app)}>Start</Button> */}
-						{/* </CardActions> */}
 					</Card>
 				))}
 			</Box>

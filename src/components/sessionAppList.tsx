@@ -6,8 +6,7 @@ import {
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText,
-	Typography,
+	ListItemText
 } from '@mui/material'
 import React from 'react'
 import { Application, Container, ContainerState } from '../api/types'
@@ -20,9 +19,10 @@ import freesurfer from '../assets/freesurfer__logo.png'
 import fsl from '../assets/fsl__logo.png'
 import hibop from '../assets/hibop__logo.png'
 import localizer from '../assets/localizer__logo.png'
+import mne from '../assets/mne__logo.png'
 import mricrogl from '../assets/mrcicogl__logo.png'
-import slicer from '../assets/slicer__logo.png'
 import mrideface from '../assets/mrideface__logo.png'
+import slicer from '../assets/slicer__logo.png'
 import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 
@@ -44,6 +44,7 @@ const logos: { [key: string]: string } = {
 	bidsmanager,
 	mrideface,
 	tvb,
+	mne
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
@@ -69,9 +70,8 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 
 	const Button = ({ app }: { app: Application }) => {
 		const startedApp = appInSession({ name: app.name })
-		const label = `${
-			startedApp?.state === ContainerState.RUNNING ? 'Stop' : 'Start'
-		} ${app.label}`
+		const label = `${startedApp?.state === ContainerState.RUNNING ? 'Stop' : 'Start'
+			} ${app.label}`
 
 		return (
 			<ListItemButton
@@ -91,14 +91,17 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	}
 
 	return (
-		<List>
+		<List sx={{
+			width: '100%',
+			maxWidth: 360,
+			bgcolor: 'background.paper',
+			position: 'relative',
+			overflow: 'auto',
+			'& ul': { padding: 0 },
+		}}
+			subheader={<li />}>
 			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
-			{/* {availableApps.error && (
-				<Typography gutterBottom variant='body2' color='error'>
-					{availableApps.error.message}
-				</Typography>
-			)} */}
-			{availableApps?.map((app, index) => (
+			{availableApps?.map(app => (
 				<Button app={app} key={app.name} />
 			))}
 		</List>
