@@ -172,6 +172,16 @@ export interface CreateSubjectDto {
 	readonly files: File[]
 }
 
+export interface EditSubjectClinicalDto {
+    readonly owner: string
+    readonly database: string
+    readonly path: string
+    readonly subject: string
+    readonly clinical: {
+        [key: string]: string
+    }
+}
+
 export interface File {
 	modality: string
 	subject: string
