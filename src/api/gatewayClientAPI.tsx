@@ -8,23 +8,26 @@ export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
-function CheckError(response: Response) {
+export function CheckError(response: Response) {
 	if (response.status >= 200 && response.status <= 299) {
-		return response.json()
+		return response
 	} else {
-		throw Error(response.statusText)
+		if (response.status > 400 && response.status <= 499)
+			throw new Error('You have been logged out. Please log in again.')
+		else
+			throw new Error('An error occurred while fetching the data.')
 	}
 }
 
 // Debug functions
 export const fetchRemote = (): void => {
 	const url = `${API_CONTAINERS}/fetch`
-	fetch(url)
+	fetch(url).then(CheckError)
 }
 
 export const forceRemove = (id: string): void => {
 	const url = `${API_CONTAINERS}/forceRemove/${id}`
-	fetch(url)
+	fetch(url).then(CheckError)
 }
 
 // Gateway API
@@ -34,7 +37,9 @@ export const search = async (term: string) => {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(data => data.json())
+	})
+		.then(CheckError)
+		.then(data => data.json())
 }
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
@@ -50,33 +55,27 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 
 export const getAvailableAppList = (): Promise<Application[] | null> => {
 	const url = `${API_REMOTE_APP}/apps`
-	const availableApps = fetch(url)
+	return fetch(url)
 		.then(CheckError)
-		.then(jsonResponse => {
-			return jsonResponse
-		})
-		.catch(error => {})
-
-		return availableApps
+		.then(data => data.json())
 }
 
 export const createSession = (userId: string): Promise<Container> => {
 	const id = uniq('session')
 	const url = `${API_CONTAINERS}/${id}/start`
-	const session = fetch(url, {
+	return fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
 	})
+		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${userId}`)
 			return r.json()
 		})
 		.then(j => j.data)
-
-	return session
 }
 
 export const createApp = (
@@ -86,7 +85,7 @@ export const createApp = (
 ): Promise<Container> => {
 	const appId = uniq('app')
 	const url = `${API_CONTAINERS}/${session.id}/apps/${appId}/start`
-	const app = fetch(url, {
+	return fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -97,13 +96,12 @@ export const createApp = (
 			password: user.password,
 		}),
 	})
+		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
 			return r.json()
 		})
 		.then(j => j.data)
-
-	return app
 }
 
 export const createSessionAndApp = (
@@ -111,20 +109,19 @@ export const createSessionAndApp = (
 	appName: string
 ): Promise<Container> => {
 	const url = `${API_REMOTE_APP}/apps/${appName}/start`
-	const sessionAndApp = fetch(url, {
+	return fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId: user.uid, password: user.password }),
 	})
+		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
 			return r.json()
 		})
 		.then(j => j.data)
-
-	return sessionAndApp
 }
 
 export const removeAppsAndSession = (
@@ -138,7 +135,9 @@ export const removeAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	})
+		.then(CheckError)
+		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const pauseAppsAndSession = (
@@ -152,7 +151,9 @@ export const pauseAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	})
+		.then(CheckError)
+		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const resumeAppsAndSession = (
@@ -166,7 +167,9 @@ export const resumeAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	})
+		.then(CheckError)
+		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const stopApp = (
@@ -175,13 +178,14 @@ export const stopApp = (
 	appId: string
 ): void => {
 	const url = `${API_CONTAINERS}/${sessionId}/apps/${appId}/stop`
-	const app = fetch(url, {
+	fetch(url, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
 	})
+		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${userId}`)
 			return r.json()

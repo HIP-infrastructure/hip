@@ -1,38 +1,28 @@
-import { Delete, Edit, Folder, Save, Article } from '@mui/icons-material'
+import { Article, Delete, Folder, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
-	Box,
-	Button,
-	Grid,
+	Box, Grid,
 	IconButton,
 	MenuItem,
-	Paper,
-	SelectChangeEvent,
-	Table,
+	Paper, Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
-	TextField,
+	TextField
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
-// import { importSubject, getBidsDatabase } from '../../../api/bids'
+import * as Yup from 'yup'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import {
-	BIDSDatabase,
-	BidsDatabaseDefinitionDto,
-	CreateSubjectDto,
-	File,
-	Participant,
-	TreeNode,
+	BidsDatabaseDefinitionDto, File, TreeNode
 } from '../../../api/types'
-import * as Yup from 'yup'
+import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
-import { ENTITIES, MODALITIES } from '../../../constants'
 
 const validationSchema = Yup.object().shape({
 	subject: Yup.string().required('Subject is required'),
@@ -124,9 +114,7 @@ const Files = (): JSX.Element => {
 	}, [tree])
 
 	const handleSelectedPath = async (newInputValue: string) => {
-		const selectedNode = tree?.find(
-			node => node.data.path === newInputValue
-		)
+		const selectedNode = tree?.find(node => node.data.path === newInputValue)
 
 		if (newInputValue === '/' || selectedNode?.data.type === 'dir') {
 			if (selectedNode && !selectedNode?.children) {
@@ -148,7 +136,10 @@ const Files = (): JSX.Element => {
 			}
 		} else {
 			if (selectedNode?.data.type === 'file') {
-				setCurrentBidsFile((f: any) => ({ ...f, path: selectedNode?.data.path }))
+				setCurrentBidsFile((f: any) => ({
+					...f,
+					path: selectedNode?.data.path,
+				}))
 			}
 		}
 	}
@@ -160,26 +151,27 @@ const Files = (): JSX.Element => {
 
 	const handleEditFile = (file: File) => {
 		const nextFiles = selectedFiles.filter(f => f.path !== file.path)
-
 	}
 
 	return (
-		<Box >
-			<Box sx={{ maxWidth: '680px' }}>
+		<Box sx={{ display: 'flex' }}>
+			<Box sx={{ flex: '1 1'}}>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validationSchema}
 					onSubmit={async (values, { resetForm }) => {
 						setSubmitted(true)
 
-						const participant = participants?.find(p => p.participant_id === values.subject)
-						if (participant &&
-							!selectedParticipants?.map(s => s.participant_id).includes(participant.participant_id)
+						const participant = participants?.find(
+							p => p.participant_id === values.subject
+						)
+						if (
+							participant &&
+							!selectedParticipants
+								?.map(s => s.participant_id)
+								.includes(participant.participant_id)
 						) {
-							setSelectedParticipants(s => ([
-								...(s || []),
-								participant
-							]))
+							setSelectedParticipants(s => [...(s || []), participant])
 						}
 
 						const file: File = {
@@ -194,7 +186,7 @@ const Files = (): JSX.Element => {
 										...((values as any)[k] ? { [k]: (values as any)[k] } : {}),
 									}),
 									{}
-								)
+								),
 							},
 						}
 
@@ -222,11 +214,16 @@ const Files = (): JSX.Element => {
 											onChange={handleChange}
 											error={touched.subject && errors.subject ? true : false}
 											helperText={
-												touched.subject && errors.subject ? errors.subject : null
+												touched.subject && errors.subject
+													? errors.subject
+													: null
 											}
 										>
 											{participants?.map(p => (
-												<MenuItem key={p.participant_id} value={p.participant_id}>
+												<MenuItem
+													key={p.participant_id}
+													value={p.participant_id}
+												>
 													{p.participant_id}
 												</MenuItem>
 											))}
@@ -251,19 +248,14 @@ const Files = (): JSX.Element => {
 												: null
 										}
 									>
-										{MODALITIES?.map(
-											m => (
-												<MenuItem value={m}>
-													{m}
-												</MenuItem>
-											)
-										)}
+										{MODALITIES?.map(m => (
+											<MenuItem value={m}>{m}</MenuItem>
+										))}
 									</TextField>
 								</Grid>
 
-
 								{ENTITIES.map(k => (
-									<Grid item xs={2} key={k} >
+									<Grid item xs={2} key={k}>
 										<TextField
 											size='small'
 											disabled={submitted}
@@ -271,8 +263,18 @@ const Files = (): JSX.Element => {
 											label={k}
 											value={(values as Record<string, string>)[k]}
 											onChange={handleChange}
-											error={(touched as Record<string, string>)[k] && (errors as Record<string, string>)[k] ? true : false}
-											helperText={(touched as Record<string, string>)[k] && (errors as Record<string, string>)[k] ? (errors as Record<string, string>)[k] : null}
+											error={
+												(touched as Record<string, string>)[k] &&
+													(errors as Record<string, string>)[k]
+													? true
+													: false
+											}
+											helperText={
+												(touched as Record<string, string>)[k] &&
+													(errors as Record<string, string>)[k]
+													? (errors as Record<string, string>)[k]
+													: null
+											}
 										/>
 									</Grid>
 								))}
@@ -323,7 +325,7 @@ const Files = (): JSX.Element => {
 										startIcon={<Save />}
 										variant='contained'
 									>
-										Add file
+										Add
 									</LoadingButton>
 								</Grid>
 							</Grid>
@@ -331,7 +333,7 @@ const Files = (): JSX.Element => {
 					)}
 				</Formik>
 			</Box>
-			<Box sx={{ mt: 4, mb: 4 }}>
+			<Box sx={{ flex: '1 1'}}>
 				<TableContainer component={Paper}>
 					<Table size='small' aria-label='simple table'>
 						<TableHead>
@@ -362,12 +364,12 @@ const Files = (): JSX.Element => {
 									<TableCell>{file.subject}</TableCell>
 									<TableCell>{file.modality}</TableCell>
 									<TableCell>{file.path}</TableCell>
-									{
-										file.entities &&
+									{file.entities &&
 										ENTITIES.map(k => (
-											<TableCell key={k}>{file.entities ? file.entities[k] : ''}</TableCell>
-										))
-									}
+											<TableCell key={k}>
+												{file.entities ? file.entities[k] : ''}
+											</TableCell>
+										))}
 								</TableRow>
 							))}
 						</TableBody>

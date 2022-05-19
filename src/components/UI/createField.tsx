@@ -2,12 +2,11 @@ import { Button, TextField, Box } from '@mui/material'
 import React, { useState } from 'react'
 
 interface Field {
-	key?: string
-	value?: any
+	key: string
 }
 
 interface ICreateField {
-	handleCreateField: ({ key, value }: Field) => void
+	handleCreateField: ({ key }: Field) => void
 }
 
 const CreateField = ({ handleCreateField }: ICreateField) => {
@@ -18,7 +17,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 		if (field) {
 			handleCreateField(field)
 			setShow(false)
-			setField({})
+			setField(undefined)
 		}
 	}
 
@@ -30,7 +29,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 					variant='outlined'
 					sx={{ mt: 2 }}
 				>
-					Add Field
+					Add Key
 				</Button>
 			)}
 			{show && (
@@ -42,14 +41,6 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 							setField(f => ({ ...f, key: event.target.value }))
 						}
 						value={field?.key}
-					/>
-					<TextField
-						label='New Value'
-						id='new-value'
-						onChange={event =>
-							setField(f => ({ ...f, value: event.target.value }))
-						}
-						value={field?.value}
 					/>
 					<Box>
 						<Button

@@ -115,8 +115,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					disabled: false,
 				},
 				{
-					route: 'private/workflows',
-					label: 'Workflows',
+					route: 'private/workflows/bids',
+					label: 'Bids Converter',
 					icon: <Assignment />,
 					disabled: false,
 				},

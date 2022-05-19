@@ -1,4 +1,4 @@
-import { API_GATEWAY } from './gatewayClientAPI'
+import { API_GATEWAY, CheckError } from './gatewayClientAPI'
 import {
 	BIDSDatabaseResponse,
 	CreateBidsDatabaseDto,
@@ -15,9 +15,7 @@ export const getBidsDatabases = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.catch(error => {
-			throw new Error(error.message)
-		})
+		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -32,7 +30,9 @@ export const createBidsDatabase = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createBidsDatabaseDto),
-	}).then(data => data.json())
+	})
+		.then(CheckError)
+		.then(data => data.json())
 }
 
 export const getParticipants = async (
@@ -45,9 +45,7 @@ export const getParticipants = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.catch(error => {
-			throw new Error(error.message)
-		})
+		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -62,19 +60,27 @@ export const importSubject = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createSubject),
-	}).then(data => data.json())
+	})
+		.then(CheckError)
+		.then(data => data.json())
 }
 
 export const subEditClinical = async (
 	editSubject: EditSubjectClinicalDto
 ): Promise<EditSubjectClinicalDto> => {
 	const url = `${API_GATEWAY}/tools/bids/subject`
-	return fetch(url, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify(editSubject),
-	}).then(data => data.json())
+	try {
+		return await fetch(url, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				requesttoken: window.OC.requestToken,
+			},
+			body: JSON.stringify(editSubject),
+		})
+		.then(CheckError)
+		.then(data => data?.json())
+	} catch (error) {
+		return Promise.reject(error)
+	}
 }

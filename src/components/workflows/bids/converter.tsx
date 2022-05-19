@@ -2,7 +2,7 @@ import {
 	Box,
 	Button,
 	Step,
-	StepLabel,
+	StepButton,
 	Stepper,
 	Typography,
 } from '@mui/material'
@@ -17,7 +17,6 @@ import Participants from './participants'
 import Summary from './summary'
 import { useNotification } from '../../../hooks/useNotification'
 
-const steps = ['BIDS Database', 'Participant', 'Files', 'Summary']
 const boxStyle = {
 	border: 1,
 	borderColor: 'grey.400',
@@ -27,9 +26,13 @@ const boxStyle = {
 	flex: '1 0 auto',
 	flexFlow: 'column',
 }
+
+const steps = ['BIDS Database', 'Participants', 'Files', 'Summary']
+
 const BidsConverter = () => {
 	const { showNotif } = useNotification()
 	const [activeStep, setActiveStep] = useState(0)
+	const [completed, setCompleted] = useState(false)
 	const [error, setError] = useState<Error>()
 	const {
 		containers: [containers],
@@ -38,7 +41,7 @@ const BidsConverter = () => {
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles]
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	const handleNext = () => {
@@ -49,12 +52,16 @@ const BidsConverter = () => {
 		setActiveStep(prevActiveStep => prevActiveStep - 1)
 	}
 
+	const handleStep = (step: number) => () => {
+		setActiveStep(step)
+	}
+
 	const handleReset = () => {
 		setActiveStep(0)
 	}
 
 	const handleConvert = async () => {
-		if (!user?.uid && !selectedBidsDatabase.path) {
+		if (!user?.uid && !selectedBidsDatabase?.path) {
 			showNotif('No database selected', 'error')
 			return
 		}
@@ -64,27 +71,28 @@ const BidsConverter = () => {
 
 			return {
 				...other,
-				sub: participant_id.replace('sub-', '')
+				sub: participant_id.replace('sub-', ''),
 			}
 		})
 
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
 			database: selectedBidsDatabase?.Name,
-			path: selectedBidsDatabase?.path?.substring(1),
+			path: selectedBidsDatabase?.path,
 			files: selectedFiles,
-			subjects
+			subjects,
 		}
 
 		handleNext()
 
-		const newSubject = await importSubject((createSubjectDto as CreateSubjectDto))
-		if (newSubject)
+		const newSubject = await importSubject(createSubjectDto as CreateSubjectDto)
+		if (newSubject) {
 			showNotif('Subject imported', 'success')
-		else
+			setCompleted(true)
+		} else {
 			showNotif('Subject importation failed', 'error')
+		}
 	}
-
 
 	const StepNavigation = ({
 		activeStep,
@@ -105,7 +113,7 @@ const BidsConverter = () => {
 						Back
 					</Button>
 					<Box sx={{ flex: '1 1 auto' }} />
-					{activeStep === 2 &&
+					{activeStep === 2 && (
 						<Button
 							sx={{ mr: 1 }}
 							variant='contained'
@@ -114,8 +122,8 @@ const BidsConverter = () => {
 						>
 							Convert
 						</Button>
-					}
-					{(activeStep !== 2 && activeStep < 3) &&
+					)}
+					{activeStep !== 2 && activeStep < 3 && (
 						<Button
 							sx={{ mr: 1 }}
 							variant='contained'
@@ -124,7 +132,7 @@ const BidsConverter = () => {
 						>
 							Next
 						</Button>
-					}
+					)}
 				</Box>
 			</>
 		)
@@ -134,7 +142,7 @@ const BidsConverter = () => {
 		<>
 			<TitleBar title='Bids Converter' />
 			<Box sx={{ width: '100%', mt: 3 }}>
-				<Stepper activeStep={activeStep}>
+				<Stepper nonLinear activeStep={activeStep}>
 					{steps.map((label, index) => {
 						const stepProps: { completed?: boolean } = {}
 						const labelProps: {
@@ -142,23 +150,29 @@ const BidsConverter = () => {
 						} = {}
 						return (
 							<Step key={label} {...stepProps}>
-								<StepLabel {...labelProps}>{label}</StepLabel>
+								<StepButton
+									color='inherit'
+									disabled={
+										!selectedBidsDatabase ||
+										(index === 3 && !selectedFiles)
+									}
+									onClick={handleStep(index)}
+									{...labelProps}
+								>
+									{label}
+								</StepButton>
 							</Step>
 						)
 					})}
 				</Stepper>
 
 				{activeStep === 0 && (
-					<Box
-						sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}
-					>
+					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Select a BIDS Database, or create a new one</strong>
+								<strong>Select or create a BIDS Database</strong>
 							</Typography>
-							{error && (
-								showNotif(error.message, 'error')
-							)}
+							{error && showNotif(error.message, 'error')}
 							<Databases />
 							<StepNavigation
 								disabled={!selectedBidsDatabase}
@@ -169,29 +183,28 @@ const BidsConverter = () => {
 				)}
 
 				{activeStep === 1 && (
-					<Box
-						sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}
-					>
+					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Create a new participant</strong>
+								<strong>Participants in {selectedBidsDatabase?.Name}</strong>
 							</Typography>
 							<Participants />
-							<StepNavigation activeStep={activeStep} />
+							<StepNavigation
+								disabled={!selectedBidsDatabase}
+								activeStep={activeStep}
+							/>
 						</Box>
 					</Box>
 				)}
 				{activeStep === 2 && (
-					<Box
-						sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}
-					>
+					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Select files, modalities and entities</strong>
 							</Typography>
 							<Files />
 							<StepNavigation
-								disabled={!selectedFiles}
+								disabled={!selectedBidsDatabase || !selectedFiles}
 								activeStep={activeStep}
 							/>
 						</Box>
@@ -199,14 +212,13 @@ const BidsConverter = () => {
 				)}
 
 				{activeStep === 3 && (
-					<Box
-						sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}
-					>
+					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong> BIDS Conversion Summary</strong>
 							</Typography>
-							<Summary />
+							<Summary completed={completed} />
+							<Participants />
 							<StepNavigation activeStep={activeStep} />
 						</Box>
 					</Box>

@@ -1,31 +1,25 @@
-import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material'
-import { Alert, AlertProps, Box, Button, CircularProgress, Snackbar, Typography } from '@mui/material'
+import { Add } from '@mui/icons-material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import {
 	DataGrid,
-	GridActionsCellItem,
 	GridColumns,
-	GridEventListener,
-	GridEvents,
-	GridRowParams,
 	GridRowsProp,
 	GridSelectionModel,
 	GridToolbarContainer,
-	MuiEvent
+	GridRowId,
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { BIDSDatabase, GridApiRef, Participant } from '../../../api/types'
+import { subEditClinical } from '../../../api/bids'
+import {
+	BIDSDatabase,
+	EditSubjectClinicalDto,
+	GridApiRef,
+	Participant,
+} from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
+import CreateField from '../../UI/createField'
 import CreateParticipant from './forms/CreateParticipant'
-
-interface Props {
-	selectedBidsDatabase?: BIDSDatabase
-	setBidsDatabases: React.Dispatch<
-		React.SetStateAction<BIDSDatabase[] | undefined>
-	>
-	handleSelectParticipant: (selected: Participant) => void
-	selectedParticipants?: Participant
-}
 
 const Participants = (): JSX.Element => {
 	const { showNotif } = useNotification()
@@ -33,7 +27,7 @@ const Participants = (): JSX.Element => {
 	const [rows, setRows] = useState<GridRowsProp>([])
 	const apiRef = useRef<GridApiRef | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [dataBaseCreated, setDatabaseCreated] = useState(false)
+	const [participantCreated, setParticipantCreated] = useState(false)
 	const {
 		containers: [containers],
 		user: [user, setUser],
@@ -41,41 +35,20 @@ const Participants = (): JSX.Element => {
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles]
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	useEffect(() => {
-		const rows =
-			participants?.map(p => ({
-				id: p.participant_id,
-				age: p.age,
-				sex: p.sex,
-				...p,
-			}))
-		if (rows) setRows(rows)
+		if (participants) setRows(participants)
 	}, [participants, setRows])
-
-	useEffect(() => {
-		console.log(participants)
-	}, [participants])
-
-	// useEffect(() => {
-	// 	if (selectionModel.length === 0) return
-
-	// 	const selected = participants?.find(
-	// 		b => b.participant_id === selectionModel[0]
-	// 	)
-	// 	if (selected) setSelectedParticipants(selected)
-	// }, [selectionModel])
-
 
 	const constantsColumns = ['participant_id', 'age', 'sex']
 	const columns: GridColumns = [
 		{
-			field: 'id',
-			headerName: 'id',
-			width: 320,
-			editable: true,
+			field: 'participant_id',
+			headerName: 'participant_id',
+			flex: 0.5,
+			editable: false,
 			renderCell: (params: any) => {
 				// This is a hack to assign access to the internal Grid API
 				apiRef.current = params.api
@@ -85,43 +58,65 @@ const Participants = (): JSX.Element => {
 		{
 			field: 'age',
 			headerName: 'age',
-			width: 320,
+			flex: 0.5,
 			editable: true,
 		},
 		{
 			field: 'sex',
 			headerName: 'sex',
-			width: 320,
+			flex: 0.5,
 			editable: true,
 		},
-		...(participants?.reduce(
-			(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
-			[] as string[]
-		)
+		...(participants
+			?.reduce(
+				(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
+				[] as string[]
+			)
 			.filter((key: string) => !constantsColumns.includes(key))
 			.map((key: string) => ({
 				field: key,
 				headerName: key,
-				width: 320,
+				flex: 0.5,
 				editable: true,
 			})) || []),
 	]
 
-	const characters =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-	function generateString(length: number) {
-		let result = ' '
-		const charactersLength = characters.length
-		for (let i = 0; i < length; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength))
-		}
-
-		return result
-	}
-
 	const handleCreateParticipant = () => {
 		setIsModalOpen(true)
+	}
+
+	const onRowEditCommit = async (id: GridRowId) => {
+		const model = apiRef?.current?.getEditRowsModel() // This object contains all rows that are being edited
+		const clinical = Object.entries(model[id]).reduce(
+			(a, [k, v]) => ({ ...a, [k]: v.value }),
+			{}
+		)
+
+		if (
+			!user?.uid ||
+			!selectedBidsDatabase?.Name ||
+			!selectedBidsDatabase?.path
+		) {
+			return
+		}
+
+		const subEditClinicalDto: EditSubjectClinicalDto = {
+			owner: user.uid,
+			database: selectedBidsDatabase.Name,
+			path: selectedBidsDatabase.path,
+			subject: `${id}`.replace('sub-', ''),
+			clinical,
+		}
+
+		subEditClinical(subEditClinicalDto)
+		.then(data => {
+			console.log(data)
+			showNotif('Participant saved', 'success')
+		})
+		.catch(error => {
+			console.log(error)
+			showNotif('Participant not saved', 'error')
+		})
 	}
 
 	return (
@@ -135,7 +130,7 @@ const Participants = (): JSX.Element => {
 					}}
 				>
 					<Typography variant='h6'>
-						Participants in {selectedBidsDatabase?.Name} {!participants && <CircularProgress size={16} />}
+						Participants {!participants && <CircularProgress size={16} />}
 					</Typography>
 				</Box>
 				<Box
@@ -151,10 +146,9 @@ const Participants = (): JSX.Element => {
 					}}
 				>
 					<DataGrid
-						// getRowId={(params) => params?.participant_id}
-						// onSelectionModelChange={newSelectionModel => {
-						// 	setSelectionModel(newSelectionModel)
-						// }}
+						// experimentalFeatures={{ newEditingApi: true }}
+						getRowId={params => params?.participant_id}
+						onRowEditCommit={onRowEditCommit}
 						rows={rows}
 						columns={columns}
 						pageSize={100}
@@ -171,8 +165,20 @@ const Participants = (): JSX.Element => {
 										onClick={handleCreateParticipant}
 										variant={'outlined'}
 									>
-										Create Participant
+										Add new Participant
 									</Button>
+									<CreateField
+										handleCreateField={({ key }) => {
+											if (key) {
+												const nextParticipants = participants?.map(p => ({
+													...p,
+													[key]: '',
+												}))
+
+												if (nextParticipants) setParticipants(nextParticipants)
+											}
+										}}
+									/>
 								</GridToolbarContainer>
 							),
 						}}
@@ -185,7 +191,7 @@ const Participants = (): JSX.Element => {
 			<CreateParticipant
 				open={isModalOpen}
 				handleClose={() => setIsModalOpen(!isModalOpen)}
-				setDatabaseCreated={setDatabaseCreated}
+				setParticipantCreated={setParticipantCreated}
 			/>
 		</>
 	)

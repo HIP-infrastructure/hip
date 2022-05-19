@@ -149,7 +149,8 @@ export interface GridApiRef {
 export interface CreateBidsDatabaseDto {
 	readonly owner: string
 	readonly database: string
-	readonly path: string
+	readonly path: string // relative path for user or group eg: data/file.md
+
 	readonly DatasetDescJSON: {
 		readonly Name: string,
 		readonly BIDSVersion: string
@@ -167,7 +168,7 @@ export interface CreateBidsDatabaseDto {
 export interface CreateSubjectDto {
 	readonly owner: string
 	readonly database: string
-	readonly path: string
+	readonly path: string // relative path for user or group eg: data/file.md
 	subjects: Participant[]
 	readonly files: File[]
 }
@@ -175,7 +176,7 @@ export interface CreateSubjectDto {
 export interface EditSubjectClinicalDto {
     readonly owner: string
     readonly database: string
-    readonly path: string
+    readonly path: string // relative path for user or group eg: data/file.md
     readonly subject: string
     readonly clinical: {
         [key: string]: string
@@ -185,7 +186,7 @@ export interface EditSubjectClinicalDto {
 export interface File {
 	modality: string
 	subject: string
-	path: string
+	path: string 
 	entities?: {
 		[key: string]: string
 	}
@@ -194,7 +195,7 @@ export interface File {
 export interface GetBidsDatabaseDto {
 	readonly owner: string
 	readonly database: string
-	readonly path: string
+	readonly path: string // relative path for user or group eg: data/file.md
 	BIDS_definitions: string[]
 }
 
