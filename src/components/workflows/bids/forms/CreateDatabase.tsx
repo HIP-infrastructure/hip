@@ -147,7 +147,7 @@ const CreateDatabase = ({
 											helperText={
 												touched.BIDSVersion && errors.BIDSVersion
 													? errors.BIDSVersion
-													: `Latest BIDS version is ${currentValues.BidsVersion}`
+													: `Latest BIDS version is ${initialValues.BIDSVersion}`
 											}
 										/>
 									</Grid>

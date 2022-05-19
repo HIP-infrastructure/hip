@@ -328,8 +328,9 @@ const Databases = (): JSX.Element => {
 		{
 			field: 'Name',
 			headerName: 'Name',
-			width: 160,
+			flex: 0.5,
 			editable: true,
+			resizable: true,
 		},
 		// {
 		// 	field: 'Participants',
@@ -346,13 +347,15 @@ const Databases = (): JSX.Element => {
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
-			width: 160,
+			flex: 0.5,
 			editable: true,
+			resizable: true,
 		},
 		{
 			field: 'BIDSVersion',
 			headerName: 'Version',
-			width: 96,
+			flex: 0.2,
+			resizable: true,
 			editable: true,
 			align: 'right',
 			// renderEditCell: renderVersionEditCell,
@@ -380,14 +383,16 @@ const Databases = (): JSX.Element => {
 			field: 'Licence',
 			headerName: 'Licence',
 			sortable: false,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 		{
 			field: 'Acknowledgements',
 			headerName: 'Acknowledgements',
 			sortable: false,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 		{
@@ -396,7 +401,8 @@ const Databases = (): JSX.Element => {
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 		{
@@ -405,7 +411,8 @@ const Databases = (): JSX.Element => {
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 		{
@@ -414,14 +421,16 @@ const Databases = (): JSX.Element => {
 			sortable: false,
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 		{
 			field: 'DatasetDOI',
 			headerName: 'datasetDOI',
 			sortable: false,
-			width: 120,
+			flex: 0.5,
+			resizable: true,
 			editable: true,
 		},
 	]

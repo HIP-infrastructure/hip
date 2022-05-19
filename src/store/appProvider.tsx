@@ -26,8 +26,8 @@ export interface IAppState {
 		React.Dispatch<React.SetStateAction<BIDSDatabase[] | null>>
 	]
 	selectedBidsDatabase: [
-		BIDSDatabase,
-		React.Dispatch<React.SetStateAction<BIDSDatabase>>
+		BIDSDatabase | null,
+		React.Dispatch<React.SetStateAction<BIDSDatabase | null>>
 	]
 	participants: [
 		Participant[] | null,
@@ -100,7 +100,6 @@ export const AppStoreProvider = ({
 
 		getAvailableAppList()
 			.then(data => {
-				console.log(data)
 				setAvailableApps(data)
 			})
 
