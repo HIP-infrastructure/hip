@@ -2,7 +2,11 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import { getBidsDatabases } from '../api/bids'
-import { API_CONTAINERS, getAvailableAppList } from '../api/gatewayClientAPI'
+import {
+	API_CONTAINERS,
+	checkError,
+	getAvailableAppList,
+} from '../api/gatewayClientAPI'
 import {
 	Application,
 	BIDSDatabase,
@@ -12,14 +16,13 @@ import {
 	UserCredentials,
 } from '../api/types'
 
-
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	availableApps: Application[] | null
+	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
 	bidsDatabases: [
 		BIDSDatabase[] | null,
@@ -42,25 +45,7 @@ export interface IAppState {
 
 export const fetcher = async (url: string): Promise<void> => {
 	const res = await fetch(url)
-	let message = ''
-
-	if (!res.ok) {
-		switch (true) {
-			case res.status === 403:
-				message = 'You have been logged out. Please log in again.'
-				break
-
-			default:
-				message = 'An error occurred while fetching the data.'
-				break
-		}
-		const error = new Error(message)
-		error.name = `${res.status}`
-
-		throw error
-	}
-
-	return res.json()
+	return checkError(res)
 }
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
@@ -74,7 +59,7 @@ export const AppStoreProvider = ({
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<
 		IAppState['availableApps']
-	>([])
+	>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(
 		null
@@ -100,7 +85,10 @@ export const AppStoreProvider = ({
 
 		getAvailableAppList()
 			.then(data => {
-				setAvailableApps(data)
+				if (data) setAvailableApps({ data })
+			})
+			.catch(error => {
+				setAvailableApps({ error })
 			})
 
 		getBidsDatabases(currentUser.uid).then(response => {

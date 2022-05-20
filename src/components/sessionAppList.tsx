@@ -1,12 +1,13 @@
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material'
 import {
+	Alert,
 	Avatar,
 	CircularProgress,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText
+	ListItemText,
 } from '@mui/material'
 import React from 'react'
 import { Application, Container, ContainerState } from '../api/types'
@@ -44,7 +45,7 @@ const logos: { [key: string]: string } = {
 	bidsmanager,
 	mrideface,
 	tvb,
-	mne
+	mne,
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
@@ -70,8 +71,9 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 
 	const Button = ({ app }: { app: Application }) => {
 		const startedApp = appInSession({ name: app.name })
-		const label = `${startedApp?.state === ContainerState.RUNNING ? 'Stop' : 'Start'
-			} ${app.label}`
+		const label = `${
+			startedApp?.state === ContainerState.RUNNING ? 'Stop' : 'Start'
+		} ${app.label}`
 
 		return (
 			<ListItemButton
@@ -91,17 +93,22 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	}
 
 	return (
-		<List sx={{
-			width: '100%',
-			maxWidth: 360,
-			bgcolor: 'background.paper',
-			position: 'relative',
-			overflow: 'auto',
-			'& ul': { padding: 0 },
-		}}
-			subheader={<li />}>
+		<List
+			sx={{
+				width: '100%',
+				maxWidth: 360,
+				bgcolor: 'background.paper',
+				position: 'relative',
+				overflow: 'auto',
+				'& ul': { padding: 0 },
+			}}
+			subheader={<li />}
+		>
 			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
-			{availableApps?.map(app => (
+			{availableApps?.error && availableApps?.error && (
+				<Alert severity='error'>{availableApps?.error.message}</Alert>
+			)}
+			{availableApps?.data?.map(app => (
 				<Button app={app} key={app.name} />
 			))}
 		</List>

@@ -1,4 +1,4 @@
-import { API_GATEWAY, CheckError } from './gatewayClientAPI'
+import { API_GATEWAY, checkError } from './gatewayClientAPI'
 import {
 	BIDSDatabaseResponse,
 	CreateBidsDatabaseDto,
@@ -15,7 +15,6 @@ export const getBidsDatabases = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -31,7 +30,6 @@ export const createBidsDatabase = async (
 		},
 		body: JSON.stringify(createBidsDatabaseDto),
 	})
-		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -45,7 +43,6 @@ export const getParticipants = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -61,7 +58,6 @@ export const importSubject = async (
 		},
 		body: JSON.stringify(createSubject),
 	})
-		.then(CheckError)
 		.then(data => data.json())
 }
 
@@ -78,7 +74,6 @@ export const subEditClinical = async (
 			},
 			body: JSON.stringify(editSubject),
 		})
-		.then(CheckError)
 		.then(data => data?.json())
 	} catch (error) {
 		return Promise.reject(error)
