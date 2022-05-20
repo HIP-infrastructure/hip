@@ -8,26 +8,31 @@ export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
-export function CheckError(response: Response) {
-	if (response.status >= 200 && response.status <= 299) {
-		return response
-	} else {
-		if (response.status > 400 && response.status <= 499)
-			throw new Error('You have been logged out. Please log in again.')
-		else
-			throw new Error('An error occurred while fetching the data.')
+/* Checking the response from the server. */
+export const checkError = async (response: Response) => {
+	try {
+		const data = await response.json()
+		if (response.status >= 200 && response.status <= 299) {
+			return data
+		} else {
+			if (response.status > 400 && response.status <= 499)
+				throw new Error('You have been logged out. Please log in again.')
+			else throw new Error(data.message)
+		}
+	} catch (error) {
+		if (error instanceof Error) throw new Error(error.message)
 	}
 }
 
 // Debug functions
 export const fetchRemote = (): void => {
 	const url = `${API_CONTAINERS}/fetch`
-	fetch(url).then(CheckError)
+	fetch(url).then(checkError)
 }
 
 export const forceRemove = (id: string): void => {
 	const url = `${API_CONTAINERS}/forceRemove/${id}`
-	fetch(url).then(CheckError)
+	fetch(url).then(checkError)
 }
 
 // Gateway API
@@ -38,7 +43,7 @@ export const search = async (term: string) => {
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(CheckError)
+		.then(checkError)
 		.then(data => data.json())
 }
 
@@ -55,9 +60,7 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 
 export const getAvailableAppList = (): Promise<Application[] | null> => {
 	const url = `${API_REMOTE_APP}/apps`
-	return fetch(url)
-		.then(CheckError)
-		.then(data => data.json())
+	return fetch(url).then(checkError)
 }
 
 export const createSession = (userId: string): Promise<Container> => {
@@ -70,7 +73,6 @@ export const createSession = (userId: string): Promise<Container> => {
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${userId}`)
 			return r.json()
@@ -96,7 +98,6 @@ export const createApp = (
 			password: user.password,
 		}),
 	})
-		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
 			return r.json()
@@ -116,7 +117,6 @@ export const createSessionAndApp = (
 		},
 		body: JSON.stringify({ userId: user.uid, password: user.password }),
 	})
-		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
 			return r.json()
@@ -136,7 +136,6 @@ export const removeAppsAndSession = (
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(CheckError)
 		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
@@ -152,7 +151,6 @@ export const pauseAppsAndSession = (
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(CheckError)
 		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
@@ -168,7 +166,6 @@ export const resumeAppsAndSession = (
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(CheckError)
 		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
@@ -185,7 +182,6 @@ export const stopApp = (
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(CheckError)
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${userId}`)
 			return r.json()

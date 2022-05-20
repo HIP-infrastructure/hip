@@ -1,11 +1,12 @@
 import {
+	Alert,
 	Box,
 	Card,
 	CardContent,
 	CardMedia,
 	Chip,
 	Link,
-	Modal
+	Modal,
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
@@ -72,7 +73,10 @@ const Apps = () => {
 				</Box>
 			</Modal>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{availableApps?.map((app, i) => (
+				{availableApps?.error && availableApps?.error && (
+					<Alert severity='error'>{availableApps?.error.message}</Alert>
+				)}
+				{availableApps?.data?.map((app, i) => (
 					<Card
 						sx={{ maxWidth: 288, display: 'flex', flexDirection: 'column' }}
 						key={app.name}
