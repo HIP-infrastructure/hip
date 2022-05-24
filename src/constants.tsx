@@ -18,23 +18,127 @@ export const SPACES_NAV = [
 	},
 ]
 
+export const DATA_TYPES = [
+	{ name: 'anat', description: 'structural imaging data' },
+	{ name: 'ieeg', description: 'intracranial electroencephalography data' },
+]
 
 export const MODALITIES = [
-	"T1w",
-	"T2w",
-	"T1rho",
-	"T2star",
-	"FLAIR",
-	"PD",
-	"CT",
-	"ieeg"
+	{
+		name: 'T1w',
+		type: 'anat',
+	},
+	{
+		name: 'T2w',
+		type: 'anat',
+	},
+	{
+		name: 'T1rho',
+		type: 'anat',
+	},
+	{
+		name: 'T2start',
+		type: 'anat',
+	},
+	{
+		name: 'FLAIR',
+		type: 'anat',
+	},
+	{
+		name: 'CT',
+		type: 'anat',
+	},
+	{
+		name: 'ieeg',
+		type: 'ieeg',
+	},
+	{
+		name: 'coordsystem electrodes',
+		type: 'ieeg',
+	},
+	{
+		name: 'photo',
+		type: 'ieeg',
+	},
 ]
 
 export const ENTITIES = [
-	"ses",
-	"acq",
-	"ce",
-	"rec",
-	"run",
-	"task",
+	{
+		name: 'ses',
+		label: 'Session',
+		description:
+			'An intermediate folder in BIDS folder hierarchy to group data that go "logically" together. If used, sessions must be pertinent and consistent across subjects. (e.g. postsurgery)',
+		requirements: [
+			{
+				dataType: 'anat',
+				required: false,
+			},
+			{
+				dataType: 'ieeg',
+				required: false,
+			},
+		],
+		modalities: []
+	},
+	{
+		name: 'task',
+		label: 'Task',
+		description:
+			'Identify the task performed by the subject during the acquisition. If used, must be consistent across subjects and sessions. (e.g. eyesclosed)',
+		requirements: [
+			{
+				dataType: '',
+				required: false,
+			},
+			{
+				dataType: 'ieeg',
+				modalities: ['ieeg'],
+				required: true,
+			},
+		],
+		modalities: []
+	},
+	{
+		name: 'acq',
+		label: 'Acquisition',
+		description:
+			'Identify the acquisition parameters used to perform the acquisition. If used, must be consistent across subjects and sessions. (e.g. lowres)',
+		requirements: [
+			{
+				dataType: 'anat',
+				required: false,
+			},
+			{
+				dataType: 'ieeg',
+				required: false,
+			},
+		],
+		modalities: []
+	},
+	{
+		name: 'ce',
+		label: 'Contrast Agent',
+		description:
+			'Identify contrast agent. Does not have to be consistent. (e.g. gadolinium)',
+		requirements: [
+			{
+				dataType: 'anat',
+				required: false,
+			},
+		],
+		modalities: []
+	},
+	{
+		name: 'rec',
+		label: 'Reconstruction',
+		description:
+			'Identify reconstruction algorithms. Does not have to be consistent. (e.g. lsqr)',
+		requirements: [
+			{
+				dataType: 'anat',
+				required: false,
+			},
+		],
+		modalities: []
+	},
 ]
