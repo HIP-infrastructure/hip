@@ -1,29 +1,22 @@
 import { Add } from '@mui/icons-material'
+import { Alert, Box, Button, CircularProgress, Typography } from '@mui/material'
 import {
-	Alert,
-	AlertProps,
-	Box,
-	Button,
-	CircularProgress, Snackbar,
-	Typography
-} from '@mui/material'
-import {
-	DataGrid, GridColumns,
+	DataGrid,
+	GridColumns,
 	GridEventListener,
-	GridEvents, GridRowParams,
+	GridEvents,
+	GridRowParams,
 	GridRowsProp,
 	GridSelectionModel,
 	GridToolbarContainer,
-	MuiEvent
+	MuiEvent,
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
-import { createBidsDatabase, getBidsDatabases } from '../../../api/bids'
-import { BIDSDatabase, CreateBidsDatabaseDto, GridApiRef } from '../../../api/types'
+import { getBidsDatabases, getParticipants } from '../../../api/bids'
+import { GridApiRef } from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
-import { getParticipants } from '../../../api/bids'
-import { useNotification } from '../../../hooks/useNotification'
-
 
 const Databases = (): JSX.Element => {
 	const { showNotif } = useNotification()
@@ -40,7 +33,7 @@ const Databases = (): JSX.Element => {
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles]
+		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -55,20 +48,24 @@ const Databases = (): JSX.Element => {
 
 	useEffect(() => {
 		if (dataBaseCreated) {
-			setBidsDatabases(null)
-			getBidsDatabases(user?.uid).then((response) => {
-				if (response.error) {
-					throw new Error(response.error.message)
-				}
-
-				if (response.data) setBidsDatabases(response.data)
-			})
+			setBidsDatabases(undefined)
+			getBidsDatabases(user?.uid)
+				.then(data => {
+					if (data) {
+						setBidsDatabases({ data })
+					}
+				})
+				.catch(error => {
+					setBidsDatabases({ error })
+				})
 			setDatabaseCreated(false)
 		}
 	}, [dataBaseCreated])
 
 	useEffect(() => {
-		const selected = bidsDatabases?.find(b => b.Name === selectionModel[0])
+		const selected = bidsDatabases?.data?.find(
+			b => b.Name === selectionModel[0]
+		)
 		if (selected?.Name) {
 			setSelectedBidsDatabase(selected)
 
@@ -76,22 +73,16 @@ const Databases = (): JSX.Element => {
 				setParticipants(null)
 
 				if (user?.uid) {
-					getParticipants(selected?.path, user.uid)
-						.then(response => {
-							setParticipants(response)
-						})
+					getParticipants(selected?.path, user.uid).then(response => {
+						setParticipants(response)
+					})
 				}
 			}
-
 		}
 	}, [selectionModel])
 
 	useEffect(() => {
-		console.log(participants)
-	}, [participants])
-
-	useEffect(() => {
-		if (bidsDatabases) setRows(bidsDatabases)
+		if (bidsDatabases?.data) setRows(bidsDatabases?.data)
 	}, [bidsDatabases])
 
 	const handleCreateDatabase = () => {
@@ -144,7 +135,6 @@ const Databases = (): JSX.Element => {
 	// 		apiRef?.current?.setRowMode(id, 'view')
 	// 		const row = apiRef?.current?.getRow(id) as Record<string, string>
 	// 		apiRef?.current?.updateRows([{ ...row, isNew: false }])
-
 
 	// 		const data: CreateBidsDatabaseDto = {
 	// 			owner: user.uid,
@@ -260,7 +250,7 @@ const Databases = (): JSX.Element => {
 	// 			// defaultValue={value}
 	// 			value={value}
 	// 			onChange={handleChange}
-	// 			inputProps={{
+	// 			inputProps={{patient
 	// 				name: 'bIDSVersion',
 	// 				id: 'bids-version-select',
 	// 			}}
@@ -330,7 +320,6 @@ const Databases = (): JSX.Element => {
 			headerName: 'Name',
 			flex: 0.5,
 			editable: true,
-			resizable: true,
 		},
 		// {
 		// 	field: 'Participants',
@@ -349,13 +338,11 @@ const Databases = (): JSX.Element => {
 				`${params.value?.toString()}`,
 			flex: 0.5,
 			editable: true,
-			resizable: true,
 		},
 		{
 			field: 'BIDSVersion',
 			headerName: 'Version',
 			flex: 0.2,
-			resizable: true,
 			editable: true,
 			align: 'right',
 			// renderEditCell: renderVersionEditCell,
@@ -384,7 +371,6 @@ const Databases = (): JSX.Element => {
 			headerName: 'Licence',
 			sortable: false,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 		{
@@ -392,7 +378,6 @@ const Databases = (): JSX.Element => {
 			headerName: 'Acknowledgements',
 			sortable: false,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 		{
@@ -402,7 +387,6 @@ const Databases = (): JSX.Element => {
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 		{
@@ -412,7 +396,6 @@ const Databases = (): JSX.Element => {
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 		{
@@ -422,7 +405,6 @@ const Databases = (): JSX.Element => {
 			renderCell: (params: { value: string[] | undefined }) =>
 				`${params.value?.toString()}`,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 		{
@@ -430,7 +412,6 @@ const Databases = (): JSX.Element => {
 			headerName: 'datasetDOI',
 			sortable: false,
 			flex: 0.5,
-			resizable: true,
 			editable: true,
 		},
 	]
@@ -448,10 +429,13 @@ const Databases = (): JSX.Element => {
 					<Typography variant='h6'>
 						BIDS Databases {!bidsDatabases && <CircularProgress size={16} />}
 					</Typography>
+					{bidsDatabases?.error && bidsDatabases?.error && (
+						<Alert severity='error'>{bidsDatabases?.error.message}</Alert>
+					)}
 				</Box>
 				<Box sx={{ height: 500, width: '100%' }}>
 					<DataGrid
-						getRowId={(params) => params.Name}
+						getRowId={params => params.Name}
 						onSelectionModelChange={newSelectionModel => {
 							setSelectionModel(newSelectionModel)
 						}}
@@ -485,7 +469,7 @@ const Databases = (): JSX.Element => {
 						componentsProps={{
 							toolbar: { apiRef },
 						}}
-					// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
+						// isCellEditable={((params: GridCellParams<any, any, any>) => true)}
 					/>
 				</Box>
 			</Box>
