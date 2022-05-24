@@ -11,13 +11,18 @@ export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 /* Checking the response from the server. */
 export const checkError = async (response: Response) => {
 	try {
-		const data = await response.json()
 		if (response.status >= 200 && response.status <= 299) {
+			const data = await response.json()
 			return data
 		} else {
-			if (response.status > 400 && response.status <= 499)
+			if (response.status > 400 && response.status <= 403)
 				throw new Error('You have been logged out. Please log in again.')
-			else throw new Error(data.message)
+			else if (response.status >= 500 && response.status <= 599) {
+				throw new Error(`Bad response from server: ${response.statusText} ${response.status}`)
+			} else {
+				const data = await response.json()
+				throw new Error(data.message)
+			}
 		}
 	} catch (error) {
 		if (error instanceof Error) throw new Error(error.message)
@@ -135,8 +140,7 @@ export const removeAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	})
-		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const pauseAppsAndSession = (
@@ -150,8 +154,7 @@ export const pauseAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	})
-		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const resumeAppsAndSession = (
@@ -165,8 +168,7 @@ export const resumeAppsAndSession = (
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ userId }),
-	})
-		.then(() => mutate(`${API_CONTAINERS}/${userId}`))
+	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
 }
 
 export const stopApp = (

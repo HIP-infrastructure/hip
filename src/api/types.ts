@@ -83,11 +83,11 @@ export interface Tag {
 	id: number
 }
 
-export type BIDSDatabaseResponse = { data?: BIDSDatabase[]; error?: Error }
-
 export interface Participant {
 	[key: string]: string
 }
+
+export type BIDSDatabaseResponse = { data?: BIDSDatabase[]; error?: Error }
 
 export interface BIDSDatabase {
 	path?: string
@@ -121,6 +121,19 @@ export interface ISearchResult {
 	}
 }
 
+export interface BIDSSubject {
+	sub: string
+	ses: string
+	acq: string
+	ce: string
+	rec: string
+	run: string
+	mod: string
+	modality: string
+	fileLoc: string
+	AnatJSON: Record<string, unknown>
+}
+
 export interface Entity {
 	id: string
 	label: string
@@ -152,18 +165,17 @@ export interface CreateBidsDatabaseDto {
 	readonly path: string // relative path for user or group eg: data/file.md
 
 	readonly DatasetDescJSON: {
-		readonly Name: string,
+		readonly Name: string
 		readonly BIDSVersion: string
 		readonly License: string
 		readonly Authors: string[]
 		readonly Acknowledgements: string
-		readonly HowToAcknowledge: string;
+		readonly HowToAcknowledge: string
 		readonly Funding: string[]
 		readonly ReferencesAndLinks: string[]
 		readonly DatasetDOI: string
 	}
 }
-
 
 export interface CreateSubjectDto {
 	readonly owner: string
@@ -174,19 +186,19 @@ export interface CreateSubjectDto {
 }
 
 export interface EditSubjectClinicalDto {
-    readonly owner: string
-    readonly database: string
-    readonly path: string // relative path for user or group eg: data/file.md
-    readonly subject: string
-    readonly clinical: {
-        [key: string]: string
-    }
+	readonly owner: string
+	readonly database: string
+	readonly path: string // relative path for user or group eg: data/file.md
+	readonly subject: string
+	readonly clinical: {
+		[key: string]: string
+	}
 }
 
 export interface File {
 	modality: string
 	subject: string
-	path: string 
+	path: string
 	entities?: {
 		[key: string]: string
 	}
@@ -200,38 +212,37 @@ export interface GetBidsDatabaseDto {
 }
 
 export class BidsDatabaseDefinitionDto {
-    "BIDS_definitions": {
-        "Anat": {
-            "keylist": string[],
-            "required_keys": string[],
-            "allowed_modalities": string[],
-            "allowed_file_formats": string[],
-            "readable_file_formats": string[],
-            "required_protocol_keys": []
-        },
-        "AnatJSON": {
-            "keylist": string[]
-        },
-        "Ieeg": {
-            "keylist": string[],
-            "required_keys": string[],
-            "allowed_modalities": string[],
-            "allowed_file_formats": string[],
-            "readable_file_formats": string[],
-            "channel_type": string[],
-            "mod_channel_type": string[],
-            "required_protocol_keys": []
-        },
-        "IeegJSON": {
-            "keylist": string[],
-            "required_keys": string[]
-        },
-        "DatasetDescJSON": {
-            "keylist": string[],
-            "required_keys": string[],
-            "filename": string,
-            "bids_version": string
-        }
-
-    }
+	'BIDS_definitions': {
+		Anat: {
+			keylist: string[]
+			required_keys: string[]
+			allowed_modalities: string[]
+			allowed_file_formats: string[]
+			readable_file_formats: string[]
+			required_protocol_keys: []
+		}
+		AnatJSON: {
+			keylist: string[]
+		}
+		Ieeg: {
+			keylist: string[]
+			required_keys: string[]
+			allowed_modalities: string[]
+			allowed_file_formats: string[]
+			readable_file_formats: string[]
+			channel_type: string[]
+			mod_channel_type: string[]
+			required_protocol_keys: []
+		}
+		IeegJSON: {
+			keylist: string[]
+			required_keys: string[]
+		}
+		DatasetDescJSON: {
+			keylist: string[]
+			required_keys: string[]
+			filename: string
+			bids_version: string
+		}
+	}
 }

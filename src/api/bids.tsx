@@ -1,6 +1,8 @@
 import { API_GATEWAY, checkError } from './gatewayClientAPI'
 import {
+	BIDSDatabase,
 	BIDSDatabaseResponse,
+	BIDSSubject,
 	CreateBidsDatabaseDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
@@ -9,13 +11,13 @@ import {
 
 export const getBidsDatabases = async (
 	owner?: string
-): Promise<BIDSDatabaseResponse> => {
+): Promise<BIDSDatabase[]> => {
 	return fetch(`${API_GATEWAY}/tools/bids/databases?owner=${owner}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(data => data.json())
+	.then(checkError)
 }
 
 export const createBidsDatabase = async (
@@ -44,6 +46,20 @@ export const getParticipants = async (
 		},
 	})
 		.then(data => data.json())
+}
+
+export const getSubject = async (
+	path: string,
+	userId: string,
+	subject: string,
+): Promise<BIDSSubject[]> => {
+	const url = `${API_GATEWAY}/tools/bids/subject?path=${path}&owner=${userId}&sub=${subject}`
+	return fetch(url, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+	.then(checkError)
 }
 
 export const importSubject = async (
