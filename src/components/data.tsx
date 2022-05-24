@@ -59,7 +59,6 @@ const columns: GridColDef[] = [
 // https://hip.local/apps/files/?dir=
 
 const Data = (): JSX.Element => {
-	const [error, setError] = useState<Error | null>()
 	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0)
 	const {
 		containers: [containers],
@@ -71,9 +70,9 @@ const Data = (): JSX.Element => {
 		<>
 			<TitleBar title='Data' />
 
-			{error && (
-				<Alert severity='error'>{error.message}</Alert>
-			)}
+			{bidsDatabases?.error && bidsDatabases?.error && (
+					<Alert severity='error'>{bidsDatabases?.error.message}</Alert>
+				)}
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>Private Data</Typography>
@@ -102,7 +101,7 @@ const Data = (): JSX.Element => {
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
 					BIDS Databases{' '}
-					{!bidsDatabases && !error && (
+					{!bidsDatabases && (
 						<CircularProgress size={16} />
 					)}
 				</Typography>
@@ -110,7 +109,7 @@ const Data = (): JSX.Element => {
 				<Box sx={{ height: 500, width: '100%' }}>
 					<DataGrid
 						getRowId={(params) => params.Name}
-						rows={bidsDatabases || []}
+						rows={bidsDatabases?.data || []}
 						columns={columns}
 						pageSize={100}
 						rowsPerPageOptions={[100]}
