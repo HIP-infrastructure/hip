@@ -140,7 +140,11 @@ const BidsConverter = () => {
 
 	return (
 		<>
-			<TitleBar title='Bids Converter' />
+			<TitleBar
+				title='Bids Converter'
+				description={'Import uploaded data into a BIDS database'}
+			/>
+
 			<Box sx={{ width: '100%', mt: 3 }}>
 				<Stepper nonLinear activeStep={activeStep}>
 					{steps.map((label, index) => {
@@ -153,8 +157,7 @@ const BidsConverter = () => {
 								<StepButton
 									color='inherit'
 									disabled={
-										!selectedBidsDatabase ||
-										(index === 3 && !selectedFiles)
+										!selectedBidsDatabase || (index === 3 && !selectedFiles)
 									}
 									onClick={handleStep(index)}
 									{...labelProps}
@@ -200,7 +203,7 @@ const BidsConverter = () => {
 					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Select files, modalities and entities</strong>
+								<strong>Import Files in {selectedBidsDatabase?.Name}</strong>
 							</Typography>
 							<Files />
 							<StepNavigation
@@ -215,7 +218,10 @@ const BidsConverter = () => {
 					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong> BIDS Conversion Summary</strong>
+								<strong>
+									{' '}
+									BIDS Conversion Summary for {selectedBidsDatabase?.Name}
+								</strong>
 							</Typography>
 							<Summary completed={completed} />
 							<Participants />
