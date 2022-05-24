@@ -89,6 +89,9 @@ const Session = (): JSX.Element => {
 					setSessionIsAlive(true)
 				}
 			})
+			.catch(e => {
+				console.log(e)
+			})
 		}, 1000)
 		return () => {
 			if (intervalRef.current) clearInterval(intervalRef.current)
