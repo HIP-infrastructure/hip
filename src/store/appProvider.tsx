@@ -25,8 +25,10 @@ export interface IAppState {
 	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
 	bidsDatabases: [
-		BIDSDatabase[] | null,
-		React.Dispatch<React.SetStateAction<BIDSDatabase[] | null>>
+		{ data?: BIDSDatabase[]; error?: Error } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: BIDSDatabase[]; error?: Error } | undefined>
+		>
 	]
 	selectedBidsDatabase: [
 		BIDSDatabase | null,
@@ -61,9 +63,10 @@ export const AppStoreProvider = ({
 		IAppState['availableApps']
 	>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [bidsDatabases, setBidsDatabases] = useState<BIDSDatabase[] | null>(
-		null
-	)
+	const [bidsDatabases, setBidsDatabases] = useState<{
+		data?: BIDSDatabase[]
+		error?: Error
+	}>()
 	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<
 		BIDSDatabase
 	>()
@@ -91,13 +94,15 @@ export const AppStoreProvider = ({
 				setAvailableApps({ error })
 			})
 
-		getBidsDatabases(currentUser.uid).then(response => {
-			if (response.error) {
-				throw new Error(error?.message)
-			}
-
-			if (response.data) setBidsDatabases(response.data)
-		})
+		getBidsDatabases(currentUser.uid)
+			.then(data => {
+				if (data) {
+					setBidsDatabases({ data })
+				}
+			})
+			.catch(error => {
+				setBidsDatabases({ error })
+			})
 
 		setInterval(() => {
 			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
