@@ -25,6 +25,8 @@ import { File, TreeNode } from '../../../api/types'
 import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
+import  Dropdown from './dropdown'
+
 
 const Files = (): JSX.Element => {
 	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
@@ -43,7 +45,6 @@ const Files = (): JSX.Element => {
 		user: [user, setUser],
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -89,6 +90,7 @@ const Files = (): JSX.Element => {
 			})
 			.catch(e => {
 				console.log(e)
+				setEntites(entitiesByModality)
 			})
 	}, [selectedSubject, modality])
 
@@ -212,9 +214,10 @@ const Files = (): JSX.Element => {
 					onSubmit={async (values, { resetForm }) => {
 						setSubmitted(true)
 
-						const participant = participants?.find(
+						const participant = selectedBidsDatabase?.participants?.find(
 							p => p.participant_id === values.subject
 						)
+
 						if (
 							participant &&
 							!selectedParticipants
@@ -257,7 +260,7 @@ const Files = (): JSX.Element => {
 									gap: '0.8em 0.8em',
 								}}
 							>
-								{participants && (
+								{selectedBidsDatabase?.participants && (
 									<Box>
 										<TextField
 											fullWidth
@@ -279,7 +282,7 @@ const Files = (): JSX.Element => {
 													: 'Select a subject to import files for'
 											}
 										>
-											{participants?.map(p => (
+											{selectedBidsDatabase?.participants?.map(p => (
 												<MenuItem
 													key={p.participant_id}
 													value={p.participant_id}
@@ -378,6 +381,7 @@ const Files = (): JSX.Element => {
 												</TextField>
 											</Box>
 										))}
+										<Dropdown /> 
 									</Box>
 								)}
 								{values.entities && (

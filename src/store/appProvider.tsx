@@ -34,10 +34,6 @@ export interface IAppState {
 		BIDSDatabase | null,
 		React.Dispatch<React.SetStateAction<BIDSDatabase | null>>
 	]
-	participants: [
-		Participant[] | null,
-		React.Dispatch<React.SetStateAction<Participant[] | null>>
-	]
 	selectedParticipants: [
 		Participant[],
 		React.Dispatch<React.SetStateAction<Participant[]>>
@@ -70,7 +66,6 @@ export const AppStoreProvider = ({
 	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<
 		BIDSDatabase
 	>()
-	const [participants, setParticipants] = useState<Participant[]>()
 	const [selectedParticipants, setSelectedParticipants] = useState<
 		Participant[]
 	>()
@@ -117,7 +112,6 @@ export const AppStoreProvider = ({
 			containers: [data?.data || [], error],
 			bidsDatabases: [bidsDatabases, setBidsDatabases],
 			selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-			participants: [participants, setParticipants],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
 		}),
@@ -133,8 +127,6 @@ export const AppStoreProvider = ({
 			setBidsDatabases,
 			selectedBidsDatabase,
 			setSelectedBidsDatabase,
-			participants,
-			setParticipants,
 			selectedParticipants,
 			setSelectedParticipants,
 			selectedFiles,

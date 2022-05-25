@@ -13,7 +13,7 @@ import {
 } from '@mui/x-data-grid'
 import React, { useEffect, useRef, useState } from 'react'
 import { getBidsDatabases, getParticipants } from '../../../api/bids'
-import { GridApiRef } from '../../../api/types'
+import { GridApiRef, Participant } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
@@ -31,7 +31,6 @@ const Databases = (): JSX.Element => {
 		user: [user, setUser],
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -68,16 +67,6 @@ const Databases = (): JSX.Element => {
 		)
 		if (selected?.Name) {
 			setSelectedBidsDatabase(selected)
-
-			if (selected?.path && selected.path !== selectedBidsDatabase?.path) {
-				setParticipants(null)
-
-				if (user?.uid) {
-					getParticipants(selected?.path, user.uid).then(response => {
-						setParticipants(response)
-					})
-				}
-			}
 		}
 	}, [selectionModel])
 
@@ -321,15 +310,15 @@ const Databases = (): JSX.Element => {
 			flex: 0.5,
 			editable: true,
 		},
-		// {
-		// 	field: 'Participants',
-		// 	headerName: 'Participants',
-		// 	sortable: false,
-		// 	align: 'right',
-		// 	renderCell: (params: { value: Participant[] | undefined }) =>
-		// 		`${params.value?.length || 0}`,
-		// 	width: 120,
-		// },
+		{
+			field: 'participants',
+			headerName: 'Participants',
+			sortable: false,
+			align: 'right',
+			renderCell: (params: { value: Participant[] | undefined }) =>
+				`${params.value?.length || 0}`,
+				flex: 0.5,
+			},
 		{
 			field: 'Authors',
 			headerName: 'Authors',

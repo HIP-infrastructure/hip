@@ -91,6 +91,7 @@ export type BIDSDatabaseResponse = { data?: BIDSDatabase[]; error?: Error }
 
 export interface BIDSDatabase {
 	path?: string
+	participants?: Participant[]
 	Name?: string
 	BIDSVersion?: string
 	Licence?: string

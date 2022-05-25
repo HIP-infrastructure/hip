@@ -33,14 +33,13 @@ const Participants = (): JSX.Element => {
 		user: [user, setUser],
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	useEffect(() => {
-		if (participants) setRows(participants)
-	}, [participants, setRows])
+		if (selectedBidsDatabase?.participants) setRows(selectedBidsDatabase.participants)
+	}, [selectedBidsDatabase, setRows])
 
 	const constantsColumns = ['participant_id', 'age', 'sex']
 	const columns: GridColumns = [
@@ -67,7 +66,7 @@ const Participants = (): JSX.Element => {
 			flex: 0.5,
 			editable: true,
 		},
-		...(participants
+		...(selectedBidsDatabase?.participants
 			?.reduce(
 				(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
 				[] as string[]
@@ -130,7 +129,7 @@ const Participants = (): JSX.Element => {
 					}}
 				>
 					<Typography variant='h6'>
-						Participants {!participants && <CircularProgress size={16} />}
+						Participants {!selectedBidsDatabase && <CircularProgress size={16} />}
 					</Typography>
 				</Box>
 				<Box
@@ -170,12 +169,15 @@ const Participants = (): JSX.Element => {
 									<CreateField
 										handleCreateField={({ key }) => {
 											if (key) {
-												const nextParticipants = participants?.map(p => ({
+												const nextParticipants = selectedBidsDatabase?.participants?.map(p => ({
 													...p,
 													[key]: '',
 												}))
 
-												if (nextParticipants) setParticipants(nextParticipants)
+												if (nextParticipants) setSelectedBidsDatabase({
+													...selectedBidsDatabase,
+													participants: nextParticipants
+												})
 											}
 										}}
 									/>

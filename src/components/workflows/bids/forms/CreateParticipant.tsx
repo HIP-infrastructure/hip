@@ -44,20 +44,19 @@ const CreateParticipant = ({
         user: [user, setUser],
         bidsDatabases: [bidsDatabases, setBidsDatabases],
         selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-        participants: [participants, setParticipants],
         selectedParticipants: [selectedParticipants, setSelectedParticipants],
         selectedFiles: [selectedFiles, setSelectedFiles],
     } = useAppStore()
 
     useEffect(() => {
-        if (participants) {
-            const one = JSON.parse(JSON.stringify(participants)).pop()
+        if (selectedBidsDatabase?.participants) {
+            const one = JSON.parse(JSON.stringify(selectedBidsDatabase.participants)).pop()
             if (one) {
                 const participantFields = Object.keys(one)
                 setFields(participantFields)
             }
         }
-    }, [participants])
+    }, [selectedBidsDatabase])
 
     const initialValues = fields?.reduce((a, f) => ({ ...a, [f]: '' }), {})
 
@@ -84,8 +83,10 @@ const CreateParticipant = ({
                         setSubmitted(true)
                         setSelectedParticipants([values])
 
-                        const nextParticipants = [...(participants || []), values]
-                        if (nextParticipants) setParticipants(nextParticipants)
+                        const nextParticipants = [...(selectedBidsDatabase?.participants || []), values]
+                        if (nextParticipants) setSelectedBidsDatabase({
+                            ...selectedBidsDatabase,
+                            participants: nextParticipants})
 
                         resetForm()
                         showNotif('Participant created.', 'success')

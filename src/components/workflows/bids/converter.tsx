@@ -39,7 +39,6 @@ const BidsConverter = () => {
 		user: [user, setUser],
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -141,7 +140,7 @@ const BidsConverter = () => {
 	return (
 		<>
 			<TitleBar
-				title='Bids Converter'
+				title='Bids Importer'
 				description={'Import uploaded data into a BIDS database'}
 			/>
 
