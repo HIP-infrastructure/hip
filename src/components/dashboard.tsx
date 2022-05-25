@@ -68,7 +68,6 @@ const Dahsboard = () => {
 		user: [user, setUser],
 		bidsDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		participants: [participants, setParticipants],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -173,7 +172,7 @@ const Dahsboard = () => {
 								<Box sx={{ display: 'flex', alignItems: 'center'}}>
 									<Box sx={{ mr: 0.5 }}>
 										{!bidsDatabases && <CircularProgress size={12} />}
-										{bidsDatabases?.length}
+										{bidsDatabases?.data?.reduce((a, b) => a + (b?.participants?.length || 0), 0)}
 									</Box>
 									<Box>
 										<em> BIDS databases</em>

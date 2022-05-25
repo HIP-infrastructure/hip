@@ -110,13 +110,13 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				},
 				{
 					route: 'private/data',
-					label: 'Data',
+					label: 'Data Explorer',
 					icon: <Folder />,
 					disabled: false,
 				},
 				{
 					route: 'private/workflows/bids',
-					label: 'Bids Converter',
+					label: 'BIDS Importer',
 					icon: <Assignment />,
 					disabled: false,
 				},

@@ -20,7 +20,7 @@ import WorkflowsStatus from './UI/workflowsStatus'
 const availableWorkflows: Workflow[] = [
 	{
 		id: 'bids-converter',
-		label: 'BIDS converter',
+		label: 'BIDS Importer',
 		description: "BIDS tools to convert user's data to BIDS format",
 		state: 'beta',
 		enabled: true,

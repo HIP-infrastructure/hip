@@ -18,8 +18,8 @@ function createData(
 }
 
 const rows = [
-	createData('1', 'BIDS Converter', 'running', '20mn', '98%'),
-	createData('2', 'BIDS Converter', 'completed', '3mn', '100%'),
+	createData('1', 'BIDS Importer', 'running', '20mn', '98%'),
+	createData('2', 'BIDS Importer', 'completed', '3mn', '100%'),
 ]
 
 export default function BasicTable() {
