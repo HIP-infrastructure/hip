@@ -1,3 +1,5 @@
+import { IEntity } from "./api/types"
+
 export const ROUTE_PREFIX = '/apps/hip'
 export const XPRA_PARAMS = 'keyboard=false&sharing=yes&sound=no'
 export const APP_MARGIN_TOP = 50
@@ -62,7 +64,7 @@ export const MODALITIES = [
 	},
 ]
 
-export const ENTITIES = [
+export const ENTITIES: IEntity[] = [
 	{
 		name: 'ses',
 		label: 'Session',
@@ -78,7 +80,7 @@ export const ENTITIES = [
 				required: false,
 			},
 		],
-		modalities: []
+		options: []
 	},
 	{
 		name: 'task',
@@ -87,7 +89,7 @@ export const ENTITIES = [
 			'Identify the task performed by the subject during the acquisition. If used, must be consistent across subjects and sessions. (e.g. eyesclosed)',
 		requirements: [
 			{
-				dataType: '',
+				dataType: 'anat',
 				required: false,
 			},
 			{
@@ -96,7 +98,7 @@ export const ENTITIES = [
 				required: true,
 			},
 		],
-		modalities: []
+		options: []
 	},
 	{
 		name: 'acq',
@@ -113,7 +115,7 @@ export const ENTITIES = [
 				required: false,
 			},
 		],
-		modalities: []
+		options: []
 	},
 	{
 		name: 'ce',
@@ -126,7 +128,7 @@ export const ENTITIES = [
 				required: false,
 			},
 		],
-		modalities: []
+		options: []
 	},
 	{
 		name: 'rec',
@@ -139,6 +141,6 @@ export const ENTITIES = [
 				required: false,
 			},
 		],
-		modalities: []
+		options: []
 	},
 ]

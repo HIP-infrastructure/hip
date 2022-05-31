@@ -103,6 +103,20 @@ export interface BIDSDatabase {
 	DatasetDOI?: string
 }
 
+export type IOption = { label: string; inputValue?: string }
+
+export interface IEntity {
+	name: string
+	label: string
+	description: string
+	requirements: {
+		dataType: string
+		required: boolean
+		modalities?: string[]
+	}[]
+	options: IOption[]
+}
+
 export interface ISearch {
 	name: string
 	isPaginated: true
@@ -122,7 +136,7 @@ export interface ISearchResult {
 	}
 }
 
-export interface BIDSSubject {
+export interface BIDSSubjectFile {
 	sub: string
 	ses: string
 	acq: string
