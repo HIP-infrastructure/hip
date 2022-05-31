@@ -2,7 +2,7 @@ import { API_GATEWAY, checkError } from './gatewayClientAPI'
 import {
 	BIDSDatabase,
 	BIDSDatabaseResponse,
-	BIDSSubject,
+	BIDSSubjectFile,
 	CreateBidsDatabaseDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
@@ -52,7 +52,7 @@ export const getSubject = async (
 	path: string,
 	userId: string,
 	subject: string,
-): Promise<BIDSSubject[]> => {
+): Promise<BIDSSubjectFile[]> => {
 	const url = `${API_GATEWAY}/tools/bids/subject?path=${path}&owner=${userId}&sub=${subject}`
 	return fetch(url, {
 		headers: {

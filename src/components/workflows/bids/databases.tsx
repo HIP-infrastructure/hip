@@ -307,7 +307,7 @@ const Databases = (): JSX.Element => {
 		{
 			field: 'Name',
 			headerName: 'Name',
-			flex: 0.5,
+			flex: 1,
 			editable: true,
 		},
 		{

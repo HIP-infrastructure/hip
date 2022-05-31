@@ -100,7 +100,11 @@ export const AppStoreProvider = ({
 			})
 
 		setInterval(() => {
-			mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
+			try {
+				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
+			} catch (error: any) {
+				throw new Error(error.message)
+			}	
 		}, 3 * 1000)
 	}, [])
 

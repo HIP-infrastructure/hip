@@ -105,7 +105,7 @@ const BidsConverter = () => {
 				<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
 					<Button
 						variant='contained'
-						disabled={activeStep === 0}
+						disabled={activeStep === 0 || activeStep === 3}
 						onClick={handleBack}
 						sx={{ mr: 1 }}
 					>
@@ -119,7 +119,7 @@ const BidsConverter = () => {
 							disabled={disabled}
 							onClick={handleConvert}
 						>
-							Convert
+							Import
 						</Button>
 					)}
 					{activeStep !== 2 && activeStep < 3 && (
@@ -218,12 +218,10 @@ const BidsConverter = () => {
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>
-									{' '}
-									BIDS Conversion Summary for {selectedBidsDatabase?.Name}
+									BIDS Importation Summary for {selectedBidsDatabase?.Name}
 								</strong>
 							</Typography>
 							<Summary completed={completed} />
-							<Participants />
 							<StepNavigation activeStep={activeStep} />
 						</Box>
 					</Box>
