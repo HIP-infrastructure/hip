@@ -448,7 +448,7 @@ const Databases = (): JSX.Element => {
 										sx={{ mt: 0.5, mb: 0.5 }}
 										startIcon={<Add />}
 										onClick={handleCreateDatabase}
-										variant={'outlined'}
+										variant={'contained'}
 									>
 										Create BIDS Database
 									</Button>

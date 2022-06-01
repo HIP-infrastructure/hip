@@ -140,7 +140,7 @@ const BidsConverter = () => {
 	return (
 		<>
 			<TitleBar
-				title='Bids Importer'
+				title='BIDS Importer'
 				description={'Import uploaded data into a BIDS database'}
 			/>
 
