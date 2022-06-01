@@ -162,7 +162,7 @@ const Participants = (): JSX.Element => {
 										sx={{ mt: 0.5, mb: 0.5 }}
 										startIcon={<Add />}
 										onClick={handleCreateParticipant}
-										variant={'outlined'}
+										variant='contained'
 									>
 										Add new Participant
 									</Button>

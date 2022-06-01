@@ -1,4 +1,4 @@
-import { Button, TextField, Box } from '@mui/material'
+import { Button, TextField, Box, Tooltip } from '@mui/material'
 import React, { useState } from 'react'
 
 interface Field {
@@ -24,13 +24,17 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 	return (
 		<>
 			{!show && (
-				<Button
-					onClick={() => setShow(!show)}
-					variant='outlined'
-					sx={{ mt: 2 }}
-				>
-					Add Key
-				</Button>
+				<Tooltip title='Add a new field to BIDS Clinical data'>
+					<Button
+						onClick={() => setShow(!show)}
+						variant='outlined'
+						color='primary'
+						size='small'
+						sx={{ mt: 0.5, mb: 0.5, ml: 0.5 }}
+					>
+						Add Key
+					</Button>
+				</Tooltip>
 			)}
 			{show && (
 				<Box sx={{ mt: 2 }}>
