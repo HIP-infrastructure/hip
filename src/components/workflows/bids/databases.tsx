@@ -17,7 +17,7 @@ import Checkbox from '@mui/material/Checkbox'
 
 const Databases = (): JSX.Element => {
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
-	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
 	const {
 		user: [user],
@@ -174,22 +174,18 @@ const Databases = (): JSX.Element => {
 						size='small'
 						sx={{ mt: 0.5, mb: 2 }}
 						startIcon={<Add />}
-						onClick={() => setIsModalOpen(true)}
+						onClick={() => setIsCreateDialogOpen(true)}
 						variant={'contained'}
 					>
 						Create BIDS Database
 					</Button>
 				</Box>
 
-				<DataGrid
-					columns={columns}
-					rows={rows}
-					rowKeyGetter={rowKeyGetter}
-				/>
+				<DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />
 			</Box>
 			<CreateDatabase
-				open={isModalOpen}
-				handleClose={() => setIsModalOpen(!isModalOpen)}
+				open={isCreateDialogOpen}
+				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
 				setDatabaseCreated={setDatabaseCreated}
 			/>
 		</>
