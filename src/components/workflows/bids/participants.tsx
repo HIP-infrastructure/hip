@@ -6,18 +6,14 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import DataGrid from 'react-data-grid'
 import { subEditClinical } from '../../../api/bids'
-import {
-	BIDSDatabase,
-	EditSubjectClinicalDto,
-	Participant,
-} from '../../../api/types'
+import { EditSubjectClinicalDto, Participant } from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import CreateField from '../../UI/createField'
 import CreateParticipant from './forms/CreateParticipant'
-import DataGrid from 'react-data-grid'
-import { useNotification } from '../../../hooks/useNotification'
 
 const Participants = (): JSX.Element => {
 	const { showNotif } = useNotification()
@@ -27,7 +23,6 @@ const Participants = (): JSX.Element => {
 	const {
 		user: [user],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -43,6 +38,8 @@ const Participants = (): JSX.Element => {
 	}: {
 		row: Participant
 		column: { key: string }
+		onRowChange: (row: Participant) => void
+		onClose: (close: boolean) => void
 	}) => {
 		return (
 			<TextField
@@ -139,7 +136,7 @@ const Participants = (): JSX.Element => {
 					<Button
 						color='primary'
 						size='small'
-						sx={{ mt: 0.5, mb: 0.5 }}
+						sx={{ mt: 0.5, mb: 2 }}
 						startIcon={<Add />}
 						onClick={() => setIsCreateDialogOpen(true)}
 						variant='contained'
@@ -155,7 +152,7 @@ const Participants = (): JSX.Element => {
 										[key]: '',
 									}))
 
-								if (nextParticipants)
+								if (nextParticipants && selectedBidsDatabase)
 									setSelectedBidsDatabase({
 										...selectedBidsDatabase,
 										participants: nextParticipants,

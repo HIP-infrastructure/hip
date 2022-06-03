@@ -1,4 +1,4 @@
-import { Article, Delete, Folder, Save, Info } from '@mui/icons-material'
+import { Article, Delete, Folder, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
@@ -18,9 +18,7 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material'
-import { type } from '@testing-library/user-event/dist/type'
 import React, { useEffect, useState } from 'react'
-import * as Yup from 'yup'
 import { getSubject } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import { BIDSSubjectFile, File, IEntity, TreeNode } from '../../../api/types'
@@ -41,7 +39,6 @@ const Files = ({
 }: {
 	handleImportSubject: () => Promise<void>
 }): JSX.Element => {
-	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
 	const [tree, setTree] = useState<TreeNode[]>()
 	const [options, setOptions] = React.useState<string[]>()
 	const [inputValue, setInputValue] = React.useState<string>('')
@@ -57,10 +54,8 @@ const Files = ({
 	const [entities, setEntites] = useState<IEntity[]>()
 
 	const {
-		containers: [containers],
-		user: [user, setUser],
-		bIDSDatabases: [bidsDatabases, setBidsDatabases],
-		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		user: [user],
+		selectedBidsDatabase: [selectedBidsDatabase],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -171,8 +166,6 @@ const Files = ({
 				) || []),
 		]?.map(node => node.data.path)
 
-		// console.log(nextOptions)
-
 		setOptions(nextOptions)
 	}, [tree])
 
@@ -240,10 +233,6 @@ const Files = ({
 		showNotif('File added.', 'success')
 	}
 
-	// const handleEditFile = (file: File) => {
-	// 	const nextFiles = selectedFiles.filter(f => f.path !== file.path)
-	// }
-
 	const existingFiles: IExistingFile = selectedBIDSSubjectFiles?.reduce(
 		(p, c) => {
 			const mods = p?.map(f => f.modality)
@@ -270,7 +259,7 @@ const Files = ({
 					variant='subtitle1'
 					color='text.secondary'
 				>
-					Select modalities, entities and files to be imported
+					Select modalities, entities and files
 				</Typography>
 				<Box
 					sx={{
@@ -316,29 +305,32 @@ const Files = ({
 								</TextField>
 							</Box>
 						)}
-						{existingFiles && (
-							<Box
-								sx={{
-									flex: '1 1',
-								}}
-							>
-								<Typography
-									gutterBottom
-									variant='subtitle2'
-									color='text.secondary'
-								>
-									Existing Files for {selectedSubject}
-								</Typography>
-								<Typography variant='body2' color='text.secondary'>
-									{existingFiles.map(f => (
-										<Box>
-											{f.modality}: {f.files.length} file
-											{f.files.length > 1 ? 's' : ''} ({f.files.toString()})
-										</Box>
-									))}
-								</Typography>
-							</Box>
-						)}
+
+						<Box
+							sx={{
+								flex: '1 1',
+							}}
+						>
+							{existingFiles && (
+								<>
+									<Typography
+										gutterBottom
+										variant='subtitle2'
+										color='text.secondary'
+									>
+										Existing Files for {selectedSubject}
+									</Typography>
+									<Typography variant='body2' color='text.secondary'>
+										{existingFiles.map(f => (
+											<Box>
+												{f.modality}: {f.files.length} file
+												{f.files.length > 1 ? 's' : ''} ({f.files.toString()})
+											</Box>
+										))}
+									</Typography>
+								</>
+							)}
+						</Box>
 					</Box>
 					{selectedSubject && (
 						<Box>
@@ -354,11 +346,6 @@ const Files = ({
 									const m = MODALITIES.find(m => m.name === event.target.value)
 									if (m) setModality(m)
 								}}
-								// onBlur={handleBlur}
-								// error={touched.modality && errors.modality ? true : false}
-								// helperText={
-								// 	touched.modality && errors.modality ? errors.modality : null
-								// }
 							>
 								{MODALITIES?.map(m => (
 									<MenuItem value={m.name} key={m.name}>
@@ -495,13 +482,27 @@ const Files = ({
 			</Grid>
 			<Grid item xs={4}>
 				<Paper elevation={3} sx={{ p: 1 }}>
-					<Typography
-						sx={{ mt: 1, mb: 2 }}
-						variant='subtitle1'
-						color='text.secondary'
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+						}}
 					>
-						Files to be imported
-					</Typography>
+						<Typography
+							sx={{ mt: 1, mb: 2 }}
+							variant='subtitle1'
+							color='text.secondary'
+						>
+							Files to be imported
+						</Typography>
+						<Button
+							sx={{ mt: 1, mb: 2 }}
+							variant='contained'
+							onClick={handleImportSubject}
+						>
+							Import
+						</Button>
+					</Box>
 					<TableContainer component={Paper}>
 						<Table size='small' aria-label='simple table'>
 							<TableHead>
@@ -534,13 +535,6 @@ const Files = ({
 							</TableBody>
 						</Table>
 					</TableContainer>
-					<Button
-						sx={{ mt: 1, float: 'right' }}
-						variant='contained'
-						onClick={handleImportSubject}
-					>
-						Import
-					</Button>
 				</Paper>
 			</Grid>
 		</Grid>

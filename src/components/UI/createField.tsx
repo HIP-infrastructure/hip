@@ -30,7 +30,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 						variant='outlined'
 						color='primary'
 						size='small'
-						sx={{ mt: 0.5, mb: 0.5, ml: 0.5 }}
+						sx={{ mt: 0.5, mb: 2, ml: 0.5 }}
 					>
 						Add Key
 					</Button>

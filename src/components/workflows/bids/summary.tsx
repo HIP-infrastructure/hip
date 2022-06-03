@@ -1,8 +1,8 @@
-import { Delete } from '@mui/icons-material'
+import DoneIcon from '@mui/icons-material/Done'
 import {
 	Box,
 	CircularProgress,
-	IconButton,
+	Link,
 	Paper,
 	Table,
 	TableBody,
@@ -10,20 +10,15 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
+	Typography
 } from '@mui/material'
 import React from 'react'
 import { useAppStore } from '../../../store/appProvider'
-import DoneIcon from '@mui/icons-material/Done'
 
 const Summary = ({ completed }: { completed: boolean }): JSX.Element => {
 	const {
-		containers: [containers],
-		user: [user, setUser],
-		bIDSDatabases: [bidsDatabases, setBidsDatabases],
-		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles],
+		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedFiles: [selectedFiles],
 	} = useAppStore()
 
 	return (
@@ -36,7 +31,7 @@ const Summary = ({ completed }: { completed: boolean }): JSX.Element => {
 				>
 					Importing files
 				</Typography>
-				<TableContainer component={Paper}>
+				<TableContainer sx={{ mt: 1, mb: 2 }} component={Paper}>
 					<Table size='small' aria-label='simple table'>
 						<TableHead>
 							<TableRow>
@@ -64,6 +59,13 @@ const Summary = ({ completed }: { completed: boolean }): JSX.Element => {
 						</TableBody>
 					</Table>
 				</TableContainer>
+
+				<Link
+					target='_blank'
+					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDatabase?.path}`}
+				>
+					{selectedBidsDatabase?.path}
+				</Link>
 			</Box>
 		</Box>
 	)
