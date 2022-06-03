@@ -21,6 +21,7 @@
         "notistack": "^2.0.5",
         "query-string": "^7.1.1",
         "react": "^18.1.0",
+        "react-data-grid": "^7.0.0-beta.13",
         "react-dom": "^18.1.0",
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
