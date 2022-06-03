@@ -37,7 +37,7 @@ const BidsConverter = () => {
 	const {
 		containers: [containers],
 		user: [user, setUser],
-		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
@@ -59,13 +59,13 @@ const BidsConverter = () => {
 		setActiveStep(0)
 	}
 
-	const handleConvert = async () => {
+	const handleImportSubject = async () => {
 		if (!user?.uid && !selectedBidsDatabase?.path) {
 			showNotif('No database selected', 'error')
 			return
 		}
 
-		const subjects = selectedParticipants.map(s => {
+		const subjects = selectedParticipants?.map(s => {
 			const { participant_id, ...other } = s
 
 			return {
@@ -112,16 +112,6 @@ const BidsConverter = () => {
 						Back
 					</Button>
 					<Box sx={{ flex: '1 1 auto' }} />
-					{activeStep === 2 && (
-						<Button
-							sx={{ mr: 1 }}
-							variant='contained'
-							disabled={disabled}
-							onClick={handleConvert}
-						>
-							Import
-						</Button>
-					)}
 					{activeStep !== 2 && activeStep < 3 && (
 						<Button
 							sx={{ mr: 1 }}
@@ -174,7 +164,7 @@ const BidsConverter = () => {
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Select or create a BIDS Database</strong>
 							</Typography>
-							{error && showNotif(error.message, 'error')}
+							{/* {error && showNotif(error.message, 'error')} */}
 							<Databases />
 							<StepNavigation
 								disabled={!selectedBidsDatabase}
@@ -204,7 +194,7 @@ const BidsConverter = () => {
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Import Files in {selectedBidsDatabase?.Name}</strong>
 							</Typography>
-							<Files />
+							<Files handleImportSubject={handleImportSubject} />
 							<StepNavigation
 								disabled={!selectedBidsDatabase || !selectedFiles}
 								activeStep={activeStep}

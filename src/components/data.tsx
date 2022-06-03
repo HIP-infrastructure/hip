@@ -63,7 +63,7 @@ const Data = (): JSX.Element => {
 	const {
 		containers: [containers],
 		user: [user, setUser],
-		bidsDatabases: [bidsDatabases, setBidsDatabases]
+		bIDSDatabases: [bidsDatabases, setBidsDatabases]
 	} = useAppStore()
 	
 	return (

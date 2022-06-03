@@ -61,7 +61,7 @@ const spaces = [
 const Dahsboard = () => {
 	const {
 		containers: [containers],
-		bidsDatabases: [bidsDatabases],
+		bIDSDatabases: [bidsDatabases],
 	} = useAppStore()
 	const navigate = useNavigate()
 
