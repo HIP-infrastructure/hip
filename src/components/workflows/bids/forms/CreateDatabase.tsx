@@ -128,7 +128,7 @@ const CreateDatabase = ({
 											helperText={
 												touched.Name && errors.Name
 													? errors.Name
-													: ''
+													: 'Name is required'
 											}
 										/>
 									</Grid>
