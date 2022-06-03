@@ -7,7 +7,7 @@ import Apps from './components/apps'
 import CollaborativeData from './components/collab/data'
 import CollaborativeSessions from './components/collab/sessions'
 import CollaborativeWorkflows from './components/collab/workflows'
-import Dashboard from './components/dashboard'
+import Dashboard from './components/Dashboard'
 import Data from './components/data'
 import Documentation from './components/documentation'
 import Navigation from './components/navigation'
@@ -59,8 +59,8 @@ const Layout = (): JSX.Element => {
 				{isSmUp ? null : (
 					<Navigation
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-					// open={mobileOpen}
-					// onClose={handleDrawerToggle}
+						// open={mobileOpen}
+						// onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation PaperProps={{ style: { width: DRAWER_WIDTH } }} />

@@ -6,17 +6,14 @@ import {
 	CardContent,
 	CardMedia,
 	CircularProgress,
-	Grid,
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppContainer, Container, ContainerType } from '../api/types'
 import CollaborativeImage from '../assets/dashboard__collaborative.png'
 import PrivateImage from '../assets/dashboard__private.png'
 import PublicImage from '../assets/dashboard__public.png'
 import { ROUTE_PREFIX } from '../constants'
-import { useNotification } from '../hooks/useNotification'
 import { useAppStore } from '../store/appProvider'
 
 const spaces = [
@@ -62,23 +59,11 @@ const spaces = [
 ]
 
 const Dahsboard = () => {
-	const { showNotif } = useNotification()
 	const {
 		containers: [containers],
-		user: [user, setUser],
-		bidsDatabases: [bidsDatabases, setBidsDatabases],
-		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles],
+		bidsDatabases: [bidsDatabases],
 	} = useAppStore()
 	const navigate = useNavigate()
-
-	const sessions = containers
-		?.filter((container: Container) => container.type === ContainerType.SESSION)
-		.map((s: Container) => ({
-			...s,
-			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
-		}))
 
 	return (
 		<Box sx={{ width: 0.75 }}>
@@ -90,7 +75,6 @@ const Dahsboard = () => {
 					The HIP - a platform for state-of-the-art processing and international
 					sharing of HUMAN intracerebral EEG data
 				</Typography>
-				{/* <Link href="https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/">Website</Link> */}
 			</Box>
 			<Box
 				sx={{
@@ -130,20 +114,8 @@ const Dahsboard = () => {
 										gutterBottom
 										variant='caption'
 										color='text.secondary'
-									>
-										{/* {user?.displayName} */}
-									</Typography>
+									></Typography>
 								</Box>
-								{/* <Box>
-                                <Chip
-                                    label={
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            {space.state}
-                                        </Box>}
-                                    // color={color(space.state)}
-                                    variant="outlined"
-                                />
-                            </Box> */}
 							</Box>
 
 							<Typography
@@ -153,35 +125,33 @@ const Dahsboard = () => {
 								color='text.secondary'
 							>
 								{space.description}
-								{/* {space.apps.map(app => (
-                                <span key={app.name}>
-                                    <strong>{app.app}</strong>: {app.state}
-                                    <br />
-                                    {app.error?.message}
-                                </span>
-                            ))} */}
 							</Typography>
-
-							<Typography sx={{ mt: 2 }} variant='body2' color='text.secondary'>
-								{containers?.length} <em>Opened desktop</em>
-							</Typography>
-							<Typography
-								variant='body2'
-								color='text.secondary'
-							>
-								<Box sx={{ display: 'flex', alignItems: 'center'}}>
-									<Box sx={{ mr: 0.5 }}>
-										{!bidsDatabases && <CircularProgress size={12} />}
-										{bidsDatabases?.data?.reduce((a, b) => a + (b?.participants?.length || 0), 0)}
+							{!space.disabled && (
+								<>
+									<Typography
+										sx={{ mt: 2 }}
+										variant='body2'
+										color='text.secondary'
+									>
+										{containers?.length} <em>Opened desktop</em>
+									</Typography>
+									<Box sx={{ display: 'flex', alignItems: 'center' }}>
+										<Box sx={{ mr: 0.5 }}>
+											<Typography variant='body2' color='text.secondary'>
+												{!bidsDatabases && <CircularProgress size={12} />}
+												{bidsDatabases?.data?.reduce(
+													(a, b) => a + (b?.participants?.length || 0),
+													0
+												)}{' '}
+												<em>subjects</em> in{' '}
+												{!bidsDatabases && <CircularProgress size={12} />}
+												{bidsDatabases?.data?.length}
+												<em> BIDS databases</em>
+											</Typography>
+										</Box>
 									</Box>
-									<Box>
-										<em> BIDS databases</em>
-									</Box>
-								</Box>
-							</Typography>
-							<Typography variant='body2' color='text.secondary'>
-								n/a <em>subjects</em>
-							</Typography>
+								</>
+							)}
 						</CardContent>
 
 						<CardActions sx={{ p: 2, alignSelf: 'end' }}>
