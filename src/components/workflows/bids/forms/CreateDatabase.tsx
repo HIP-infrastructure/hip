@@ -65,7 +65,7 @@ const CreateDatabase = ({
 					alignItems: 'center',
 				}}
 			>
-				<Typography variant='h6'>Create BIDS Database</Typography>
+				Create BIDS Database
 				<IconButton onClick={handleClose}>
 					<Close />
 				</IconButton>
