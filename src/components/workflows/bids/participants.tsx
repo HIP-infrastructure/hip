@@ -1,70 +1,108 @@
 import { Add } from '@mui/icons-material'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import {
-	DataGrid,
-	GridColumns,
-	GridRowsProp,
-	GridSelectionModel,
-	GridToolbarContainer,
-	GridRowId,
-} from '@mui/x-data-grid'
+	Box,
+	Button,
+	CircularProgress,
+	TextField,
+	Typography,
+} from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { subEditClinical } from '../../../api/bids'
 import {
 	BIDSDatabase,
 	EditSubjectClinicalDto,
-	GridApiRef,
 	Participant,
 } from '../../../api/types'
-import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import CreateField from '../../UI/createField'
 import CreateParticipant from './forms/CreateParticipant'
+import DataGrid from 'react-data-grid'
+import { useNotification } from '../../../hooks/useNotification'
 
 const Participants = (): JSX.Element => {
 	const { showNotif } = useNotification()
-	const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([])
-	const [rows, setRows] = useState<GridRowsProp>([])
-	const apiRef = useRef<GridApiRef | null>(null)
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [participantCreated, setParticipantCreated] = useState(false)
+	const [rows, setRows] = useState<Participant[]>([])
+	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+	const [_participantCreated, setParticipantCreated] = useState(false)
 	const {
-		containers: [containers],
-		user: [user, setUser],
-		bIDSDatabases: [bidsDatabases, setBidsDatabases],
+		user: [user],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	useEffect(() => {
-		if (selectedBidsDatabase?.participants) setRows(selectedBidsDatabase.participants)
+		if (selectedBidsDatabase?.participants)
+			setRows(selectedBidsDatabase.participants)
 	}, [selectedBidsDatabase, setRows])
 
+	const editor = ({
+		row,
+		column,
+		onRowChange,
+		onClose,
+	}: {
+		row: Participant
+		column: { key: string }
+	}) => {
+		return (
+			<TextField
+				value={row[column.key]}
+				onChange={event => {
+					onRowChange({ ...row, [column.key]: event.target.value })
+				}}
+				onBlur={() => onClose(true)}
+				onKeyPress={event => {
+					console.log(`Pressed keyCode ${event.key}`)
+					if (event.key === '0') {
+						// Do code here
+						event.preventDefault()
+
+						if (
+							!user?.uid ||
+							!selectedBidsDatabase?.Name ||
+							!selectedBidsDatabase?.path
+						) {
+							return
+						}
+
+						const subEditClinicalDto: EditSubjectClinicalDto = {
+							owner: user.uid,
+							database: selectedBidsDatabase.Name,
+							path: selectedBidsDatabase.path,
+							subject: `${row.participant_id}`.replace('sub-', ''),
+							clinical: { ...row, [column.key]: event.target.value },
+						}
+
+						subEditClinical(subEditClinicalDto)
+							.then(data => {
+								console.log(data)
+								showNotif('Participant saved', 'success')
+							})
+							.catch(error => {
+								console.log(error)
+								showNotif('Participant not saved', 'error')
+							})
+					}
+				}}
+			/>
+		)
+	}
+
 	const constantsColumns = ['participant_id', 'age', 'sex']
-	const columns: GridColumns = [
+	const columns = [
 		{
-			field: 'participant_id',
-			headerName: 'participant_id',
-			flex: 0.5,
-			editable: false,
-			renderCell: (params: any) => {
-				// This is a hack to assign access to the internal Grid API
-				apiRef.current = params.api
-				return params.value
-			},
+			key: 'participant_id',
+			name: 'participant_id',
+			resizable: true,
+			frozen: true,
 		},
 		{
-			field: 'age',
-			headerName: 'age',
-			flex: 0.5,
-			editable: true,
+			key: 'age',
+			name: 'age',
 		},
 		{
-			field: 'sex',
-			headerName: 'sex',
-			flex: 0.5,
-			editable: true,
+			key: 'sex',
+			name: 'sex',
 		},
 		...(selectedBidsDatabase?.participants
 			?.reduce(
@@ -73,50 +111,15 @@ const Participants = (): JSX.Element => {
 			)
 			.filter((key: string) => !constantsColumns.includes(key))
 			.map((key: string) => ({
-				field: key,
-				headerName: key,
-				flex: 0.5,
-				editable: true,
+				key,
+				name: key,
+				resizable: true,
 			})) || []),
 	]
 
-	const handleCreateParticipant = () => {
-		setIsModalOpen(true)
+	function rowKeyGetter(row: Participant) {
+		return row.participant_id
 	}
-
-	// const onRowEditCommit = async (id: GridRowId) => {
-	// 	const model = apiRef?.current?.getEditRowsModel() // This object contains all rows that are being edited
-	// 	const clinical = Object.entries(model[id]).reduce(
-	// 		(a, [k, v]) => ({ ...a, [k]: v.value }),
-	// 		{}
-	// 	)
-
-	// 	if (
-	// 		!user?.uid ||
-	// 		!selectedBidsDatabase?.Name ||
-	// 		!selectedBidsDatabase?.path
-	// 	) {
-	// 		return
-	// 	}
-
-	// 	const subEditClinicalDto: EditSubjectClinicalDto = {
-	// 		owner: user.uid,
-	// 		database: selectedBidsDatabase.Name,
-	// 		path: selectedBidsDatabase.path,
-	// 		subject: `${id}`.replace('sub-', ''),
-	// 		clinical,
-	// 	}
-
-	// 	subEditClinical(subEditClinicalDto)
-	// 	.then(data => {
-	// 		console.log(data)
-	// 		showNotif('Participant saved', 'success')
-	// 	})
-	// 	.catch(error => {
-	// 		console.log(error)
-	// 		showNotif('Participant not saved', 'error')
-	// 	})
-	// }
 
 	return (
 		<>
@@ -129,70 +132,43 @@ const Participants = (): JSX.Element => {
 					}}
 				>
 					<Typography variant='h6'>
-						Participants {!selectedBidsDatabase && <CircularProgress size={16} />}
+						Participants{' '}
+						{!selectedBidsDatabase && <CircularProgress size={16} />}
 					</Typography>
-				</Box>
-				<Box
-					sx={{
-						height: 500,
-						width: '100%',
-						'& .actions': {
-							color: 'text.secondary',
-						},
-						'& .textPrimary': {
-							color: 'text.primary',
-						},
-					}}
-				>
-					<DataGrid
-						// experimentalFeatures={{ newEditingApi: true }}
-						getRowId={params => params?.participant_id}
-						// onRowEditCommit={onRowEditCommit}
-						rows={rows}
-						columns={columns}
-						pageSize={100}
-						rowsPerPageOptions={[100]}
-						editMode='row'
-						components={{
-							Toolbar: () => (
-								<GridToolbarContainer>
-									<Button
-										color='primary'
-										size='small'
-										sx={{ mt: 0.5, mb: 0.5 }}
-										startIcon={<Add />}
-										onClick={handleCreateParticipant}
-										variant='contained'
-									>
-										Add new Participant
-									</Button>
-									<CreateField
-										handleCreateField={({ key }) => {
-											if (key) {
-												const nextParticipants = selectedBidsDatabase?.participants?.map(p => ({
-													...p,
-													[key]: '',
-												}))
+					<Box sx={{ flex: '1 0' }} />
+					<Button
+						color='primary'
+						size='small'
+						sx={{ mt: 0.5, mb: 0.5 }}
+						startIcon={<Add />}
+						onClick={() => setIsCreateDialogOpen(true)}
+						variant='contained'
+					>
+						Add new Participant
+					</Button>
+					<CreateField
+						handleCreateField={({ key }) => {
+							if (key) {
+								const nextParticipants =
+									selectedBidsDatabase?.participants?.map(p => ({
+										...p,
+										[key]: '',
+									}))
 
-												if (nextParticipants) setSelectedBidsDatabase({
-													...selectedBidsDatabase,
-													participants: nextParticipants
-												})
-											}
-										}}
-									/>
-								</GridToolbarContainer>
-							),
-						}}
-						componentsProps={{
-							toolbar: { apiRef },
+								if (nextParticipants)
+									setSelectedBidsDatabase({
+										...selectedBidsDatabase,
+										participants: nextParticipants,
+									})
+							}
 						}}
 					/>
 				</Box>
+				<DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />
 			</Box>
 			<CreateParticipant
-				open={isModalOpen}
-				handleClose={() => setIsModalOpen(!isModalOpen)}
+				open={isCreateDialogOpen}
+				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
 				setParticipantCreated={setParticipantCreated}
 			/>
 		</>
