@@ -31,7 +31,7 @@ const Participants = (): JSX.Element => {
 	const {
 		containers: [containers],
 		user: [user, setUser],
-		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
@@ -84,39 +84,39 @@ const Participants = (): JSX.Element => {
 		setIsModalOpen(true)
 	}
 
-	const onRowEditCommit = async (id: GridRowId) => {
-		const model = apiRef?.current?.getEditRowsModel() // This object contains all rows that are being edited
-		const clinical = Object.entries(model[id]).reduce(
-			(a, [k, v]) => ({ ...a, [k]: v.value }),
-			{}
-		)
+	// const onRowEditCommit = async (id: GridRowId) => {
+	// 	const model = apiRef?.current?.getEditRowsModel() // This object contains all rows that are being edited
+	// 	const clinical = Object.entries(model[id]).reduce(
+	// 		(a, [k, v]) => ({ ...a, [k]: v.value }),
+	// 		{}
+	// 	)
 
-		if (
-			!user?.uid ||
-			!selectedBidsDatabase?.Name ||
-			!selectedBidsDatabase?.path
-		) {
-			return
-		}
+	// 	if (
+	// 		!user?.uid ||
+	// 		!selectedBidsDatabase?.Name ||
+	// 		!selectedBidsDatabase?.path
+	// 	) {
+	// 		return
+	// 	}
 
-		const subEditClinicalDto: EditSubjectClinicalDto = {
-			owner: user.uid,
-			database: selectedBidsDatabase.Name,
-			path: selectedBidsDatabase.path,
-			subject: `${id}`.replace('sub-', ''),
-			clinical,
-		}
+	// 	const subEditClinicalDto: EditSubjectClinicalDto = {
+	// 		owner: user.uid,
+	// 		database: selectedBidsDatabase.Name,
+	// 		path: selectedBidsDatabase.path,
+	// 		subject: `${id}`.replace('sub-', ''),
+	// 		clinical,
+	// 	}
 
-		subEditClinical(subEditClinicalDto)
-		.then(data => {
-			console.log(data)
-			showNotif('Participant saved', 'success')
-		})
-		.catch(error => {
-			console.log(error)
-			showNotif('Participant not saved', 'error')
-		})
-	}
+	// 	subEditClinical(subEditClinicalDto)
+	// 	.then(data => {
+	// 		console.log(data)
+	// 		showNotif('Participant saved', 'success')
+	// 	})
+	// 	.catch(error => {
+	// 		console.log(error)
+	// 		showNotif('Participant not saved', 'error')
+	// 	})
+	// }
 
 	return (
 		<>
@@ -147,7 +147,7 @@ const Participants = (): JSX.Element => {
 					<DataGrid
 						// experimentalFeatures={{ newEditingApi: true }}
 						getRowId={params => params?.participant_id}
-						onRowEditCommit={onRowEditCommit}
+						// onRowEditCommit={onRowEditCommit}
 						rows={rows}
 						columns={columns}
 						pageSize={100}

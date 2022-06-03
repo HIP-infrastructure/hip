@@ -42,7 +42,7 @@ const CreateParticipant = ({
     const {
         containers: [containers],
         user: [user, setUser],
-        bidsDatabases: [bidsDatabases, setBidsDatabases],
+        bIDSDatabases: [bidsDatabases, setBidsDatabases],
         selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
         selectedParticipants: [selectedParticipants, setSelectedParticipants],
         selectedFiles: [selectedFiles, setSelectedFiles],

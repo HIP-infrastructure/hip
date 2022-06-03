@@ -24,7 +24,7 @@ export interface IAppState {
 	]
 	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
-	bidsDatabases: [
+	bIDSDatabases: [
 		{ data?: BIDSDatabase[]; error?: Error } | undefined,
 		React.Dispatch<
 			React.SetStateAction<{ data?: BIDSDatabase[]; error?: Error } | undefined>
@@ -114,7 +114,7 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			availableApps,
 			containers: [data?.data || [], error],
-			bidsDatabases: [bidsDatabases, setBidsDatabases],
+			bIDSDatabases: [bidsDatabases, setBidsDatabases],
 			selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],

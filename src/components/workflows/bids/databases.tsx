@@ -17,14 +17,11 @@ import Checkbox from '@mui/material/Checkbox'
 
 const Databases = (): JSX.Element => {
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
-	const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(
-		() => new Set()
-	)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
 	const {
 		user: [user],
-		bidsDatabases: [bidsDatabases, setBidsDatabases],
+		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
 		selectedFiles: [_selectedFiles, setSelectedFiles],
@@ -188,17 +185,6 @@ const Databases = (): JSX.Element => {
 					columns={columns}
 					rows={rows}
 					rowKeyGetter={rowKeyGetter}
-					selectedRows={selectedRows}
-					onSelectedRowsChange={props => {
-						console.log('onSelectedRowsChange')
-						console.log(props)
-						setSelectedRows(props)
-					}}
-					onRowsChange={props => {
-						console.log('onRowsChange')
-						console.log(props)
-						setRows(props)
-					}}
 				/>
 			</Box>
 			<CreateDatabase
