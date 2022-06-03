@@ -30,7 +30,7 @@ const validationSchema = Yup.object().shape({
 const initialValues = {
 	Name: '',
 	BIDSVersion: '1.1.4',
-	Licence: '',
+	License: '',
 	Authors: '',
 	Acknowledgements: '',
 	HowToAcknowledge: '',
@@ -84,7 +84,7 @@ const CreateDatabase = ({
 							DatasetDescJSON: {
 								Name: values.Name,
 								BIDSVersion: values.BIDSVersion,
-								Licence: values.Licence,
+								License: values.License,
 								Authors: values.Authors.split(','),
 								Acknowledgements: values.Acknowledgements,
 								HowToAcknowledge: values.HowToAcknowledge,
@@ -159,12 +159,12 @@ const CreateDatabase = ({
 											fullWidth
 											name='Licence'
 											label='Licence'
-											value={values.Licence}
+											value={values.License}
 											onChange={handleChange}
-											error={touched.Licence && errors.Licence ? true : false}
+											error={touched.License && errors.License ? true : false}
 											helperText={
-												touched.Licence && errors.Licence
-													? errors.Licence
+												touched.License && errors.License
+													? errors.License
 													: null
 											}
 										/>

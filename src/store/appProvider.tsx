@@ -31,14 +31,14 @@ export interface IAppState {
 		>
 	]
 	selectedBidsDatabase: [
-		BIDSDatabase | null,
-		React.Dispatch<React.SetStateAction<BIDSDatabase | null>>
+		BIDSDatabase | undefined,
+		React.Dispatch<React.SetStateAction<BIDSDatabase | undefined>>
 	]
 	selectedParticipants: [
-		Participant[],
-		React.Dispatch<React.SetStateAction<Participant[]>>
+		Participant[] | undefined,
+		React.Dispatch<React.SetStateAction<Participant[] | undefined>>
 	]
-	selectedFiles: [File[], React.Dispatch<React.SetStateAction<File[]>>]
+	selectedFiles: [File[] | undefined, React.Dispatch<React.SetStateAction<File[]  | undefined>>]
 }
 
 export const fetcher = async (url: string): Promise<void> => {
