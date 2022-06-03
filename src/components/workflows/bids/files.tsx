@@ -3,6 +3,7 @@ import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
 	Box,
+	Button,
 	Grid,
 	IconButton,
 	MenuItem,
@@ -35,7 +36,11 @@ type IExistingFile =
 	  }[]
 	| undefined
 
-const Files = (): JSX.Element => {
+const Files = ({
+	handleImportSubject,
+}: {
+	handleImportSubject: () => Promise<void>
+}): JSX.Element => {
 	const [ignored, forceUpdate] = React.useReducer((x: number) => x + 1, 0)
 	const [tree, setTree] = useState<TreeNode[]>()
 	const [options, setOptions] = React.useState<string[]>()
@@ -76,7 +81,7 @@ const Files = (): JSX.Element => {
 				if (d) setSelectedBIDSSubjectFiles(d)
 			})
 			.catch(e => {
-				console.log(e)
+				// console.log(e)
 			})
 	}, [selectedSubject])
 
@@ -201,7 +206,7 @@ const Files = (): JSX.Element => {
 	}
 
 	const handleDeleteFile = (file: File) => {
-		const nextFiles = selectedFiles.filter(f => f.path !== file.path)
+		const nextFiles = selectedFiles?.filter(f => f.path !== file.path)
 		setSelectedFiles(nextFiles)
 	}
 
@@ -235,9 +240,9 @@ const Files = (): JSX.Element => {
 		showNotif('File added.', 'success')
 	}
 
-	const handleEditFile = (file: File) => {
-		const nextFiles = selectedFiles.filter(f => f.path !== file.path)
-	}
+	// const handleEditFile = (file: File) => {
+	// 	const nextFiles = selectedFiles.filter(f => f.path !== file.path)
+	// }
 
 	const existingFiles: IExistingFile = selectedBIDSSubjectFiles?.reduce(
 		(p, c) => {
@@ -274,51 +279,67 @@ const Files = (): JSX.Element => {
 						gap: '0.8em 0.8em',
 					}}
 				>
-					{selectedBidsDatabase?.participants && (
-						<Box>
-							<TextField
-								fullWidth
-								select
-								size='small'
-								disabled={submitted}
-								name='subject'
-								label='Subject'
-								value={selectedSubject}
-								onChange={event => {
-									setSelectedSubject(event.target.value)
+					<Box
+						sx={{
+							display: 'flex',
+							gap: '0.8em 0.8em',
+							mb: 1,
+						}}
+					>
+						{selectedBidsDatabase?.participants && (
+							<Box
+								sx={{
+									flex: '1 1',
 								}}
-								// error={touched.subject && errors.subject ? true : false}
-								// helperText={
-								// 	touched.subject && errors.subject ? errors.subject : null
-								// }
 							>
-								{selectedBidsDatabase?.participants?.map(p => (
-									<MenuItem key={p.participant_id} value={p.participant_id}>
-										{p.participant_id}
-									</MenuItem>
-								))}
-							</TextField>
-						</Box>
-					)}
-					{existingFiles && (
-						<Box sx={{ mb: 1 }}>
-							<Typography
-								gutterBottom
-								variant='subtitle2'
-								color='text.secondary'
+								<TextField
+									fullWidth
+									select
+									size='small'
+									disabled={submitted}
+									name='subject'
+									label='Subject'
+									value={selectedSubject}
+									onChange={event => {
+										setSelectedSubject(event.target.value)
+									}}
+									// error={touched.subject && errors.subject ? true : false}
+									// helperText={
+									// 	touched.subject && errors.subject ? errors.subject : null
+									// }
+								>
+									{selectedBidsDatabase?.participants?.map(p => (
+										<MenuItem key={p.participant_id} value={p.participant_id}>
+											{p.participant_id}
+										</MenuItem>
+									))}
+								</TextField>
+							</Box>
+						)}
+						{existingFiles && (
+							<Box
+								sx={{
+									flex: '1 1',
+								}}
 							>
-								Existing Files for {selectedSubject}
-							</Typography>
-							<Typography variant='body2' color='text.secondary'>
-								{existingFiles.map(f => (
-									<Box>
-										{f.modality}: {f.files.length} file
-										{f.files.length > 1 ? 's' : ''} ({f.files.toString()})
-									</Box>
-								))}
-							</Typography>
-						</Box>
-					)}
+								<Typography
+									gutterBottom
+									variant='subtitle2'
+									color='text.secondary'
+								>
+									Existing Files for {selectedSubject}
+								</Typography>
+								<Typography variant='body2' color='text.secondary'>
+									{existingFiles.map(f => (
+										<Box>
+											{f.modality}: {f.files.length} file
+											{f.files.length > 1 ? 's' : ''} ({f.files.toString()})
+										</Box>
+									))}
+								</Typography>
+							</Box>
+						)}
+					</Box>
 					{selectedSubject && (
 						<Box>
 							<TextField
@@ -513,6 +534,13 @@ const Files = (): JSX.Element => {
 							</TableBody>
 						</Table>
 					</TableContainer>
+					<Button
+						sx={{ mt: 1, float: 'right' }}
+						variant='contained'
+						onClick={handleImportSubject}
+					>
+						Import
+					</Button>
 				</Paper>
 			</Grid>
 		</Grid>
