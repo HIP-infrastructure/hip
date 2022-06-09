@@ -74,7 +74,7 @@ export const importSubject = async (
 		},
 		body: JSON.stringify(createSubject),
 	})
-		.then(data => data.json())
+	.then(checkError)
 }
 
 export const subEditClinical = async (
@@ -90,7 +90,7 @@ export const subEditClinical = async (
 			},
 			body: JSON.stringify(editSubject),
 		})
-		.then(data => data?.json())
+		.then(checkError)
 	} catch (error) {
 		return Promise.reject(error)
 	}
