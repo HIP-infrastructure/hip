@@ -1,3 +1,6 @@
+import React from 'react'
+
+import { Info } from '@mui/icons-material'
 import DoneIcon from '@mui/icons-material/Done'
 import {
 	Box,
@@ -10,16 +13,24 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography
+	Tooltip,
+	Typography,
 } from '@mui/material'
-import React from 'react'
+
+import { CreateSubjectDto } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 
-const Summary = ({ completed }: { completed: boolean }): JSX.Element => {
+const Summary = ({
+	response,
+}: {
+	response?: { error?: Error; data?: CreateSubjectDto }
+}): JSX.Element => {
 	const {
 		selectedBidsDatabase: [selectedBidsDatabase],
 		selectedFiles: [selectedFiles],
 	} = useAppStore()
+
+	const { error, data } = response || {}
 
 	return (
 		<Box>
@@ -48,8 +59,20 @@ const Summary = ({ completed }: { completed: boolean }): JSX.Element => {
 									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 								>
 									<TableCell>
-										{!completed && <CircularProgress size={16} />}
-										{completed && <DoneIcon color='success' />}
+										{!response && <CircularProgress size={16} />}
+										{data && (
+											<Tooltip
+												title={JSON.stringify(data, null, 2)}
+												placement='bottom'
+											>
+												<Info color='success' />
+											</Tooltip>
+										)}
+										{error && (
+											<Tooltip title={error.message} placement='bottom'>
+												<Info color='error' />
+											</Tooltip>
+										)}
 									</TableCell>
 									<TableCell>{file.subject}</TableCell>
 									<TableCell>{file.modality}</TableCell>

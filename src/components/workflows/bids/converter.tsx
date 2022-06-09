@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+
 import {
 	Box,
 	Button,
@@ -6,16 +8,16 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material'
-import React, { useState } from 'react'
+
 import { importSubject } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
 import Databases from './databases'
 import Files from './files'
 import Participants from './participants'
 import Summary from './summary'
-import { useNotification } from '../../../hooks/useNotification'
 
 const boxStyle = {
 	border: 1,
@@ -32,15 +34,13 @@ const steps = ['BIDS Database', 'Participants', 'Files', 'Summary']
 const BidsConverter = () => {
 	const { showNotif } = useNotification()
 	const [activeStep, setActiveStep] = useState(0)
-	const [completed, setCompleted] = useState(false)
-	const [error, setError] = useState<Error>()
+	const [response, setResponse] =
+		useState<{ error?: Error; data?: CreateSubjectDto }>()
 	const {
-		containers: [containers],
-		user: [user, setUser],
-		bIDSDatabases: [bidsDatabases, setBidsDatabases],
-		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-		selectedParticipants: [selectedParticipants, setSelectedParticipants],
-		selectedFiles: [selectedFiles, setSelectedFiles],
+		user: [user],
+		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedParticipants: [selectedParticipants],
+		selectedFiles: [selectedFiles],
 	} = useAppStore()
 
 	const handleNext = () => {
@@ -53,10 +53,6 @@ const BidsConverter = () => {
 
 	const handleStep = (step: number) => () => {
 		setActiveStep(step)
-	}
-
-	const handleReset = () => {
-		setActiveStep(0)
 	}
 
 	const handleImportSubject = async () => {
@@ -84,13 +80,17 @@ const BidsConverter = () => {
 
 		handleNext()
 
-		const newSubject = await importSubject(createSubjectDto as CreateSubjectDto)
-		if (newSubject) {
-			showNotif('Subject imported', 'success')
-			setCompleted(true)
-		} else {
-			showNotif('Subject importation failed', 'error')
-		}
+		importSubject(createSubjectDto as CreateSubjectDto)
+			.then(data => {
+				console.log(data)
+				showNotif('Subject imported', 'success')
+				setResponse({ data })
+			})
+			.catch(error => {
+				console.log(error)
+				showNotif('Subject importation failed', 'error')
+				setResponse({ error })
+			})
 	}
 
 	const StepNavigation = ({
@@ -164,7 +164,6 @@ const BidsConverter = () => {
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Select or create a BIDS Database</strong>
 							</Typography>
-							{/* {error && showNotif(error.message, 'error')} */}
 							<Databases />
 							<StepNavigation
 								disabled={!selectedBidsDatabase}
@@ -211,7 +210,7 @@ const BidsConverter = () => {
 									BIDS Importation Summary for {selectedBidsDatabase?.Name}
 								</strong>
 							</Typography>
-							<Summary completed={completed} />
+							<Summary response={response} />
 							<StepNavigation activeStep={activeStep} />
 						</Box>
 					</Box>

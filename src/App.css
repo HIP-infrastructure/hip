@@ -2,3 +2,13 @@
     overflow-y: hidden;
     overflow-x: hidden;
 }
+
+.selected-row {
+    background-color: #37474f;
+    color: white
+}
+
+.r1otpg64700-beta13:hover {
+    background-color: #37474f;
+    color: white
+}
