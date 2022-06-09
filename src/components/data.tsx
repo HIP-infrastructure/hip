@@ -1,78 +1,97 @@
 import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
-
-// interface ExtendedBIDSDatabase extends BIDSDatabase {
-// 	[key: string]: string[] | string | number
-// }
-
-const columns: GridColDef[] = [
-	{
-		field: 'Name',
-		headerName: 'Name',
-		width: 320,
-	},
-	// {
-	// 	field: 'Participants',
-	// 	headerName: 'Participants',
-	// 	type: 'number',
-	// 	sortable: false,
-	// 	width: 160,
-	// },
-	// {
-	// 	field: 'Browse',
-	// 	headerName: 'Browse',
-	// 	sortable: false,
-	// 	renderCell: (params: { value: string }) => (
-	// 		<Link
-	// 			target='_blank'
-	// 			href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${params.value}`}
-	// 		>
-	// 			Browse
-	// 		</Link>
-	// 	),
-	// 	width: 150,
-	// },
-	{
-		field: 'Authors',
-		headerName: 'Authors',
-		sortable: false,
-		renderCell: (params: { value: string[] | undefined }) =>
-			`${params.value?.toString()}`,
-		width: 320,
-	},
-	{
-		field: 'BIDSVersion',
-		headerName: 'BIDS Version',
-		width: 150,
-	},
-	// {
-	// 	field: 'Path',
-	// 	headerName: 'Path',
-	// 	sortable: false,
-	// 	width: 320,
-	// },
-]
-
-// https://hip.local/apps/files/?dir=
+import DataGrid from 'react-data-grid'
+import { BIDSDatabase } from '../api/types'
 
 const Data = (): JSX.Element => {
-	const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0)
 	const {
-		containers: [containers],
-		user: [user, setUser],
-		bIDSDatabases: [bidsDatabases, setBidsDatabases]
+		bIDSDatabases: [bidsDatabases],
 	} = useAppStore()
-	
+
+	const columns = [
+		{
+			key: 'Name',
+			name: 'Name',
+			resizable: true,
+			frozen: true,
+			width: 200,
+		},
+		{
+			key: 'participants',
+			name: 'Participants',
+			formatter(props: any) {
+				return <>{props.row.participants.length}</>
+			},
+		},
+		{
+			key: 'Authors',
+			name: 'Authors',
+			resizable: true,
+		},
+		{
+			key: 'BIDSVersion',
+			name: 'Version',
+		},
+		{
+			key: 'path',
+			name: 'Path',
+			resizable: true,
+			formatter: (props: any) => {
+				return (
+					<Link
+						target='_blank'
+						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${props.row.path}`}
+					>
+						{props.row.path}
+					</Link>
+				)
+			},
+		},
+		{
+			key: 'Licence',
+			name: 'Licence',
+			resizable: true,
+		},
+		{
+			key: 'Acknowledgements',
+			name: 'Acknowledgements',
+			resizable: true,
+		},
+		{
+			key: 'HowToAcknowledge',
+			name: 'How To Acknowledge',
+			resizable: true,
+		},
+		{
+			key: 'Funding',
+			name: 'Funding',
+			resizable: true,
+		},
+		{
+			key: 'ReferencesAndLinks',
+			name: 'References And Links',
+			resizable: true,
+		},
+		{
+			key: 'DatasetDOI',
+			name: 'datasetDOI',
+			resizable: true,
+		},
+	]
+
+	function rowKeyGetter(row: BIDSDatabase) {
+		return row.id
+	}
+
 	return (
 		<>
 			<TitleBar title='Data' />
 
 			{bidsDatabases?.error && bidsDatabases?.error && (
-					<Alert severity='error'>{bidsDatabases?.error.message}</Alert>
-				)}
+				<Alert severity='error'>{bidsDatabases?.error.message}</Alert>
+			)}
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>Private Data</Typography>
@@ -82,40 +101,20 @@ const Data = (): JSX.Element => {
 						NextCloud Browser
 					</Link>
 				</Typography>
-				{/* <Box sx={{
-                    width: '960',
-                    border: 1,
-                    borderColor: 'grey.300',
-                    overflowY: 'auto',
-                    p: 1
-                }}>
-                    <FileBrowser
-                        nodesPanes={filesPanes}
-                        handleSelectedPath={handleSelectedPath}
-                    >
-
-                    </FileBrowser>
-                </Box> */}
 			</Box>
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
-					BIDS Databases{' '}
-					{!bidsDatabases && (
-						<CircularProgress size={16} />
-					)}
+					BIDS Databases {!bidsDatabases && <CircularProgress size={16} />}
 				</Typography>
 
-				<Box sx={{ height: 500, width: '100%' }}>
+				{bidsDatabases?.data && (
 					<DataGrid
-						getRowId={(params) => params.Name}
-						rows={bidsDatabases?.data || []}
 						columns={columns}
-						pageSize={100}
-						rowsPerPageOptions={[100]}
-						disableSelectionOnClick
+						rows={bidsDatabases?.data}
+						rowKeyGetter={rowKeyGetter}
 					/>
-				</Box>
+				)}
 			</Box>
 		</>
 	)
