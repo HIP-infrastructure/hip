@@ -36,14 +36,21 @@ export interface IAppState {
 	]
 	selectedParticipants: [
 		Participant[] | undefined,
-		React.Dispatch<React.SetStateAction<Participant[] | undefined>>
+		React.Dispatch<React.SetStateAction<Participant[] | undefined>>
 	]
-	selectedFiles: [File[] | undefined, React.Dispatch<React.SetStateAction<File[]  | undefined>>]
+	selectedFiles: [
+		File[] | undefined,
+		React.Dispatch<React.SetStateAction<File[] | undefined>>
+	]
 }
 
 export const fetcher = async (url: string): Promise<void> => {
-	const res = await fetch(url)
-	return checkError(res)
+	try {
+		const res = await fetch(url)
+		return checkError(res)
+	} catch (error: any) {
+		throw new Error(error.message)
+	}
 }
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
@@ -55,20 +62,17 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] = useState<
-		IAppState['availableApps']
-	>()
+	const [availableApps, setAvailableApps] =
+		useState<IAppState['availableApps']>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [bidsDatabases, setBidsDatabases] = useState<{
 		data?: BIDSDatabase[]
 		error?: Error
 	}>()
-	const [selectedBidsDatabase, setSelectedBidsDatabase] = useState<
-		BIDSDatabase
-	>()
-	const [selectedParticipants, setSelectedParticipants] = useState<
-		Participant[]
-	>()
+	const [selectedBidsDatabase, setSelectedBidsDatabase] =
+		useState<BIDSDatabase>()
+	const [selectedParticipants, setSelectedParticipants] =
+		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
 
 	const { data, error } = useSWR<any, Error | undefined>(
@@ -104,7 +108,7 @@ export const AppStoreProvider = ({
 				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
 			} catch (error: any) {
 				throw new Error(error.message)
-			}	
+			}
 		}, 3 * 1000)
 	}, [])
 
