@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react'
+import DataGrid from 'react-data-grid'
+
 import { Add } from '@mui/icons-material'
 import {
 	Alert,
@@ -7,13 +10,12 @@ import {
 	Link,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import Checkbox from '@mui/material/Checkbox'
+
 import { getBidsDatabases } from '../../../api/bids'
 import { BIDSDatabase } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
-import DataGrid from 'react-data-grid'
-import Checkbox from '@mui/material/Checkbox'
 
 const Databases = (): JSX.Element => {
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
@@ -181,7 +183,14 @@ const Databases = (): JSX.Element => {
 					</Button>
 				</Box>
 
-				<DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />
+				<DataGrid
+					rowClass={row =>
+						row.id === selectedBidsDatabase?.id ? 'selected-row' : ''
+					}
+					columns={columns}
+					rows={rows}
+					rowKeyGetter={rowKeyGetter}
+				/>
 			</Box>
 			<CreateDatabase
 				open={isCreateDialogOpen}

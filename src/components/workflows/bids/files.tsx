@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+
 import { Article, Delete, Folder, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
@@ -6,6 +8,7 @@ import {
 	Button,
 	Grid,
 	IconButton,
+	Link,
 	MenuItem,
 	Paper,
 	Table,
@@ -18,7 +21,7 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+
 import { getSubject } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import { BIDSSubjectFile, File, IEntity, TreeNode } from '../../../api/types'
@@ -252,172 +255,180 @@ const Files = ({
 	)
 
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={8}>
-				<Typography
-					sx={{ mt: 1, mb: 2 }}
-					variant='subtitle1'
-					color='text.secondary'
-				>
-					Select modalities, entities and files
-				</Typography>
-				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: '0.8em 0.8em',
-					}}
-				>
+		<Box sx={{ display: 'flex', gap: '8px' }}>
+			<Box sx={{ flex: '1 0' }}>
+				<Paper elevation={1} sx={{ p: 1, mb: 4 }}>
+					<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
+						Select modalities, entities and files
+					</Typography>
 					<Box
 						sx={{
 							display: 'flex',
+							flexDirection: 'column',
 							gap: '0.8em 0.8em',
-							mb: 1,
 						}}
 					>
-						{selectedBidsDatabase?.participants && (
+						<Box
+							sx={{
+								display: 'flex',
+								gap: '0.8em 0.8em',
+								mb: 1,
+							}}
+						>
+							{selectedBidsDatabase?.participants && (
+								<Box
+									sx={{
+										flex: '1 1',
+									}}
+								>
+									<TextField
+										fullWidth
+										select
+										size='small'
+										disabled={submitted}
+										name='subject'
+										label='Subject'
+										value={selectedSubject}
+										onChange={event => {
+											setSelectedSubject(event.target.value)
+										}}
+										// error={touched.subject && errors.subject ? true : false}
+										// helperText={
+										// 	touched.subject && errors.subject ? errors.subject : null
+										// }
+									>
+										{selectedBidsDatabase?.participants?.map(p => (
+											<MenuItem key={p.participant_id} value={p.participant_id}>
+												{p.participant_id}
+											</MenuItem>
+										))}
+									</TextField>
+								</Box>
+							)}
+
 							<Box
 								sx={{
 									flex: '1 1',
 								}}
 							>
+								{existingFiles && (
+									<Tooltip
+										title={
+											<>
+												<Typography gutterBottom variant='subtitle2'>
+													Existing Files for{' '}
+													<Link
+														target='_blank'
+														href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDatabase?.path}`}
+													>
+														{selectedSubject}
+													</Link>
+												</Typography>
+												<Typography variant='body2'>
+													<ul>
+														{existingFiles.map(f => (
+															<li>
+																{f.files.length} {f.modality}
+																<ul>
+																	{f.files.map(file => (
+																		<li>{file}</li>
+																	))}
+																</ul>
+															</li>
+														))}
+													</ul>
+												</Typography>
+											</>
+										}
+									>
+										<Info color='action' />
+									</Tooltip>
+								)}
+							</Box>
+						</Box>
+						{selectedSubject && (
+							<Box sx={{ display: 'flex' }}>
 								<TextField
+									sx={{ flex: '1 1' }}
 									fullWidth
 									select
 									size='small'
 									disabled={submitted}
-									name='subject'
-									label='Subject'
-									value={selectedSubject}
+									name='modality'
+									label='Modality'
+									value={modality}
 									onChange={event => {
-										setSelectedSubject(event.target.value)
+										const m = MODALITIES.find(
+											m => m.name === event.target.value
+										)
+										if (m) setModality(m)
 									}}
-									// error={touched.subject && errors.subject ? true : false}
-									// helperText={
-									// 	touched.subject && errors.subject ? errors.subject : null
-									// }
 								>
-									{selectedBidsDatabase?.participants?.map(p => (
-										<MenuItem key={p.participant_id} value={p.participant_id}>
-											{p.participant_id}
+									{MODALITIES?.map(m => (
+										<MenuItem value={m.name} key={m.name}>
+											{m.name}
 										</MenuItem>
 									))}
 								</TextField>
+								<Box sx={{ flex: '1 1' }} />
 							</Box>
 						)}
-
-						<Box
-							sx={{
-								flex: '1 1',
-							}}
-						>
-							{existingFiles && (
-								<>
-									<Typography
-										gutterBottom
-										variant='subtitle2'
-										color='text.secondary'
-									>
-										Existing Files for {selectedSubject}
-									</Typography>
-									<Typography variant='body2' color='text.secondary'>
-										{existingFiles.map(f => (
-											<Box>
-												{f.modality}: {f.files.length} file
-												{f.files.length > 1 ? 's' : ''} ({f.files.toString()})
-											</Box>
-										))}
-									</Typography>
-								</>
-							)}
-						</Box>
-					</Box>
-					{selectedSubject && (
-						<Box>
-							<TextField
-								fullWidth
-								select
-								size='small'
-								disabled={submitted}
-								name='modality'
-								label='Modality'
-								value={modality}
-								onChange={event => {
-									const m = MODALITIES.find(m => m.name === event.target.value)
-									if (m) setModality(m)
+						{modality && (
+							<Typography sx={{ mt: 1 }} variant='body2' color='text.secondary'>
+								BIDS entities
+							</Typography>
+						)}
+						{modality && (
+							<Box
+								sx={{
+									display: 'flex',
+									gap: '0.8em 0.8em',
+									flexWrap: 'wrap',
 								}}
 							>
-								{MODALITIES?.map(m => (
-									<MenuItem value={m.name} key={m.name}>
-										{m.name}
-									</MenuItem>
-								))}
-							</TextField>
-						</Box>
-					)}
-					{modality && (
-						<Typography sx={{ mt: 1 }} variant='body2' color='text.secondary'>
-							BIDS entities
-						</Typography>
-					)}
-					{modality && (
-						<Box
-							sx={{
-								display: 'flex',
-								gap: '0.8em 0.8em',
-								flexWrap: 'wrap',
-							}}
-						>
-							{entities?.map(entity => (
-								<Box>
-									<Box
-										key={entity.name}
-										sx={{
-											maxWidth: '200px',
-											flex: 'inherit',
-											display: 'flex',
-											alignItems: 'center',
-										}}
-									>
-										<EntityOptions
-											entity={entity}
-											onChange={option => {
-												setSelectedEntities(s => ({
-													...(s || {}),
-													[entity.name]: option,
-												}))
-												//handleChange()
+								{entities?.map(entity => (
+									<Box>
+										<Box
+											key={entity.name}
+											sx={{
+												maxWidth: '200px',
+												flex: 'inherit',
+												display: 'flex',
+												alignItems: 'center',
 											}}
-										/>
-										<Tooltip title={entity.description}>
-											<Info color='action' />
-										</Tooltip>
+										>
+											<EntityOptions
+												entity={entity}
+												onChange={option => {
+													setSelectedEntities(s => ({
+														...(s || {}),
+														[entity.name]: option,
+													}))
+													//handleChange()
+												}}
+											/>
+											<Tooltip title={entity.description}>
+												<Info color='action' />
+											</Tooltip>
+										</Box>
+										<Typography
+											gutterBottom
+											variant='caption'
+											color='text.secondary'
+										>
+											{entity.requirements.find(
+												r => r.dataType === modality?.type
+											)?.required
+												? 'required *'
+												: ''}
+										</Typography>
 									</Box>
-									<Typography
-										gutterBottom
-										variant='caption'
-										color='text.secondary'
-									>
-										{entity.requirements.find(
-											r => r.dataType === modality?.type
-										)?.required
-											? 'required *'
-											: ''}
-									</Typography>
-								</Box>
-							))}
-						</Box>
-					)}
-					{modality && (
-						<Box
-							sx={{
-								display: 'flex',
-								gap: '0.8em 0.8em',
-								mt: 2,
-							}}
-						>
+								))}
+							</Box>
+						)}
+						{modality && (
 							<Autocomplete
-								sx={{ flexGrow: 1 }}
+								sx={{ flexGrow: 1, mt: 2 }}
 								options={options || []}
 								inputValue={inputValue}
 								onInputChange={(event: any, newInputValue: string) => {
@@ -453,6 +464,22 @@ const Files = ({
 									)
 								}}
 							/>
+						)}
+						{modality && (
+							<Box>
+								<Typography sx={{ mb: 2 }} variant='caption'>
+									Select files to be imported
+								</Typography>
+							</Box>
+						)}
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+							}}
+						>
+							<Box></Box>
 							<LoadingButton
 								color='primary'
 								type='submit'
@@ -463,29 +490,19 @@ const Files = ({
 								startIcon={<Save />}
 								variant='contained'
 							>
-								Add
+								Add File
 							</LoadingButton>
 						</Box>
-					)}
-					{modality && (
-						<Box>
-							<Typography
-								sx={{ mt: 1, mb: 1 }}
-								variant='caption'
-								color='text.secondary'
-							>
-								Select files to be imported
-							</Typography>
-						</Box>
-					)}{' '}
-				</Box>
-			</Grid>
-			<Grid item xs={4}>
-				<Paper elevation={3} sx={{ p: 1 }}>
+					</Box>
+				</Paper>
+			</Box>
+			<Box flex={{ flex: '1 0' }}>
+				<Paper elevation={1} sx={{ p: 1 }}>
 					<Box
 						sx={{
 							display: 'flex',
 							justifyContent: 'space-between',
+							alignItems: 'center',
 						}}
 					>
 						<Typography
@@ -515,29 +532,25 @@ const Files = ({
 							</TableHead>
 							<TableBody>
 								{selectedFiles?.reverse().map(file => (
-									<TableRow
-										key={file.path}
-										sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-									>
+									<TableRow key={file.path}>
 										<TableCell align='right'>
-											{/* <IconButton color='primary' aria-label='edit'>
-											<Edit onClick={() => handleEditFile(file)}/>
-										</IconButton> */}
 											<IconButton color='primary' aria-label='delete'>
 												<Delete onClick={() => handleDeleteFile(file)} />
 											</IconButton>
 										</TableCell>
 										<TableCell>{file.subject}</TableCell>
 										<TableCell>{file.modality}</TableCell>
-										<TableCell>{file.path}</TableCell>
+										<TableCell sx={{ overflow: 'auto' }}>
+											{file.path.split('/').pop()}
+										</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
 						</Table>
 					</TableContainer>
 				</Paper>
-			</Grid>
-		</Grid>
+			</Box>
+		</Box>
 	)
 }
 
