@@ -39,6 +39,7 @@ import { ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import Modal, { ModalComponentHandle } from './UI/Modal'
 import TitleBar from './UI/titleBar'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 const Sessions = (): JSX.Element => {
 	const {
@@ -46,6 +47,7 @@ const Sessions = (): JSX.Element => {
 		containers: [containers, error],
 		debug: [debug],
 	} = useAppStore()
+	const { trackEvent } = useMatomo()
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const [shouldCreateSession, setShouldCreateSession] = useState(true)
@@ -56,13 +58,21 @@ const Sessions = (): JSX.Element => {
 		const sessions = containers?.filter(
 			(container: Container) => container.type === ContainerType.SESSION
 		)
-		if ((sessions?.length === 0) && user?.uid && shouldCreateSession) {
+		if (sessions?.length === 0 && user?.uid && shouldCreateSession) {
 			createSession(user.uid)
+			trackEvent({
+				category: 'server',
+				action: 'auto-start',
+			})
 		}
 	}, [])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
+		trackEvent({
+			category: 'server',
+			action: 'view',
+		})
 	}
 
 	const confirmRemove = async (sessionId: string) => {
@@ -76,7 +86,14 @@ const Sessions = (): JSX.Element => {
 		if (reply) {
 			setShouldCreateSession(false)
 			removeAppsAndSession(sessionId, user?.uid || '')
+
+			trackEvent({
+				category: 'server',
+				action: 'stop',
+			})
 		}
+
+
 	}
 
 	const sessions = containers
@@ -98,7 +115,13 @@ const Sessions = (): JSX.Element => {
 					<Button
 						variant='contained'
 						color='primary'
-						onClick={() => createSession(user?.uid || '')}
+						onClick={() => {
+							createSession(user?.uid || '')
+							trackEvent({
+								category: 'server',
+								action: 'start',
+							})
+						}}
 					>
 						Create Desktop
 					</Button>
@@ -227,7 +250,9 @@ const Sessions = (): JSX.Element => {
 									edge='end'
 									color='info'
 									aria-label='Shut down'
-									onClick={() => confirmRemove(session.id)}
+									onClick={() => {
+										confirmRemove(session.id)
+									}}
 								>
 									<PowerSettingsNew />
 								</IconButton>
@@ -239,9 +264,14 @@ const Sessions = (): JSX.Element => {
 										edge='end'
 										color='info'
 										aria-label='Resume'
-										onClick={y =>
+										onClick={y => {
 											resumeAppsAndSession(session.id, user?.uid || '')
-										}
+
+											trackEvent({
+												category: 'server',
+												action: 'resume',
+											})
+										}}
 									>
 										<Replay />
 									</IconButton>
@@ -258,9 +288,13 @@ const Sessions = (): JSX.Element => {
 										edge='end'
 										color='info'
 										aria-label='pause'
-										onClick={() =>
+										onClick={() => {
 											pauseAppsAndSession(session.id, user?.uid || '')
-										}
+											trackEvent({
+												category: 'server',
+												action: 'pause',
+											})
+										}}
 									>
 										<Pause />
 									</IconButton>
@@ -274,7 +308,9 @@ const Sessions = (): JSX.Element => {
 									edge='end'
 									color='info'
 									aria-label='Open'
-									onClick={() => handleOpenSession(session.id)}
+									onClick={() => {
+										handleOpenSession(session.id)}
+									}
 								>
 									<Visibility />
 								</IconButton>

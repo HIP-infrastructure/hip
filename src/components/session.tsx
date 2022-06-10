@@ -42,12 +42,15 @@ import {
 	ContainerType,
 	AppContainer,
 } from '../api/types'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
 }
 
 const Session = (): JSX.Element => {
+	const { trackEvent } = useMatomo()
+
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
 		containers: [containers],
@@ -82,16 +85,17 @@ const Session = (): JSX.Element => {
 		if (intervalRef.current || !session?.url) return
 
 		intervalRef.current = setInterval(() => {
-			fetch(session.url).then(result => {
-				if (result.status === 200) {
-					if (intervalRef.current) clearInterval(intervalRef.current)
+			fetch(session.url)
+				.then(result => {
+					if (result.status === 200) {
+						if (intervalRef.current) clearInterval(intervalRef.current)
 
-					setSessionIsAlive(true)
-				}
-			})
-			.catch(e => {
-				console.log(e)
-			})
+						setSessionIsAlive(true)
+					}
+				})
+				.catch(e => {
+					console.log(e)
+				})
 		}, 1000)
 		return () => {
 			if (intervalRef.current) clearInterval(intervalRef.current)
@@ -128,6 +132,11 @@ const Session = (): JSX.Element => {
 		setShowWedavForm(false)
 		createApp(session, user, startApp.name)
 
+		trackEvent({
+			category: 'app',
+			action: 'start',
+		})
+
 		// Remove password after use
 		const { password, ...nextUser } = user
 		setUser(nextUser)
@@ -138,6 +147,11 @@ const Session = (): JSX.Element => {
 		const targetApp = session?.apps?.find(a => a.app === app.name)
 		if (targetApp) {
 			stopApp(session?.id || '', user?.uid || '', targetApp.id)
+
+			trackEvent({
+				category: 'app',
+				action: 'stop',
+			})
 
 			return
 		}
