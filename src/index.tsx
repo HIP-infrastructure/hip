@@ -1,18 +1,45 @@
-import { CheckCircle, Error, Info, Warning } from '@mui/icons-material'
-import { Slide } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, useLocation } from 'react-router-dom'
+
+import { createInstance, MatomoProvider } from '@jonkoops/matomo-tracker-react'
+import { CheckCircle, Error, Info, Warning } from '@mui/icons-material'
+import { Slide } from '@mui/material'
+
 import App from './App'
 import Theme from './components/theme'
 import { AppStoreProvider } from './store/appProvider'
+
 // import reportWebVitals from './reportWebVitals'
 
 const iconsStyle = {
 	icon: {
 		mr: 1,
 	},
+}
+
+const MatomoInstance = ({ children }: { children: JSX.Element }) => {
+	const MATOMO_URL_BASE = process.env.REACT_APP_MATOMO_URL_BASE
+	const MATOMO_SITE_ID = process.env.REACT_APP_MATOMO_SITE_ID
+	const matomoInstance =
+		process.env.NODE_ENV !== 'development' &&
+		MATOMO_URL_BASE &&
+		MATOMO_SITE_ID &&
+		createInstance({
+			urlBase: MATOMO_URL_BASE,
+			siteId: parseInt(MATOMO_SITE_ID),
+			linkTracking: true,
+			trackPageView: true,
+			configurations: {
+				disableCookies: true,
+			},
+		})
+
+	if (matomoInstance)
+		return <MatomoProvider value={matomoInstance}>{children}</MatomoProvider>
+
+	return children
 }
 
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
@@ -37,26 +64,28 @@ const root = createRoot(container!)
 root.render(
 	<React.StrictMode>
 		<AppStoreProvider>
-			<BrowserRouter>
-				<DebugRouter>
-					<Theme>
-						<SnackbarProvider
-							maxSnack={3}
-							autoHideDuration={4000}
-							TransitionComponent={Slide}
-							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-							iconVariant={{
-								success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
-								error: <Error sx={{ ...iconsStyle.icon }} />,
-								warning: <Warning sx={{ ...iconsStyle.icon }} />,
-								info: <Info sx={{ ...iconsStyle.icon }} />,
-							}}
-						>
-							<App />
-						</SnackbarProvider>
-					</Theme>
-				</DebugRouter>
-			</BrowserRouter>
+			<MatomoInstance>
+				<BrowserRouter>
+					<DebugRouter>
+						<Theme>
+							<SnackbarProvider
+								maxSnack={3}
+								autoHideDuration={4000}
+								TransitionComponent={Slide}
+								anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+								iconVariant={{
+									success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
+									error: <Error sx={{ ...iconsStyle.icon }} />,
+									warning: <Warning sx={{ ...iconsStyle.icon }} />,
+									info: <Info sx={{ ...iconsStyle.icon }} />,
+								}}
+							>
+								<App />
+							</SnackbarProvider>
+						</Theme>
+					</DebugRouter>
+				</BrowserRouter>
+			</MatomoInstance>
 		</AppStoreProvider>
 	</React.StrictMode>
 )
