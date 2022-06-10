@@ -18,6 +18,7 @@ import Databases from './databases'
 import Files from './files'
 import Participants from './participants'
 import Summary from './summary'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 const boxStyle = {
 	border: 1,
@@ -32,6 +33,8 @@ const boxStyle = {
 const steps = ['BIDS Database', 'Participants', 'Files', 'Summary']
 
 const BidsConverter = () => {
+	const { trackEvent } = useMatomo()
+
 	const { showNotif } = useNotification()
 	const [activeStep, setActiveStep] = useState(0)
 	const [response, setResponse] =
@@ -79,6 +82,10 @@ const BidsConverter = () => {
 		}
 
 		handleNext()
+		trackEvent({ 
+			category: 'bids', 
+			action: 'import' 
+		})
 
 		importSubject(createSubjectDto as CreateSubjectDto)
 			.then(data => {
