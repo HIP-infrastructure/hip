@@ -16,8 +16,11 @@ import { getBidsDatabases } from '../../../api/bids'
 import { BIDSDatabase } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 const Databases = (): JSX.Element => {
+	const { trackEvent } = useMatomo()
+
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
@@ -78,6 +81,10 @@ const Databases = (): JSX.Element => {
 			}) => {
 				if (isCellSelected) {
 					setSelectedBidsDatabase(row)
+					trackEvent({ 
+						category: 'bids', 
+						action: 'select-database' 
+					})
 				}
 
 				const isSelected = isCellSelected || selectedBidsDatabase?.id === row.id
