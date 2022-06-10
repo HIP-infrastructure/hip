@@ -58,7 +58,7 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('hip.collab.local:9000');
 		
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
-		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+		$csp->addAllowedScriptDomain('stats.humanbrainproject.eu');
 		
 		$response->setContentSecurityPolicy($csp);
 
