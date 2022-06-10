@@ -46,13 +46,20 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('iam.ebrains.eu');
 		$csp->addAllowedFrameDomain('iam-int.ebrains.eu');
 		$csp->addAllowedFrameDomain('hipapp.local');
-		$csp->addAllowedFrameDomain('hip.local:9090');
+		$csp->addAllowedFrameDomain('hip.local:9000');
+		$csp->addAllowedFrameDomain('hip.collab.local:9000');
+
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('backend.thehip.app');
 		$csp->addAllowedConnectDomain('iam.ebrains.eu');
 		$csp->addAllowedConnectDomain('iam-int.ebrains.eu');
 		$csp->addAllowedConnectDomain('hipapp.local');
-		$csp->addAllowedConnectDomain('hip.local:9090');
+		$csp->addAllowedConnectDomain('hip.local:9000');
+		$csp->addAllowedConnectDomain('hip.collab.local:9000');
+		
+		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+		
 		$response->setContentSecurityPolicy($csp);
 
 		return $response;

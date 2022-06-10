@@ -30,8 +30,10 @@ import React, { useState } from 'react'
 import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
+	const { trackPageView } = useMatomo()
 	const [spaceIsOpen, setSpaceIsOpen] = useState<{ [key: string]: boolean }>({
 		hip: true,
 		private: true,
@@ -42,6 +44,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const navigate = useNavigate()
 
 	const handleClick = (route: string) => {
+		trackPageView({ documentTitle: route })
 		navigate(route)
 	}
 
