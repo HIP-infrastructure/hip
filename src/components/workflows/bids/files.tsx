@@ -428,7 +428,7 @@ const Files = ({
 						)}
 						{modality && (
 							<Autocomplete
-								sx={{ flexGrow: 1, mt: 2 }}
+								sx={{ mt: 2 }}
 								options={options || []}
 								inputValue={inputValue}
 								onInputChange={(event: any, newInputValue: string) => {
