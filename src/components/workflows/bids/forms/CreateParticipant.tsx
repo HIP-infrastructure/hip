@@ -1,153 +1,258 @@
 import { Close, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    IconButton,
-    TextField,
-    Typography,
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Grid,
+	IconButton,
+	TextField,
+	Typography
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
+import {
+	getParticipants,
+	subEditClinical
+} from '../../../../api/bids'
+import { EditSubjectClinicalDto, Participant } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
+import CreateField from '../../../UI/createField'
 
 type IField = Record<string, string>
 
 const validationSchema = Yup.object().shape({
-    participant_id: Yup.string().required('ID is required'),
-    age: Yup.string().required('Age is required'),
-    sex: Yup.string().required('Sex is required'),
+	participant_id: Yup.string().required('ID is required'),
+	age: Yup.string().required('Age is required'),
+	sex: Yup.string().required('Sex is required'),
 })
 
 interface ICreateDatabase {
-    open: boolean
-    handleClose: () => void
-    setParticipantCreated: React.Dispatch<React.SetStateAction<boolean>>
+	participantEditId?: string
+	open: boolean
+	handleClose: () => void
+	setParticipantCreated: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreateParticipant = ({
-    open,
-    handleClose,
-    setParticipantCreated,
+	participantEditId,
+	open,
+	handleClose,
+	setParticipantCreated,
 }: ICreateDatabase) => {
-    const { showNotif } = useNotification()
-    const [submitted, setSubmitted] = useState(false)
-    const [fields, setFields] = useState<string[]>(['participant_id', 'age', 'sex'])
-    const {
-        containers: [containers],
-        user: [user, setUser],
-        bIDSDatabases: [bidsDatabases, setBidsDatabases],
-        selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
-        selectedParticipants: [selectedParticipants, setSelectedParticipants],
-        selectedFiles: [selectedFiles, setSelectedFiles],
-    } = useAppStore()
+	const { showNotif } = useNotification()
+	const [submitted, setSubmitted] = useState(false)
+	const [editParticipant, setEditParticipant] = useState<Participant>()
+	const [fields, setFields] = useState<string[]>([
+		'participant_id',
+		'age',
+		'sex',
+	])
+	const {
+		user: [user],
+		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
+	} = useAppStore()
 
-    useEffect(() => {
-        if (selectedBidsDatabase?.participants) {
-            const one = JSON.parse(JSON.stringify(selectedBidsDatabase.participants)).pop()
-            if (one) {
-                const participantFields = Object.keys(one)
-                setFields(participantFields)
-            }
-        }
-    }, [selectedBidsDatabase])
+	useEffect(() => {
+		if (selectedBidsDatabase?.participants) {
+			const one = JSON.parse(
+				JSON.stringify(selectedBidsDatabase.participants)
+			).pop()
+			if (one) {
+				const participantFields = Object.keys(one)
+				setFields(participantFields)
+			}
+		}
+	}, [selectedBidsDatabase])
 
-    const initialValues = fields?.reduce((a, f) => ({ ...a, [f]: '' }), {})
+	useEffect(() => {
+		if (selectedBidsDatabase?.participants && participantEditId) {
+			const participant = selectedBidsDatabase?.participants.find(
+				p => p.participant_id === participantEditId
+			)
+			if (participant) {
+				setEditParticipant(participant)
+			}
+		}
+	}, [participantEditId])
 
-    return (
-        <Dialog open={open} sx={{ minWidth: '360' }}>
-            <DialogTitle
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <Typography variant='h6'>Create Participant</Typography>
-                <IconButton onClick={handleClose}>
-                    <Close />
-                </IconButton>
-            </DialogTitle>
+	const editMode = participantEditId !== undefined
 
-            {initialValues && (
-                <Formik
-                    initialValues={initialValues}
-                    // validationSchema={validationSchema}
-                    onSubmit={async (values, { resetForm }) => {
-                        setSubmitted(true)
-                        setSelectedParticipants([values])
+	const initialValues = editMode
+		? editParticipant
+		: fields?.reduce((a, f) => ({ ...a, [f]: '' }), {})
 
-                        const nextParticipants = [...(selectedBidsDatabase?.participants || []), values]
-                        if (nextParticipants) setSelectedBidsDatabase({
-                            ...selectedBidsDatabase,
-                            participants: nextParticipants})
+	return (
+		<Dialog open={open} sx={{ minWidth: '360' }}>
+			<DialogTitle
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+				}}
+			>
+				<Typography variant='h6'>
+					{editMode ? 'Edit' : 'Create'} Participant
+				</Typography>
+				<IconButton onClick={handleClose}>
+					<Close />
+				</IconButton>
+			</DialogTitle>
 
-                        resetForm()
-                        showNotif('Participant created.', 'success')
-                        setSubmitted(false)
-                        handleClose()
-                    }}
-                >
-                    {({ errors, handleChange, touched, values }) => (
-                        <Form>
-                            <DialogContent dividers>
-                                <Grid container columnSpacing={2} rowSpacing={2}>
-                                    {fields?.map(field => {
-                                        return (
-                                            <Grid item xs={6} key={field}>
-                                                <TextField
-                                                    key={field}
-                                                    disabled={submitted}
-                                                    size='small'
-                                                    fullWidth
-                                                    name={field}
-                                                    label={field}
-                                                    value={(values as IField)[field]}
-                                                    onChange={handleChange}
-                                                    error={(touched as IField)[field] && (errors as IField)[field] ? true : false}
-                                                    helperText={
-                                                        (touched as IField)[field] && (errors as IField)[field]
-                                                            ? (errors as IField)[field]
-                                                            : null
-                                                    }
-                                                />
-                                            </Grid>
-                                        )
-                                    })}
-                                </Grid>
-                            </DialogContent>
+			{initialValues && (
+				<Formik
+					initialValues={initialValues}
+					validationSchema={validationSchema}
+					onSubmit={async (values, { resetForm }) => {
+						setSubmitted(true)
 
-                            <DialogActions>
-                                <Button
-                                    disabled={submitted}
-                                    color='error'
-                                    onClick={handleClose}
-                                >
-                                    Close
-                                </Button>
-                                <LoadingButton
-                                    color='primary'
-                                    type='submit'
-                                    loading={submitted}
-                                    loadingPosition='start'
-                                    startIcon={<Save />}
-                                    variant='contained'
-                                >
-                                    Save
-                                </LoadingButton>
-                            </DialogActions>
-                        </Form>
-                    )}
-                </Formik>
-            )}
-        </Dialog>
-    )
+						if (editMode) {
+							if (
+								!user?.uid ||
+								!selectedBidsDatabase?.Name ||
+								!selectedBidsDatabase?.path
+							) {
+								showNotif('Participant not saved', 'error')
+								return
+							}
+
+							const { participant_id, ...other } = values
+							const subEditClinicalDto: EditSubjectClinicalDto = {
+								owner: user.uid,
+								database: selectedBidsDatabase.Name,
+								path: selectedBidsDatabase.path,
+								subject: `${participant_id}`.replace('sub-', ''),
+								clinical: { ...other },
+							}
+							subEditClinical(subEditClinicalDto)
+								.then(() => {
+									if (
+										user.uid &&
+										selectedBidsDatabase &&
+										selectedBidsDatabase.path
+									) {
+										getParticipants(selectedBidsDatabase.path, user.uid).then(
+											data => {
+												setSelectedBidsDatabase({
+													...selectedBidsDatabase,
+													participants: data,
+												})
+
+												showNotif('Participant saved', 'success')
+												resetForm()
+												handleClose()
+											}
+										)
+									}
+								})
+								.catch(error => {
+									showNotif('Participant not saved', 'error')
+								})
+						} else {
+							setSelectedParticipants([values])
+
+							const nextParticipants = [
+								...(selectedBidsDatabase?.participants || []),
+								values,
+							]
+							if (nextParticipants && selectedBidsDatabase)
+								setSelectedBidsDatabase({
+									...selectedBidsDatabase,
+									participants: nextParticipants,
+								})
+
+							resetForm()
+							showNotif('Participant created.', 'success')
+							setSubmitted(false)
+							handleClose()
+						}
+					}}
+				>
+					{({ errors, handleChange, touched, values }) => (
+						<Form>
+							<DialogContent dividers>
+								<Grid container columnSpacing={2} rowSpacing={2}>
+									{fields?.map(field => {
+										return (
+											<Grid item xs={6} key={field}>
+												<TextField
+													key={field}
+													disabled={
+														editMode ?  field === 'participant_id' : submitted
+													}
+													size='small'
+													fullWidth
+													name={field}
+													label={field}
+													value={(values as IField)[field]}
+													onChange={handleChange}
+													error={
+														(touched as IField)[field] &&
+														(errors as IField)[field]
+															? true
+															: false
+													}
+													helperText={
+														(touched as IField)[field] &&
+														(errors as IField)[field]
+															? (errors as IField)[field]
+															: null
+													}
+												/>
+											</Grid>
+										)
+									})}
+								</Grid>
+
+								<CreateField
+									handleCreateField={({ key }) => {
+										if (key) {
+											const nextParticipants =
+												selectedBidsDatabase?.participants?.map(p => ({
+													...p,
+													[key]: '',
+												}))
+
+											if (nextParticipants && selectedBidsDatabase)
+												setSelectedBidsDatabase({
+													...selectedBidsDatabase,
+													participants: nextParticipants,
+												})
+										}
+									}}
+								/>
+							</DialogContent>
+
+							<DialogActions>
+								<Button
+									disabled={submitted}
+									color='error'
+									onClick={handleClose}
+								>
+									Close
+								</Button>
+								<LoadingButton
+									color='primary'
+									type='submit'
+									loading={submitted}
+									loadingPosition='start'
+									startIcon={<Save />}
+									variant='contained'
+								>
+									Save
+								</LoadingButton>
+							</DialogActions>
+						</Form>
+					)}
+				</Formik>
+			)}
+		</Dialog>
+	)
 }
 
 export default CreateParticipant
