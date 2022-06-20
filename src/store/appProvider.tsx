@@ -44,14 +44,10 @@ export interface IAppState {
 	]
 }
 
-export const fetcher = async (url: string): Promise<void> => {
-	try {
-		const res = await fetch(url)
-		return checkError(res)
-	} catch (error: any) {
-		throw new Error(error.message)
-	}
-}
+export const fetcher = async (url: string): Promise<void> =>
+	fetch(url)
+		.then(response => response)
+		.catch(error => error)
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
