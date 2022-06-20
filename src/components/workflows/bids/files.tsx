@@ -4,7 +4,9 @@ import { Article, Delete, Edit, Folder, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
-	Box, IconButton, MenuItem,
+	Box,
+	IconButton,
+	MenuItem,
 	Paper,
 	Table,
 	TableBody,
@@ -14,7 +16,7 @@ import {
 	TableRow,
 	TextField,
 	Tooltip,
-	Typography
+	Typography,
 } from '@mui/material'
 import { getSubject } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
@@ -32,14 +34,16 @@ const Files = ({
 }): JSX.Element => {
 	const [tree, setTree] = useState<TreeNode[]>()
 	const [options, setOptions] = React.useState<string[]>()
-	const [inputValue, setInputValue] = React.useState<string>()
+	const [fileInputValue, setFileInputValue] = React.useState<string>()
 	const [submitted, setSubmitted] = useState(false)
 	const { showNotif } = useNotification()
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
 	const [modality, setModality] = useState<{ name: string; type: string }>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
-	const [selectedBIDSSubjectFiles, setSelectedBIDSSubjectFiles] =
-		useState<BIDSSubjectFile[]>()
+	const [
+		selectedSubjectExistingBIDSFiles,
+		setSelectedSubjectExistingBIDSFiles,
+	] = useState<BIDSSubjectFile[]>()
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()
 	const [entities, setEntites] = useState<IEntity[]>()
@@ -66,7 +70,7 @@ const Files = ({
 		const subject = selectedSubject.replace('sub-', '')
 		getSubject(selectedBidsDatabase?.path, user?.uid, subject)
 			.then(d => {
-				if (d) setSelectedBIDSSubjectFiles(d)
+				if (d) setSelectedSubjectExistingBIDSFiles(d)
 			})
 			.catch(e => {
 				// console.log(e)
@@ -84,12 +88,12 @@ const Files = ({
 			[]
 		setEntites(entitiesForModality)
 
-		if (!selectedBIDSSubjectFiles) {
+		if (!selectedSubjectExistingBIDSFiles) {
 			return
 		}
 
 		const nextEntities = entitiesForModality?.map(e => {
-			const entries = selectedBIDSSubjectFiles
+			const entries = selectedSubjectExistingBIDSFiles
 				.filter(i => i.modality === modality?.name)
 				.find(eem => {
 					return Object.keys(eem).find(k => k === e.name)
@@ -114,7 +118,7 @@ const Files = ({
 	useEffect(() => {
 		// console.log(tree?.map((t: { data: { path: any } }) => t.data.path))
 		const selectedNode = tree?.find(
-			(node: { data: { path: any } }) => node.data.path === inputValue
+			(node: { data: { path: any } }) => node.data.path === fileInputValue
 		)
 		const selectedPath = selectedNode?.data.path.split('/') || ['']
 		const parentNode = tree?.find((node: TreeNode) => {
@@ -145,7 +149,7 @@ const Files = ({
 				  ]),
 			...(tree
 				?.filter((node: { data: { path: string } }) =>
-					new RegExp(inputValue || '').test(node.data.path)
+					new RegExp(fileInputValue || '').test(node.data.path)
 				)
 				?.filter(node => {
 					const pathes = node?.data.path.split('/')
@@ -195,14 +199,20 @@ const Files = ({
 	}
 
 	const handleEditFile = (file: File) => {
-		handleDeleteFile(file)
 		setSelectedSubject(file.subject)
 		if (file.modality) {
-			const m = MODALITIES.find(modality => modality.name === file.modality)
+			const m = MODALITIES.find(mod => mod.name === file.modality)
 			setModality(m)
 		}
-		// if (file.entities) setEntites(file.entities)
-		// if (file.path) {}
+
+		if (file.entities) setSelectedEntities(file.entities)
+		if (file.path) {
+			const path = `/${file.path}`
+			handleSelectedPath(path)
+			setFileInputValue(path)
+		}
+
+		handleDeleteFile(file)
 	}
 
 	const handleAddFile = () => {
@@ -356,10 +366,10 @@ const Files = ({
 							<Autocomplete
 								sx={{ mt: 2 }}
 								options={options || []}
-								inputValue={inputValue}
+								inputValue={fileInputValue}
 								onInputChange={(event: any, newInputValue: string) => {
 									handleSelectedPath(newInputValue)
-									setInputValue(newInputValue)
+									setFileInputValue(newInputValue)
 								}}
 								disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
 								id='input-tree-view'
@@ -409,21 +419,21 @@ const Files = ({
 						</Box>
 					</Box>
 				</Box>
-					<Box sx={{ flex: '1 0' }}>
-						<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
-							Subject Infos
-						</Typography>
-						<ParticipantInfo
-							subject={selectedSubject}
-							files={selectedBIDSSubjectFiles}
-							path={selectedBidsDatabase?.path}
-							isNew={
-								!selectedBidsDatabase?.participants
-									?.map(p => p.participant_id)
-									.includes(selectedSubject || '')
-							}
-						/>
-					</Box>
+				<Box sx={{ flex: '1 0' }}>
+					<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
+						Subject Infos
+					</Typography>
+					<ParticipantInfo
+						subject={selectedSubject}
+						files={selectedSubjectExistingBIDSFiles}
+						path={selectedBidsDatabase?.path}
+						isNew={
+							!selectedBidsDatabase?.participants
+								?.map(p => p.participant_id)
+								.includes(selectedSubject || '')
+						}
+					/>
+				</Box>
 			</Paper>
 			<Box sx={{ m: 3, textAlign: 'center' }}>
 				<LoadingButton

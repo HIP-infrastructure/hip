@@ -3,7 +3,7 @@ import {
 	CardContent,
 	CircularProgress,
 	Link,
-	Typography,
+	Typography
 } from '@mui/material'
 import { BIDSSubjectFile } from '../../../api/types'
 type IExistingFile =
@@ -41,45 +41,51 @@ const PariticipantInfo = ({
 
 	return (
 		<Card sx={{ minWidth: 480 }}>
-			<CardContent>
-				{isNew && (
-					<Typography gutterBottom variant='subtitle2' color='text.secondary'>
-						New subject
-					</Typography>
-				)}
-				{!isNew && !existingFiles && (
-					<CircularProgress sx={{ m: 2 }} size={16} />
-				)}
-				{!isNew && existingFiles && (
-					<>
-						<Typography gutterBottom variant='subtitle1'>
-							Existing files for BIDS subject {}
-							<Link
-								target='_blank'
-								href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${path}`}
+			{subject && (
+				<CardContent>
+					{isNew && (
+						<Typography gutterBottom variant='subtitle2' color='text.secondary'>
+							New subject
+						</Typography>
+					)}
+					{!isNew && !existingFiles && (
+						<CircularProgress sx={{ m: 2 }} size={16} />
+					)}
+					{!isNew && existingFiles && (
+						<>
+							<Typography
+								gutterBottom
+								variant='subtitle2'
+								color='text.secondary'
 							>
-								{subject}
-							</Link>
-						</Typography>
-						<Typography variant='body1'>
-							<ul>
-								{existingFiles?.map(f => (
-									<li>
-										<strong>
-											{f.files.length} x {f.modality}
-										</strong>
-										<ul>
-											{f.files.map(file => (
-												<li>{file}</li>
-											))}
-										</ul>
-									</li>
-								))}
-							</ul>
-						</Typography>
-					</>
-				)}
-			</CardContent>
+								Existing files for BIDS subject {}
+								<Link
+									target='_blank'
+									href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${path}`}
+								>
+									{subject}
+								</Link>
+							</Typography>
+							<Typography variant='body1'>
+								<ul>
+									{existingFiles?.map(f => (
+										<li>
+											<strong>
+												{f.files.length} x {f.modality}
+											</strong>
+											<ul>
+												{f.files.map(file => (
+													<li>{file}</li>
+												))}
+											</ul>
+										</li>
+									))}
+								</ul>
+							</Typography>
+						</>
+					)}
+				</CardContent>
+			)}
 		</Card>
 	)
 }
