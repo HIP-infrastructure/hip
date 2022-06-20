@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { Article, Delete, Folder, Info, Save } from '@mui/icons-material'
+import { Article, Delete, Edit, Folder, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
-	Box,
-	Button,
-	Grid,
-	IconButton,
-	Link,
-	MenuItem,
+	Box, IconButton, MenuItem,
 	Paper,
 	Table,
 	TableBody,
@@ -19,9 +14,8 @@ import {
 	TableRow,
 	TextField,
 	Tooltip,
-	Typography,
+	Typography
 } from '@mui/material'
-
 import { getSubject } from '../../../api/bids'
 import { getFiles } from '../../../api/gatewayClientAPI'
 import { BIDSSubjectFile, File, IEntity, TreeNode } from '../../../api/types'
@@ -29,13 +23,7 @@ import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import EntityOptions from './entityOptions'
-
-type IExistingFile =
-	| {
-			modality: string
-			files: string[]
-	  }[]
-	| undefined
+import ParticipantInfo from './participantInfo'
 
 const Files = ({
 	handleImportSubject,
@@ -44,7 +32,7 @@ const Files = ({
 }): JSX.Element => {
 	const [tree, setTree] = useState<TreeNode[]>()
 	const [options, setOptions] = React.useState<string[]>()
-	const [inputValue, setInputValue] = React.useState<string>('')
+	const [inputValue, setInputValue] = React.useState<string>()
 	const [submitted, setSubmitted] = useState(false)
 	const { showNotif } = useNotification()
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
@@ -70,7 +58,9 @@ const Files = ({
 	}, [])
 
 	useEffect(() => {
-		if (!(selectedBidsDatabase?.path && user?.uid && selectedSubject)) return
+		if (!(selectedBidsDatabase?.path && user?.uid && selectedSubject)) {
+			return
+		}
 
 		// existing participant
 		const subject = selectedSubject.replace('sub-', '')
@@ -155,7 +145,7 @@ const Files = ({
 				  ]),
 			...(tree
 				?.filter((node: { data: { path: string } }) =>
-					new RegExp(inputValue).test(node.data.path)
+					new RegExp(inputValue || '').test(node.data.path)
 				)
 				?.filter(node => {
 					const pathes = node?.data.path.split('/')
@@ -191,19 +181,28 @@ const Files = ({
 			} else {
 				setTree(nodes => [...(nodes?.map((t: TreeNode) => t) || [])])
 			}
-		} else {
-			if (selectedNode?.data.type === 'file') {
-				setCurrentBidsFile((f: any) => ({
-					...f,
-					path: selectedNode?.data.path,
-				}))
-			}
 		}
+
+		setCurrentBidsFile((f: any) => ({
+			...f,
+			path: selectedNode?.data.path,
+		}))
 	}
 
 	const handleDeleteFile = (file: File) => {
 		const nextFiles = selectedFiles?.filter(f => f.path !== file.path)
 		setSelectedFiles(nextFiles)
+	}
+
+	const handleEditFile = (file: File) => {
+		handleDeleteFile(file)
+		setSelectedSubject(file.subject)
+		if (file.modality) {
+			const m = MODALITIES.find(modality => modality.name === file.modality)
+			setModality(m)
+		}
+		// if (file.entities) setEntites(file.entities)
+		// if (file.path) {}
 	}
 
 	const handleAddFile = () => {
@@ -236,28 +235,10 @@ const Files = ({
 		showNotif('File added.', 'success')
 	}
 
-	const existingFiles: IExistingFile = selectedBIDSSubjectFiles?.reduce(
-		(p, c) => {
-			const mods = p?.map(f => f.modality)
-			if (mods?.includes(c.modality)) {
-				return [
-					...(p?.map(f =>
-						f.modality === c.modality
-							? { ...f, files: [...f.files, c.fileLoc] }
-							: f
-					) || []),
-				]
-			} else {
-				return [...(p || []), { modality: c.modality, files: [c.fileLoc] }]
-			}
-		},
-		[] as IExistingFile
-	)
-
 	return (
-		<Box sx={{ display: 'flex', gap: '8px' }}>
-			<Box sx={{ flex: '1 0' }}>
-				<Paper elevation={1} sx={{ p: 1, mb: 4 }}>
+		<Box sx={{}}>
+			<Paper elevation={1} sx={{ display: 'flex', p: 1, mb: 4, gap: '8px' }}>
+				<Box sx={{ flex: '2 0' }}>
 					<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
 						Select modalities, entities and files
 					</Typography>
@@ -268,89 +249,34 @@ const Files = ({
 							gap: '0.8em 0.8em',
 						}}
 					>
-						<Box
-							sx={{
-								display: 'flex',
-								gap: '0.8em 0.8em',
-								mb: 1,
-							}}
-						>
-							{selectedBidsDatabase?.participants && (
-								<Box
-									sx={{
-										flex: '1 1',
-									}}
-								>
-									<TextField
-										fullWidth
-										select
-										size='small'
-										disabled={submitted}
-										name='subject'
-										label='Subject'
-										value={selectedSubject}
-										onChange={event => {
-											setSelectedSubject(event.target.value)
-										}}
-										// error={touched.subject && errors.subject ? true : false}
-										// helperText={
-										// 	touched.subject && errors.subject ? errors.subject : null
-										// }
-									>
-										{selectedBidsDatabase?.participants?.map(p => (
-											<MenuItem key={p.participant_id} value={p.participant_id}>
-												{p.participant_id}
-											</MenuItem>
-										))}
-									</TextField>
-								</Box>
-							)}
-
-							<Box
-								sx={{
-									flex: '1 1',
+						{selectedBidsDatabase?.participants && (
+							<TextField
+								select
+								fullWidth
+								size='small'
+								disabled={submitted}
+								name='subject'
+								label='Subject'
+								value={selectedSubject}
+								onChange={event => {
+									setSelectedSubject(event.target.value)
 								}}
+								// error={touched.subject && errors.subject ? true : false}
+								// helperText={
+								// 	touched.subject && errors.subject ? errors.subject : null
+								// }
 							>
-								{existingFiles && (
-									<Tooltip
-										title={
-											<>
-												<Typography gutterBottom variant='subtitle2'>
-													Existing Files for{' '}
-													<Link
-														target='_blank'
-														href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDatabase?.path}`}
-													>
-														{selectedSubject}
-													</Link>
-												</Typography>
-												<Typography variant='body2'>
-													<ul>
-														{existingFiles.map(f => (
-															<li>
-																{f.files.length} {f.modality}
-																<ul>
-																	{f.files.map(file => (
-																		<li>{file}</li>
-																	))}
-																</ul>
-															</li>
-														))}
-													</ul>
-												</Typography>
-											</>
-										}
-									>
-										<Info color='action' />
-									</Tooltip>
-								)}
-							</Box>
-						</Box>
+								{selectedBidsDatabase?.participants?.map(p => (
+									<MenuItem key={p.participant_id} value={p.participant_id}>
+										{p.participant_id}
+									</MenuItem>
+								))}
+							</TextField>
+						)}
 						{selectedSubject && (
 							<Box sx={{ display: 'flex' }}>
 								<TextField
 									sx={{ flex: '1 1' }}
-									fullWidth
 									select
 									size='small'
 									disabled={submitted}
@@ -359,14 +285,14 @@ const Files = ({
 									value={modality}
 									onChange={event => {
 										const m = MODALITIES.find(
-											m => m.name === event.target.value
+											modality => modality.name === event.target.value
 										)
 										if (m) setModality(m)
 									}}
 								>
 									{MODALITIES?.map(m => (
 										<MenuItem value={m.name} key={m.name}>
-											{m.name}
+											{m.name} ({m.type})
 										</MenuItem>
 									))}
 								</TextField>
@@ -468,7 +394,7 @@ const Files = ({
 						{modality && (
 							<Box>
 								<Typography sx={{ mb: 2 }} variant='caption'>
-									Select files to be imported
+									Select files or folder to be imported
 								</Typography>
 							</Box>
 						)}
@@ -480,23 +406,41 @@ const Files = ({
 							}}
 						>
 							<Box></Box>
-							<LoadingButton
-								color='primary'
-								type='submit'
-								size='small'
-								loading={submitted}
-								onClick={handleAddFile}
-								loadingPosition='start'
-								startIcon={<Save />}
-								variant='contained'
-							>
-								Add File
-							</LoadingButton>
 						</Box>
 					</Box>
-				</Paper>
+				</Box>
+					<Box sx={{ flex: '1 0' }}>
+						<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
+							Subject Infos
+						</Typography>
+						<ParticipantInfo
+							subject={selectedSubject}
+							files={selectedBIDSSubjectFiles}
+							path={selectedBidsDatabase?.path}
+							isNew={
+								!selectedBidsDatabase?.participants
+									?.map(p => p.participant_id)
+									.includes(selectedSubject || '')
+							}
+						/>
+					</Box>
+			</Paper>
+			<Box sx={{ m: 3, textAlign: 'center' }}>
+				<LoadingButton
+					sx={{ width: 320 }}
+					color='primary'
+					type='submit'
+					disabled={currentBidsFile === undefined}
+					loading={submitted}
+					onClick={handleAddFile}
+					loadingPosition='start'
+					startIcon={<Save />}
+					variant='contained'
+				>
+					Add File
+				</LoadingButton>
 			</Box>
-			<Box flex={{ flex: '1 0' }}>
+			<Box>
 				<Paper elevation={1} sx={{ p: 1 }}>
 					<Box
 						sx={{
@@ -512,28 +456,24 @@ const Files = ({
 						>
 							Files to be imported
 						</Typography>
-						<Button
-							sx={{ mt: 1, mb: 2 }}
-							variant='contained'
-							onClick={handleImportSubject}
-						>
-							Import
-						</Button>
 					</Box>
 					<TableContainer component={Paper}>
-						<Table size='small' aria-label='simple table'>
+						<Table size='small' aria-label='Files to be imported'>
 							<TableHead>
 								<TableRow>
-									<TableCell>Actions</TableCell>
+									<TableCell></TableCell>
 									<TableCell>Subject</TableCell>
 									<TableCell>Modality</TableCell>
-									<TableCell>Info</TableCell>
+									<TableCell>File</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{selectedFiles?.reverse().map(file => (
 									<TableRow key={file.path}>
-										<TableCell align='right'>
+										<TableCell padding='checkbox'>
+											<IconButton color='primary' aria-label='edit'>
+												<Edit onClick={() => handleEditFile(file)} />
+											</IconButton>
 											<IconButton color='primary' aria-label='delete'>
 												<Delete onClick={() => handleDeleteFile(file)} />
 											</IconButton>
@@ -541,7 +481,9 @@ const Files = ({
 										<TableCell>{file.subject}</TableCell>
 										<TableCell>{file.modality}</TableCell>
 										<TableCell sx={{ overflow: 'auto' }}>
-											{file.path.split('/').pop()}
+											{
+												file.path //.split('/').pop()
+											}
 										</TableCell>
 									</TableRow>
 								))}
