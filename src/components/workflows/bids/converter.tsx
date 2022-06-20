@@ -37,8 +37,10 @@ const BidsConverter = () => {
 
 	const { showNotif } = useNotification()
 	const [activeStep, setActiveStep] = useState(0)
-	const [response, setResponse] =
-		useState<{ error?: Error; data?: CreateSubjectDto }>()
+	const [response, setResponse] = useState<{
+		error?: Error
+		data?: CreateSubjectDto
+	}>()
 	const {
 		user: [user],
 		selectedBidsDatabase: [selectedBidsDatabase],
@@ -82,9 +84,9 @@ const BidsConverter = () => {
 		}
 
 		handleNext()
-		trackEvent({ 
-			category: 'bids', 
-			action: 'import' 
+		trackEvent({
+			category: 'bids',
+			action: 'import',
 		})
 
 		importSubject(createSubjectDto as CreateSubjectDto)
@@ -109,7 +111,7 @@ const BidsConverter = () => {
 	}) => {
 		return (
 			<>
-				<Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+				<Box sx={{ display: 'flex', flexDirection: 'row', mb: 2 }}>
 					<Button
 						variant='contained'
 						disabled={activeStep === 0 || activeStep === 3}
@@ -129,6 +131,16 @@ const BidsConverter = () => {
 							Next
 						</Button>
 					)}
+					{activeStep === 2 && (
+						<Button
+							sx={{ mr: 1 }}
+							variant='contained'
+							disabled={disabled}
+							onClick={handleImportSubject}
+						>
+							Import
+						</Button>
+					)}
 				</Box>
 			</>
 		)
@@ -142,7 +154,13 @@ const BidsConverter = () => {
 			/>
 
 			<Box sx={{ width: '100%', mt: 3 }}>
-				<Stepper nonLinear activeStep={activeStep}>
+				<Stepper
+					nonLinear
+					activeStep={activeStep}
+					sx={{
+						boxSizing: 'initial !important',
+					}}
+				>
 					{steps.map((label, index) => {
 						const stepProps: { completed?: boolean } = {}
 						const labelProps: {
@@ -166,51 +184,53 @@ const BidsConverter = () => {
 				</Stepper>
 
 				{activeStep === 0 && (
-					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
+					<Box sx={{ mt: 2 }}>
+						<StepNavigation
+							disabled={!selectedBidsDatabase}
+							activeStep={activeStep}
+						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Select or create a BIDS Database</strong>
 							</Typography>
+
 							<Databases />
-							<StepNavigation
-								disabled={!selectedBidsDatabase}
-								activeStep={activeStep}
-							/>
 						</Box>
 					</Box>
 				)}
 
 				{activeStep === 1 && (
-					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
+					<Box sx={{ mt: 2 }}>
+						<StepNavigation
+							disabled={!selectedBidsDatabase}
+							activeStep={activeStep}
+						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Participants in {selectedBidsDatabase?.Name}</strong>
 							</Typography>
 							<Participants />
-							<StepNavigation
-								disabled={!selectedBidsDatabase}
-								activeStep={activeStep}
-							/>
 						</Box>
 					</Box>
 				)}
 				{activeStep === 2 && (
-					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
+					<Box sx={{ mt: 2 }}>
+						<StepNavigation
+							disabled={!selectedBidsDatabase}
+							activeStep={activeStep}
+						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>Import Files in {selectedBidsDatabase?.Name}</strong>
 							</Typography>
 							<Files handleImportSubject={handleImportSubject} />
-							<StepNavigation
-								disabled={!selectedBidsDatabase || !selectedFiles}
-								activeStep={activeStep}
-							/>
 						</Box>
 					</Box>
 				)}
 
 				{activeStep === 3 && (
-					<Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between' }}>
+					<Box sx={{ mt: 2 }}>
+						<StepNavigation activeStep={activeStep} />
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>
@@ -218,7 +238,6 @@ const BidsConverter = () => {
 								</strong>
 							</Typography>
 							<Summary response={response} />
-							<StepNavigation activeStep={activeStep} />
 						</Box>
 					</Box>
 				)}
