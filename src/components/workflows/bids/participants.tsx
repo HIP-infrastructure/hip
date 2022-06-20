@@ -1,28 +1,32 @@
-import { Add } from '@mui/icons-material'
+import { Add, Edit } from '@mui/icons-material'
 import {
 	Box,
 	Button,
 	CircularProgress,
-	TextField,
+	IconButton,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import DataGrid from 'react-data-grid'
-import { subEditClinical } from '../../../api/bids'
-import { EditSubjectClinicalDto, Participant } from '../../../api/types'
+import { useEffect, useReducer, useState } from 'react'
+import { Participant } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
-import CreateField from '../../UI/createField'
 import CreateParticipant from './forms/CreateParticipant'
 
 const Participants = (): JSX.Element => {
 	const { showNotif } = useNotification()
+	const [_, forceUpdate] = useReducer(x => x + 1, 0)
 	const [rows, setRows] = useState<Participant[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+	const [participantEditId, setParticipantEditId] = useState<string>()
 	const [_participantCreated, setParticipantCreated] = useState(false)
 	const {
-		user: [user],
-		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		selectedBidsDatabase: [selectedBidsDatabase],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -30,93 +34,23 @@ const Participants = (): JSX.Element => {
 			setRows(selectedBidsDatabase.participants)
 	}, [selectedBidsDatabase, setRows])
 
-	const editor = ({
-		row,
-		column,
-		onRowChange,
-		onClose,
-	}: {
-		row: Participant
-		column: { key: string }
-		onRowChange: (row: Participant) => void
-		onClose: (close: boolean) => void
-	}) => {
-		return (
-			<TextField
-				value={row[column.key]}
-				onChange={event => {
-					onRowChange({ ...row, [column.key]: event.target.value })
-				}}
-				onBlur={() => onClose(true)}
-				onKeyPress={event => {
-					console.log(`Pressed keyCode ${event.key}`)
-					if (event.key === '0') {
-						// Do code here
-						event.preventDefault()
-
-						if (
-							!user?.uid ||
-							!selectedBidsDatabase?.Name ||
-							!selectedBidsDatabase?.path
-						) {
-							return
-						}
-
-						const subEditClinicalDto: EditSubjectClinicalDto = {
-							owner: user.uid,
-							database: selectedBidsDatabase.Name,
-							path: selectedBidsDatabase.path,
-							subject: `${row.participant_id}`.replace('sub-', ''),
-							clinical: { ...row, [column.key]: event.target.value },
-						}
-
-						subEditClinical(subEditClinicalDto)
-							.then(data => {
-								console.log(data)
-								showNotif('Participant saved', 'success')
-							})
-							.catch(error => {
-								console.log(error)
-								showNotif('Participant not saved', 'error')
-							})
-					}
-				}}
-			/>
-		)
+	const handleEditParticipant = (id: string) => {
+		setParticipantEditId(id)
+		forceUpdate()
+		setIsCreateDialogOpen(true)
 	}
 
-	const constantsColumns = ['participant_id', 'age', 'sex']
 	const columns = [
-		{
-			key: 'participant_id',
-			name: 'participant_id',
-			resizable: true,
-			frozen: true,
-		},
-		{
-			key: 'age',
-			name: 'age',
-		},
-		{
-			key: 'sex',
-			name: 'sex',
-		},
 		...(selectedBidsDatabase?.participants
 			?.reduce(
 				(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
 				[] as string[]
 			)
-			.filter((key: string) => !constantsColumns.includes(key))
 			.map((key: string) => ({
 				key,
 				name: key,
-				resizable: true,
 			})) || []),
 	]
-
-	function rowKeyGetter(row: Participant) {
-		return row.participant_id
-	}
 
 	return (
 		<>
@@ -133,37 +67,54 @@ const Participants = (): JSX.Element => {
 						{!selectedBidsDatabase && <CircularProgress size={16} />}
 					</Typography>
 					<Box sx={{ flex: '1 0' }} />
-					<Button
-						color='primary'
-						size='small'
-						sx={{ mt: 0.5, mb: 2 }}
-						startIcon={<Add />}
-						onClick={() => setIsCreateDialogOpen(true)}
-						variant='contained'
-					>
-						Add new Participant
-					</Button>
-					<CreateField
-						handleCreateField={({ key }) => {
-							if (key) {
-								const nextParticipants =
-									selectedBidsDatabase?.participants?.map(p => ({
-										...p,
-										[key]: '',
-									}))
-
-								if (nextParticipants && selectedBidsDatabase)
-									setSelectedBidsDatabase({
-										...selectedBidsDatabase,
-										participants: nextParticipants,
-									})
-							}
-						}}
-					/>
 				</Box>
-				<DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />
+
+				<TableContainer sx={{ maxHeight: 440 }}>
+					<Table stickyHeader size='small' aria-label='Participants table'>
+						<TableHead>
+							<TableRow>
+								<TableCell></TableCell>
+								{columns.map(c => (
+									<TableCell>{c.name}</TableCell>
+								))}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{rows.map(row => (
+								<TableRow key={row.participant_id}>
+									<TableCell padding='checkbox'>
+										<IconButton
+											color='primary'
+											aria-label='edit'
+											onClick={() => handleEditParticipant(row.participant_id)}
+										>
+											<Edit />
+										</IconButton>
+									</TableCell>
+									{Object.keys(row).map(key => (
+										<TableCell>{row[key]}</TableCell>
+									))}
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				<Button
+					color='primary'
+					size='small'
+					sx={{ m: 2 }}
+					startIcon={<Add />}
+					onClick={() => {
+						setParticipantEditId(undefined)
+						setIsCreateDialogOpen(true)
+					}}
+					variant='contained'
+				>
+					Add new Participant
+				</Button>
 			</Box>
 			<CreateParticipant
+				participantEditId={participantEditId}
 				open={isCreateDialogOpen}
 				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
 				setParticipantCreated={setParticipantCreated}

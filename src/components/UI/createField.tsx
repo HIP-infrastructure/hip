@@ -41,6 +41,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 					<TextField
 						label='New key'
 						id='new-key'
+						size='small'
 						onChange={event =>
 							setField(f => ({ ...f, key: event.target.value }))
 						}
@@ -50,11 +51,17 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 						<Button
 							onClick={() => setShow(false)}
 							variant='outlined'
+							size='small'
 							sx={{ mt: 2 }}
 						>
 							Cancel
 						</Button>
-						<Button onClick={handleAddField} variant='outlined' sx={{ mt: 2 }}>
+						<Button
+							size='small'
+							onClick={handleAddField}
+							variant='outlined'
+							sx={{ mt: 2 }}
+						>
 							OK
 						</Button>
 					</Box>
