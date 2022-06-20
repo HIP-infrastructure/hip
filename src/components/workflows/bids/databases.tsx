@@ -16,7 +16,7 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
-	useTheme
+	useTheme,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import { useEffect, useState } from 'react'
@@ -81,9 +81,11 @@ const Databases = (): JSX.Element => {
 					mr: 2,
 				}}
 			>
-				<Paper sx={{ 
-					width: {[breakpoints.up(1000)] : 'calc(100vw - 640px - 240px)'}
-					}}>
+				<Paper
+					sx={{
+						width: 'calc(100vw - 640px - 240px)',
+					}}
+				>
 					<TableContainer sx={{ maxHeight: 440 }}>
 						<Table stickyHeader size='small' aria-label='BIDS Databases tables'>
 							<TableHead>
