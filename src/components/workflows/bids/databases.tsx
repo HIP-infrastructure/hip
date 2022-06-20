@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import { Add } from '@mui/icons-material'
 import {
 	Alert,
@@ -17,14 +16,18 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
+	useTheme
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
+import { useEffect, useState } from 'react'
 import { getBidsDatabases } from '../../../api/bids'
 import { BIDSDatabase } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
 
 const Databases = (): JSX.Element => {
+	const { breakpoints } = useTheme()
+
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
@@ -42,7 +45,7 @@ const Databases = (): JSX.Element => {
 
 	useEffect(() => {
 		if (selectedBidsDatabase) {
-			setSelectedFiles([])
+			setSelectedFiles(undefined)
 			setSelectedParticipants([])
 		}
 	}, [selectedBidsDatabase])
@@ -78,7 +81,9 @@ const Databases = (): JSX.Element => {
 					mr: 2,
 				}}
 			>
-				<Paper sx={{ width: 'calc(100vw - 640px - 240px)' }}>
+				<Paper sx={{ 
+					width: {[breakpoints.up(1000)] : 'calc(100vw - 640px - 240px)'}
+					}}>
 					<TableContainer sx={{ maxHeight: 440 }}>
 						<Table stickyHeader size='small' aria-label='BIDS Databases tables'>
 							<TableHead>
@@ -151,6 +156,12 @@ const Databases = (): JSX.Element => {
 								</Typography>
 								<Typography sx={{ mb: 1.5 }} color='text.secondary'>
 									{selectedBidsDatabase?.Authors?.toString()}
+								</Typography>
+								<Typography variant='body1'>
+									<strong>Number of participants</strong>
+								</Typography>
+								<Typography gutterBottom variant='body1'>
+									{selectedBidsDatabase?.participants?.length}
 								</Typography>
 								<Typography variant='body1'>
 									<strong>Version</strong>
