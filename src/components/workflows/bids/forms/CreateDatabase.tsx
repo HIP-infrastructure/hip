@@ -133,7 +133,7 @@ const CreateDatabase = ({
 									</Grid>
 									<Grid item xs={6}>
 										<TextField
-											disabled={submitted}
+											disabled={true}
 											size='small'
 											fullWidth
 											name='BIDSVersion'
