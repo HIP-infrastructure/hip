@@ -47,15 +47,7 @@ export const MODALITIES = [
 		type: 'anat',
 	},
 	{
-		name: 'CT',
-		type: 'anat',
-	},
-	{
 		name: 'ieeg',
-		type: 'ieeg',
-	},
-	{
-		name: 'coordsystem electrodes',
 		type: 'ieeg',
 	},
 	{
@@ -88,10 +80,6 @@ export const ENTITIES: IEntity[] = [
 		description:
 			'Identify the task performed by the subject during the acquisition. If used, must be consistent across subjects and sessions. (e.g. eyesclosed)',
 		requirements: [
-			{
-				dataType: 'anat',
-				required: false,
-			},
 			{
 				dataType: 'ieeg',
 				modalities: ['ieeg'],
