@@ -13,7 +13,7 @@ type IExistingFile =
 	  }[]
 	| undefined
 
-const PariticipantInfo = ({
+const ParticipantInfo = ({
 	subject,
 	files,
 	path,
@@ -90,4 +90,4 @@ const PariticipantInfo = ({
 	)
 }
 
-export default PariticipantInfo
+export default ParticipantInfo
