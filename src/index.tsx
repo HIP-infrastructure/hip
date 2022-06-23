@@ -62,7 +62,7 @@ const container = document.getElementById('hip-root')
 const root = createRoot(container!)
 
 root.render(
-	<React.StrictMode>
+	// <React.StrictMode>
 		<AppStoreProvider>
 			<MatomoInstance>
 				<BrowserRouter>
@@ -87,7 +87,7 @@ root.render(
 				</BrowserRouter>
 			</MatomoInstance>
 		</AppStoreProvider>
-	</React.StrictMode>
+	// </React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function
