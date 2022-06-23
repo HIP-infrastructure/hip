@@ -73,6 +73,7 @@ const Files = ({
 				if (d) setSelectedSubjectExistingBIDSFiles(d)
 			})
 			.catch(e => {
+				setSelectedSubjectExistingBIDSFiles(undefined)
 				// console.log(e)
 			})
 	}, [selectedSubject])
@@ -481,9 +482,9 @@ const Files = ({
 								{selectedFiles?.reverse().map(file => (
 									<TableRow key={file.path}>
 										<TableCell padding='checkbox'>
-											<IconButton color='primary' aria-label='edit'>
+											{/* <IconButton color='primary' aria-label='edit'>
 												<Edit onClick={() => handleEditFile(file)} />
-											</IconButton>
+											</IconButton> */}
 											<IconButton color='primary' aria-label='delete'>
 												<Delete onClick={() => handleDeleteFile(file)} />
 											</IconButton>
