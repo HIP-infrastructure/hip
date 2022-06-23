@@ -12,15 +12,12 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Participant } from '../../../api/types'
-import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import CreateParticipant from './forms/CreateParticipant'
 
 const Participants = (): JSX.Element => {
-	const { showNotif } = useNotification()
-	const [_, forceUpdate] = useReducer(x => x + 1, 0)
 	const [rows, setRows] = useState<Participant[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
@@ -36,9 +33,11 @@ const Participants = (): JSX.Element => {
 
 	const handleEditParticipant = (id: string) => {
 		setParticipantEditId(id)
-		forceUpdate()
-		setIsCreateDialogOpen(true)
 	}
+
+	useEffect(() => {
+		if (participantEditId) setIsCreateDialogOpen(true)
+	}, [participantEditId])
 
 	const columns = [
 		...(selectedBidsDatabase?.participants
@@ -75,7 +74,7 @@ const Participants = (): JSX.Element => {
 							<TableRow>
 								<TableCell></TableCell>
 								{columns.map(c => (
-									<TableCell>{c.name}</TableCell>
+									<TableCell key={c.name}>{c.name}</TableCell>
 								))}
 							</TableRow>
 						</TableHead>
@@ -92,7 +91,7 @@ const Participants = (): JSX.Element => {
 										</IconButton>
 									</TableCell>
 									{Object.keys(row).map(key => (
-										<TableCell>{row[key]}</TableCell>
+										<TableCell key={key}>{row[key]}</TableCell>
 									))}
 								</TableRow>
 							))}
@@ -116,12 +115,15 @@ const Participants = (): JSX.Element => {
 			<CreateParticipant
 				participantEditId={participantEditId}
 				open={isCreateDialogOpen}
-				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
-				setParticipantCreated={setParticipantCreated}
+				handleClose={() => {
+					setParticipantEditId(undefined)
+					setIsCreateDialogOpen(!isCreateDialogOpen)
+				}}
 			/>
 		</>
 	)
 }
+
 Participants.displayName = 'Participants'
 
 export default Participants

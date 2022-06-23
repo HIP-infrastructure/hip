@@ -70,7 +70,7 @@ const Files = ({
 		const subject = selectedSubject.replace('sub-', '')
 		getSubject(selectedBidsDatabase?.path, user?.uid, subject)
 			.then(d => {
-				if (d) setSelectedSubjectExistingBIDSFiles(d)
+				if (d) setSelectedSubjectExistingBIDSFiles(d)		
 			})
 			.catch(e => {
 				setSelectedSubjectExistingBIDSFiles(undefined)

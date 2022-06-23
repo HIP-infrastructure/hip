@@ -41,7 +41,7 @@ const ParticipantInfo = ({
 
 	return (
 		<Card sx={{ minWidth: 480 }}>
-			{subject && (
+			{subject && existingFiles && (
 				<CardContent>
 					{isNew && (
 						<Typography gutterBottom variant='subtitle2' color='text.secondary'>

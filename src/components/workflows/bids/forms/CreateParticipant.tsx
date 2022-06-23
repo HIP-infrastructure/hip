@@ -9,15 +9,12 @@ import {
 	Grid,
 	IconButton,
 	TextField,
-	Typography
+	Typography,
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
-import {
-	getParticipants,
-	subEditClinical
-} from '../../../../api/bids'
+import { getParticipants, subEditClinical } from '../../../../api/bids'
 import { EditSubjectClinicalDto, Participant } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
@@ -35,14 +32,12 @@ interface ICreateDatabase {
 	participantEditId?: string
 	open: boolean
 	handleClose: () => void
-	setParticipantCreated: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreateParticipant = ({
 	participantEditId,
 	open,
 	handleClose,
-	setParticipantCreated,
 }: ICreateDatabase) => {
 	const { showNotif } = useNotification()
 	const [submitted, setSubmitted] = useState(false)
@@ -144,14 +139,18 @@ const CreateParticipant = ({
 												})
 
 												showNotif('Participant saved', 'success')
+
 												resetForm()
 												handleClose()
+												setSubmitted(false)
 											}
 										)
 									}
 								})
 								.catch(error => {
+									console.log(error)
 									showNotif('Participant not saved', 'error')
+									setSubmitted(false)
 								})
 						} else {
 							setSelectedParticipants([values])
@@ -166,14 +165,15 @@ const CreateParticipant = ({
 									participants: nextParticipants,
 								})
 
-							resetForm()
 							showNotif('Participant created.', 'success')
+
+							resetForm()
 							setSubmitted(false)
 							handleClose()
 						}
 					}}
 				>
-					{({ errors, handleChange, touched, values }) => (
+					{({ errors, handleChange, touched, values, submitForm }) => (
 						<Form>
 							<DialogContent dividers>
 								<Grid container columnSpacing={2} rowSpacing={2}>
@@ -183,7 +183,7 @@ const CreateParticipant = ({
 												<TextField
 													key={field}
 													disabled={
-														editMode ?  field === 'participant_id' : submitted
+														editMode ? field === 'participant_id' : submitted
 													}
 													size='small'
 													fullWidth
@@ -238,6 +238,7 @@ const CreateParticipant = ({
 								</Button>
 								<LoadingButton
 									color='primary'
+									onSubmit={submitForm}
 									type='submit'
 									loading={submitted}
 									loadingPosition='start'
