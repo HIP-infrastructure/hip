@@ -89,6 +89,7 @@ const BidsConverter = () => {
 			action: 'import',
 		})
 
+		setResponse(undefined)
 		importSubject(createSubjectDto as CreateSubjectDto)
 			.then(data => {
 				console.log(data)
