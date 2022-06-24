@@ -24,8 +24,8 @@ type IField = Record<string, string>
 
 const validationSchema = Yup.object().shape({
 	participant_id: Yup.string().required('ID is required'),
-	age: Yup.string().required('Age is required'),
-	sex: Yup.string().required('Sex is required'),
+	// age: Yup.string().required('Age is required'),
+	// sex: Yup.string().required('Sex is required'),
 })
 
 interface ICreateDatabase {
