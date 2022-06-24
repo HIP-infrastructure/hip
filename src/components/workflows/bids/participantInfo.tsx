@@ -72,7 +72,6 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 	return (
 		<Card sx={{ minWidth: 480 }}>
 			<CardContent>
-				{subjectExists && <Box></Box>}
 				{subjectExists && (
 					<>
 						{!existingFiles && <CircularProgress sx={{ m: 2 }} size={16} />}
