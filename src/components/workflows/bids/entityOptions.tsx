@@ -21,7 +21,15 @@ export default function EntityOptions({
 	return (
 		<Autocomplete
 			value={value}
-			onChange={(event, newValue) => {
+			onBlur={(event: any) => {
+				const newValue = event.target.value
+				if (newValue !== '' && typeof newValue === 'string') {
+					setValue({
+						label: newValue,
+					})
+				}
+			}}
+			onChange={(_event, newValue) => {
 				if (typeof newValue === 'string') {
 					setValue({
 						label: newValue,
@@ -37,8 +45,8 @@ export default function EntityOptions({
 			}}
 			filterOptions={(options, params) => {
 				const filtered = filter(options, params)
-
 				const { inputValue } = params
+
 				// Suggest the creation of a new value
 				const isExisting = options.some(option => inputValue === option.label)
 				if (inputValue !== '' && !isExisting) {
@@ -51,7 +59,6 @@ export default function EntityOptions({
 				return filtered
 			}}
 			selectOnFocus
-			clearOnBlur
 			handleHomeEndKeys
 			id='entity-modality-widget'
 			options={entity?.options || []}
