@@ -9,7 +9,7 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { importSubject } from '../../../api/bids'
+import { getBidsDatabases, importSubject } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
@@ -43,6 +43,7 @@ const BidsConverter = () => {
 	}>()
 	const {
 		user: [user],
+		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase],
 		selectedParticipants: [selectedParticipants],
 		selectedFiles: [selectedFiles],
@@ -95,11 +96,35 @@ const BidsConverter = () => {
 				console.log(data)
 				showNotif('Subject imported', 'success')
 				setResponse({ data })
+
+				// reload databases
+				getBidsDatabases(user?.uid)
+					.then(data => {
+						if (data) {
+							setBidsDatabases({ data })
+						}
+					})
+					.catch(error => {
+						setBidsDatabases({ error })
+					})
 			})
 			.catch(error => {
 				console.log(error)
 				showNotif('Subject importation failed', 'error')
 				setResponse({ error })
+
+				// FIXME:
+				// Actually, from the API, it's not clear if it failed, so
+				// reload databases anyway
+				getBidsDatabases(user?.uid)
+					.then(data => {
+						if (data) {
+							setBidsDatabases({ data })
+						}
+					})
+					.catch(error => {
+						setBidsDatabases({ error })
+					})
 			})
 	}
 
