@@ -37,14 +37,13 @@ const Files = ({
 	const [submitted, setSubmitted] = useState(false)
 	const { showNotif } = useNotification()
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
-	const [modality, setModality] = useState<{ name: string; type: string }>()
+	const [modality, setModality] = useState<{ name: string; type: 'anat' | 'ieeg' }>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()
 	const [entities, setEntites] = useState<IEntity[]>()
 
 	const {
-		user: [user],
 		selectedBidsDatabase: [selectedBidsDatabase],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
@@ -95,7 +94,6 @@ const Files = ({
 	}, [modality])
 
 	useEffect(() => {
-		// console.log(tree?.map((t: { data: { path: any } }) => t.data.path))
 		const selectedNode = tree?.find(
 			(node: { data: { path: any } }) => node.data.path === fileInputValue
 		)
@@ -127,7 +125,7 @@ const Files = ({
 						},
 				  ]),
 			...(tree
-				?.filter((node: { data: { path: string } }) =>
+				?.filter(node => 
 					new RegExp(fileInputValue || '').test(node.data.path)
 				)
 				?.filter(node => {
@@ -135,6 +133,21 @@ const Files = ({
 					if (pathes.length <= selectedPath.length + 1) return true
 
 					return false
+				})
+				// filter file types by modality
+				// FIXME: -> constants/types
+				?.filter(node => {
+					if (node.data.type === 'dir') return true
+
+					if (modality?.type === 'anat') {
+						return /nii|dcm/.test(node.data.path)
+					}
+
+					if (modality?.type === 'ieeg') {
+						return /vhdr|vmrk|eeg|edf|bdf|set|/.test(node.data.path)
+					}
+
+					return true
 				})
 				?.sort(
 					(a: { data: { path: any } }, b: { data: { path: string } }) =>
