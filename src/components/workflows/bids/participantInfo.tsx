@@ -91,21 +91,19 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 										{subject}
 									</Link>
 								</Typography>
-								<Typography variant='body1'>
-									<ul>
-										{existingFiles?.map(f => (
-											<li>
-												<strong>
-													{f.files.length} x {f.modality}
-												</strong>
-												<ul>
-													{f.files.map(file => (
-														<li>{file}</li>
-													))}
-												</ul>
-											</li>
-										))}
-									</ul>
+								<Typography variant='body1' component={'ul'}>
+									{existingFiles?.map(f => (
+										<li key={f.modality}>
+											<strong>
+												{f.files.length} x {f.modality}
+											</strong>
+											<ul>
+												{f.files.map(file => (
+													<li key={file}>{file}</li>
+												))}
+											</ul>
+										</li>
+									))}
 								</Typography>
 							</>
 						)}
