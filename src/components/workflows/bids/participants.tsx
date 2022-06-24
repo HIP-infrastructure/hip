@@ -16,11 +16,13 @@ import { useEffect, useState } from 'react'
 import { Participant } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateParticipant from './forms/CreateParticipant'
+import ParticipantInfo from './participantInfo'
 
 const Participants = (): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
+	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const [_participantCreated, setParticipantCreated] = useState(false)
 	const {
 		selectedBidsDatabase: [selectedBidsDatabase],
@@ -67,50 +69,63 @@ const Participants = (): JSX.Element => {
 					</Typography>
 					<Box sx={{ flex: '1 0' }} />
 				</Box>
-
-				<TableContainer sx={{ maxHeight: 440 }}>
-					<Table stickyHeader size='small' aria-label='Participants table'>
-						<TableHead>
-							<TableRow>
-								<TableCell></TableCell>
-								{columns.map(c => (
-									<TableCell key={c.name}>{c.name}</TableCell>
-								))}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.map(row => (
-								<TableRow key={row.participant_id}>
-									<TableCell padding='checkbox'>
-										<IconButton
-											color='primary'
-											aria-label='edit'
-											onClick={() => handleEditParticipant(row.participant_id)}
+				<Box sx={{ display: 'flex', gap: '1em', mr: 2 }}>
+					<Box sx={{ flex: '2 0' }}>
+						<TableContainer sx={{ maxHeight: 440 }}>
+							<Table stickyHeader size='small' aria-label='Participants table'>
+								<TableHead>
+									<TableRow>
+										<TableCell></TableCell>
+										{columns.map(c => (
+											<TableCell key={c.name}>{c.name}</TableCell>
+										))}
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{rows.map(row => (
+										<TableRow
+											hover
+											role='checkbox'
+											onClick={() => setSelectedSubject(row.participant_id)}
+											key={row.participant_id}
 										>
-											<Edit />
-										</IconButton>
-									</TableCell>
-									{Object.keys(row).map(key => (
-										<TableCell key={key}>{row[key]}</TableCell>
+											<TableCell padding='checkbox'>
+												<IconButton
+													color='primary'
+													aria-label='edit'
+													onClick={() =>
+														handleEditParticipant(row.participant_id)
+													}
+												>
+													<Edit />
+												</IconButton>
+											</TableCell>
+											{Object.keys(row).map(key => (
+												<TableCell key={key}>{row[key]}</TableCell>
+											))}
+										</TableRow>
 									))}
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<Button
-					color='primary'
-					size='small'
-					sx={{ m: 2 }}
-					startIcon={<Add />}
-					onClick={() => {
-						setParticipantEditId(undefined)
-						setIsCreateDialogOpen(true)
-					}}
-					variant='contained'
-				>
-					Add new Participant
-				</Button>
+								</TableBody>
+							</Table>
+						</TableContainer>
+						<Button
+							color='primary'
+							size='small'
+							sx={{ m: 2 }}
+							startIcon={<Add />}
+							onClick={() => {
+								setParticipantEditId(undefined)
+								setIsCreateDialogOpen(true)
+							}}
+							variant='contained'
+						>
+							Add new Participant
+						</Button>
+					</Box>
+					<Box sx={{ flex: '1 0' }}>
+						<ParticipantInfo subject={selectedSubject} />
+					</Box>
+				</Box>
 			</Box>
 			<CreateParticipant
 				participantEditId={participantEditId}

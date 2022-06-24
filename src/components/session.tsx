@@ -1,48 +1,47 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import AppList from './sessionAppList'
-import { useAppStore } from '../store/appProvider'
-import { createApp, stopApp } from '../api/gatewayClientAPI'
-import WebdavForm from './webdavLoginForm'
-import SessionInfo from './sessionInfo'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
-	APP_MARGIN_TOP,
-	XPRA_PARAMS,
-	ROUTE_PREFIX,
-	DRAWER_WIDTH,
-} from '../constants'
-import { useParams } from 'react-router-dom'
-import {
-	Divider,
-	IconButton,
-	Drawer,
-	Box,
-	Toolbar,
-	CircularProgress,
-	Modal,
-	FormControl,
-	Select,
-	MenuItem,
-	SelectChangeEvent,
-} from '@mui/material'
-import {
+	ArrowBack,
 	ChevronLeft,
 	ChevronRight,
-	Menu,
-	Fullscreen,
-	ArrowBack,
 	ExpandMore,
+	Fullscreen,
+	Menu,
 } from '@mui/icons-material'
+import {
+	Box,
+	CircularProgress,
+	Divider,
+	Drawer,
+	IconButton,
+	MenuItem,
+	Modal,
+	Select,
+	SelectChangeEvent,
+	Toolbar,
+	Typography,
+} from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
 import { createBrowserHistory } from 'history'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { createApp, stopApp } from '../api/gatewayClientAPI'
 import {
+	AppContainer,
 	Application,
 	Container,
 	ContainerType,
-	AppContainer,
 } from '../api/types'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import {
+	APP_MARGIN_TOP,
+	DRAWER_WIDTH,
+	ROUTE_PREFIX,
+	XPRA_PARAMS,
+} from '../constants'
+import { useAppStore } from '../store/appProvider'
+import AppList from './sessionAppList'
+import SessionInfo from './sessionInfo'
+import WebdavForm from './webdavLoginForm'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
@@ -322,6 +321,7 @@ const Session = (): JSX.Element => {
 			>
 				<DrawerHeader>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
+						<Typography variant='subtitle2'>close</Typography>
 						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
 					</IconButton>
 				</DrawerHeader>
