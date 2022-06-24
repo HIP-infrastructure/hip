@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-
-import { Article, Delete, Edit, Folder, Info, Save } from '@mui/icons-material'
+import { Article, Delete, Folder, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
 	Autocomplete,
@@ -16,16 +14,17 @@ import {
 	TableRow,
 	TextField,
 	Tooltip,
-	Typography,
+	Typography
 } from '@mui/material'
-import { getSubject } from '../../../api/bids'
+import React, { useEffect, useState } from 'react'
 import { getFiles } from '../../../api/gatewayClientAPI'
-import { BIDSSubjectFile, File, IEntity, TreeNode } from '../../../api/types'
+import { File, IEntity, TreeNode } from '../../../api/types'
 import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import EntityOptions from './entityOptions'
 import ParticipantInfo from './participantInfo'
+
 
 const Files = ({
 	handleImportSubject,
@@ -40,10 +39,6 @@ const Files = ({
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
 	const [modality, setModality] = useState<{ name: string; type: string }>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
-	const [
-		selectedSubjectExistingBIDSFiles,
-		setSelectedSubjectExistingBIDSFiles,
-	] = useState<BIDSSubjectFile[]>()
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()
 	const [entities, setEntites] = useState<IEntity[]>()
@@ -62,23 +57,6 @@ const Files = ({
 	}, [])
 
 	useEffect(() => {
-		if (!(selectedBidsDatabase?.path && user?.uid && selectedSubject)) {
-			return
-		}
-
-		// existing participant
-		const subject = selectedSubject.replace('sub-', '')
-		getSubject(selectedBidsDatabase?.path, user?.uid, subject)
-			.then(d => {
-				if (d) setSelectedSubjectExistingBIDSFiles(d)		
-			})
-			.catch(e => {
-				setSelectedSubjectExistingBIDSFiles(undefined)
-				// console.log(e)
-			})
-	}, [selectedSubject])
-
-	useEffect(() => {
 		if (!modality) return
 
 		const entitiesForModality =
@@ -89,31 +67,31 @@ const Files = ({
 			[]
 		setEntites(entitiesForModality)
 
-		if (!selectedSubjectExistingBIDSFiles) {
-			return
-		}
+		// if (!selectedSubjectExistingBIDSFiles) {
+		// 	return
+		// }
 
-		const nextEntities = entitiesForModality?.map(e => {
-			const entries = selectedSubjectExistingBIDSFiles
-				.filter(i => i.modality === modality?.name)
-				.find(eem => {
-					return Object.keys(eem).find(k => k === e.name)
-				})
-			if (!entries) return e
+		// const nextEntities = entitiesForModality?.map(e => {
+		// 	const entries = selectedSubjectExistingBIDSFiles
+		// 		.filter(i => i.modality === modality?.name)
+		// 		.find(eem => {
+		// 			return Object.keys(eem).find(k => k === e.name)
+		// 		})
+		// 	if (!entries) return e
 
-			const mod = (entries as Record<string, any>)[e.name]
+		// 	const mod = (entries as Record<string, any>)[e.name]
 
-			if (mod)
-				return {
-					...e,
-					options: Array.from(new Set([...e.options, mod])).map(label => ({
-						label,
-					})),
-				}
-			else return e
-		})
+		// 	if (mod)
+		// 		return {
+		// 			...e,
+		// 			options: Array.from(new Set([...e.options, mod])).map(label => ({
+		// 				label,
+		// 			})),
+		// 		}
+		// 	else return e
+		// })
 
-		if (nextEntities) setEntites(nextEntities)
+		// if (nextEntities) setEntites(nextEntities)
 	}, [modality])
 
 	useEffect(() => {
@@ -424,16 +402,7 @@ const Files = ({
 					<Typography sx={{ mt: 1, mb: 2 }} variant='subtitle1'>
 						Subject Infos
 					</Typography>
-					<ParticipantInfo
-						subject={selectedSubject}
-						files={selectedSubjectExistingBIDSFiles}
-						path={selectedBidsDatabase?.path}
-						isNew={
-							!selectedBidsDatabase?.participants
-								?.map(p => p.participant_id)
-								.includes(selectedSubject || '')
-						}
-					/>
+					<ParticipantInfo subject={selectedSubject} />
 				</Box>
 			</Paper>
 			<Box sx={{ m: 3, textAlign: 'center' }}>

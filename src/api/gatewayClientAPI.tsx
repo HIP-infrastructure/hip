@@ -12,8 +12,7 @@ export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 export const checkError = async (response: Response) => {
 	try {
 		if (response.status >= 200 && response.status <= 299) {
-			const data = await response.json()
-			return data
+			return await response.json()
 		} else {
 			if (response.status > 400 && response.status <= 403)
 				throw new Error('You have been logged out. Please log in again.')
