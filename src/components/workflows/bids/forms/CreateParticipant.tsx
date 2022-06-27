@@ -135,7 +135,16 @@ const CreateParticipant = ({
 											data => {
 												setSelectedBidsDatabase({
 													...selectedBidsDatabase,
-													participants: data,
+													// in case user added a new participant and is editing others
+													participants: selectedBidsDatabase?.participants?.map(
+														p => {
+															const id = data.find(
+																d => (d.participant_id === p.participant_id)
+															)
+
+															return id ? id : p
+														}
+													),
 												})
 
 												showNotif('Participant saved', 'success')
@@ -223,6 +232,10 @@ const CreateParticipant = ({
 													...selectedBidsDatabase,
 													participants: nextParticipants,
 												})
+
+											if (editMode) {
+												setFields(f => [...f, key])
+											}
 										}
 									}}
 								/>
