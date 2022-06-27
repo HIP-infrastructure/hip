@@ -172,11 +172,11 @@ const Databases = (): JSX.Element => {
 									{selectedBidsDatabase?.BIDSVersion}
 								</Typography>
 								<Typography variant='body1'>
-									<strong>Licence</strong>
+									<strong>License</strong>
 								</Typography>
 								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDatabase?.Licence &&
-										selectedBidsDatabase.Licence) ||
+									{(selectedBidsDatabase?.License &&
+										selectedBidsDatabase.License) ||
 										'n/a'}
 								</Typography>
 								<Typography variant='body1'>

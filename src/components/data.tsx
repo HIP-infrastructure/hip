@@ -50,8 +50,8 @@ const Data = (): JSX.Element => {
 			},
 		},
 		{
-			key: 'Licence',
-			name: 'Licence',
+			key: 'License',
+			name: 'License',
 			resizable: true,
 		},
 		{
