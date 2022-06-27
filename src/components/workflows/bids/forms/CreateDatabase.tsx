@@ -156,8 +156,8 @@ const CreateDatabase = ({
 											disabled={submitted}
 											size='small'
 											fullWidth
-											name='Licence'
-											label='Licence'
+											name='License'
+											label='License'
 											value={values.License}
 											onChange={handleChange}
 											error={touched.License && errors.License ? true : false}
