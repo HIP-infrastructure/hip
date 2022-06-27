@@ -95,7 +95,7 @@ export interface BIDSDatabase {
 	participants?: Participant[]
 	Name: string
 	BIDSVersion?: string
-	Licence?: string
+	License?: string
 	Authors?: string[]
 	Acknowledgements?: string
 	HowToAcknowledge?: string
