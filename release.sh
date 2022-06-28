@@ -7,6 +7,11 @@ APP_NAME=hip
 
 # git checkout master
 # git pull origin master
+DRAFT=false
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" != "master" ]]; then
+  DRAFT=true
+fi
 
 git diff --quiet --exit-code
 [ $? != 0 ] && echo There is unstaged changes && exit 1
@@ -14,7 +19,7 @@ git diff --quiet --exit-code
 [ -z "$GITHUB_TOKEN" ] && echo GITHUB_TOKEN var is missing. Go to https://github.com/settings/tokens && exit 1
 
 VERSION=v`grep '<version>' appinfo/info.xml | sed 's/[^0-9.]//g'`
-UPLOAD_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" -d "{\"tag_name\":\"$VERSION\"}" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
+UPLOAD_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" -d "{\"tag_name\":\"$VERSION\", \"draft\":$DRAFT}" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
 [ -z "$UPLOAD_URL" ] && echo Can not get upload url && exit 1
 
 git tag $VERSION
