@@ -4,7 +4,7 @@ import { uniq } from './utils'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
-	: `${window.location.protocol}//${window.location.host}`
+	: `${window.location.protocol}//${window.location.host}/api/v1`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
 export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
