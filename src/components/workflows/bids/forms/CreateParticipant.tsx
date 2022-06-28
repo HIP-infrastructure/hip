@@ -139,7 +139,7 @@ const CreateParticipant = ({
 													participants: selectedBidsDatabase?.participants?.map(
 														p => {
 															const id = data.find(
-																d => (d.participant_id === p.participant_id)
+																d => d.participant_id === p.participant_id
 															)
 
 															return id ? id : p
@@ -156,8 +156,7 @@ const CreateParticipant = ({
 										)
 									}
 								})
-								.catch(error => {
-									console.log(error)
+								.catch(() => {
 									showNotif('Participant not saved', 'error')
 									setSubmitted(false)
 								})
@@ -201,14 +200,12 @@ const CreateParticipant = ({
 													value={(values as IField)[field]}
 													onChange={handleChange}
 													error={
-														(touched as IField)[field] &&
-														(errors as IField)[field]
+														(touched as any)[field] && (errors as IField)[field]
 															? true
 															: false
 													}
 													helperText={
-														(touched as IField)[field] &&
-														(errors as IField)[field]
+														(touched as any)[field] && (errors as IField)[field]
 															? (errors as IField)[field]
 															: null
 													}

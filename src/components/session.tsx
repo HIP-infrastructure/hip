@@ -93,7 +93,7 @@ const Session = (): JSX.Element => {
 					}
 				})
 				.catch(e => {
-					console.log(e)
+					// console.log(e)
 				})
 		}, 1000)
 		return () => {

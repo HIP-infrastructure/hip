@@ -12,6 +12,7 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material'
+import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Participant } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'

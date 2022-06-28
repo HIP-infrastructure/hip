@@ -185,7 +185,7 @@ const FilePanel = ({
 	 * @description
 	 * @returns void
 	 */
-	const handleDragEnter = useCallback(event => {
+	const handleDragEnter = useCallback((event: any) => {
 		event.preventDefault()
 		setAnimate(true)
 	}, [])
@@ -195,7 +195,7 @@ const FilePanel = ({
 	 * @description
 	 * @returns void
 	 */
-	const handleDragOver = useCallback(event => {
+	const handleDragOver = useCallback((event: any) => {
 		event.stopPropagation()
 		event.preventDefault()
 		setAnimate(true)
@@ -206,7 +206,7 @@ const FilePanel = ({
 	 * @description
 	 * @returns void
 	 */
-	const handleDrop = useCallback(event => {
+	const handleDrop = useCallback((event: any) => {
 		event.stopPropagation()
 		event.preventDefault()
 		const dt = event.dataTransfer
@@ -218,7 +218,7 @@ const FilePanel = ({
 	 * @description
 	 * @returns void
 	 */
-	const handleDragLeave = useCallback(event => {
+	const handleDragLeave = useCallback((event: any) => {
 		setAnimate(false)
 	}, [])
 
@@ -268,7 +268,7 @@ const FilePanel = ({
 								labelText={node.label}
 								labelIcon={node.data.type === 'dir' ? Folder : InsertDriveFile}
 								labelInfo={
-									standalone || node.data.type !== 'dir' ? undefined : ">"
+									standalone || node.data.type !== 'dir' ? undefined : '>'
 								}
 							/>
 						))}

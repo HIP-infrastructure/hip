@@ -17,7 +17,9 @@ export const checkError = async (response: Response) => {
 			if (response.status > 400 && response.status <= 403)
 				throw new Error('You have been logged out. Please log in again.')
 			else if (response.status >= 500 && response.status <= 599) {
-				throw new Error(`Bad response from server: ${response.statusText} ${response.status}`)
+				throw new Error(
+					`Bad response from server: ${response.statusText} ${response.status}`
+				)
 			} else {
 				const data = await response.json()
 				throw new Error(data.message)

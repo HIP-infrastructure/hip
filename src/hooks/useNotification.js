@@ -1,11 +1,11 @@
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack'
 
 export const useNotification = () => {
-  const { enqueueSnackbar } = useSnackbar();
+	const { enqueueSnackbar } = useSnackbar()
 
-  const showNotif = (message, variant) => {
-    enqueueSnackbar(message, { variant });
-  };
+	const showNotif = (message, variant) => {
+		enqueueSnackbar(message, { variant })
+	}
 
-  return { showNotif }
-};
+	return { showNotif }
+}

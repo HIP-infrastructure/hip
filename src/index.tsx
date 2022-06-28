@@ -23,14 +23,13 @@ const MatomoInstance = ({ children }: { children: JSX.Element }) => {
 	const MATOMO_URL_BASE = process.env.REACT_APP_MATOMO_URL_BASE
 	const MATOMO_SITE_ID = process.env.REACT_APP_MATOMO_SITE_ID
 	const matomoInstance =
-		process.env.NODE_ENV !== 'development' &&
+		process.env.NODE_ENV === 'development' &&
 		MATOMO_URL_BASE &&
 		MATOMO_SITE_ID &&
 		createInstance({
 			urlBase: MATOMO_URL_BASE,
 			siteId: parseInt(MATOMO_SITE_ID),
 			linkTracking: true,
-			trackPageView: true,
 			configurations: {
 				disableCookies: true,
 			},
@@ -63,30 +62,30 @@ const root = createRoot(container!)
 
 root.render(
 	// <React.StrictMode>
-		<AppStoreProvider>
-			<MatomoInstance>
-				<BrowserRouter>
-					<DebugRouter>
-						<Theme>
-							<SnackbarProvider
-								maxSnack={3}
-								autoHideDuration={4000}
-								TransitionComponent={Slide}
-								anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-								iconVariant={{
-									success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
-									error: <Error sx={{ ...iconsStyle.icon }} />,
-									warning: <Warning sx={{ ...iconsStyle.icon }} />,
-									info: <Info sx={{ ...iconsStyle.icon }} />,
-								}}
-							>
-								<App />
-							</SnackbarProvider>
-						</Theme>
-					</DebugRouter>
-				</BrowserRouter>
-			</MatomoInstance>
-		</AppStoreProvider>
+	<AppStoreProvider>
+		<MatomoInstance>
+			<BrowserRouter>
+				<DebugRouter>
+					<Theme>
+						<SnackbarProvider
+							maxSnack={3}
+							autoHideDuration={4000}
+							TransitionComponent={Slide}
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+							iconVariant={{
+								success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
+								error: <Error sx={{ ...iconsStyle.icon }} />,
+								warning: <Warning sx={{ ...iconsStyle.icon }} />,
+								info: <Info sx={{ ...iconsStyle.icon }} />,
+							}}
+						>
+							<App />
+						</SnackbarProvider>
+					</Theme>
+				</DebugRouter>
+			</BrowserRouter>
+		</MatomoInstance>
+	</AppStoreProvider>
 	// </React.StrictMode>
 )
 

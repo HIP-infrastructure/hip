@@ -39,7 +39,7 @@ const SessionInfo = ({ session }: { session?: Container }) => {
 				<Link href={session?.url} underline='hover'>
 					Open in Browser
 				</Link>
-				<Typography variant='body2'>{session?.error}</Typography>
+				<Typography variant='body2'>{session?.error?.message}</Typography>
 			</CardContent>
 		</Card>
 	)
