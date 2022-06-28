@@ -1,5 +1,3 @@
-import React from 'react'
-
 export interface Container {
 	id: string
 	name: string

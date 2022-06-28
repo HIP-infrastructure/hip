@@ -16,8 +16,7 @@ export const getBidsDatabases = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	})
-	.then(checkError)
+	}).then(checkError)
 }
 
 export const createBidsDatabase = async (
@@ -31,8 +30,7 @@ export const createBidsDatabase = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createBidsDatabaseDto),
-	})
-		.then(data => data.json())
+	}).then(data => data.json())
 }
 
 export const getParticipants = async (
@@ -44,22 +42,20 @@ export const getParticipants = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	})
-		.then(data => data.json())
+	}).then(data => data.json())
 }
 
 export const getSubject = async (
 	path: string,
 	userId: string,
-	subject: string,
+	subject: string
 ): Promise<BIDSSubjectFile[]> => {
 	const url = `${API_GATEWAY}/tools/bids/subject?path=${path}&owner=${userId}&sub=${subject}`
 	return fetch(url, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	})
-	.then(checkError)
+	}).then(checkError)
 }
 
 export const importSubject = async (
@@ -73,8 +69,7 @@ export const importSubject = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createSubject),
-	})
-	.then(checkError)
+	}).then(checkError)
 }
 
 export const subEditClinical = async (
@@ -89,8 +84,7 @@ export const subEditClinical = async (
 				requesttoken: window.OC.requestToken,
 			},
 			body: JSON.stringify(editSubject),
-		})
-		.then(checkError)
+		}).then(checkError)
 	} catch (error) {
 		return Promise.reject(error)
 	}

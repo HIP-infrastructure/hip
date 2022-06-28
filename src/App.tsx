@@ -20,7 +20,6 @@ import Spaces from './components/spaces'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
-import { useAppStore } from './store/appProvider'
 
 export interface Space {
 	label: string
@@ -38,16 +37,13 @@ const footerStyle = {
 }
 
 const Layout = (): JSX.Element => {
-	const {
-		debug: [debug, setDebug],
-	} = useAppStore()
 	const [mobileOpen, setMobileOpen] = React.useState(false)
 	const theme = useTheme()
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
 
-	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen)
-	}
+	// const handleDrawerToggle = () => {
+	// 	setMobileOpen(!mobileOpen)
+	// }
 
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>

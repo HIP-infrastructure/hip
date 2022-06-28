@@ -17,10 +17,10 @@ export const loading = (state: ContainerState) =>
 
 export const color = (state?: ContainerState) =>
 	state &&
-		[
-			ContainerState.RUNNING,
-			ContainerState.CREATED,
-			ContainerState.LOADING,
-		].includes(state)
+	[
+		ContainerState.RUNNING,
+		ContainerState.CREATED,
+		ContainerState.LOADING,
+	].includes(state)
 		? 'success'
 		: 'error'

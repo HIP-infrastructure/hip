@@ -14,7 +14,7 @@ import {
 	TableRow,
 	TextField,
 	Tooltip,
-	Typography
+	Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getFiles } from '../../../api/gatewayClientAPI'
@@ -24,7 +24,6 @@ import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import EntityOptions from './entityOptions'
 import ParticipantInfo from './participantInfo'
-
 
 const Files = ({
 	handleImportSubject,
@@ -37,7 +36,10 @@ const Files = ({
 	const [submitted, setSubmitted] = useState(false)
 	const { showNotif } = useNotification()
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
-	const [modality, setModality] = useState<{ name: string; type: 'anat' | 'ieeg' }>()
+	const [modality, setModality] = useState<{
+		name: string
+		type: 'anat' | 'ieeg'
+	}>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()
@@ -125,9 +127,7 @@ const Files = ({
 						},
 				  ]),
 			...(tree
-				?.filter(node => 
-					new RegExp(fileInputValue || '').test(node.data.path)
-				)
+				?.filter(node => new RegExp(fileInputValue || '').test(node.data.path))
 				?.filter(node => {
 					const pathes = node?.data.path.split('/')
 					if (pathes.length <= selectedPath.length + 1) return true
@@ -194,7 +194,7 @@ const Files = ({
 		setSelectedSubject(file.subject)
 		if (file.modality) {
 			const m = MODALITIES.find(mod => mod.name === file.modality)
-			setModality(m)
+			if (m) setModality(m)
 		}
 
 		if (file.entities) setSelectedEntities(file.entities)
@@ -315,9 +315,8 @@ const Files = ({
 								}}
 							>
 								{entities?.map(entity => (
-									<Box>
+									<Box key={entity.name}>
 										<Box
-											key={entity.name}
 											sx={{
 												maxWidth: '200px',
 												flex: 'inherit',
@@ -365,7 +364,7 @@ const Files = ({
 								}}
 								disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
 								id='input-tree-view'
-								renderInput={(params: unknown) => (
+								renderInput={(params: any) => (
 									<TextField {...params} label='Files' />
 								)}
 								renderOption={(props, option) => {

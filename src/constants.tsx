@@ -1,4 +1,4 @@
-import { IEntity } from "./api/types"
+import { IEntity } from './api/types'
 
 export const ROUTE_PREFIX = '/apps/hip'
 export const XPRA_PARAMS = 'keyboard=false&sharing=yes&sound=no'
@@ -25,7 +25,10 @@ export const DATA_TYPES = [
 	{ name: 'ieeg', description: 'intracranial electroencephalography data' },
 ]
 
-export const MODALITIES = [
+export const MODALITIES: {
+	name: string
+	type: 'anat' | 'ieeg'
+}[] = [
 	{
 		name: 'T1w',
 		type: 'anat',
@@ -72,7 +75,7 @@ export const ENTITIES: IEntity[] = [
 				required: false,
 			},
 		],
-		options: []
+		options: [],
 	},
 	{
 		name: 'task',
@@ -86,7 +89,7 @@ export const ENTITIES: IEntity[] = [
 				required: true,
 			},
 		],
-		options: []
+		options: [],
 	},
 	{
 		name: 'acq',
@@ -103,7 +106,7 @@ export const ENTITIES: IEntity[] = [
 				required: false,
 			},
 		],
-		options: []
+		options: [],
 	},
 	{
 		name: 'ce',
@@ -116,7 +119,7 @@ export const ENTITIES: IEntity[] = [
 				required: false,
 			},
 		],
-		options: []
+		options: [],
 	},
 	{
 		name: 'rec',
@@ -129,6 +132,6 @@ export const ENTITIES: IEntity[] = [
 				required: false,
 			},
 		],
-		options: []
+		options: [],
 	},
 ]

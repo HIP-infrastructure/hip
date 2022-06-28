@@ -93,7 +93,6 @@ const BidsConverter = () => {
 		setResponse(undefined)
 		importSubject(createSubjectDto as CreateSubjectDto)
 			.then(data => {
-				console.log(data)
 				showNotif('Subject imported', 'success')
 				setResponse({ data })
 
@@ -109,7 +108,6 @@ const BidsConverter = () => {
 					})
 			})
 			.catch(error => {
-				console.log(error)
 				showNotif('Subject importation failed', 'error')
 				setResponse({ error })
 

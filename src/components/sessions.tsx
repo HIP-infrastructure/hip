@@ -92,8 +92,6 @@ const Sessions = (): JSX.Element => {
 				action: 'stop',
 			})
 		}
-
-
 	}
 
 	const sessions = containers
@@ -309,8 +307,8 @@ const Sessions = (): JSX.Element => {
 									color='info'
 									aria-label='Open'
 									onClick={() => {
-										handleOpenSession(session.id)}
-									}
+										handleOpenSession(session.id)
+									}}
 								>
 									<Visibility />
 								</IconButton>
