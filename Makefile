@@ -17,7 +17,6 @@ test.lint:
 release.package: r.clean dep.install r.bundle r.package
 
 r.clean:
-	rm -f package-lock.json
 	rm -rf build
 	rm -rf release release.tar.gz
 
