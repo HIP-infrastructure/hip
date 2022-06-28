@@ -4,7 +4,7 @@
 	<id>hip</id>
 	<name>HIP (Human Intracerebral EEG Platform)</name>
 	<description><![CDATA[]]></description>
-	<version>0.0.2</version>
+	<version>0.0.3-dev.1</version>
 	<author>CHUV</author>
 	<namespace>HIP</namespace>
 	<category>tools</category>
@@ -12,7 +12,7 @@
 	<repository type="git">https://github.com/HIP-infrastructure/hip</repository>
 	<screenshot small-thumbnail="https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png">https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="19" max-version="21" />
+		<nextcloud min-version="19" max-version="24" />
 	</dependencies>
 
 	<navigations>
