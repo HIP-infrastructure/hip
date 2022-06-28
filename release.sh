@@ -5,8 +5,8 @@ set -e
 GITHUB_REPO=HIP-infrastructure/hip
 APP_NAME=hip
 
-git checkout master
-git pull origin master
+# git checkout master
+# git pull origin master
 
 git diff --quiet --exit-code
 [ $? != 0 ] && echo There is unstaged changes && exit 1
