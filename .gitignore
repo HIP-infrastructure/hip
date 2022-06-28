@@ -9,6 +9,9 @@
 /coverage
 
 # production
+/build
+/release
+/release.tar.gz
 
 # misc
 .DS_Store
