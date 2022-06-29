@@ -1,26 +1,18 @@
-# Source https://github.com/HIP-infrastructure/app-in-browser/blob/dev/.gitlab-ci.yml
-# Source: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml
+default:
+  image: node:17
+  before_script:
+    - apt update && apt install -y gettext
+    - npm install -g react-scripts typescript --silent
 
-image: docker:20
-variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ''
-services:
-  - name: docker:20-dind
-    alias: docker
-    command: ['--tls=false', '--mtu=1450']
-before_script:
-  - apk add --no-cache bash
-  - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
 stages:
   - build
+  - release
 
-docker-build:
-  script:
-    - docker build --pull  .
+build:
   stage: build
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
+  script:
+    - make build
+release:
+  stage: release
+  script:
+    - make release
