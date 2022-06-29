@@ -1,12 +1,17 @@
-[0.0.2] - 2022.06.28 
+[0.0.3] - 2022.06.29
 
-Added 
+- Added 
+  - Makefile, test, build, release
+
+[0.0.2] - 2022.06.28
+
+- Added
   - BIDS Importer feature
   - Matomo tracking
-  - TVB, MNE 
-Changed 
+  - TVB, MNE
+- Changed
   - UI lib: Bootstrap to MUI
-Fixed
+- Fixed
   - CSP iam.ebrains.eu + iam-int
 
 [0.0.1] - 2021.10.13

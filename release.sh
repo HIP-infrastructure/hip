@@ -1,12 +1,11 @@
 #!/bin/bash
 
-set -e
-
 GITHUB_REPO=HIP-infrastructure/hip
 APP_NAME=hip
 
 # git checkout master
 # git pull origin master
+
 DRAFT=false
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "$BRANCH" != "master" ]]; then
@@ -21,6 +20,13 @@ git diff --quiet --exit-code
 VERSION=v`grep '<version>' appinfo/info.xml | sed 's/[^0-9.]//g'`
 UPLOAD_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" -d "{\"tag_name\":\"$VERSION\", \"draft\":$DRAFT}" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
 [ -z "$UPLOAD_URL" ] && echo Can not get upload url && exit 1
+
+
+LATEST_RELEASE_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"browser_download_url"' | head -1 | egrep -o 'https?://[^ ]+'`
+[ -z "$LATEST_RELEASE_URL" ] && echo Can not get upload url && exit 1
+
+echo Release published at:
+echo $LATEST_RELEASE_URL
 
 git tag $VERSION
 
