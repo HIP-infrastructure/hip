@@ -3,31 +3,37 @@
 GITHUB_REPO=HIP-infrastructure/hip
 APP_NAME=hip
 
-# git checkout master
-# git pull origin master
-
-DRAFT=false
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$BRANCH" != "master" ]]; then
-  DRAFT=true
-fi
+[ -z "$GITHUB_TOKEN" ] && echo GITHUB_TOKEN var is missing. Go to https://github.com/settings/tokens && exit 1
 
 git diff --quiet --exit-code
 [ $? != 0 ] && echo There is unstaged changes && exit 1
 
-[ -z "$GITHUB_TOKEN" ] && echo GITHUB_TOKEN var is missing. Go to https://github.com/settings/tokens && exit 1
+# git checkout master
+# git pull origin master
 
 VERSION=v`grep '<version>' appinfo/info.xml | sed 's/[^0-9.]//g'`
-UPLOAD_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" -d "{\"tag_name\":\"$VERSION\", \"draft\":$DRAFT}" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
+PRE=false
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" != "master" ]]; then
+  PRE=true
+  VERSION="$VERSION-pre"
+fi
+
+
+UPLOAD_URL=`curl -s \
+-H "Authorization: token $GITHUB_TOKEN" \
+-H "Accept: application/vnd.github.v3+json" \
+-d "{\"tag_name\":\"$VERSION\", \"prerelease\":$PRE}" \
+https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
 [ -z "$UPLOAD_URL" ] && echo Can not get upload url && exit 1
-
-
-LATEST_RELEASE_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPO/releases | grep '"browser_download_url"' | head -1 | egrep -o 'https?://[^ ]+'`
-[ -z "$LATEST_RELEASE_URL" ] && echo Can not get upload url && exit 1
-
-echo Release published at:
-echo $LATEST_RELEASE_URL
 
 git tag $VERSION
 
 curl -sH "Authorization: token $GITHUB_TOKEN" -H 'Content-Type: application/octet-stream' --data-binary '@release.tar.gz' ${UPLOAD_URL}?name=release.tar.gz > /dev/null
+
+LATEST_RELEASE_URL=`curl -sH "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPO/releases/latest | grep '"browser_download_url"' | head -1 | egrep -o 'https.*.gz'`
+[ -z "$LATEST_RELEASE_URL" ] && echo Can not get upload url && exit 1
+
+echo Release published at:
+echo $LATEST_RELEASE_URL
