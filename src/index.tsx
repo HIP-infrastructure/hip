@@ -20,7 +20,9 @@ const iconsStyle = {
 }
 
 const MatomoInstance = ({ children }: { children: JSX.Element }) => {
-	const MATOMO_URL_BASE = process.env.REACT_APP_MATOMO_URL_BASE || 'https://stats.humanbrainproject.eu/'
+	const MATOMO_URL_BASE =
+		process.env.REACT_APP_MATOMO_URL_BASE ||
+		'https://stats.humanbrainproject.eu/'
 	const MATOMO_SITE_ID = process.env.REACT_APP_MATOMO_SITE_ID || '28'
 	const matomoInstance =
 		process.env.NODE_ENV === 'development' &&
