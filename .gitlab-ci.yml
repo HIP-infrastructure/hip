@@ -5,13 +5,20 @@ default:
     - npm install -g react-scripts typescript --silent
 
 stages:
+  - test
   - build
   - release
+
+test_:
+  stage: test
+  script: 
+  - make test
 
 build:
   stage: build
   script:
     - make build
+
 release:
   stage: release
   script:

@@ -2,6 +2,7 @@
 
 - Added
   - Makefile, test, build, release
+  - GitLab CI.
 
 [0.0.2] - 2022.06.28
 

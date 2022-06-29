@@ -1,30 +1,26 @@
 .DEFAULT_GOAL := help
 
-#help:	@ List available tasks on this project
-help:
-	@grep -E '[a-zA-Z\.\-]+:.*?@ .*$$' $(MAKEFILE_LIST)| tr -d '#'  | awk 'BEGIN {FS = ":.*?@ "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+dep: @ Install all depencies defined in package.json
+dep:
+	npm install
 
 #test: @ Run all tests
 test: t.prettier t.lint 
 
 #t.prettier: @ Prettify the source code
-t.prettier:
+t.prettier: dep
 	npm run prettier
 
 #t.lint: @ Checks the source code against defined coding standard rules
-t.lint:
+t.lint: dep
 	npm run lint
 
 #build: @ Builds the project
-build: b.clean b.depinstall b.bundle b.package
+build: dep b.clean b.bundle b.package
 
 #b.clean: @ Removes all build artifacts
 b.clean:
 	rm -rf build release release.tar.gz
-
-#b.install: @ Install all depencies defined in package.json
-b.depinstall:
-	npm install
 
 #b.bundle: @ Builds the application as a JavaScript bundle
 b.bundle:
@@ -40,3 +36,8 @@ b.package:
 #release: @ Release on GitHub, tag the application with appinfo/info.xml 
 release: build
 	./release.sh	
+
+#help:	@ List available tasks on this project
+help:
+	@grep -E '[a-zA-Z\.\-]+:.*?@ .*$$' $(MAKEFILE_LIST)| tr -d '#'  | awk 'BEGIN {FS = ":.*?@ "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
