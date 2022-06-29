@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-dep: @ Install all depencies defined in package.json
+#dep: @ Install all depencies defined in package.json
 dep:
 	npm install
 

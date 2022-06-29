@@ -11,8 +11,8 @@ stages:
 
 test_:
   stage: test
-  script: 
-  - make test
+  script:
+    - make test
 
 build:
   stage: build
