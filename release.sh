@@ -8,25 +8,24 @@ APP_NAME=hip
 git diff --quiet --exit-code
 [ $? != 0 ] && echo There is unstaged changes && exit 1
 
-# git checkout master
-# git pull origin master
-
 VERSION=v`grep '<version>' appinfo/info.xml | sed 's/[^0-9.]//g'`
 PRE=false
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "$BRANCH" != "master" ]]; then
   PRE=true
-  VERSION="$VERSION-pre"
+  VERSION="$VERSION-pre-release+$(git rev-parse --short HEAD)"
 fi
 
+echo "{\"tag_name\":\"$VERSION\", \"prerelease\":$PRE}"
 
-UPLOAD_URL=`curl -s \
+UPLOAD_URL=`curl \
 -H "Authorization: token $GITHUB_TOKEN" \
 -H "Accept: application/vnd.github.v3+json" \
 -d "{\"tag_name\":\"$VERSION\", \"prerelease\":$PRE}" \
-https://api.github.com/repos/$GITHUB_REPO/releases | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
+https://api.github.com/repos/$GITHUB_REPO/releases` # | grep '"upload_url"' | sed 's/.*"\(https:.*\){.*/\1/'`
 [ -z "$UPLOAD_URL" ] && echo Can not get upload url && exit 1
+echo $UPLOAD_URL
 
 git tag $VERSION
 
