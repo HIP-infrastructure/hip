@@ -10,13 +10,7 @@ import { Box, Typography, useTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { SvgIconProps } from '@mui/material/SvgIcon'
 import { ThemeProvider } from '@mui/system'
-import React, {
-	RefObject,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import React, { RefObject, useRef } from 'react'
 import { TreeNode } from '../../api/types'
 
 declare module 'react' {
@@ -117,9 +111,6 @@ const FilePanel = ({
 }: ITreeSelect) => {
 	const theme = useTheme()
 	const filesCardRef = useRef<RefObject<HTMLDivElement>>(null)
-	const [files, setFiles] = useState([])
-	const [error, setError] = useState<string | null>(null)
-	const [animate, setAnimate] = useState(false)
 
 	const onNodeSelect = (
 		event: React.SyntheticEvent,
@@ -130,123 +121,12 @@ const FilePanel = ({
 		handleSelectedNode(node)
 	}
 
-	/**
-	 * @name renderPreview
-	 * @description
-	 * @param event
-	 * @param filesTab
-	 * @returns void
-	 */
-	const renderPreview = (
-		event: React.ChangeEventHandler<HTMLInputElement>,
-		filesTab: any
-	) => {
-		setAnimate(false)
-		setError(null)
-		// if (!filesTab && event?.target?.files) {
-		// 	filesTab = event?.target?.files
-		// }
-		if (!filesTab) {
-			// return onError(`Empty file input`)
-		}
-
-		//
-		if (window.File && window.FileReader && window.FileList && window.Blob) {
-			for (let i = 0; i < filesTab?.length; i++) {
-				const file = filesTab[i]
-				const extension = file?.type?.split('/')[1]
-
-				//
-				const reader = new FileReader()
-				reader.addEventListener(
-					'load',
-					function () {
-						const obj = {
-							lastModified: file.lastModified,
-							name: file.name,
-							size: file.size,
-							path: this.result,
-							extension: extension?.toLowerCase(),
-							contentType: file.type,
-						}
-						// files.push(obj)
-						setFiles([...files])
-					},
-					false
-				)
-				reader.readAsDataURL(file)
-			}
-			// event?.dataTransfer?.clearData()
-		}
-	}
-
-	/**
-	 * @name handleDragEnter
-	 * @description
-	 * @returns void
-	 */
-	const handleDragEnter = useCallback((event: any) => {
-		event.preventDefault()
-		setAnimate(true)
-	}, [])
-
-	/**
-	 * @name handleDragOver
-	 * @description
-	 * @returns void
-	 */
-	const handleDragOver = useCallback((event: any) => {
-		event.stopPropagation()
-		event.preventDefault()
-		setAnimate(true)
-	}, [])
-
-	/**
-	 * @name handleDrop
-	 * @description
-	 * @returns void
-	 */
-	const handleDrop = useCallback((event: any) => {
-		event.stopPropagation()
-		event.preventDefault()
-		const dt = event.dataTransfer
-		if (dt.files) renderPreview(event, dt.files)
-	}, [])
-
-	/**
-	 * @name handleDragLeave
-	 * @description
-	 * @returns void
-	 */
-	const handleDragLeave = useCallback((event: any) => {
-		setAnimate(false)
-	}, [])
-
-	useEffect(() => {
-		const dragDiv = filesCardRef.current
-		if (dragDiv) {
-			// dragDiv.ondragenter = handleDragEnter
-			// dragDiv.ondragover = handleDragOver
-			// dragDiv.ondrop = handleDrop
-			// dragDiv.ondragleave = handleDragLeave
-		}
-	}, [filesCardRef.current])
-
-	// const background = animate ? theme.palette.grey : theme.palette.grey
-
 	return (
 		<ThemeProvider theme={theme}>
-			<Box
-				ref={filesCardRef}
-				// sx={{
-				// 	transition: 500,
-				// 	background: background
-				// }}
-			>
+			<Box ref={filesCardRef}>
 				<TreeView
 					onNodeSelect={onNodeSelect}
 					aria-label='tree view'
-					// defaultExpanded={['3']}
 					defaultCollapseIcon={<ArrowDropDown />}
 					defaultExpandIcon={<ArrowRight />}
 					defaultEndIcon={<div style={{ width: 24 }} />}

@@ -49,7 +49,7 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 				setSelectedSubjectExistingBIDSFiles(undefined)
 				setSubjectExists(false)
 			})
-	}, [subject])
+	}, [subject, selectedBidsDatabase, user])
 
 	const existingFiles: IExistingFile = selectedSubjectExistingBIDSFiles?.reduce(
 		(p, c) => {

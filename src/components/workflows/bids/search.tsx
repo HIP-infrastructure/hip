@@ -7,6 +7,7 @@ import { search } from '../../../api/gatewayClientAPI'
 import { ISearch, ISearchResult } from '../../../api/types'
 
 export default function Search() {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [value, setValue] = React.useState<any | null>(null)
 	const [inputValue, setInputValue] = React.useState('')
 	const [options, setOptions] = React.useState<readonly ISearchResult[]>([])
@@ -35,6 +36,7 @@ export default function Search() {
 				includeInputInList
 				filterSelectedOptions
 				value={value}
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				onChange={(event: any, newValue: any | null) => {
 					setOptions(options)
 					setValue(newValue)

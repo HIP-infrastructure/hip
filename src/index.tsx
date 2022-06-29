@@ -60,6 +60,7 @@ const DebugRouter = ({ children }: { children: JSX.Element }) => {
 }
 
 const container = document.getElementById('hip-root')
+// eslint-disable-next-line  @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!)
 
 root.render(

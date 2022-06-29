@@ -33,7 +33,7 @@ const Files = ({
 	const [tree, setTree] = useState<TreeNode[]>()
 	const [options, setOptions] = React.useState<string[]>()
 	const [fileInputValue, setFileInputValue] = React.useState<string>()
-	const [submitted, setSubmitted] = useState(false)
+	const [submitted] = useState(false)
 	const { showNotif } = useNotification()
 	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
 	const [modality, setModality] = useState<{
@@ -97,6 +97,7 @@ const Files = ({
 
 	useEffect(() => {
 		const selectedNode = tree?.find(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(node: { data: { path: any } }) => node.data.path === fileInputValue
 		)
 		const selectedPath = selectedNode?.data.path.split('/') || ['']
@@ -150,13 +151,14 @@ const Files = ({
 					return true
 				})
 				?.sort(
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					(a: { data: { path: any } }, b: { data: { path: string } }) =>
 						-b.data.path.localeCompare(a.data.path)
 				) || []),
 		]?.map(node => node.data.path)
 
 		setOptions(nextOptions)
-	}, [tree])
+	}, [tree, fileInputValue, modality])
 
 	const handleSelectedPath = async (newInputValue: string) => {
 		const selectedNode = tree?.find(node => node.data.path === newInputValue)
@@ -178,7 +180,7 @@ const Files = ({
 				setTree(nodes => [...(nodes?.map((t: TreeNode) => t) || [])])
 			}
 		}
-
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		setCurrentBidsFile((f: any) => ({
 			...f,
 			path: selectedNode?.data.path,
@@ -190,22 +192,22 @@ const Files = ({
 		setSelectedFiles(nextFiles)
 	}
 
-	const handleEditFile = (file: File) => {
-		setSelectedSubject(file.subject)
-		if (file.modality) {
-			const m = MODALITIES.find(mod => mod.name === file.modality)
-			if (m) setModality(m)
-		}
+	// const handleEditFile = (file: File) => {
+	// 	setSelectedSubject(file.subject)
+	// 	if (file.modality) {
+	// 		const m = MODALITIES.find(mod => mod.name === file.modality)
+	// 		if (m) setModality(m)
+	// 	}
 
-		if (file.entities) setSelectedEntities(file.entities)
-		if (file.path) {
-			const path = `/${file.path}`
-			handleSelectedPath(path)
-			setFileInputValue(path)
-		}
+	// 	if (file.entities) setSelectedEntities(file.entities)
+	// 	if (file.path) {
+	// 		const path = `/${file.path}`
+	// 		handleSelectedPath(path)
+	// 		setFileInputValue(path)
+	// 	}
 
-		handleDeleteFile(file)
-	}
+	// 	handleDeleteFile(file)
+	// }
 
 	const handleAddFile = () => {
 		const participant = selectedBidsDatabase?.participants?.find(
@@ -358,12 +360,14 @@ const Files = ({
 								sx={{ mt: 2 }}
 								options={options || []}
 								inputValue={fileInputValue}
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
 								onInputChange={(event: any, newInputValue: string) => {
 									handleSelectedPath(newInputValue)
 									setFileInputValue(newInputValue)
 								}}
 								disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
 								id='input-tree-view'
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
 								renderInput={(params: any) => (
 									<TextField {...params} label='Files' />
 								)}

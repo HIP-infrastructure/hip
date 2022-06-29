@@ -16,11 +16,12 @@ export default function EntityOptions({
 
 	useEffect(() => {
 		if (value) onChange(value.label)
-	}, [value])
+	}, [value, onChange])
 
 	return (
 		<Autocomplete
 			value={value}
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			onBlur={(event: any) => {
 				const newValue = event.target.value
 				if (newValue !== '' && typeof newValue === 'string') {

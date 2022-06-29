@@ -48,6 +48,7 @@ export const fetcher = async (url: string): Promise<void> => {
 	try {
 		const res = await fetch(url)
 		return checkError(res)
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		throw new Error(error.message)
 	}
@@ -74,7 +75,7 @@ export const AppStoreProvider = ({
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
-
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { data, error } = useSWR<any, Error | undefined>(
 		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
 		fetcher
@@ -106,6 +107,7 @@ export const AppStoreProvider = ({
 		setInterval(() => {
 			try {
 				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (error: any) {
 				throw new Error(error.message)
 			}

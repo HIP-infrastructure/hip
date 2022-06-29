@@ -154,6 +154,7 @@ export interface Entity {
 	required: boolean
 	type: 'string' | 'number'
 	value?: string | number
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	modalities?: any
 }
 
@@ -170,6 +171,7 @@ export interface GridApiRef {
 	getRow: (id: CellId) => { isNew?: boolean }
 	commitRowChange: (id: CellId) => void
 	getRowMode: (id: CellId) => string
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getEditRowsModel: () => any
 }
 

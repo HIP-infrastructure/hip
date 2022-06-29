@@ -24,7 +24,6 @@ const Participants = (): JSX.Element => {
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
-	const [_participantCreated, setParticipantCreated] = useState(false)
 	const {
 		selectedBidsDatabase: [selectedBidsDatabase],
 	} = useAppStore()

@@ -43,6 +43,7 @@ const BidsConverter = () => {
 	}>()
 	const {
 		user: [user],
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase],
 		selectedParticipants: [selectedParticipants],

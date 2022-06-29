@@ -22,7 +22,6 @@ import {
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
-import { createBrowserHistory } from 'history'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createApp, stopApp } from '../api/gatewayClientAPI'
@@ -59,7 +58,6 @@ const Session = (): JSX.Element => {
 	const params = useParams()
 	const theme = useTheme()
 	const navigate = useNavigate()
-	const history = createBrowserHistory()
 
 	const [session, setSession] = useState<Container>()
 	const [startApp, setStartApp] = useState<Application>()
@@ -140,7 +138,7 @@ const Session = (): JSX.Element => {
 		const { password, ...nextUser } = user
 		setUser(nextUser)
 		setStartApp(undefined)
-	}, [user])
+	}, [user, session, startApp, setStartApp, setUser, trackEvent])
 
 	const handleToggleApp = (app: Application) => {
 		const targetApp = session?.apps?.find(a => a.app === app.name)

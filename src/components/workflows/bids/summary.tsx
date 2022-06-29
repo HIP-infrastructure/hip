@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Info } from '@mui/icons-material'
-import DoneIcon from '@mui/icons-material/Done'
 import {
 	Box,
 	CircularProgress,

@@ -50,6 +50,7 @@ const CreateParticipant = ({
 	const {
 		user: [user],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
 	} = useAppStore()
 
@@ -74,7 +75,7 @@ const CreateParticipant = ({
 				setEditParticipant(participant)
 			}
 		}
-	}, [participantEditId])
+	}, [participantEditId, selectedBidsDatabase])
 
 	const editMode = participantEditId !== undefined
 
@@ -200,11 +201,13 @@ const CreateParticipant = ({
 													value={(values as IField)[field]}
 													onChange={handleChange}
 													error={
+														// eslint-disable-next-line @typescript-eslint/no-explicit-any
 														(touched as any)[field] && (errors as IField)[field]
 															? true
 															: false
 													}
 													helperText={
+														// eslint-disable-next-line @typescript-eslint/no-explicit-any
 														(touched as any)[field] && (errors as IField)[field]
 															? (errors as IField)[field]
 															: null

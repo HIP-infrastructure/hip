@@ -35,6 +35,7 @@ export type ModalComponentHandle = {
 	open: (title: string, message: string) => Promise<boolean>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, any>
 
 const ModalComponent = forwardRef<ModalComponentHandle, Props>(

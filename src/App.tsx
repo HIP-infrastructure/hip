@@ -37,7 +37,7 @@ const footerStyle = {
 }
 
 const Layout = (): JSX.Element => {
-	const [mobileOpen, setMobileOpen] = React.useState(false)
+	// const [mobileOpen, setMobileOpen] = React.useState(false)
 	const theme = useTheme()
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
 

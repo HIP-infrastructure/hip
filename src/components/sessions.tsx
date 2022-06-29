@@ -44,7 +44,7 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 const Sessions = (): JSX.Element => {
 	const {
 		user: [user],
-		containers: [containers, error],
+		containers: [containers],
 		debug: [debug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
@@ -65,7 +65,7 @@ const Sessions = (): JSX.Element => {
 				action: 'auto-start',
 			})
 		}
-	}, [])
+	}, [containers, user, shouldCreateSession, trackEvent])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)

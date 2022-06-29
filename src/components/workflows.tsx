@@ -9,7 +9,6 @@ import {
 	CardMedia,
 	Chip,
 } from '@mui/material'
-import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 
 import bidsManagerLogo from '../assets/bidsmanager__logo.png'

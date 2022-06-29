@@ -15,6 +15,7 @@ interface IDynamicForm {
 }
 
 const DynamicForm = ({ fields, handleChangeFields }: IDynamicForm) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleOnChange = (event: any, field: Entity) => {
 		const value = event.target.value
 		const modality = field.modalities && field.modalities[value]

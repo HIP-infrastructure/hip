@@ -16,7 +16,6 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
-	useTheme,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import * as React from 'react'
@@ -27,8 +26,6 @@ import { useAppStore } from '../../../store/appProvider'
 import CreateDatabase from './forms/CreateDatabase'
 
 const Databases = (): JSX.Element => {
-	const { breakpoints } = useTheme()
-
 	const [rows, setRows] = useState<BIDSDatabase[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [dataBaseCreated, setDatabaseCreated] = useState(false)
@@ -36,7 +33,9 @@ const Databases = (): JSX.Element => {
 		user: [user],
 		bIDSDatabases: [bidsDatabases, setBidsDatabases],
 		selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedFiles: [_selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
@@ -49,7 +48,7 @@ const Databases = (): JSX.Element => {
 			setSelectedFiles(undefined)
 			setSelectedParticipants([])
 		}
-	}, [selectedBidsDatabase])
+	}, [selectedBidsDatabase, setSelectedFiles, setSelectedParticipants])
 
 	useEffect(() => {
 		if (dataBaseCreated) {
@@ -65,7 +64,7 @@ const Databases = (): JSX.Element => {
 				})
 			setDatabaseCreated(false)
 		}
-	}, [dataBaseCreated])
+	}, [dataBaseCreated, setBidsDatabases, user?.uid])
 
 	return (
 		<>

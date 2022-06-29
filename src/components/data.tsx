@@ -21,6 +21,7 @@ const Data = (): JSX.Element => {
 		{
 			key: 'participants',
 			name: 'Participants',
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			formatter(props: any) {
 				return <>{props.row.participants.length}</>
 			},
@@ -38,6 +39,7 @@ const Data = (): JSX.Element => {
 			key: 'path',
 			name: 'Path',
 			resizable: true,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			formatter: (props: any) => {
 				return (
 					<Link
