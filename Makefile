@@ -29,7 +29,7 @@ b.bundle:
 #b.package: @ Packages the application for NextCloud as a tarball
 b.package:
 	mkdir -p release/templates
-	cp -r build/static lib appinfo LICENSE README.md release
+	cp -r build/static lib appinfo LICENSE README.md img release
 	./build-nextcloud-app.sh release
 	tar -czvf release.tar.gz -C release .
 
