@@ -128,7 +128,7 @@ const Sessions = (): JSX.Element => {
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{sessions?.length === 0 && (
-					<Box sx={{ width: 1, height: 1, backgroundImage: SessionImage }}>
+					<Box sx={{ width: 'fit-content', height: 'fit-content' }}>
 						<Typography variant='subtitle1'>
 							There is no active session
 						</Typography>
@@ -233,7 +233,7 @@ const Sessions = (): JSX.Element => {
 								<Tooltip title='Force remove' placement='top'>
 									<IconButton
 										edge='end'
-										color='info'
+										color='primary'
 										aria-label='force remove'
 										onClick={() => forceRemove(session.id)}
 									>
@@ -246,7 +246,7 @@ const Sessions = (): JSX.Element => {
 								<IconButton
 									disabled={session.state !== ContainerState.RUNNING}
 									edge='end'
-									color='info'
+									color='primary'
 									aria-label='Shut down'
 									onClick={() => {
 										confirmRemove(session.id)
@@ -260,7 +260,7 @@ const Sessions = (): JSX.Element => {
 								<Tooltip title='Resume the session' placement='top'>
 									<IconButton
 										edge='end'
-										color='info'
+										color='primary'
 										aria-label='Resume'
 										onClick={y => {
 											resumeAppsAndSession(session.id, user?.uid || '')
@@ -284,7 +284,7 @@ const Sessions = (): JSX.Element => {
 									<IconButton
 										disabled={session.state !== ContainerState.RUNNING}
 										edge='end'
-										color='info'
+										color='primary'
 										aria-label='pause'
 										onClick={() => {
 											pauseAppsAndSession(session.id, user?.uid || '')
@@ -304,7 +304,7 @@ const Sessions = (): JSX.Element => {
 									disabled={session.state !== ContainerState.RUNNING}
 									sx={{ ml: 0.6 }}
 									edge='end'
-									color='info'
+									color='primary'
 									aria-label='Open'
 									onClick={() => {
 										handleOpenSession(session.id)

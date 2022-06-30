@@ -4,22 +4,12 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#37474f',
+			main: '#0095a8',
 		},
 		secondary: {
-			main: '#7697A8',
+			main: '#37474f',
 		},
 	},
-	// components: {
-	//     MuiToolbar: {
-	//         styleOverrides: {
-	//             root: {
-	//                     sx: { paddingLeft: 0, color: 'red' }
-	//                 }
-	//             }
-	//         }
-	//     }
-	// }
 })
 
 const Theme = ({ children }: { children: JSX.Element }) => (
