@@ -15,7 +15,7 @@ const TitleBar = (props: ITitleBar) => {
 		<>
 			<AppBar
 				component='div'
-				color='primary'
+				color='secondary'
 				position='static'
 				elevation={0}
 				sx={{ zIndex: 0, borderBottom: 1 }}

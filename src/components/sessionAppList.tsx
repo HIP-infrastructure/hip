@@ -59,14 +59,14 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	)
 
 	const AppState = ({ state }: { state?: ContainerState }) => {
-		if (!state) return <PlayCircleOutlined />
+		if (!state) return <PlayCircleOutlined color='primary'/>
 
 		if (loading(state)) return <CircularProgress size={16} />
 
 		if (state === ContainerState.RUNNING)
 			return <StopCircleOutlined color={color(state)} />
 
-		return <PlayCircleOutlined />
+		return <PlayCircleOutlined color='primary' />
 	}
 
 	const Button = ({ app }: { app: Application }) => {

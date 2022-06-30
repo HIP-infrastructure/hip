@@ -223,6 +223,7 @@ const Session = (): JSX.Element => {
 			<AppBar
 				position='fixed'
 				open={drawerOpen}
+				color='secondary'
 				sx={{
 					marginTop: `${APP_MARGIN_TOP}px`,
 				}}
