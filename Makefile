@@ -4,6 +4,11 @@
 dep:
 	npm install
 
+#dep.init: @ Install all depencies for Ubuntu
+dep.init:
+	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+	sudo apt-get install -y nodejs
+
 #test: @ Run all tests
 test: t.prettier t.lint 
 
@@ -29,7 +34,7 @@ b.bundle:
 #b.package: @ Packages the application for NextCloud as a tarball
 b.package:
 	mkdir -p release/templates
-	cp -r build/static lib appinfo LICENSE README.md release
+	cp -r build/static lib appinfo LICENSE README.md img release
 	./build-nextcloud-app.sh release
 	tar -czvf release.tar.gz -C release .
 
