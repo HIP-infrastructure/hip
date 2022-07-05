@@ -9,7 +9,7 @@ stages:
   - build
   - release
 
-test_:
+test:
   stage: test
   script:
     - make test

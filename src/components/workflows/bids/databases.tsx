@@ -1,9 +1,9 @@
+import React, { useEffect, useState }  from 'react'
 import { Add } from '@mui/icons-material'
 import {
 	Alert,
 	Box,
 	Button,
-	Card,
 	CardActions,
 	CardContent,
 	CircularProgress,
@@ -18,8 +18,6 @@ import {
 	Typography,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
 import { getBidsDatabases } from '../../../api/bids'
 import { BIDSDatabase } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
@@ -83,7 +81,7 @@ const Databases = (): JSX.Element => {
 			>
 				<Paper
 					sx={{
-						width: 'calc(100vw - 640px - 240px)',
+						flex: 1,
 					}}
 				>
 					<TableContainer sx={{ maxHeight: 440 }}>
@@ -131,7 +129,6 @@ const Databases = (): JSX.Element => {
 						}}
 					>
 						{!bidsDatabases && <CircularProgress sx={{ m: 2 }} size={16} />}
-
 						{bidsDatabases?.error && (
 							<Alert sx={{ m: 2 }} severity='error'>
 								{bidsDatabases?.error.message}
@@ -149,7 +146,11 @@ const Databases = (): JSX.Element => {
 						Create BIDS Database
 					</Button>
 				</Paper>
-				<Card sx={{ width: 480 }}>
+				<Paper
+					sx={{
+						flex: 1,
+					}}
+				>
 					{selectedBidsDatabase && (
 						<>
 							<CardContent>
@@ -234,7 +235,7 @@ const Databases = (): JSX.Element => {
 							<CardActions></CardActions>
 						</>
 					)}
-				</Card>
+				</Paper>
 			</Box>
 		</>
 	)

@@ -4,6 +4,11 @@
 dep:
 	npm install
 
+#dep.init: @ Install all depencies for Ubuntu
+dep.init:
+	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+	sudo apt-get install -y nodejs
+
 #test: @ Run all tests
 test: t.prettier t.lint 
 
