@@ -14,7 +14,7 @@ import { Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { createBidsDatabase } from '../../../../api/bids'
-import { CreateBidsDatabaseDto } from '../../../../api/types'
+import { CreateBidsDatabaseDto, IError } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
 
@@ -93,8 +93,9 @@ const CreateDatabase = ({
 							},
 						}
 						const cd = await createBidsDatabase(createBidsDatabaseDto)
-						if (cd.error) {
-							showNotif('Database not created, please try again', 'error')
+						
+						if ((cd as IError).statusCode) {
+							showNotif((cd as IError).message, 'error')
 							setSubmitted(false)
 
 							return

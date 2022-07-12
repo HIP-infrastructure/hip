@@ -1,3 +1,4 @@
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Apps,
 	Assignment,
@@ -10,7 +11,7 @@ import {
 	HelpCenter,
 	Monitor,
 	Psychology,
-	Public,
+	Public
 } from '@mui/icons-material'
 import {
 	Box,
@@ -24,13 +25,13 @@ import {
 	ListItemIcon,
 	ListItemText,
 	PaperProps,
-	Switch,
+	Switch
 } from '@mui/material'
 import React, { useState } from 'react'
 import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import SmallToolTip from './UI/smallToolTip'
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
@@ -78,55 +79,64 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		{
 			label: 'HIP',
 			route: 'hip',
+			title: null,
 			children: [
 				{
 					route: '',
 					label: 'Dashboard',
 					icon: <Dashboard />,
+					title: null,
 					disabled: false,
 				},
 				{
 					route: 'apps',
 					label: 'App Catalog',
 					icon: <Apps />,
+					title: 'List of applications available on the HIP',
 					disabled: false,
 				},
 				{
 					route: 'documentation',
 					label: 'Documentation',
 					icon: <HelpCenter />,
+					title: null,
 					disabled: false,
 				},
 			],
 		},
 		{
-			label: 'My Private Space',
+			label: 'Private Space',
 			route: 'private',
 			color: '#415795',
 			icon: <HealthAndSafety />,
+			title: null,
 			children: [
 				{
 					route: 'private/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
+					title: 'Remote virtual desktops',
 					disabled: false,
 				},
 				{
 					route: 'private/data',
-					label: 'Data Explorer',
+					label: 'Data',
 					icon: <Folder />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
 					route: 'private/workflows/bids',
-					label: 'BIDS Importer',
+					label: 'BIDS',
 					icon: <Assignment />,
+					title: 'BIDS databsases: Import, and manage data in BIDS format',
 					disabled: false,
 				},
 				{
-					route: 'private/studies', // project ?
-					label: 'Studies',
+					route: 'private/projects',
+					label: 'Projects',
 					icon: <Psychology />,
+					title: null,
 					disabled: true,
 				},
 			],
@@ -135,30 +145,35 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			label: 'Collaborative Space',
 			route: 'collaborative',
 			color: '#9c406e',
+			title: null,
 			icon: <GroupWork />,
 			children: [
 				{
 					route: 'collaborative/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
 					route: 'collaborative/data',
 					label: 'Data',
 					icon: <Folder />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
 					route: 'collaborative/workflows',
-					label: 'Workflows',
+					label: 'BIDS',
 					icon: <Assignment />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
-					route: 'collaborative/studies', // project ?
-					label: 'Studies',
+					route: 'collaborative/projects',
+					label: 'Project',
 					icon: <Psychology />,
+					title: null,
 					disabled: true,
 				},
 			],
@@ -168,29 +183,34 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			route: 'public',
 			color: '#5f5d5c',
 			icon: <Public />,
+			title: null,
 			children: [
 				{
 					route: 'public/sessions',
 					label: 'Desktops',
 					icon: <Monitor />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
 					route: 'public/data',
 					label: 'Data',
 					icon: <Folder />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
 					route: 'public/workflows',
-					label: 'Workflows',
+					label: 'BIDS',
 					icon: <Assignment />,
-					disabled: false,
+					title: null,
+					disabled: true,
 				},
 				{
-					route: 'public/studies', // project ?
-					label: 'Studies',
+					route: 'public/projects',
+					label: 'Projects',
 					icon: <Psychology />,
+					title: null,
 					disabled: true,
 				},
 			],
@@ -209,7 +229,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			}}
 		>
 			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-				{categories.map(({ label, icon, color, children, route }) => (
+				{categories.map(({ label, children, route }) => (
 					<Box key={label} sx={{ bgcolor: '#fff' }}>
 						<ListItemButton
 							sx={{ mt: 2 }}
@@ -225,17 +245,32 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 							timeout='auto'
 							unmountOnExit
 						>
-							{children.map(({ label, route, icon, disabled }) => (
+							{children.map(({ label, route, icon, title, disabled }) => (
 								<ListItem disablePadding key={label}>
-									<ListItemButton
-										sx={{ pl: 3 }}
-										disabled={disabled}
-										selected={IsActive(route)}
-										onClick={() => handleClick(route)}
-									>
-										<ListItemIcon>{icon}</ListItemIcon>
-										<ListItemText>{label}</ListItemText>
-									</ListItemButton>
+									{title && (
+										<SmallToolTip title={title} placement='right' arrow>
+											<ListItemButton
+												sx={{ pl: 3 }}
+												disabled={disabled}
+												selected={IsActive(route)}
+												onClick={() => handleClick(route)}
+											>
+												<ListItemIcon>{icon}</ListItemIcon>
+												<ListItemText>{label}</ListItemText>
+											</ListItemButton>
+										</SmallToolTip>
+									)}
+									{!title && (
+										<ListItemButton
+											sx={{ pl: 3 }}
+											disabled={disabled}
+											selected={IsActive(route)}
+											onClick={() => handleClick(route)}
+										>
+											<ListItemIcon>{icon}</ListItemIcon>
+											<ListItemText>{label}</ListItemText>
+										</ListItemButton>
+									)}
 								</ListItem>
 							))}
 						</Collapse>

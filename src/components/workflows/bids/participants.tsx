@@ -70,7 +70,7 @@ const Participants = (): JSX.Element => {
 					<Box sx={{ flex: '1 0' }} />
 				</Box>
 				<Box sx={{ display: 'flex', gap: '1em', mr: 2 }}>
-					<Box sx={{ flex: '2 0' }}>
+					<Box sx={{ flex: 2 }}>
 						<TableContainer sx={{ maxHeight: 440 }}>
 							<Table stickyHeader size='small' aria-label='Participants table'>
 								<TableHead>
@@ -122,7 +122,7 @@ const Participants = (): JSX.Element => {
 							Add new Participant
 						</Button>
 					</Box>
-					<Box sx={{ flex: '1 0' }}>
+					<Box sx={{ flex: 1 }}>
 						<ParticipantInfo subject={selectedSubject} />
 					</Box>
 				</Box>

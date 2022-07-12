@@ -6,6 +6,7 @@ import {
 	CreateBidsDatabaseDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
+	IError,
 	Participant,
 } from './types'
 
@@ -21,7 +22,7 @@ export const getBidsDatabases = async (
 
 export const createBidsDatabase = async (
 	createBidsDatabaseDto: CreateBidsDatabaseDto
-): Promise<BIDSDatabaseResponse> => {
+): Promise<BIDSDatabaseResponse | IError> => {
 	const url = `${API_GATEWAY}/tools/bids/database`
 	return fetch(url, {
 		method: 'POST',

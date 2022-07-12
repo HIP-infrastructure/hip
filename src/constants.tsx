@@ -8,7 +8,7 @@ export const DRAWER_WIDTH = 240
 export const SPACES_NAV = [
 	{
 		route: 'private',
-		label: 'My Private Space',
+		label: 'Private Space',
 	},
 	{
 		route: 'collaborative',

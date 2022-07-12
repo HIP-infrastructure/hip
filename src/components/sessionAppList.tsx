@@ -7,9 +7,8 @@ import {
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText,
+	ListItemText
 } from '@mui/material'
-import React from 'react'
 import { Application, Container, ContainerState } from '../api/types'
 import { color, loading } from '../api/utils'
 import anywave from '../assets/anywave__logo.png'
@@ -26,6 +25,7 @@ import mrideface from '../assets/mrideface__logo.png'
 import slicer from '../assets/slicer__logo.png'
 import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
+import SmallToolTip from './UI/smallToolTip'
 
 interface Session {
 	session?: Container
@@ -76,19 +76,21 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 		} ${app.label}`
 
 		return (
-			<ListItemButton
-				sx={{ cursor: 'pointer' }}
-				aria-label={label}
-				title={label}
-				disabled={session?.state !== ContainerState.RUNNING}
-				onClick={() => handleToggleApp && handleToggleApp(app)}
-			>
-				<ListItemIcon>
-					<AppAvatar name={app.name} label={app.label} />
-				</ListItemIcon>
-				<ListItemText primary={app.label} />
-				<AppState state={startedApp?.state} />
-			</ListItemButton>
+			<SmallToolTip title={app.description} placement='right' arrow>
+				<ListItemButton
+					sx={{ cursor: 'pointer' }}
+					aria-label={label}
+					title={label}
+					disabled={session?.state !== ContainerState.RUNNING}
+					onClick={() => handleToggleApp && handleToggleApp(app)}
+				>
+					<ListItemIcon>
+						<AppAvatar name={app.name} label={app.label} />
+					</ListItemIcon>
+					<ListItemText primary={app.label} />
+					<AppState state={startedApp?.state} />
+				</ListItemButton>
+			</SmallToolTip>
 		)
 	}
 

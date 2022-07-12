@@ -175,6 +175,11 @@ export interface GridApiRef {
 	getEditRowsModel: () => any
 }
 
+export interface IError {
+	statusCode: string;
+	message: string;
+}
+
 export interface CreateBidsDatabaseDto {
 	readonly owner: string
 	readonly database: string
