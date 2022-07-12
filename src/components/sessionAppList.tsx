@@ -7,7 +7,7 @@ import {
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
-	ListItemText
+	ListItemText,
 } from '@mui/material'
 import { Application, Container, ContainerState } from '../api/types'
 import { color, loading } from '../api/utils'
@@ -26,6 +26,7 @@ import slicer from '../assets/slicer__logo.png'
 import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
+import React from 'react'
 
 interface Session {
 	session?: Container
@@ -59,7 +60,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	)
 
 	const AppState = ({ state }: { state?: ContainerState }) => {
-		if (!state) return <PlayCircleOutlined color='primary'/>
+		if (!state) return <PlayCircleOutlined color='primary' />
 
 		if (loading(state)) return <CircularProgress size={16} />
 
