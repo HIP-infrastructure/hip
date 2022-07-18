@@ -138,7 +138,7 @@ const Session = (): JSX.Element => {
 		const { password, ...nextUser } = user
 		setUser(nextUser)
 		setStartApp(undefined)
-	}, [user, session, startApp, setStartApp, setUser, trackEvent])
+	}, [user])
 
 	const handleToggleApp = (app: Application) => {
 		const targetApp = session?.apps?.find(a => a.app === app.name)
