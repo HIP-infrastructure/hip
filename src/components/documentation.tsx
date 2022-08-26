@@ -1,23 +1,12 @@
-import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Typography,
-} from '@mui/material'
+import { Box } from '@mui/material'
 import * as React from 'react'
 import TechnicalDocumentation from '../assets/documentation__technical.png'
 import UserDocumentation from '../assets/documentation__user.png'
 import WebsiteDocumentation from '../assets/documentation__website.png'
 import TitleBar from './UI/titleBar'
+import DocCard from './UI/DocCard'
 
 const Documentation = () => {
-	const handleClickLink = (url: string) => {
-		window.open(url)
-	}
-
 	const docs = [
 		{
 			label: 'HIP User Documentation',
@@ -64,57 +53,7 @@ const Documentation = () => {
 					}}
 				>
 					{docs?.map((doc, i) => (
-						<Card
-							sx={{ width: 320, display: 'flex', flexDirection: 'column' }}
-							key={doc.label}
-						>
-							<Box sx={{ position: 'relative' }}>
-								<CardMedia
-									component='img'
-									height='160'
-									src={doc.image}
-									alt={doc.label}
-									title={doc.credit}
-								/>
-							</Box>
-							<CardContent sx={{ flexGrow: 1 }}>
-								<Box sx={{ display: 'flex' }}>
-									<Box sx={{ flex: 1 }}>
-										<Typography variant='h5'>{doc?.label}</Typography>
-									</Box>
-								</Box>
-								<Typography
-									sx={{ mt: 2 }}
-									gutterBottom
-									variant='body2'
-									color='text.secondary'
-								>
-									{doc.description}
-								</Typography>
-								<Typography
-									sx={{ wordWrap: 'break-word' }}
-									onClick={() => {
-										handleClickLink(doc.url)
-									}}
-									gutterBottom
-									variant='caption'
-									color='text.secondary'
-								>
-									{doc.url}
-								</Typography>
-							</CardContent>
-
-							<CardActions sx={{ p: 2, alignSelf: 'end' }}>
-								<Button
-									onClick={() => {
-										handleClickLink(doc.url)
-									}}
-									variant='outlined'
-								>
-									{doc.buttonLabel}
-								</Button>
-							</CardActions>
-						</Card>
+						<DocCard key={doc.url} doc={doc} />
 					))}
 				</Box>
 			</Box>

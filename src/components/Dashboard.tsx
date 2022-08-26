@@ -15,6 +15,7 @@ import PrivateImage from '../assets/dashboard__private.png'
 import PublicImage from '../assets/dashboard__public.png'
 import { ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
+import DocCard from './UI/DocCard'
 
 const spaces = [
 	{
@@ -58,6 +59,15 @@ const spaces = [
 	},
 ]
 
+const header = {
+	label: 'HIP 1.0 beta Release Notes',
+	buttonLabel: '1.0 Release Notes',
+	url: `https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_create_a_HIP_account.html`,
+	description: 'How-to, release notes, features for the HIP 1.0 beta',
+	credit:
+		'Photo by Maksym Kaharlytskyi on Unsplash, https://unsplash.com/@qwitka',
+}
+
 const Dahsboard = () => {
 	const {
 		containers: [containers],
@@ -76,6 +86,9 @@ const Dahsboard = () => {
 					sharing of HUMAN intracerebral EEG data
 				</Typography>
 			</Box>
+			{/* <Box>
+				<DocCard doc={header} />
+			</Box> */}
 			<Box
 				sx={{
 					display: 'flex',
