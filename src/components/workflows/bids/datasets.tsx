@@ -29,7 +29,7 @@ const Datasets = (): JSX.Element => {
 	const [datasetCreated, setDatasetCreated] = useState(false)
 	const {
 		user: [user],
-		bidsDatasets: [bidsDatasets, setBidsDatasets],
+		BIDSDatasets: [BIDSDatasets, setBidsDatasets],
 		selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
@@ -38,8 +38,8 @@ const Datasets = (): JSX.Element => {
 	} = useAppStore()
 
 	useEffect(() => {
-		if (bidsDatasets?.data) setRows(bidsDatasets?.data)
-	}, [bidsDatasets])
+		if (BIDSDatasets?.data) setRows(BIDSDatasets?.data)
+	}, [BIDSDatasets])
 
 	useEffect(() => {
 		if (selectedBidsDataset) {
@@ -128,10 +128,10 @@ const Datasets = (): JSX.Element => {
 							alignItems: 'center',
 						}}
 					>
-						{!bidsDatasets && <CircularProgress sx={{ m: 2 }} size={16} />}
-						{bidsDatasets?.error && (
+						{!BIDSDatasets && <CircularProgress sx={{ m: 2 }} size={16} />}
+						{BIDSDatasets?.error && (
 							<Alert sx={{ m: 2 }} severity='error'>
-								{bidsDatasets?.error.message}
+								{BIDSDatasets?.error.message}
 							</Alert>
 						)}
 					</Box>
