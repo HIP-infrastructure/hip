@@ -154,11 +154,11 @@ const Datasets = (): JSX.Element => {
 					{selectedBidsDataset && (
 						<>
 							<CardContent>
-								<Typography gutterBottom variant='h6' component='div'>
-									{selectedBidsDataset?.Name}
+							    <Typography gutterBottom variant='h6' component='div'>
+									<strong>Dataset name:</strong> {selectedBidsDataset?.Name}
 								</Typography>
 								<Typography sx={{ mb: 1.5 }} color='text.secondary'>
-									{selectedBidsDataset?.Authors?.toString()}
+									<strong>Authors:<strong> {selectedBidsDataset?.Authors?.toString()}
 								</Typography>
 								<Typography variant='body1'>
 									<strong>Number of participants</strong>
