@@ -158,7 +158,7 @@ const Datasets = (): JSX.Element => {
 									<strong>Dataset name:</strong> {selectedBidsDataset?.Name}
 								</Typography>
 								<Typography sx={{ mb: 1.5 }} color='text.secondary'>
-									<strong>Authors:<strong> {selectedBidsDataset?.Authors?.toString()}
+									<strong>Authors:</strong> {selectedBidsDataset?.Authors?.toString()}
 								</Typography>
 								<Typography variant='body1'>
 									<strong>Number of participants</strong>
