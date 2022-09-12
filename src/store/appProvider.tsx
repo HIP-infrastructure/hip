@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
-import { getBidsDatabases } from '../api/bids'
+import { getBidsDatasets } from '../api/bids'
 import {
 	API_CONTAINERS,
 	checkError,
@@ -9,7 +9,7 @@ import {
 } from '../api/gatewayClientAPI'
 import {
 	Application,
-	BIDSDatabase,
+	BIDSDataset,
 	Container,
 	File,
 	Participant,
@@ -24,15 +24,15 @@ export interface IAppState {
 	]
 	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
-	bIDSDatabases: [
-		{ data?: BIDSDatabase[]; error?: Error } | undefined,
+	BIDSDatasets: [
+		{ data?: BIDSDataset[]; error?: Error } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDatabase[]; error?: Error } | undefined>
+			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
 		>
 	]
-	selectedBidsDatabase: [
-		BIDSDatabase | undefined,
-		React.Dispatch<React.SetStateAction<BIDSDatabase | undefined>>
+	selectedBidsDataset: [
+		BIDSDataset | undefined,
+		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
 	]
 	selectedParticipants: [
 		Participant[] | undefined,
@@ -66,12 +66,12 @@ export const AppStoreProvider = ({
 	const [availableApps, setAvailableApps] =
 		useState<IAppState['availableApps']>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [bidsDatabases, setBidsDatabases] = useState<{
-		data?: BIDSDatabase[]
+	const [bidsDatasets, setBidsDatasets] = useState<{
+		data?: BIDSDataset[]
 		error?: Error
 	}>()
-	const [selectedBidsDatabase, setSelectedBidsDatabase] =
-		useState<BIDSDatabase>()
+	const [selectedBidsDataset, setSelectedBidsDataset] =
+		useState<BIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
@@ -94,14 +94,14 @@ export const AppStoreProvider = ({
 				setAvailableApps({ error })
 			})
 
-		getBidsDatabases(currentUser.uid)
+		getBidsDatasets(currentUser.uid)
 			.then(data => {
 				if (data) {
-					setBidsDatabases({ data })
+					setBidsDatasets({ data })
 				}
 			})
 			.catch(error => {
-				setBidsDatabases({ error })
+				setBidsDatasets({ error })
 			})
 
 		setInterval(() => {
@@ -120,8 +120,8 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			availableApps,
 			containers: [data?.data || [], error],
-			bIDSDatabases: [bidsDatabases, setBidsDatabases],
-			selectedBidsDatabase: [selectedBidsDatabase, setSelectedBidsDatabase],
+			BIDSDatasets: [bidsDatasets, setBidsDatasets],
+			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
 		}),
@@ -133,10 +133,10 @@ export const AppStoreProvider = ({
 			data,
 			error,
 			availableApps,
-			bidsDatabases,
-			setBidsDatabases,
-			selectedBidsDatabase,
-			setSelectedBidsDatabase,
+			bidsDatasets,
+			setBidsDatasets,
+			selectedBidsDataset,
+			setSelectedBidsDataset,
 			selectedParticipants,
 			setSelectedParticipants,
 			selectedFiles,

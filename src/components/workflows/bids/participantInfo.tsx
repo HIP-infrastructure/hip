@@ -20,7 +20,7 @@ type IExistingFile =
 const ParticipantInfo = ({ subject }: { subject?: string }) => {
 	const {
 		user: [user],
-		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedBidsDataset: [selectedBidsDataset],
 	} = useAppStore()
 
 	const [
@@ -32,13 +32,13 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 	useEffect(() => {
 		setSelectedSubjectExistingBIDSFiles(undefined)
 
-		if (!(selectedBidsDatabase?.path && user?.uid && subject)) {
+		if (!(selectedBidsDataset?.path && user?.uid && subject)) {
 			return
 		}
 
 		setSubjectExists(true)
 		getSubject(
-			selectedBidsDatabase?.path,
+			selectedBidsDataset?.path,
 			user?.uid,
 			subject.replace('sub-', '')
 		)
@@ -49,7 +49,7 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 				setSelectedSubjectExistingBIDSFiles(undefined)
 				setSubjectExists(false)
 			})
-	}, [subject, selectedBidsDatabase, user])
+	}, [subject, selectedBidsDataset, user])
 
 	const existingFiles: IExistingFile = selectedSubjectExistingBIDSFiles?.reduce(
 		(p, c) => {
@@ -86,7 +86,7 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 									Existing files for BIDS subject {}
 									<Link
 										target='_blank'
-										href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDatabase?.path}/${subject}`}
+										href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}/${subject}`}
 									>
 										{subject}
 									</Link>

@@ -1,36 +1,36 @@
 import { API_GATEWAY, checkError } from './gatewayClientAPI'
 import {
-	BIDSDatabase,
-	BIDSDatabaseResponse,
+	BIDSDataset,
+	BIDSDatasetResponse,
 	BIDSSubjectFile,
-	CreateBidsDatabaseDto,
+	CreateBidsDatasetDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
 	IError,
 	Participant,
 } from './types'
 
-export const getBidsDatabases = async (
+export const getBidsDatasets = async (
 	owner?: string
-): Promise<BIDSDatabase[]> => {
-	return fetch(`${API_GATEWAY}/tools/bids/databases?owner=${owner}`, {
+): Promise<BIDSDataset[]> => {
+	return fetch(`${API_GATEWAY}/tools/bids/datasets?owner=${owner}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
 	}).then(checkError)
 }
 
-export const createBidsDatabase = async (
-	createBidsDatabaseDto: CreateBidsDatabaseDto
-): Promise<BIDSDatabaseResponse | IError> => {
-	const url = `${API_GATEWAY}/tools/bids/database`
+export const createBidsDataset = async (
+	CreateBidsDatasetDto: CreateBidsDatasetDto
+): Promise<BIDSDatasetResponse | IError> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset`
 	return fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify(createBidsDatabaseDto),
+		body: JSON.stringify(CreateBidsDatasetDto),
 	}).then(data => data.json())
 }
 

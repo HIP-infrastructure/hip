@@ -53,6 +53,6 @@ class DocumentController extends Controller
     {
         $data= file_get_contents('php://input');
 
-        return $this->service->createBidsDatabase($path, $data);
+        return $this->service->createBidsDataset($path, $data);
     }
 }

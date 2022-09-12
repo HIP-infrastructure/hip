@@ -46,7 +46,7 @@ const Files = ({
 	const [entities, setEntites] = useState<IEntity[]>()
 
 	const {
-		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedBidsDataset: [selectedBidsDataset],
 		selectedParticipants: [selectedParticipants, setSelectedParticipants],
 		selectedFiles: [selectedFiles, setSelectedFiles],
 	} = useAppStore()
@@ -210,7 +210,7 @@ const Files = ({
 	// }
 
 	const handleAddFile = () => {
-		const participant = selectedBidsDatabase?.participants?.find(
+		const participant = selectedBidsDataset?.participants?.find(
 			p => p.participant_id === selectedSubject
 		)
 
@@ -253,7 +253,7 @@ const Files = ({
 							gap: '0.8em 0.8em',
 						}}
 					>
-						{selectedBidsDatabase?.participants && (
+						{selectedBidsDataset?.participants && (
 							<TextField
 								select
 								fullWidth
@@ -270,7 +270,7 @@ const Files = ({
 								// 	touched.subject && errors.subject ? errors.subject : null
 								// }
 							>
-								{selectedBidsDatabase?.participants?.map(p => (
+								{selectedBidsDataset?.participants?.map(p => (
 									<MenuItem key={p.participant_id} value={p.participant_id}>
 										{p.participant_id}
 									</MenuItem>

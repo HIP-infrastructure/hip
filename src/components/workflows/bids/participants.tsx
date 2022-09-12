@@ -25,13 +25,13 @@ const Participants = (): JSX.Element => {
 	const [participantEditId, setParticipantEditId] = useState<string>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const {
-		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedBidsDataset: [selectedBidsDataset],
 	} = useAppStore()
 
 	useEffect(() => {
-		if (selectedBidsDatabase?.participants)
-			setRows(selectedBidsDatabase.participants)
-	}, [selectedBidsDatabase, setRows])
+		if (selectedBidsDataset?.participants)
+			setRows(selectedBidsDataset.participants)
+	}, [selectedBidsDataset, setRows])
 
 	const handleEditParticipant = (id: string) => {
 		setParticipantEditId(id)
@@ -42,7 +42,7 @@ const Participants = (): JSX.Element => {
 	}, [participantEditId])
 
 	const columns = [
-		...(selectedBidsDatabase?.participants
+		...(selectedBidsDataset?.participants
 			?.reduce(
 				(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
 				[] as string[]
@@ -65,7 +65,7 @@ const Participants = (): JSX.Element => {
 				>
 					<Typography variant='h6'>
 						Participants{' '}
-						{!selectedBidsDatabase && <CircularProgress size={16} />}
+						{!selectedBidsDataset && <CircularProgress size={16} />}
 					</Typography>
 					<Box sx={{ flex: '1 0' }} />
 				</Box>

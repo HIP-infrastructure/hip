@@ -85,9 +85,9 @@ export interface Participant {
 	[key: string]: string
 }
 
-export type BIDSDatabaseResponse = { data?: BIDSDatabase[]; error?: Error }
+export type BIDSDatasetResponse = { data?: BIDSDataset[]; error?: Error }
 
-export interface BIDSDatabase {
+export interface BIDSDataset {
 	id: string
 	path?: string
 	participants?: Participant[]
@@ -180,9 +180,9 @@ export interface IError {
 	message: string;
 }
 
-export interface CreateBidsDatabaseDto {
+export interface CreateBidsDatasetDto {
 	readonly owner: string
-	readonly database: string
+	readonly dataset: string
 	readonly path: string // relative path for user or group eg: data/file.md
 
 	readonly DatasetDescJSON: {
@@ -200,7 +200,7 @@ export interface CreateBidsDatabaseDto {
 
 export interface CreateSubjectDto {
 	readonly owner: string
-	readonly database: string
+	readonly dataset: string
 	readonly path: string // relative path for user or group eg: data/file.md
 	subjects: Participant[]
 	readonly files: File[]
@@ -208,7 +208,7 @@ export interface CreateSubjectDto {
 
 export interface EditSubjectClinicalDto {
 	readonly owner: string
-	readonly database: string
+	readonly dataset: string
 	readonly path: string // relative path for user or group eg: data/file.md
 	readonly subject: string
 	readonly clinical: {
@@ -225,14 +225,14 @@ export interface File {
 	}
 }
 
-export interface GetBidsDatabaseDto {
+export interface GetBidsDatasetDto {
 	readonly owner: string
-	readonly database: string
+	readonly dataset: string
 	readonly path: string // relative path for user or group eg: data/file.md
 	BIDS_definitions: string[]
 }
 
-export class BidsDatabaseDefinitionDto {
+export class BidsDatasetDefinitionDto {
 	'BIDS_definitions': {
 		Anat: {
 			keylist: string[]

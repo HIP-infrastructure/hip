@@ -9,12 +9,12 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { getBidsDatabases, importSubject } from '../../../api/bids'
+import { getBidsDatasets, importSubject } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
-import Databases from './databases'
+import Datasets from './datasets'
 import Files from './files'
 import Participants from './participants'
 import Summary from './summary'
@@ -30,7 +30,7 @@ const boxStyle = {
 	flexFlow: 'column',
 }
 
-const steps = ['BIDS Database', 'Participants', 'Files', 'Summary']
+const steps = ['BIDS Dataset', 'Participants', 'Files', 'Summary']
 
 const BidsConverter = () => {
 	const { trackEvent } = useMatomo()
@@ -44,8 +44,8 @@ const BidsConverter = () => {
 	const {
 		user: [user],
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		bIDSDatabases: [bidsDatabases, setBidsDatabases],
-		selectedBidsDatabase: [selectedBidsDatabase],
+		BIDSDatasets: [bidsDatasets, setBidsDatasets],
+		selectedBidsDataset: [selectedBidsDataset],
 		selectedParticipants: [selectedParticipants],
 		selectedFiles: [selectedFiles],
 	} = useAppStore()
@@ -63,8 +63,8 @@ const BidsConverter = () => {
 	}
 
 	const handleImportSubject = async () => {
-		if (!user?.uid && !selectedBidsDatabase?.path) {
-			showNotif('No database selected', 'error')
+		if (!user?.uid && !selectedBidsDataset?.path) {
+			showNotif('No dataset selected', 'error')
 			return
 		}
 
@@ -79,8 +79,8 @@ const BidsConverter = () => {
 
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
-			database: selectedBidsDatabase?.Name,
-			path: selectedBidsDatabase?.path,
+			dataset: selectedBidsDataset?.Name,
+			path: selectedBidsDataset?.path,
 			files: selectedFiles,
 			subjects,
 		}
@@ -97,15 +97,15 @@ const BidsConverter = () => {
 				showNotif('Subject imported', 'success')
 				setResponse({ data })
 
-				// reload databases
-				getBidsDatabases(user?.uid)
+				// reload datasets
+				getBidsDatasets(user?.uid)
 					.then(data => {
 						if (data) {
-							setBidsDatabases({ data })
+							setBidsDatasets({ data })
 						}
 					})
 					.catch(error => {
-						setBidsDatabases({ error })
+						setBidsDatasets({ error })
 					})
 			})
 			.catch(error => {
@@ -114,15 +114,15 @@ const BidsConverter = () => {
 
 				// FIXME:
 				// Actually, from the API, it's not clear if it failed, so
-				// reload databases anyway
-				getBidsDatabases(user?.uid)
+				// reload datasets anyway
+				getBidsDatasets(user?.uid)
 					.then(data => {
 						if (data) {
-							setBidsDatabases({ data })
+							setBidsDatasets({ data })
 						}
 					})
 					.catch(error => {
-						setBidsDatabases({ error })
+						setBidsDatasets({ error })
 					})
 			})
 	}
@@ -175,7 +175,7 @@ const BidsConverter = () => {
 		<>
 			<TitleBar
 				title='BIDS Importer'
-				description={'Import uploaded data into a BIDS database'}
+				description={'Import uploaded data into a BIDS dataset'}
 			/>
 
 			<Box sx={{ width: '100%', mt: 3 }}>
@@ -196,7 +196,7 @@ const BidsConverter = () => {
 								<StepButton
 									color='inherit'
 									disabled={
-										!selectedBidsDatabase || (index === 3 && !selectedFiles)
+										!selectedBidsDataset || (index === 3 && !selectedFiles)
 									}
 									onClick={handleStep(index)}
 									{...labelProps}
@@ -211,15 +211,15 @@ const BidsConverter = () => {
 				{activeStep === 0 && (
 					<Box sx={{ mt: 2 }}>
 						<StepNavigation
-							disabled={!selectedBidsDatabase}
+							disabled={!selectedBidsDataset}
 							activeStep={activeStep}
 						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Select or create a BIDS Database</strong>
+								<strong>Select or create a BIDS Dataset</strong>
 							</Typography>
 
-							<Databases />
+							<Datasets />
 						</Box>
 					</Box>
 				)}
@@ -227,12 +227,12 @@ const BidsConverter = () => {
 				{activeStep === 1 && (
 					<Box sx={{ mt: 2 }}>
 						<StepNavigation
-							disabled={!selectedBidsDatabase}
+							disabled={!selectedBidsDataset}
 							activeStep={activeStep}
 						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Participants in {selectedBidsDatabase?.Name}</strong>
+								<strong>Participants in {selectedBidsDataset?.Name}</strong>
 							</Typography>
 							<Participants />
 						</Box>
@@ -241,12 +241,12 @@ const BidsConverter = () => {
 				{activeStep === 2 && (
 					<Box sx={{ mt: 2 }}>
 						<StepNavigation
-							disabled={!selectedBidsDatabase}
+							disabled={!selectedBidsDataset}
 							activeStep={activeStep}
 						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Import Files in {selectedBidsDatabase?.Name}</strong>
+								<strong>Import Files in {selectedBidsDataset?.Name}</strong>
 							</Typography>
 							<Files handleImportSubject={handleImportSubject} />
 						</Box>
@@ -259,7 +259,7 @@ const BidsConverter = () => {
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>
-									BIDS Importation Summary for {selectedBidsDatabase?.Name}
+									BIDS Importation Summary for {selectedBidsDataset?.Name}
 								</strong>
 							</Typography>
 							<Summary response={response} />

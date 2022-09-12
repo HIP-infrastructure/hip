@@ -117,7 +117,7 @@ class DocumentService
         return $this->getFiles($parentPath);
     }
 
-    public function createBidsDatabase($path, $data) {
+    public function createBidsDataset($path, $data) {
 
         // $json= json_decode(file_get_contents('php://input'), true);
 

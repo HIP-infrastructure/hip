@@ -71,7 +71,7 @@ const header = {
 const Dahsboard = () => {
 	const {
 		containers: [containers],
-		bIDSDatabases: [bidsDatabases],
+		BIDSDatasets: [bidsDatasets],
 	} = useAppStore()
 	const navigate = useNavigate()
 
@@ -151,15 +151,15 @@ const Dahsboard = () => {
 									<Box sx={{ display: 'flex', alignItems: 'center' }}>
 										<Box sx={{ mr: 0.5 }}>
 											<Typography variant='body2' color='text.secondary'>
-												{!bidsDatabases && <CircularProgress size={12} />}
-												{bidsDatabases?.data?.reduce(
+												{!bidsDatasets && <CircularProgress size={12} />}
+												{bidsDatasets?.data?.reduce(
 													(a, b) => a + (b?.participants?.length || 0),
 													0
 												)}{' '}
 												<em>subjects</em> in{' '}
-												{!bidsDatabases && <CircularProgress size={12} />}
-												{bidsDatabases?.data?.length}
-												<em> BIDS databases</em>
+												{!bidsDatasets && <CircularProgress size={12} />}
+												{bidsDatasets?.data?.length}
+												<em> BIDS datasets</em>
 											</Typography>
 										</Box>
 									</Box>

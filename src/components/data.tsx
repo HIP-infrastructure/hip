@@ -3,11 +3,11 @@ import React from 'react'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 import DataGrid from 'react-data-grid'
-import { BIDSDatabase } from '../api/types'
+import { BIDSDataset } from '../api/types'
 
 const Data = (): JSX.Element => {
 	const {
-		bIDSDatabases: [bidsDatabases],
+		BIDSDatasets: [bidsDatasets],
 	} = useAppStore()
 
 	const columns = [
@@ -83,7 +83,7 @@ const Data = (): JSX.Element => {
 		},
 	]
 
-	function rowKeyGetter(row: BIDSDatabase) {
+	function rowKeyGetter(row: BIDSDataset) {
 		return row.id
 	}
 
@@ -91,8 +91,8 @@ const Data = (): JSX.Element => {
 		<>
 			<TitleBar title='Data' />
 
-			{bidsDatabases?.error && bidsDatabases?.error && (
-				<Alert severity='error'>{bidsDatabases?.error.message}</Alert>
+			{bidsDatasets?.error && bidsDatasets?.error && (
+				<Alert severity='error'>{bidsDatasets?.error.message}</Alert>
 			)}
 
 			<Box sx={{ mt: 2 }}>
@@ -107,13 +107,13 @@ const Data = (): JSX.Element => {
 
 			<Box sx={{ mt: 2 }}>
 				<Typography variant='h6'>
-					BIDS Databases {!bidsDatabases && <CircularProgress size={16} />}
+					BIDS Datasets {!bidsDatasets && <CircularProgress size={16} />}
 				</Typography>
 
-				{bidsDatabases?.data && (
+				{bidsDatasets?.data && (
 					<DataGrid
 						columns={columns}
-						rows={bidsDatabases?.data}
+						rows={bidsDatasets?.data}
 						rowKeyGetter={rowKeyGetter}
 					/>
 				)}
