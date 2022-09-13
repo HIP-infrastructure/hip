@@ -90,6 +90,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'hip',
 			label: 'HIP',
 			color: '#415795',
+			image: null,
 			title: null,
 			divider: false,
 			children: [
@@ -98,6 +99,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: 'About',
 					icon: <Info />,
 					title: null,
+					color: null,
+			image: null,
 					children: [],
 				},
 				{
@@ -105,6 +108,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: 'App Catalog',
 					icon: <Apps />,
 					title: 'List of applications available on the HIP',
+					color: null,
+			image: null,
 					children: [],
 				},
 				{
@@ -112,6 +117,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: 'Documentation',
 					icon: <HelpCenter />,
 					title: null,
+					color: null,
+			image: null,
 					children: [],
 				},
 				{
@@ -120,6 +127,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: 'Feedback form',
 					icon: <GradingIcon />,
 					title: null,
+					color: null,
+			image: null,
 					children: [],
 				},
 			],
@@ -128,7 +137,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'centers',
 			label: 'CENTERS',
 			route: 'centers',
-			color: '#415795',
+			color: null,
+			image: null,
 			title: null,
 			divider: true,
 			children: [
@@ -148,6 +158,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 									label: 'Desktops',
 									icon: <Monitor />,
 									title: 'Remote virtual desktops',
+									color: null,
+			image: null,
 								},
 								// {
 								// 	route: 'private/data',
@@ -163,6 +175,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 									title:
 										'BIDS datasets: Import, and manage data in BIDS format',
 									disabled: false,
+									color: null,
+			image: null,
 								},
 								// {
 								// 	route: 'private/projects',
@@ -180,8 +194,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'collaborative',
 			label: 'COLLABORATIVE',
 			route: 'collaborative',
-			color: '#9c406e',
 			title: null,
+			color: null,
+			image: null,
 			divider: false,
 			icon: <GroupWork />,
 			children: [],
@@ -191,6 +206,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			label: 'PUBLIC',
 			route: 'public',
 			color: '#5f5d5c',
+			image: null,
 			icon: <Public />,
 			title: null,
 			divider: false,
