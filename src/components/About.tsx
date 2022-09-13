@@ -19,23 +19,60 @@ import { ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import DocCard from './UI/DocCard'
 import chuvLogo from '../assets/group__chuv__logo.png'
-import {
 
-	useParams
-  } from "react-router-dom";
 const spaces = [
 	{
-		label: 'Private Space',
-		buttonLabel: 'My private space',
+		label: 'About',
 		state: 'beta',
-		description:
-			'Password-protected space for each iEEG data provider to upload and curate own data.',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description: 'What is the HIP and why you would use it',
+		link: 'https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/',
 		image: PrivateImage,
 		credit:
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
-		counts: [2, 2, 34],
-		disabled: false,
 	},
+	{
+		label: 'Beta Release Notes',
+		state: 'beta',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description: 'What is in the beta release',
+		image: PrivateImage,
+		credit:
+			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	},
+	{
+		label: 'Quick Start',
+		state: 'beta',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description:
+			'See the <a href="https://hip-infrastructure.github.io/build/html/hip_beta_onboarding.html"> quick start guide</a> for a quick overview of the platform.',
+		image: PrivateImage,
+		credit:
+			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	},
+	{
+		label: 'Collaborate ',
+		state: 'beta',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description:
+			'How to interact with your team, users of other centers, create shared documents,or even initiate projects.',
+		image: PrivateImage,
+		credit:
+			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	},
+	// {
+	// 	label: 'Private Space',
+	// 	buttonLabel: 'My private space',
+	// 	state: 'beta',
+	// 	route: `${ROUTE_PREFIX}/private/sessions`,
+	// 	description:
+	// 		'Password-protected space for each iEEG data provider to upload and curate own data.',
+	// 	image: PrivateImage,
+	// 	credit:
+	// 		'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	// 	counts: [2, 2, 34],
+	// 	disabled: false,
+	// },
 	// {
 	// 	label: 'Collaborative',
 	// 	buttonLabel: 'Collaborative space',
@@ -68,17 +105,22 @@ const Dahsboard = () => {
 	const {
 		containers: [containers],
 		bIDSDatabases: [bidsDatabases],
+		user: [user],
 	} = useAppStore()
 	const navigate = useNavigate()
-	let { id } = useParams();
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 
 	return (
 		<Box sx={{ width: 0.75 }}>
-			<Box sx={{ mb: 6 }}>
-				<Typography variant='h5'>
-					{id} Private Space
+			<Box sx={{ mb: 4 }}>
+				<Typography variant='h2'>
+					The Human Intracerebral EEG Platform
 				</Typography>
+				<Typography gutterBottom variant='h5'>
+					The HIP - a platform for state-of-the-art processing and international
+					sharing of HUMAN intracerebral EEG data
+				</Typography>
+				<Typography sx={{mt: 1}} variant='h6'>Welcome {user?.displayName}</Typography>
 			</Box>
 			<Box
 				sx={{
@@ -87,7 +129,7 @@ const Dahsboard = () => {
 					height: '560px',
 					justifyContent: 'start',
 					flexWrap: 'wrap',
-					gap: '64px 64px',
+					gap: '32px 16px',
 					alignItems: 'start',
 				}}
 			>
@@ -97,6 +139,7 @@ const Dahsboard = () => {
 							width: 320,
 							display: 'flex',
 							flexDirection: 'column',
+							height: 320
 						}}
 						key={space.label}
 					>
@@ -112,7 +155,9 @@ const Dahsboard = () => {
 						<CardContent sx={{ flexGrow: 1 }}>
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
-									<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+									<Box
+										sx={{ display: 'flex', justifyContent: 'space-between' }}
+									>
 										<Typography variant='h5'>{space?.label}</Typography>
 
 										<Chip
@@ -137,7 +182,7 @@ const Dahsboard = () => {
 							>
 								{space.description}
 							</Typography>
-							{!space.disabled && (
+							{/* {!space.disabled && (
 								<>
 									<Typography
 										sx={{ mt: 2 }}
@@ -165,7 +210,7 @@ const Dahsboard = () => {
 										</Box>
 									</Box>
 								</>
-							)}
+							)} */}
 						</CardContent>
 
 						{/* <CardActions sx={{ p: 2, alignSelf: 'end' }}>

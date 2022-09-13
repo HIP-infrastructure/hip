@@ -1,22 +1,71 @@
 import { IEntity } from './api/types'
+import chuvLogo from './assets/group__chuv__logo.png'
 
 export const ROUTE_PREFIX = '/apps/hip'
 export const XPRA_PARAMS = 'keyboard=false&sharing=yes&sound=no'
 export const APP_MARGIN_TOP = 50
 export const DRAWER_WIDTH = 240
 
-export const SPACES_NAV = [
+export const CENTERS = [
 	{
-		route: 'private',
-		label: 'Private Space',
+		label: 'AMU-NS',
+		id: 'amu-ns',
+		logo: null,
 	},
 	{
-		route: 'collaborative',
-		label: 'Collaborative Space',
+		label: 'CHUV',
+		id: 'CHUV',
+		logo: chuvLogo,
 	},
 	{
-		route: 'public',
-		label: 'Public Space',
+		label: 'AMU-TNG',
+		id: 'amu-tng',
+		logo: null,
+	},
+	{
+		label: 'APHM',
+		id: 'aphm',
+		logo: null,
+	},
+	{
+		label: 'CHRU-LILLE',
+		id: 'chru-lille',
+		logo: null,
+	},
+	{
+		label: 'CHU-LION',
+		id: 'chu-lion',
+		logo: null,
+	},
+	{
+		label: 'FNUSA',
+		id: 'fnusa',
+		logo: null,
+	},
+	{
+		label: 'HUS',
+		id: 'hus',
+		logo: null,
+	},
+	{
+		label: 'OU-SSE',
+		id: 'ou-sse',
+		logo: null,
+	},
+	{
+		label: 'PSMAR',
+		id: 'psmar',
+		logo: null,
+	},
+	{
+		label: 'UCBL',
+		id: 'ucbl',
+		logo: null,
+	},
+	{
+		label: 'UMCU',
+		id: 'umcu',
+		logo: null,
 	},
 ]
 

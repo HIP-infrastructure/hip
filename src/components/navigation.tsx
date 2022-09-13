@@ -11,9 +11,11 @@ import {
 	HelpCenter,
 	Monitor,
 	Psychology,
-	Public
+	Public,
+	Info,
 } from '@mui/icons-material'
 import {
+	Avatar,
 	Box,
 	Collapse,
 	Divider,
@@ -25,195 +27,174 @@ import {
 	ListItemIcon,
 	ListItemText,
 	PaperProps,
-	Switch
+	Switch,
+	Typography,
 } from '@mui/material'
+import { CENTERS } from '../constants'
 import React, { useState } from 'react'
 import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
+import chuvLogo from '../assets/group__chuv__logo.png'
+import GradingIcon from '@mui/icons-material/Grading'
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
-	const [spaceIsOpen, setSpaceIsOpen] = useState<{ [key: string]: boolean }>({
-		hip: true,
-		private: true,
-	})
 	const {
 		debug: [debug, setDebug],
+		user: [user],
 	} = useAppStore()
 	const navigate = useNavigate()
 
-	const handleClick = (route: string) => {
+	const [itemIsOpen, setItemIsOpen] = useState<{ [key: string]: boolean }>({
+		hip: true,
+		centers: true,
+		private: true,
+	})
+
+	const handleClickItem = (id: string) => {
+		setItemIsOpen(o => ({
+			...o,
+			[id]: !o[id],
+		}))
+	}
+
+	const handleClickNavigate = (route: string) => {
 		trackPageView({ documentTitle: route })
 		navigate(route)
 	}
 
-	const handleClickSpace = (route: string) => {
-		setSpaceIsOpen(o => ({
-			...o,
-			[route]: !o[route],
-		}))
-	}
+	const isRouteActive = (route: string) => {
+		// const current = `${ROUTE_PREFIX}/${route}`
+		// const resolved = useResolvedPath(current)
+		// const match = useMatch({ path: resolved.pathname, end: true })
 
-	const IsActive = (route: string) => {
-		const current = `${ROUTE_PREFIX}/${route}`
-		const resolved = useResolvedPath(current)
-		const match = useMatch({ path: resolved.pathname, end: true })
+		// // open space for current selected tab
+		// if (match) {
+		// 	const space = route.split('/')[0]
+		// 	if (!itemIsOpen[space]) {
+		// 		setItemIsOpen(o => ({
+		// 			...o,
+		// 			[space]: true,
+		// 		}))
+		// 	}
+		// }
 
-		// open space for current selected tab
-		if (match) {
-			const space = route.split('/')[0]
-			if (!spaceIsOpen[space]) {
-				setSpaceIsOpen(o => ({
-					...o,
-					[space]: true,
-				}))
-			}
-		}
-
-		return match !== null
+		// return match !== null
+		return false
 	}
 
 	const categories = [
 		{
+			id: 'hip',
 			label: 'HIP',
-			route: 'hip',
+			color: '#415795',
 			title: null,
+			divider: false,
 			children: [
 				{
 					route: '',
-					label: 'Dashboard',
-					icon: <Dashboard />,
+					label: 'About',
+					icon: <Info />,
 					title: null,
-					disabled: false,
+					children: [],
 				},
 				{
 					route: 'apps',
 					label: 'App Catalog',
 					icon: <Apps />,
 					title: 'List of applications available on the HIP',
-					disabled: false,
+					children: [],
 				},
 				{
 					route: 'documentation',
 					label: 'Documentation',
 					icon: <HelpCenter />,
 					title: null,
-					disabled: false,
+					children: [],
+				},
+				{
+					route: 'feedback',
+					link: 'https://hip.collab.local/apps/forms/AF468tdy9qx2mmfF/submit',
+					label: 'Feedback form',
+					icon: <GradingIcon />,
+					title: null,
+					children: [],
 				},
 			],
 		},
 		{
-			label: 'Private Space',
-			route: 'private',
+			id: 'centers',
+			label: 'CENTERS',
+			route: 'centers',
 			color: '#415795',
-			icon: <HealthAndSafety />,
 			title: null,
+			divider: true,
 			children: [
-				{
-					route: 'private/sessions',
-					label: 'Desktops',
-					icon: <Monitor />,
-					title: 'Remote virtual desktops',
-					disabled: false,
-				},
-				{
-					route: 'private/data',
-					label: 'Data',
-					icon: <Folder />,
+				...CENTERS.sort(center =>
+					user?.groups?.includes(center.id) ? -1 : 1
+				).map(center => ({
+					label: `${center.label}`,
+					route: `private/${center.id}`,
+					color: user?.groups?.includes(center.id) ? '#eee' : null,
+					image: center.logo ? center.logo : null,
+					icon: <HealthAndSafety />,
 					title: null,
-					disabled: true,
-				},
-				{
-					route: 'private/workflows/bids',
-					label: 'BIDS',
-					icon: <Assignment />,
-					title: 'BIDS databsases: Import, and manage data in BIDS format',
-					disabled: false,
-				},
-				{
-					route: 'private/projects',
-					label: 'Projects',
-					icon: <Psychology />,
-					title: null,
-					disabled: true,
-				},
+					children: user?.groups?.includes(center.id)
+						? [
+								{
+									route: `private/${center.id}/sessions`,
+									label: 'Desktops',
+									icon: <Monitor />,
+									title: 'Remote virtual desktops',
+								},
+								// {
+								// 	route: 'private/data',
+								// 	label: 'Data',
+								// 	icon: <Folder />,
+								// 	title: null,
+								// 	disabled: true,
+								// },
+								{
+									route: `private/${center.id}/workflows/bids`,
+									label: 'BIDS',
+									icon: <Assignment />,
+									title:
+										'BIDS datasets: Import, and manage data in BIDS format',
+									disabled: false,
+								},
+								// {
+								// 	route: 'private/projects',
+								// 	label: 'Projects',
+								// 	icon: <Psychology />,
+								// 	title: null,
+								// 	disabled: true,
+								// },
+						  ]
+						: [],
+				})),
 			],
 		},
 		{
-			label: 'Collaborative Space',
+			id: 'collaborative',
+			label: 'COLLABORATIVE',
 			route: 'collaborative',
 			color: '#9c406e',
 			title: null,
+			divider: false,
 			icon: <GroupWork />,
-			children: [
-				{
-					route: 'collaborative/sessions',
-					label: 'Desktops',
-					icon: <Monitor />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'collaborative/data',
-					label: 'Data',
-					icon: <Folder />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'collaborative/workflows',
-					label: 'BIDS',
-					icon: <Assignment />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'collaborative/projects',
-					label: 'Project',
-					icon: <Psychology />,
-					title: null,
-					disabled: true,
-				},
-			],
+			children: [],
 		},
 		{
-			label: 'Public Space',
+			id: 'public',
+			label: 'PUBLIC',
 			route: 'public',
 			color: '#5f5d5c',
 			icon: <Public />,
 			title: null,
-			children: [
-				{
-					route: 'public/sessions',
-					label: 'Desktops',
-					icon: <Monitor />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'public/data',
-					label: 'Data',
-					icon: <Folder />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'public/workflows',
-					label: 'BIDS',
-					icon: <Assignment />,
-					title: null,
-					disabled: true,
-				},
-				{
-					route: 'public/projects',
-					label: 'Projects',
-					icon: <Psychology />,
-					title: null,
-					disabled: true,
-				},
-			],
+			divider: false,
+			children: [],
 		},
 	]
 
@@ -226,58 +207,107 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					boxSizing: 'border-box',
 					top: `${APP_MARGIN_TOP}px`,
 				},
+				'& .Mui-selected': {
+					color: 'white',
+					backgroundColor: '#37474f !important',
+				},
 			}}
 		>
-			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-				{categories.map(({ label, children, route }) => (
-					<Box key={label} sx={{ bgcolor: '#fff' }}>
-						<ListItemButton
-							sx={{ mt: 2 }}
-							onClick={() => handleClickSpace(route)}
-						>
-							{/* {icon && <ListItemIcon>{icon}</ListItemIcon>} */}
-							<ListItemText>{label}</ListItemText>
-							{spaceIsOpen[route] ? <ExpandLess /> : <ExpandMore />}
-						</ListItemButton>
-						<Collapse
-							sx={{ mt: 1 }}
-							in={spaceIsOpen[route]}
-							timeout='auto'
-							unmountOnExit
-						>
-							{children.map(({ label, route, icon, title, disabled }) => (
-								<ListItem disablePadding key={label}>
-									{title && (
-										<SmallToolTip title={title} placement='right' arrow>
-											<ListItemButton
-												sx={{ pl: 3 }}
-												disabled={disabled}
-												selected={IsActive(route)}
-												onClick={() => handleClick(route)}
-											>
-												<ListItemIcon>{icon}</ListItemIcon>
-												<ListItemText>{label}</ListItemText>
-											</ListItemButton>
-										</SmallToolTip>
+			{user && user.groups && (
+				<List sx={{ bgcolor: 'background.paper' }} component='nav'>
+					{categories.map(category => {
+						const { id, label, children, divider } = category
+						return (
+							<Box key={label} sx={{ bgcolor: '#fff' }}>
+								<ListItemButton onClick={() => handleClickItem(id)}>
+									<ListItemText color='text.secondary'>{label}</ListItemText>
+									{itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />}
+								</ListItemButton>
+								{divider && <Divider />}
+								<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
+									{children.map(
+										({ label, image, route, icon, color, children: kids }) => (
+											<List key={label} disablePadding sx={{ backgroundColor: color }}>
+												<ListItemButton
+													key={label}
+													sx={{ pl: 3 }}
+													selected={isRouteActive(route)}
+													onClick={() => handleClickNavigate(route)}
+												>
+													{!image && icon && (
+														<ListItemIcon
+															sx={{
+																color: isRouteActive(route) ? 'white' : 'grey',
+															}}
+														>
+															{icon}
+														</ListItemIcon>
+													)}
+													<ListItemText>
+														<Box
+															sx={{
+																display: 'flex',
+																justifyContent: 'start',
+																alignItems: 'center',
+																gap: 2,
+															}}
+														>
+															{image && (
+																<img
+																	alt={label}
+																	src={image}
+																	width='120px'
+																	height='32px'
+																/>
+															)}
+															{label}
+														</Box>
+													</ListItemText>
+												</ListItemButton>
+												<Collapse
+													in={itemIsOpen[id]}
+													timeout='auto'
+													unmountOnExit
+												>
+													<List disablePadding>
+														{kids.map(({ label, route, icon, title }) => (
+															<SmallToolTip
+																title={title}
+																placement='right'
+																arrow
+																key={label}
+															>
+																<ListItemButton
+																	key={label}
+																	sx={{ ml: 3 }}
+																	selected={isRouteActive(route)}
+																	onClick={() => handleClickNavigate(route)}
+																>
+																	<ListItemIcon
+																		sx={{
+																			color: isRouteActive(route)
+																				? 'white'
+																				: 'black',
+																		}}
+																	>
+																		{icon}
+																	</ListItemIcon>
+																	<ListItemText>{label}</ListItemText>
+																</ListItemButton>
+															</SmallToolTip>
+														))}
+													</List>
+												</Collapse>
+												{divider && <Divider />}
+											</List>
+										)
 									)}
-									{!title && (
-										<ListItemButton
-											sx={{ pl: 3 }}
-											disabled={disabled}
-											selected={IsActive(route)}
-											onClick={() => handleClick(route)}
-										>
-											<ListItemIcon>{icon}</ListItemIcon>
-											<ListItemText>{label}</ListItemText>
-										</ListItemButton>
-									)}
-								</ListItem>
-							))}
-						</Collapse>
-						<Divider sx={{ mt: 2 }} />
-					</Box>
-				))}
-			</List>
+								</Collapse>
+							</Box>
+						)
+					})}
+				</List>
+			)}
 			<Box sx={{ ml: 2, mt: 8 }}>
 				<FormControlLabel
 					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
