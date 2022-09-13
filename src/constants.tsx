@@ -14,7 +14,7 @@ export const CENTERS = [
 	},
 	{
 		label: 'CHUV',
-		id: 'CHUV',
+		id: 'chuv',
 		logo: chuvLogo,
 	},
 	{
