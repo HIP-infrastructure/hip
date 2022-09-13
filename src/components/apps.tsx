@@ -23,7 +23,6 @@ import slicer from '../assets/slicer__logo.png'
 import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
-import WebdavForm from './webdavLoginForm'
 import mne from '../assets/mne__logo.png'
 import bidsmanager from '../assets/bidsmanager__logo.png'
 
@@ -45,33 +44,15 @@ const s: { [key: string]: string } = {
 
 const Apps = () => {
 	const { availableApps } = useAppStore()
-	const [showWedavForm, setShowWedavForm] = useState(false)
-
-	const modalStyle = {
-		position: 'absolute' as 'const',
-		top: '50%',
-		left: '50%',
-		transform: 'translate(-50%, -50%)',
-		width: 240,
-		bgcolor: 'background.paper',
-		border: '1px solid #333',
-		boxShadow: 4,
-		p: 4,
-	}
 
 	return (
 		<>
 			<TitleBar
 				title={'App Catalog'}
 				description={
-					'A list of all the applications made available to the HIP users. The applications can be started from an existing session'
+					'A list of all the applications made available to the HIP users. The applications can be started from an existing desktop'
 				}
 			/>
-			<Modal open={showWedavForm} onClose={() => setShowWedavForm(false)}>
-				<Box sx={modalStyle}>
-					<WebdavForm />
-				</Box>
-			</Modal>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{availableApps?.error && availableApps?.error && (
 					<Alert severity='error'>{availableApps?.error.message}</Alert>
