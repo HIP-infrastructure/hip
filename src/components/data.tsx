@@ -3,6 +3,7 @@ import React from 'react'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 import { BIDSDatabase } from '../api/types'
+import DataGrid from 'react-data-grid'
 
 const Data = (): JSX.Element => {
 	const {
