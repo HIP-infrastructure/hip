@@ -70,7 +70,7 @@ const Dahsboard = () => {
 		bIDSDatabases: [bidsDatabases],
 	} = useAppStore()
 	const navigate = useNavigate()
-	let { id } = useParams();
+	const { id } = useParams();
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 
 	return (

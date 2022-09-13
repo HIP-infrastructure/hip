@@ -2,7 +2,6 @@ import { Alert, Box, CircularProgress, Link, Typography } from '@mui/material'
 import React from 'react'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
-import DataGrid from 'react-data-grid'
 import { BIDSDatabase } from '../api/types'
 
 const Data = (): JSX.Element => {

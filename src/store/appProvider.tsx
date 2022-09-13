@@ -97,7 +97,7 @@ export const AppStoreProvider = ({
 				}
 			})
 			.catch(error => {
-				console.log(error)
+				// console.log(error)
 			})
 
 		getAvailableAppList()
