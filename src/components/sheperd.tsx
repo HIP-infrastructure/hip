@@ -75,9 +75,9 @@ class App extends Component {
 	render() {
 		return (
 			<div>
-				<ShepherdTour steps={steps} tourOptions={tourOptions}>
+				{/* <ShepherdTour steps={steps} tourOptions={tourOptions}>
 					<Button />
-				</ShepherdTour>
+				</ShepherdTour> */}
 			</div>
 		)
 	}
