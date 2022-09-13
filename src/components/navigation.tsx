@@ -100,7 +100,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <Info />,
 					title: null,
 					color: null,
-			image: null,
+					image: null,
 					children: [],
 				},
 				{
@@ -109,7 +109,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <Apps />,
 					title: 'List of applications available on the HIP',
 					color: null,
-			image: null,
+					image: null,
 					children: [],
 				},
 				{
@@ -118,7 +118,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <HelpCenter />,
 					title: null,
 					color: null,
-			image: null,
+					image: null,
 					children: [],
 				},
 				{
@@ -128,7 +128,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <GradingIcon />,
 					title: null,
 					color: null,
-			image: null,
+					image: null,
 					children: [],
 				},
 			],
@@ -159,7 +159,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 									icon: <Monitor />,
 									title: 'Remote virtual desktops',
 									color: null,
-			image: null,
+									image: null,
 								},
 								// {
 								// 	route: 'private/data',
@@ -176,7 +176,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 										'BIDS datasets: Import, and manage data in BIDS format',
 									disabled: false,
 									color: null,
-			image: null,
+									image: null,
 								},
 								// {
 								// 	route: 'private/projects',
@@ -243,7 +243,11 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 								<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
 									{children.map(
 										({ label, image, route, icon, color, children: kids }) => (
-											<List key={label} disablePadding sx={{ backgroundColor: color }}>
+											<List
+												key={label}
+												disablePadding
+												sx={{ backgroundColor: color }}
+											>
 												<ListItemButton
 													key={label}
 													sx={{ pl: 3 }}
@@ -269,11 +273,10 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 															}}
 														>
 															{image && (
-																<img
+																<Avatar
 																	alt={label}
 																	src={image}
-																	width='120px'
-																	height='32px'
+																	sx={{ w: 32, h: 32 }}
 																/>
 															)}
 															{label}
