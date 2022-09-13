@@ -41,7 +41,19 @@ export const forceRemove = (id: string): void => {
 	fetch(url).then(checkError)
 }
 
-// Gateway API
+// NextCloud API
+
+export const getUser = async (userid?: string) => {
+	if (!userid) return {}
+
+	const user = fetch(`${API_GATEWAY}/users/${userid}`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
+
+	return user
+}
 
 export const search = async (term: string) => {
 	return fetch(`${API_GATEWAY}/files/search/${term}`, {
@@ -97,11 +109,11 @@ export const createApp = (
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({
 			appName,
 			userId: user.uid,
-			password: user.password,
 		}),
 	})
 		.then(r => {
@@ -121,7 +133,7 @@ export const createSessionAndApp = (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ userId: user.uid, password: user.password }),
+		body: JSON.stringify({ userId: user.uid }),
 	})
 		.then(r => {
 			mutate(`${API_CONTAINERS}/${user.uid}`)
