@@ -151,8 +151,8 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleBackLocation = () => {
-		// history.go(-1)
-		navigate(`${ROUTE_PREFIX}/private/sessions`)
+		history.go(-1)
+		// navigate(`${ROUTE_PREFIX}/private/sessions`)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {
