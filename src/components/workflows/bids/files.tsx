@@ -244,19 +244,17 @@ const Files = ({
 			<Box>
 				<Paper elevation={1} sx={{ p: 1 }}>
 					<Box
-						sx={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						}}
-					>
-						<Typography
-							sx={{ mt: 1, mb: 2 }}
-							variant='subtitle1'
-						>
-							Files to be imported
-						</Typography>
-					</Box>
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography variant='h6'>
+                            Files to be imported
+                        </Typography>
+                        <Box sx={{ flex: '1 0' }} />
+                    </Box>
 					<TableContainer component={Paper}>
 						<Table size='small' aria-label='Files to be imported'>
 							<TableHead>
@@ -301,12 +299,10 @@ const Files = ({
                             alignItems: 'center',
                         }}
                     >
-                        <Typography
-                            sx={{ mt: 1, mb: 2 }}
-                            variant='subtitle1'
-                        >
-                            Add a new file to the list
+                        <Typography variant='h6'>
+                            Add a new file to be imported / converted
                         </Typography>
+                        <Box sx={{ flex: '1 0' }} />
                     </Box>
                     <Box>
                         <Paper elevation={1} sx={{ display: 'flex', p: 1, mb: 4, gap: '8px' }}>

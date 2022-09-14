@@ -246,7 +246,7 @@ const BidsConverter = () => {
 						/>
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Import Files in {selectedBidsDataset?.Name}</strong>
+								<strong>Import files in &quot;{selectedBidsDataset?.Name}&quot; dataset</strong>
 							</Typography>
 							<Files handleImportSubject={handleImportSubject} />
 						</Box>
@@ -259,7 +259,7 @@ const BidsConverter = () => {
 						<Box sx={boxStyle}>
 							<Typography variant='subtitle1' sx={{ mb: 1 }}>
 								<strong>
-									BIDS Importation Summary for {selectedBidsDataset?.Name}
+									BIDS Import Summary for {selectedBidsDataset?.Name}
 								</strong>
 							</Typography>
 							<Summary response={response} />
