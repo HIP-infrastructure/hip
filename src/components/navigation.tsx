@@ -85,14 +85,61 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		return false
 	}
 
+	const privateSpaces = CENTERS.filter(center =>
+		user?.groups?.includes(center.id)
+	).map(center => ({
+		id: 'private',
+		label: `${center.label}`,
+		route: `private/${center.id}`,
+		color: '#ccc',
+		image: center.logo ? center.logo : null,
+		icon: <HealthAndSafety />,
+		title: null,
+		children: [
+			{
+				id: '',
+				route: `private/${center.id}/sessions`,
+				label: 'Desktops',
+				icon: <Monitor />,
+				title: 'Remote virtual desktops',
+				color: '#ccc',
+				image: null,
+				children: [],
+			},
+			// {
+			// 	route: 'private/data',
+			// 	label: 'Data',
+			// 	icon: <Folder />,
+			// 	title: null,
+			// 	disabled: true,
+			// },
+			{
+				route: `private/${center.id}/workflows/bids`,
+				label: 'BIDS',
+				icon: <Assignment />,
+				title: 'BIDS datasets: Import, and manage data in BIDS format',
+				disabled: false,
+				color: '#ccc',
+				image: null,
+				children: [],
+			},
+			// {
+			// 	route: 'private/projects',
+			// 	label: 'Projects',
+			// 	icon: <Psychology />,
+			// 	title: null,
+			// 	disabled: true,
+			// },
+		],
+	}))
+
 	const categories = [
 		{
 			id: 'hip',
 			label: 'HIP',
-			color: '#415795',
+			color: null,
 			image: null,
 			title: null,
-			divider: false,
 			children: [
 				{
 					route: '',
@@ -130,9 +177,11 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					color: null,
 					image: null,
 					children: [],
+					divider: true,
 				},
 			],
 		},
+		...privateSpaces,
 		{
 			id: 'centers',
 			label: 'CENTERS',
@@ -140,54 +189,18 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			color: null,
 			image: null,
 			title: null,
-			divider: true,
 			children: [
-				...CENTERS.sort(center =>
-					user?.groups?.includes(center.id) ? -1 : 1
-				).map(center => ({
-					label: `${center.label}`,
-					route: `private/${center.id}`,
-					color: user?.groups?.includes(center.id) ? '#eee' : null,
-					image: center.logo ? center.logo : null,
-					icon: <HealthAndSafety />,
-					title: null,
-					children: user?.groups?.includes(center.id)
-						? [
-								{
-									route: `private/${center.id}/sessions`,
-									label: 'Desktops',
-									icon: <Monitor />,
-									title: 'Remote virtual desktops',
-									color: null,
-									image: null,
-								},
-								// {
-								// 	route: 'private/data',
-								// 	label: 'Data',
-								// 	icon: <Folder />,
-								// 	title: null,
-								// 	disabled: true,
-								// },
-								{
-									route: `private/${center.id}/workflows/bids`,
-									label: 'BIDS',
-									icon: <Assignment />,
-									title:
-										'BIDS datasets: Import, and manage data in BIDS format',
-									disabled: false,
-									color: null,
-									image: null,
-								},
-								// {
-								// 	route: 'private/projects',
-								// 	label: 'Projects',
-								// 	icon: <Psychology />,
-								// 	title: null,
-								// 	disabled: true,
-								// },
-						  ]
-						: [],
-				})),
+				...CENTERS.filter(center => !user?.groups?.includes(center.id)).map(
+					center => ({
+						label: `${center.label}`,
+						route: `private/${center.id}`,
+						color: null,
+						image: center.logo ? center.logo : null,
+						icon: <HealthAndSafety />,
+						title: null,
+						children: [],
+					})
+				),
 			],
 		},
 		{
@@ -205,7 +218,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'public',
 			label: 'PUBLIC',
 			route: 'public',
-			color: '#5f5d5c',
+			color: null,
 			image: null,
 			icon: <Public />,
 			title: null,
@@ -229,104 +242,110 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				},
 			}}
 		>
-			{user && user.groups && (
-				<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-					{categories.map(category => {
-						const { id, label, children, divider } = category
-						return (
-							<Box key={label} sx={{ bgcolor: '#fff' }}>
-								<ListItemButton onClick={() => handleClickItem(id)}>
-									<ListItemText color='text.secondary'>{label}</ListItemText>
-									{itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />}
-								</ListItemButton>
-								{divider && <Divider />}
-								<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
-									{children.map(
-										({ label, image, route, icon, color, children: kids }) => (
-											<List
-												key={label}
-												disablePadding
-												sx={{ backgroundColor: color }}
-											>
-												<ListItemButton
-													key={label}
-													sx={{ pl: 3 }}
-													selected={isRouteActive(route)}
-													onClick={() => handleClickNavigate(route)}
-												>
-													{!image && icon && (
-														<ListItemIcon
-															sx={{
-																color: isRouteActive(route) ? 'white' : 'grey',
-															}}
-														>
-															{icon}
-														</ListItemIcon>
-													)}
-													<ListItemText>
-														<Box
-															sx={{
-																display: 'flex',
-																justifyContent: 'start',
-																alignItems: 'center',
-																gap: 2,
-															}}
-														>
-															{image && (
-																<Avatar
-																	alt={label}
-																	src={image}
-																	sx={{ w: 32, h: 32 }}
-																/>
-															)}
-															{label}
-														</Box>
-													</ListItemText>
-												</ListItemButton>
-												<Collapse
-													in={itemIsOpen[id]}
-													timeout='auto'
-													unmountOnExit
-												>
-													<List disablePadding>
-														{kids.map(({ label, route, icon, title }) => (
-															<SmallToolTip
-																title={title}
-																placement='right'
-																arrow
-																key={label}
-															>
-																<ListItemButton
-																	key={label}
-																	sx={{ ml: 3 }}
-																	selected={isRouteActive(route)}
-																	onClick={() => handleClickNavigate(route)}
-																>
-																	<ListItemIcon
-																		sx={{
-																			color: isRouteActive(route)
-																				? 'white'
-																				: 'black',
-																		}}
-																	>
-																		{icon}
-																	</ListItemIcon>
-																	<ListItemText>{label}</ListItemText>
-																</ListItemButton>
-															</SmallToolTip>
-														))}
-													</List>
-												</Collapse>
-												{divider && <Divider />}
-											</List>
-										)
+			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
+				{categories.map(({ id, label, children, color, image }) => (
+					<Box key={label} sx={{ bgcolor: '#fff' }}>
+						<ListItemButton onClick={() => handleClickItem(id)} sx={{ backgroundColor: color }}>
+							<ListItemText >
+								<Box
+									sx={{
+										display: 'flex',
+										justifyContent: 'start',
+										alignItems: 'center',
+										gap: 2,
+									}}
+								>
+									{image && (
+										<Avatar alt={label} src={image} sx={{ w: 32, h: 32 }} />
 									)}
-								</Collapse>
-							</Box>
-						)
-					})}
-				</List>
-			)}
+									<strong>{label}</strong>
+								</Box>
+							</ListItemText>
+							{itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />}
+						</ListItemButton>
+						<Divider />
+						<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
+							{children.map(
+								({ label, image, route, icon, color, children: kids }) => (
+									<List
+										key={label}
+										disablePadding
+										sx={{ backgroundColor: color }}
+									>
+										<ListItemButton
+											key={label}
+											sx={{ pl: 3 }}
+											selected={isRouteActive(route)}
+											onClick={() => handleClickNavigate(route)}
+										>
+											{!image && icon && (
+												<ListItemIcon
+													sx={{
+														color: isRouteActive(route) ? 'white' : 'grey',
+													}}
+												>
+													{icon}
+												</ListItemIcon>
+											)}
+											<ListItemText>
+												<Box
+													sx={{
+														display: 'flex',
+														justifyContent: 'start',
+														alignItems: 'center',
+														gap: 2,
+													}}
+												>
+													{image && (
+														<Avatar
+															alt={label}
+															src={image}
+															sx={{ w: 32, h: 32 }}
+														/>
+													)}
+													{label}
+												</Box>
+											</ListItemText>
+										</ListItemButton>
+										<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
+											<List disablePadding>
+												{kids.map(({ label, route, icon, title }) => (
+													<SmallToolTip
+														title={title}
+														placement='right'
+														arrow
+														key={label}
+													>
+														<ListItemButton
+															key={label}
+															sx={{ ml: 3 }}
+															selected={isRouteActive(route)}
+															onClick={() => handleClickNavigate(route)}
+														>
+															<ListItemIcon
+																sx={{
+																	color: isRouteActive(route)
+																		? 'white'
+																		: 'black',
+																}}
+															>
+																{icon}
+															</ListItemIcon>
+															<ListItemText>{label}</ListItemText>
+														</ListItemButton>
+													</SmallToolTip>
+												))}
+											</List>
+										</Collapse>
+									</List>
+								)
+							)}
+						</Collapse>
+						<Divider />
+					</Box>
+				))}
+			</List>
+
 			<Box sx={{ ml: 2, mt: 8 }}>
 				<FormControlLabel
 					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
