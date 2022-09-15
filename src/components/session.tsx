@@ -40,7 +40,6 @@ import {
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
 import SessionInfo from './sessionInfo'
-import WebdavForm from './webdavLoginForm'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
@@ -60,10 +59,8 @@ const Session = (): JSX.Element => {
 	const navigate = useNavigate()
 
 	const [session, setSession] = useState<Container>()
-	const [startApp, setStartApp] = useState<Application>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true)
-	const [showWedavForm, setShowWedavForm] = useState(false)
 	const [sessionIsAlive, setSessionIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
 
@@ -120,26 +117,7 @@ const Session = (): JSX.Element => {
 		}
 	}, [fullscreen])
 
-	// Start an app in the session after getting user's password
-	useEffect(() => {
-		if (!(session && startApp && user)) {
-			return
-		}
-
-		setShowWedavForm(false)
-		createApp(session, user, startApp.name)
-
-		trackEvent({
-			category: 'app',
-			action: 'start',
-		})
-
-		// Remove password after use
-		const { password, ...nextUser } = user
-		setUser(nextUser)
-		setStartApp(undefined)
-	}, [user])
-
+	// Start an app
 	const handleToggleApp = (app: Application) => {
 		const targetApp = session?.apps?.find(a => a.app === app.name)
 		if (targetApp) {
@@ -153,8 +131,15 @@ const Session = (): JSX.Element => {
 			return
 		}
 
-		setStartApp(app)
-		setShowWedavForm(true)
+		if (!session || !user) {
+			return
+		}
+		createApp(session, user, app.name)
+
+		trackEvent({
+			category: 'app',
+			action: 'start',
+		})
 	}
 
 	const handleDrawerOpen = () => {
@@ -166,8 +151,7 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleBackLocation = () => {
-		// history.go(-1)
-		navigate(`${ROUTE_PREFIX}/private/sessions`)
+		navigate(-1)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {
@@ -201,25 +185,8 @@ const Session = (): JSX.Element => {
 		justifyContent: 'flex-end',
 	}))
 
-	const modalStyle = {
-		position: 'absolute' as 'const',
-		top: '50%',
-		left: '50%',
-		transform: 'translate(-50%, -50%)',
-		width: 200,
-		bgcolor: 'background.paper',
-		border: '1px solid #333',
-		boxShadow: 4,
-		p: 4,
-	}
-
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<Modal open={showWedavForm} onClose={() => setShowWedavForm(false)}>
-				<Box sx={modalStyle}>
-					<WebdavForm />
-				</Box>
-			</Modal>
 			<AppBar
 				position='fixed'
 				open={drawerOpen}

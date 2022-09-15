@@ -43,10 +43,10 @@ class PageController extends Controller
 		$csp = new ContentSecurityPolicy();
 		$csp->addAllowedFrameDomain('gpu1.thehip.app');
 		$csp->addAllowedFrameDomain('cpu1.thehip.app');
+		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
 		$csp->addAllowedFrameDomain('backend.thehip.app');
 		$csp->addAllowedFrameDomain('iam.ebrains.eu');
 		$csp->addAllowedFrameDomain('iam-int.ebrains.eu');
-		$csp->addAllowedFrameDomain('hipapp.local');
 		$csp->addAllowedFrameDomain('hip.local:9000');
 		$csp->addAllowedFrameDomain('hip.collab.local:9000');
 
@@ -55,11 +55,10 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('backend.thehip.app');
 		$csp->addAllowedConnectDomain('iam.ebrains.eu');
 		$csp->addAllowedConnectDomain('iam-int.ebrains.eu');
-		$csp->addAllowedConnectDomain('hipapp.local');
 		$csp->addAllowedConnectDomain('hip.local:9000');
 		$csp->addAllowedConnectDomain('hip.collab.local:9000');
-		
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+		
 		$csp->addAllowedScriptDomain('stats.humanbrainproject.eu');
 		
 		$response->setContentSecurityPolicy($csp);

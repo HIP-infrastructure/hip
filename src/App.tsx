@@ -19,8 +19,8 @@ import Sessions from './components/sessions'
 import Spaces from './components/spaces'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
+import About from './components/About'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
-
 export interface Space {
 	label: string
 	route: string
@@ -74,11 +74,11 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<Dashboard />} />
+			<Route index element={<About />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
-			<Route path={'private'} element={<Spaces />}>
-				<Route index element={<Sessions />} />
+			<Route path={'private/:id'} element={<Outlet />}>
+				<Route index element={<Dashboard />} />
 				<Route path={'sessions'} element={<Sessions />} />
 				<Route path={'data'} element={<Data />} />
 				<Route path={'workflows'} element={<Outlet />}>
@@ -86,13 +86,13 @@ const App = () => (
 					<Route path={'bids'} element={<BidsConverter />} />
 				</Route>
 			</Route>
-			<Route path={'collaborative'} element={<Spaces />}>
+			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<CollaborativeSessions />} />
 				<Route path={'sessions'} element={<CollaborativeSessions />} />
 				<Route path={'data'} element={<CollaborativeData />} />
 				<Route path={'workflows'} element={<CollaborativeWorkflows />} />
 			</Route>
-			<Route path={'public'} element={<Spaces />}>
+			<Route path={'public'} element={<Outlet />}>
 				<Route index element={<PublicSessions />} />
 				<Route path={'sessions'} element={<PublicSessions />} />
 				<Route path={'data'} element={<PublicData />} />

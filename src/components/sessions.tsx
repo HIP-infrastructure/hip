@@ -53,20 +53,6 @@ const Sessions = (): JSX.Element => {
 	const [shouldCreateSession, setShouldCreateSession] = useState(true)
 	const navigate = useNavigate()
 
-	// create an empty session at start
-	useEffect(() => {
-		const sessions = containers?.filter(
-			(container: Container) => container.type === ContainerType.SESSION
-		)
-		if (sessions?.length === 0 && user?.uid && shouldCreateSession) {
-			createSession(user.uid)
-			trackEvent({
-				category: 'server',
-				action: 'auto-start',
-			})
-		}
-	}, [containers, user, shouldCreateSession, trackEvent])
-
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
 		trackEvent({
@@ -128,9 +114,13 @@ const Sessions = (): JSX.Element => {
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{sessions?.length === 0 && (
-					<Box sx={{ width: 'fit-content', height: 'fit-content' }}>
+					<Box
+						sx={{
+							mt: 4
+						}}
+					>
 						<Typography variant='subtitle1'>
-							There is no active session
+							There is no existing desktop, but you can create one 
 						</Typography>
 						<Button
 							variant='contained'

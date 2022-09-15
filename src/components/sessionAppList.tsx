@@ -81,7 +81,6 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 				<ListItemButton
 					sx={{ cursor: 'pointer' }}
 					aria-label={label}
-					title={label}
 					disabled={session?.state !== ContainerState.RUNNING}
 					onClick={() => handleToggleApp && handleToggleApp(app)}
 				>

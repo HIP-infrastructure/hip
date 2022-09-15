@@ -12,7 +12,7 @@
 	<repository type="git">https://github.com/HIP-infrastructure/hip</repository>
 	<screenshot small-thumbnail="https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png">https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="19" max-version="24" />
+		<nextcloud min-version="19" max-version="25" />
 	</dependencies>
 
 	<navigations>
