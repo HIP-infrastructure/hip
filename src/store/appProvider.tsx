@@ -6,6 +6,7 @@ import {
 	API_CONTAINERS,
 	checkError,
 	getAvailableAppList,
+	getUser
 } from '../api/gatewayClientAPI'
 import {
 	Application,
@@ -85,6 +86,19 @@ export const AppStoreProvider = ({
 	React.useEffect(() => {
 		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
+
+		getUser(currentUser.uid)
+			.then(({ groups }) => {
+				if (groups) {
+					setUser({
+						...currentUser,
+						groups,
+					})
+				}
+			})
+			.catch(error => {
+				// console.log(error)
+			})
 
 		getAvailableAppList()
 			.then(data => {

@@ -37,6 +37,7 @@ export interface UserCredentials {
 	displayName?: string | null
 	isAdmin?: boolean
 	password?: string
+	groups?: string[]
 }
 
 export interface Application {
