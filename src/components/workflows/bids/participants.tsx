@@ -124,7 +124,7 @@ const Participants = (): JSX.Element => {
 					</Box>
 					<Box sx={{ flex: '1 0' }}>
                         <Typography sx={{ mt: 1 , mb: 2 }} variant='body2' color='text.secondary'>
-                            Subject Infos
+                            Subject description
                         </Typography>
                         <ParticipantInfo subject={selectedSubject} />
                     </Box>

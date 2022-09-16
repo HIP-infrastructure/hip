@@ -146,96 +146,101 @@ const Datasets = (): JSX.Element => {
 						Create BIDS Dataset
 					</Button>
 				</Paper>
-				<Paper
-					sx={{
-						flex: 1,
-					}}
-				>
-					{selectedBidsDataset && (
-						<>
-							<CardContent>
-							    <Typography gutterBottom variant='h6' component='div'>
-									<strong>Dataset name:</strong> {selectedBidsDataset?.Name}
-								</Typography>
-								<Typography sx={{ mb: 1.5 }} color='text.secondary'>
-									<strong>Authors:</strong> {selectedBidsDataset?.Authors?.toString()}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Number of participants</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{selectedBidsDataset?.participants?.length}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Version</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{selectedBidsDataset?.BIDSVersion}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>License</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.License &&
-										selectedBidsDataset.License) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Acknowledgements</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.Acknowledgements &&
-										selectedBidsDataset.Acknowledgements) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>How To Acknowledge</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.HowToAcknowledge &&
-										selectedBidsDataset.HowToAcknowledge) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Funding</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.Funding &&
-										selectedBidsDataset.Funding.toString()) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>References and Links</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.ReferencesAndLinks &&
-										selectedBidsDataset.ReferencesAndLinks.toString()) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>DOI</strong>
-								</Typography>
-								<Typography gutterBottom variant='body1'>
-									{(selectedBidsDataset?.DatasetDOI &&
-										selectedBidsDataset.DatasetDOI) ||
-										'n/a'}
-								</Typography>
-								<Typography variant='body1'>
-									<strong>Files</strong>
-								</Typography>
-								<Box>
-									<Link
-										target='_blank'
-										href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}`}
-									>
-										{selectedBidsDataset?.path}
-									</Link>
-								</Box>
-							</CardContent>
-							<CardActions></CardActions>
-						</>
-					)}
-				</Paper>
+				<Box sx={{ flex: '1 0' }}>
+					<Typography sx={{ mt: 1 , mb: 2 }} variant='body2' color='text.secondary'>
+						Dataset description
+					</Typography>
+					<Paper
+						sx={{
+							flex: 1,
+						}}
+					>
+						{selectedBidsDataset && (
+							<>
+								<CardContent>
+									<Typography gutterBottom variant='h6' component='div'>
+										<strong>Dataset name:</strong> {selectedBidsDataset?.Name}
+									</Typography>
+									<Typography sx={{ mb: 1.5 }} color='text.secondary'>
+										<strong>Authors:</strong> {selectedBidsDataset?.Authors?.toString()}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>Number of participants</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{selectedBidsDataset?.participants?.length}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>Version</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{selectedBidsDataset?.BIDSVersion}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>License</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.License &&
+											selectedBidsDataset.License) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>Acknowledgements</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.Acknowledgements &&
+											selectedBidsDataset.Acknowledgements) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>How To Acknowledge</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.HowToAcknowledge &&
+											selectedBidsDataset.HowToAcknowledge) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>Funding</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.Funding &&
+											selectedBidsDataset.Funding.toString()) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>References and Links</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.ReferencesAndLinks &&
+											selectedBidsDataset.ReferencesAndLinks.toString()) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>DOI</strong>
+									</Typography>
+									<Typography gutterBottom variant='body1'>
+										{(selectedBidsDataset?.DatasetDOI &&
+											selectedBidsDataset.DatasetDOI) ||
+											'n/a'}
+									</Typography>
+									<Typography variant='body1'>
+										<strong>Files</strong>
+									</Typography>
+									<Box>
+										<Link
+											target='_blank'
+											href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}`}
+										>
+											{selectedBidsDataset?.path}
+										</Link>
+									</Box>
+								</CardContent>
+								<CardActions></CardActions>
+							</>
+						)}
+					</Paper>
+				</Box>
 			</Box>
 		</>
 	)
