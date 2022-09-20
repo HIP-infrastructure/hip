@@ -25,7 +25,7 @@ const Summary = ({
 	response?: { error?: Error; data?: CreateSubjectDto }
 }): JSX.Element => {
 	const {
-		selectedBidsDatabase: [selectedBidsDatabase],
+		selectedBidsDataset: [selectedBidsDataset],
 		selectedFiles: [selectedFiles],
 	} = useAppStore()
 
@@ -84,9 +84,9 @@ const Summary = ({
 
 				<Link
 					target='_blank'
-					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDatabase?.path}`}
+					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}`}
 				>
-					{selectedBidsDatabase?.path}
+					{selectedBidsDataset?.path}
 				</Link>
 			</Box>
 		</Box>

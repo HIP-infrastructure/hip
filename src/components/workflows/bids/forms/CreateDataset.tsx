@@ -13,8 +13,8 @@ import {
 import { Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { createBidsDatabase } from '../../../../api/bids'
-import { CreateBidsDatabaseDto, IError } from '../../../../api/types'
+import { createBidsDataset } from '../../../../api/bids'
+import { CreateBidsDatasetDto, IError } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
 
@@ -38,17 +38,17 @@ const initialValues = {
 	DatasetDOI: '',
 }
 
-interface ICreateDatabase {
+interface ICreateDataset {
 	open: boolean
 	handleClose: () => void
-	setDatabaseCreated: React.Dispatch<React.SetStateAction<boolean>>
+	setDatasetCreated: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const CreateDatabase = ({
+const CreateDataset = ({
 	open,
 	handleClose,
-	setDatabaseCreated,
-}: ICreateDatabase) => {
+	setDatasetCreated,
+}: ICreateDataset) => {
 	const { showNotif } = useNotification()
 	const [submitted, setSubmitted] = useState(false)
 	const {
@@ -64,7 +64,7 @@ const CreateDatabase = ({
 					alignItems: 'center',
 				}}
 			>
-				Create BIDS Database
+				Create BIDS Dataset
 				<IconButton onClick={handleClose}>
 					<Close />
 				</IconButton>
@@ -76,9 +76,9 @@ const CreateDatabase = ({
 				onSubmit={async (values, { resetForm }) => {
 					if (user && user.uid) {
 						setSubmitted(true)
-						const createBidsDatabaseDto: CreateBidsDatabaseDto = {
+						const createBidsDatasetDto: CreateBidsDatasetDto = {
 							owner: user.uid,
-							database: values.Name,
+							dataset: values.Name,
 							path: '',
 							DatasetDescJSON: {
 								Name: values.Name,
@@ -92,7 +92,7 @@ const CreateDatabase = ({
 								DatasetDOI: values.DatasetDOI,
 							},
 						}
-						const cd = await createBidsDatabase(createBidsDatabaseDto)
+						const cd = await createBidsDataset(createBidsDatasetDto)
 						
 						if ((cd as IError).statusCode) {
 							showNotif((cd as IError).message, 'error')
@@ -103,8 +103,8 @@ const CreateDatabase = ({
 
 						resetForm()
 						setSubmitted(false)
-						showNotif('Database created. Wait for reload', 'success')
-						setDatabaseCreated(true)
+						showNotif('Dataset created. Wait for reload', 'success')
+						setDatasetCreated(true)
 						handleClose()
 					}
 				}}
@@ -318,4 +318,4 @@ const CreateDatabase = ({
 	)
 }
 
-export default CreateDatabase
+export default CreateDataset
