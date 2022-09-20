@@ -52,14 +52,14 @@ const spaces = [
 	// },
 	{
 		label: 'Beta Release Notes',
-		state: 'Features, Know issues, roadmap',
+		state: 'beta',
 		route: `${ROUTE_PREFIX}/private/sessions`,
-		description: 'What is in the beta release',
+		description: 'Features, Know issues, roadmap',
 		image: PrivateImage,
 		credit:
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
 	},
-	
+
 	{
 		label: 'Collaborate ',
 		state: 'beta',
@@ -72,11 +72,10 @@ const spaces = [
 	},
 
 	{
-		label: 'Users\' Feedback ',
-		state: 'We need your insights!!!',
+		label: "Users' Feedback ",
+		state: 'beta',
 		route: `${ROUTE_PREFIX}/private/sessions`,
-		description:
-			'How to interact with your team, users of other centers, create shared documents,or even initiate projects.',
+		description: 'We need your insights!!!',
 		image: PrivateImage,
 		credit:
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
@@ -134,14 +133,16 @@ const Dahsboard = () => {
 	return (
 		<Box sx={{ width: 0.75 }}>
 			<Box sx={{ mb: 4 }}>
-				<Typography variant='h2'>
+				<Typography variant='h2' sx={{ color: 'secondary.main' }}>
 					The Human Intracerebral EEG Platform
 				</Typography>
-				<Typography gutterBottom variant='h5'>
+				<Typography gutterBottom variant='h5' sx={{ color: 'secondary.main' }}>
 					The HIP - a platform for state-of-the-art processing and international
 					sharing of HUMAN intracerebral EEG data
 				</Typography>
-				<Typography sx={{mt: 1}} variant='h6'>Welcome {user?.displayName}</Typography>
+				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
+					Welcome {user?.displayName}
+				</Typography>
 			</Box>
 			<Box
 				sx={{
@@ -160,7 +161,7 @@ const Dahsboard = () => {
 							width: 320,
 							display: 'flex',
 							flexDirection: 'column',
-							height: 320
+							height: 320,
 						}}
 						key={space.label}
 					>

@@ -39,6 +39,8 @@ import SmallToolTip from './UI/smallToolTip'
 import chuvLogo from '../assets/group__chuv__logo.png'
 import GradingIcon from '@mui/icons-material/Grading'
 
+const PRIVATE = 'private'
+
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
 	const {
@@ -50,98 +52,128 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const [itemIsOpen, setItemIsOpen] = useState<{ [key: string]: boolean }>({
 		hip: true,
 		centers: true,
-		private: true,
+		[PRIVATE]: true,
 	})
 
-	const handleClickItem = (id: string) => {
-		setItemIsOpen(o => ({
-			...o,
-			[id]: !o[id],
-		}))
-	}
+	const handleClickNavigate = ({
+		route,
+		id,
+	}: {
+		route?: string
+		id?: string
+	}) => {
+		if (route !== null && route !== undefined) {
+			trackPageView({ documentTitle: route })
+			navigate(route)
+		}
 
-	const handleClickNavigate = (route: string) => {
-		trackPageView({ documentTitle: route })
-		navigate(route)
+		if (id && id !== PRIVATE) {
+			setItemIsOpen(o => ({
+				...o,
+				[id]: !o[id],
+			}))
+		}
 	}
 
 	const isRouteActive = (route: string) => {
+
 		// const current = `${ROUTE_PREFIX}/${route}`
 		// const resolved = useResolvedPath(current)
 		// const match = useMatch({ path: resolved.pathname, end: true })
-
-		// // open space for current selected tab
-		// if (match) {
-		// 	const space = route.split('/')[0]
-		// 	if (!itemIsOpen[space]) {
-		// 		setItemIsOpen(o => ({
-		// 			...o,
-		// 			[space]: true,
-		// 		}))
-		// 	}
-		// }
-
+		
 		// return match !== null
+
 		return false
 	}
 
-	const privateSpaces = CENTERS.filter(center =>
-		user?.groups?.includes(center.id)
-	).map(center => ({
-		id: 'private',
-		label: `${center.label}`,
-		route: `private/${center.id}`,
-		color: '#ccc',
-		image: center.logo ? center.logo : null,
-		icon: <HealthAndSafety />,
-		title: null,
-		children: [
-			{
-				id: '',
-				route: `private/${center.id}/sessions`,
-				label: 'Desktops',
-				icon: <Monitor />,
-				title: 'Remote virtual desktops',
-				color: '#ccc',
-				image: null,
-				children: [],
-			},
-			// {
-			// 	route: 'private/data',
-			// 	label: 'Data',
-			// 	icon: <Folder />,
-			// 	title: null,
-			// 	disabled: true,
-			// },
-			{
-				route: `private/${center.id}/workflows/bids`,
-				label: 'BIDS',
-				icon: <Assignment />,
-				title: 'BIDS datasets: Import, and manage data in BIDS format',
-				disabled: false,
-				color: '#ccc',
-				image: null,
-				children: [],
-			},
-			// {
-			// 	route: 'private/projects',
-			// 	label: 'Projects',
-			// 	icon: <Psychology />,
-			// 	title: null,
-			// 	disabled: true,
-			// },
-		],
-	}))
+	interface NavigationItem {
+		id?: string
+		route?: string
+		icon: JSX.Element
+		label: string
+		children: NavigationItem[]
+		title?: string
+		color?: string
+		image?: string
+	}
+
+	const privateSpaces: NavigationItem[] = user?.groups
+		? CENTERS.filter(center => user?.groups?.includes(center.id)).map(
+				center => ({
+					id: 'private',
+					label: `${center.label}`,
+					route: `private/${center.id}`,
+					color: null,
+					image: center.logo ? center.logo : null,
+					icon: <HealthAndSafety />,
+					title: null,
+					children: [
+						{
+							route: `private/${center.id}/sessions`,
+							label: 'Desktops',
+							icon: <Monitor />,
+							title: 'Remote virtual desktops',
+							color: null,
+							image: null,
+							children: [],
+						},
+						{
+							route: `private/${center.id}/workflows/bids`,
+							label: 'BIDS',
+							icon: <Assignment />,
+							title: 'BIDS datasets: Import, and manage data in BIDS format',
+							disabled: false,
+							color: null,
+							image: null,
+							children: [],
+						},
+					],
+				})
+		  )
+		: [
+				{
+					id: 'private',
+					label: `LOADING...`,
+					route: null,
+					color: '#ccc',
+					image: null,
+					icon: <HealthAndSafety />,
+					title: null,
+					children: [
+						{
+							route: null,
+							label: 'Desktops',
+							icon: <Monitor />,
+							title: 'Remote virtual desktops',
+							color: null,
+							image: null,
+							children: [],
+						},
+						{
+							route: null,
+							label: 'BIDS',
+							icon: <Assignment />,
+							title: 'BIDS datasets: Import, and manage data in BIDS format',
+							disabled: false,
+							color: null,
+							image: null,
+							children: [],
+						},
+					],
+				},
+		  ]
 
 	const categories = [
+		...privateSpaces,
 		{
 			id: 'hip',
-			label: 'HIP',
+			label: 'DISCOVER',
 			color: null,
 			image: null,
 			title: null,
 			children: [
 				{
+					id: null,
 					route: '',
 					label: 'About',
 					icon: <Info />,
@@ -151,6 +183,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					children: [],
 				},
 				{
+					id: null,
 					route: 'apps',
 					label: 'App Catalog',
 					icon: <Apps />,
@@ -160,6 +193,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					children: [],
 				},
 				{
+					id: null,
 					route: 'documentation',
 					label: 'Documentation',
 					icon: <HelpCenter />,
@@ -169,6 +203,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					children: [],
 				},
 				{
+					id: null,
 					route: 'feedback',
 					link: 'https://hip.collab.local/apps/forms/AF468tdy9qx2mmfF/submit',
 					label: 'Feedback form',
@@ -181,7 +216,6 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				},
 			],
 		},
-		...privateSpaces,
 		{
 			id: 'centers',
 			label: 'CENTERS',
@@ -192,6 +226,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			children: [
 				...CENTERS.filter(center => !user?.groups?.includes(center.id)).map(
 					center => ({
+						id: null,
 						label: `${center.label}`,
 						route: `private/${center.id}`,
 						color: null,
@@ -243,10 +278,13 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			}}
 		>
 			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-				{categories.map(({ id, label, children, color, image }) => (
+				{categories.map(({ id, route, label, children, color, image }) => (
 					<Box key={label} sx={{ bgcolor: '#fff' }}>
-						<ListItemButton onClick={() => handleClickItem(id)} sx={{ backgroundColor: color }}>
-							<ListItemText >
+						<ListItemButton
+							onClick={() => handleClickNavigate({ route, id })}
+							sx={{ backgroundColor: color }}
+						>
+							<ListItemText>
 								<Box
 									sx={{
 										display: 'flex',
@@ -261,12 +299,18 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 									<strong>{label}</strong>
 								</Box>
 							</ListItemText>
-							{itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />}
+							{id &&
+								id !== PRIVATE &&
+								(id && itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />)}
 						</ListItemButton>
 						<Divider />
-						<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
+						<Collapse
+							in={(id && itemIsOpen[id]) || false}
+							timeout='auto'
+							unmountOnExit
+						>
 							{children.map(
-								({ label, image, route, icon, color, children: kids }) => (
+								({ id, route, label, image, icon, color, children: kids }) => (
 									<List
 										key={label}
 										disablePadding
@@ -275,13 +319,14 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 										<ListItemButton
 											key={label}
 											sx={{ pl: 3 }}
-											selected={isRouteActive(route)}
-											onClick={() => handleClickNavigate(route)}
+											selected={(route && isRouteActive(route)) || false}
+											onClick={() => handleClickNavigate({ route, id })}
 										>
 											{!image && icon && (
 												<ListItemIcon
 													sx={{
-														color: isRouteActive(route) ? 'white' : 'grey',
+														color:
+															route && isRouteActive(route) ? 'white' : 'grey',
 													}}
 												>
 													{icon}
@@ -309,7 +354,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 										</ListItemButton>
 										<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
 											<List disablePadding>
-												{kids.map(({ label, route, icon, title }) => (
+												{kids.map(({ id, route, label, icon, title }) => (
 													<SmallToolTip
 														title={title}
 														placement='right'
@@ -319,14 +364,17 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 														<ListItemButton
 															key={label}
 															sx={{ ml: 3 }}
-															selected={isRouteActive(route)}
-															onClick={() => handleClickNavigate(route)}
+															selected={
+																(route && isRouteActive(route)) || false
+															}
+															onClick={() => handleClickNavigate({ route, id })}
 														>
 															<ListItemIcon
 																sx={{
-																	color: isRouteActive(route)
-																		? 'white'
-																		: 'black',
+																	color:
+																		route && isRouteActive(route)
+																			? 'white'
+																			: 'black',
 																}}
 															>
 																{icon}
