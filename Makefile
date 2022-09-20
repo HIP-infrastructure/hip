@@ -25,7 +25,7 @@ build: dep b.clean b.bundle b.package
 
 #b.clean: @ Removes all build artifacts
 b.clean:
-	rm -rf build release release.tar.gz
+	sudo rm -rf build release release.tar.gz
 
 #b.bundle: @ Builds the application as a JavaScript bundle
 b.bundle:
