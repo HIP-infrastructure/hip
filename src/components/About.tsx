@@ -32,15 +32,6 @@ const spaces = [
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
 	},
 	{
-		label: 'Beta Release Notes',
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
-		description: 'What is in the beta release',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
-	},
-	{
 		label: 'Quick Start',
 		state: 'beta',
 		route: `${ROUTE_PREFIX}/private/sessions`,
@@ -50,9 +41,39 @@ const spaces = [
 		credit:
 			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
 	},
+	// {
+	// 	label: 'Known Issues',
+	// 	state: 'beta',
+	// 	route: `${ROUTE_PREFIX}/private/sessions`,
+	// 	description: 'What is in the beta release',
+	// 	image: PrivateImage,
+	// 	credit:
+	// 		'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	// },
+	{
+		label: 'Beta Release Notes',
+		state: 'Features, Know issues, roadmap',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description: 'What is in the beta release',
+		image: PrivateImage,
+		credit:
+			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	},
+	
 	{
 		label: 'Collaborate ',
 		state: 'beta',
+		route: `${ROUTE_PREFIX}/private/sessions`,
+		description:
+			'How to interact with your team, users of other centers, create shared documents,or even initiate projects.',
+		image: PrivateImage,
+		credit:
+			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+	},
+
+	{
+		label: 'Users\' Feedback ',
+		state: 'We need your insights!!!',
 		route: `${ROUTE_PREFIX}/private/sessions`,
 		description:
 			'How to interact with your team, users of other centers, create shared documents,or even initiate projects.',
@@ -104,7 +125,7 @@ const spaces = [
 const Dahsboard = () => {
 	const {
 		containers: [containers],
-		BIDSDatasets: [bidsDatasets],
+		bIDSDatabases: [bidsDatabases],
 		user: [user],
 	} = useAppStore()
 	const navigate = useNavigate()
@@ -197,14 +218,14 @@ const Dahsboard = () => {
 									<Box sx={{ display: 'flex', alignItems: 'center' }}>
 										<Box sx={{ mr: 0.5 }}>
 											<Typography variant='body2' color='text.secondary'>
-												{!bidsDatasets && <CircularProgress size={12} />}
-												{bidsDatasets?.data?.reduce(
+												{!bidsDatabases && <CircularProgress size={12} />}
+												{bidsDatabases?.data?.reduce(
 													(a, b) => a + (b?.participants?.length || 0),
 													0
 												)}{' '}
 												<em>subjects</em> in{' '}
-												{!bidsDatasets && <CircularProgress size={12} />}
-												{bidsDatasets?.data?.length}
+												{!bidsDatabases && <CircularProgress size={12} />}
+												{bidsDatabases?.data?.length}
 												<em> BIDS databases</em>
 											</Typography>
 										</Box>
