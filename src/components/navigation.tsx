@@ -376,7 +376,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												</Box>
 											</ListItemText>
 										</ListItemButton>
-										<Collapse in={id ? itemIsOpen[id] : label} timeout='auto' unmountOnExit>
+										<Collapse in={id ? itemIsOpen[id] : itemIsOpen['']} timeout='auto' unmountOnExit>
 											<List disablePadding>
 												{kids.map(({ id, route, label, icon, title }) => (
 													<SmallToolTip
