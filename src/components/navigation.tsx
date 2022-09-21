@@ -59,8 +59,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		route,
 		id,
 	}: {
-		route?: string
-		id?: string
+		route?: string | null
+		id?: string | null
 	}) => {
 		if (route !== null && route !== undefined) {
 			trackPageView({ documentTitle: route })
@@ -88,13 +88,14 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 
 	interface NavigationItem {
 		id?: string
-		route?: string
+		route?: string | null
 		icon: JSX.Element
 		label: string
 		children: NavigationItem[]
-		title?: string
-		color?: string
-		image?: string
+		title?: string | null
+		color?: string | null
+		image?: string | null
+		disabled: boolean,
 	}
 
 	const privateSpaces: NavigationItem[] = user?.groups
@@ -104,6 +105,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: `${center.label}`,
 					route: `private/${center.id}`,
 					color: null,
+					disabled: false,
 					image: center.logo ? center.logo : null,
 					icon: <HealthAndSafety />,
 					title: null,
@@ -113,6 +115,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 							label: 'Desktops',
 							icon: <Monitor />,
 							title: 'Remote virtual desktops',
+							disabled: false,
 							color: null,
 							image: null,
 							children: [],
@@ -136,6 +139,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: `LOADING...`,
 					route: null,
 					color: '#ccc',
+					disabled: true,
 					image: null,
 					icon: <HealthAndSafety />,
 					title: null,
@@ -144,6 +148,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 							route: null,
 							label: 'Desktops',
 							icon: <Monitor />,
+							disabled: true,
+
 							title: 'Remote virtual desktops',
 							color: null,
 							image: null,
@@ -153,8 +159,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 							route: null,
 							label: 'BIDS',
 							icon: <Assignment />,
+							disabled: true,
 							title: 'BIDS datasets: Import, and manage data in BIDS format',
-							disabled: false,
 							color: null,
 							image: null,
 							children: [],
@@ -170,6 +176,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			label: 'DISCOVER',
 			color: null,
 			image: null,
+			disabled: false,
+
 			title: null,
 			children: [
 				{
@@ -178,6 +186,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					label: 'About',
 					icon: <Info />,
 					title: null,
+					disabled: false,
+
 					color: null,
 					image: null,
 					children: [],
@@ -189,6 +199,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <Apps />,
 					title: 'List of applications available on the HIP',
 					color: null,
+					disabled: false,
+
 					image: null,
 					children: [],
 				},
@@ -199,6 +211,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <HelpCenter />,
 					title: null,
 					color: null,
+					disabled: false,
+
 					image: null,
 					children: [],
 				},
@@ -210,6 +224,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					icon: <GradingIcon />,
 					title: null,
 					color: null,
+					disabled: false,
+
 					image: null,
 					children: [],
 					divider: true,
@@ -222,6 +238,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			route: 'centers',
 			color: null,
 			image: null,
+			disabled: false,
+
 			title: null,
 			children: [
 				...CENTERS.filter(center => !user?.groups?.includes(center.id)).map(
@@ -230,6 +248,8 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 						label: `${center.label}`,
 						route: `private/${center.id}`,
 						color: null,
+						disabled: false,
+
 						image: center.logo ? center.logo : null,
 						icon: <HealthAndSafety />,
 						title: null,
@@ -245,6 +265,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			title: null,
 			color: null,
 			image: null,
+			disabled: true,
 			divider: false,
 			icon: <GroupWork />,
 			children: [],
@@ -256,6 +277,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			color: null,
 			image: null,
 			icon: <Public />,
+			disabled: true,
 			title: null,
 			divider: false,
 			children: [],
@@ -278,11 +300,12 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			}}
 		>
 			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-				{categories.map(({ id, route, label, children, color, image }) => (
+				{categories.map(({ id, disabled, route, label, children, color, image }) => (
 					<Box key={label} sx={{ bgcolor: '#fff' }}>
 						<ListItemButton
 							onClick={() => handleClickNavigate({ route, id })}
 							sx={{ backgroundColor: color }}
+							disabled={disabled}
 						>
 							<ListItemText>
 								<Box
@@ -310,7 +333,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 							unmountOnExit
 						>
 							{children.map(
-								({ id, route, label, image, icon, color, children: kids }) => (
+								({ id, route, disabled, label, image, icon, color, children: kids }) => (
 									<List
 										key={label}
 										disablePadding
@@ -319,6 +342,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 										<ListItemButton
 											key={label}
 											sx={{ pl: 3 }}
+											disabled={disabled}
 											selected={(route && isRouteActive(route)) || false}
 											onClick={() => handleClickNavigate({ route, id })}
 										>
@@ -352,11 +376,11 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												</Box>
 											</ListItemText>
 										</ListItemButton>
-										<Collapse in={itemIsOpen[id]} timeout='auto' unmountOnExit>
+										<Collapse in={id ? itemIsOpen[id] : label} timeout='auto' unmountOnExit>
 											<List disablePadding>
 												{kids.map(({ id, route, label, icon, title }) => (
 													<SmallToolTip
-														title={title}
+														title={title || ''}
 														placement='right'
 														arrow
 														key={label}
