@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Container } from '../api/types'
 import { color } from '../api/utils'
 
-import { DRAWER_WIDTH } from '../constants'
+import { DRAWER_WIDTH, XPRA_PARAMS } from '../constants'
 
 const SessionInfo = ({ session }: { session?: Container }) => {
 	return (
@@ -36,7 +36,12 @@ const SessionInfo = ({ session }: { session?: Container }) => {
 						variant='outlined'
 					/>
 				</Box>
-				<Link href={session?.url} underline='hover'>
+				<Link
+					href={`${session?.url || ''}?${XPRA_PARAMS}`}
+					target='_blank'
+					rel='noopener'
+					underline='hover'
+				>
 					Open in Browser
 				</Link>
 				<Typography variant='body2'>{session?.error?.message}</Typography>
