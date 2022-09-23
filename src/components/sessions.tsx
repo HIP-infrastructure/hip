@@ -112,15 +112,23 @@ const Sessions = (): JSX.Element => {
 				}
 			/>
 
-			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2, ml: 1 }}>
+				{!containers && (
+					<CircularProgress
+						size={32}
+						color='secondary'
+						sx={{ top: 10, left: 10 }}
+					/>
+				)}
+
 				{sessions?.length === 0 && (
 					<Box
 						sx={{
-							mt: 4
+							mt: 4,
 						}}
 					>
-						<Typography variant='subtitle1'>
-							There is no existing desktop, but you can create one 
+						<Typography variant='subtitle1' gutterBottom>
+							There is no desktop to show
 						</Typography>
 						<Button
 							variant='contained'
