@@ -151,7 +151,7 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleBackLocation = () => {
-		navigate(-1)
+		navigate(`${ROUTE_PREFIX}/private/default/sessions/`)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {
