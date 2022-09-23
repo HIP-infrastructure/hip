@@ -10,6 +10,7 @@ import {
 	Monitor,
 	Public,
 	Info,
+	Dashboard,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -21,15 +22,13 @@ import {
 	List,
 	ListItemButton,
 	ListItemIcon,
+	ListItemAvatar,
 	ListItemText,
 	PaperProps,
 	Switch,
 } from '@mui/material'
 import React, { useState } from 'react'
-import {
-	NavLink,
-	useNavigate,
-} from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
@@ -78,13 +77,23 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	): NavigationItem => ({
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
-		route: center ? `private/${center?.id}` : '/private/default',
+		route: null,
 		color: '#efefef',
 		disabled: center === null,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
 		title: null,
 		children: [
+			{
+				route: center ? `private/${center?.id}` : 'private/default',
+				label: 'Dashboard',
+				icon: <Dashboard />,
+				title: center ? center.label : 'Dashboard',
+				disabled: false,
+				color: null,
+				image: null,
+				children: [],
+			},
 			{
 				route: center
 					? `private/${center.id}/sessions`
@@ -188,12 +197,13 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					?.filter(center => !user?.groups?.includes(center.id))
 					.map(center => ({
 						id: null,
+						type: 'center',
 						label: `${center.label}`,
 						route: `private/${center.id}`,
 						color: null,
 						disabled: false,
 						image: center.logo ? center.logo : null,
-						icon: <HealthAndSafety />,
+						icon: null,
 						title: null,
 						children: [],
 					})) || []),
@@ -254,121 +264,145 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			}}
 		>
 			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
-				{menu.map(({ id, disabled, route, label, children, color, image }) => (
-					<Box key={label} sx={{ bgcolor: '#fff' }}>
-						<ListItemButton
-							onClick={() => handleClickNavigate({ route, id })}
-							sx={{ backgroundColor: color }}
-							disabled={disabled}
-						>
-							<ListItemText>
-								<Box
-									sx={{
-										display: 'flex',
-										justifyContent: 'start',
-										alignItems: 'center',
-										gap: 2,
-									}}
-								>
-									{image && (
-										<Avatar alt={label} src={image} sx={{ w: 32, h: 32 }} />
-									)}
-									<strong>{label}</strong>
-								</Box>
-							</ListItemText>
-							{id &&
-								id !== PRIVATE &&
-								(id && itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />)}
-						</ListItemButton>
-						<Divider />
-						<Collapse
-							in={(id && itemIsOpen[id]) || false}
-							timeout='auto'
-							unmountOnExit
-						>
-							{children.map(
-								({
-									id,
-									route,
-									disabled,
-									label,
-									image,
-									icon,
-									color,
-									children: kids,
-								}) => (
-									<List
-										key={label}
-										disablePadding
-										sx={{ backgroundColor: color }}
+				{menu.map(
+					({ id, disabled, route, label, children, color, image }, index) => (
+						<Box key={label} sx={{ bgcolor: '#fff' }}>
+							<ListItemButton
+								onClick={() => handleClickNavigate({ route, id })}
+								sx={{ backgroundColor: color }}
+								disabled={disabled}
+							>
+								{index === 0 && (
+									<ListItemAvatar>
+										{image && (
+											<Avatar
+												alt={label}
+												src={`${process.env.REACT_APP_GATEWAY_API}/public/${image}`}
+												sx={{ width: 32, height: 32 }}
+											/>
+										)}
+										{!image && (
+											<Avatar
+												alt={label}
+												sx={{ width: 32, height: 32, bgcolor: '#37474f' }}
+											>
+												{label[0]}
+											</Avatar>
+										)}
+									</ListItemAvatar>
+								)}
+								<ListItemText>
+									<Box
+										sx={{
+											display: 'flex',
+											justifyContent: 'start',
+											alignItems: 'center',
+											gap: 2,
+										}}
 									>
-										<ListItemButton
+										<strong>{label}</strong>
+									</Box>
+								</ListItemText>
+								{id &&
+									id !== PRIVATE &&
+									(id && itemIsOpen[id] ? <ExpandLess /> : <ExpandMore />)}
+							</ListItemButton>
+							<Divider />
+							<Collapse
+								in={(id && itemIsOpen[id]) || false}
+								timeout='auto'
+								unmountOnExit
+							>
+								{children.map(
+									({
+										id,
+										route,
+										disabled,
+										label,
+										image,
+										icon,
+										color,
+										children: kids,
+									}) => (
+										<List
 											key={label}
-											sx={{ pl: 3 }}
-											disabled={disabled}
-											onClick={() => handleClickNavigate({ route, id })}
+											disablePadding
+											sx={{ backgroundColor: color }}
 										>
-											{!image && icon && <ListItemIcon>{icon}</ListItemIcon>}
-											<ListItemText>
-												<Box
-													sx={{
-														display: 'flex',
-														justifyContent: 'start',
-														alignItems: 'center',
-														gap: 2,
-													}}
-												>
+											<ListItemButton
+												key={label}
+												sx={{ pl: 3 }}
+												disabled={disabled}
+												onClick={() => handleClickNavigate({ route, id })}
+											>
+												{icon && <ListItemIcon>{icon}</ListItemIcon>}
+												{!icon && (
+													<ListItemAvatar>
+														{image && (
+															<Avatar
+																alt={label}
+																src={`${process.env.REACT_APP_GATEWAY_API}/public/${image}`}
+																sx={{ width: 18, height: 18 }}
+															/>
+														)}
+														{!image && (
+															<Avatar
+																alt={label}
+																sx={{ width: 18, height: 18 }}
+															>
+																{label[0]}
+															</Avatar>
+														)}
+													</ListItemAvatar>
+												)}
+												<ListItemText>
 													<NavLink
+														end
 														to={`${ROUTE_PREFIX}/${route}`}
 														style={({ isActive }) =>
 															isActive ? activeStyle : { color: '#37474f' }
 														}
 														onClick={() => handleClickNavigate({ route, id })}
 													>
-														{image && (
-															<Avatar
-																alt={label}
-																src={image}
-																sx={{ w: 32, h: 32 }}
-															/>
-														)}
 														{label}
 													</NavLink>
-												</Box>
-											</ListItemText>
-										</ListItemButton>
-										<Collapse
-											in={id ? itemIsOpen[id] : itemIsOpen['']}
-											timeout='auto'
-											unmountOnExit
-										>
-											<List disablePadding>
-												{kids.map(({ id, route, label, icon, title }) => (
-													<SmallToolTip
-														title={title || ''}
-														placement='right'
-														arrow
-														key={label}
-													>
-														<ListItemButton
+												</ListItemText>
+											</ListItemButton>
+											<Collapse
+												in={id ? itemIsOpen[id] : itemIsOpen['']}
+												timeout='auto'
+												unmountOnExit
+											>
+												<List disablePadding>
+													{kids.map(({ id, route, label, icon, title }) => (
+														<SmallToolTip
+															title={title || ''}
+															placement='right'
+															arrow
 															key={label}
-															sx={{ ml: 3 }}
-															onClick={() => handleClickNavigate({ route, id })}
 														>
-															<ListItemIcon>{icon}</ListItemIcon>
-															<ListItemText>{label}</ListItemText>
-														</ListItemButton>
-													</SmallToolTip>
-												))}
-											</List>
-										</Collapse>
-									</List>
-								)
-							)}
-						</Collapse>
-						<Divider />
-					</Box>
-				))}
+															<ListItemButton
+																key={label}
+																sx={{ ml: 3 }}
+																onClick={() =>
+																	handleClickNavigate({ route, id })
+																}
+															>
+																<ListItemIcon>{icon}</ListItemIcon>
+																<ListItemText>{label}</ListItemText>
+															</ListItemButton>
+														</SmallToolTip>
+													))}
+												</List>
+											</Collapse>
+										</List>
+									)
+								)}
+							</Collapse>
+							<Divider />
+						</Box>
+					)
+				)}
 			</List>
 
 			<Box sx={{ ml: 2, mt: 8 }}>
