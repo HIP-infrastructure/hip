@@ -40,6 +40,32 @@ export interface UserCredentials {
 	groups?: string[]
 }
 
+export interface NavigationItem {
+	id?: string
+	route?: string | null
+	icon: JSX.Element
+	label: string
+	children: NavigationItem[]
+	title?: string | null
+	color?: string | null
+	image?: string | null
+	disabled: boolean
+}
+
+export interface User {
+	id: string
+	displayName: string | null
+}
+
+export interface Group {
+	label: string
+	id: string
+	logo?: string
+	description?: string
+	website?: string
+	users?: User[]
+}
+
 export interface Application {
 	name: string
 	description: string

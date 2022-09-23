@@ -55,6 +55,16 @@ export const getUser = async (userid?: string) => {
 	return user
 }
 
+export const getGroups = async () => {
+	const groups = fetch(`${API_GATEWAY}/groups`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
+
+	return groups
+}
+
 export const search = async (term: string) => {
 	return fetch(`${API_GATEWAY}/files/search/${term}`, {
 		headers: {

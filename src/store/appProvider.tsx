@@ -6,13 +6,15 @@ import {
 	API_CONTAINERS,
 	checkError,
 	getAvailableAppList,
-	getUser
+	getGroups,
+	getUser,
 } from '../api/gatewayClientAPI'
 import {
 	Application,
 	BIDSDataset,
 	Container,
 	File,
+	Group,
 	Participant,
 	UserCredentials,
 } from '../api/types'
@@ -23,6 +25,7 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
+	groups: [Group[] | null, React.Dispatch<React.SetStateAction<Group[] | null>>]
 	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
 	BIDSDatasets: [
@@ -67,12 +70,12 @@ export const AppStoreProvider = ({
 	const [availableApps, setAvailableApps] =
 		useState<IAppState['availableApps']>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
+	const [groups, setGroups] = useState<Group[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: Error
 	}>()
-	const [selectedBidsDataset, setSelectedBidsDataset] =
-		useState<BIDSDataset>()
+	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
@@ -99,6 +102,12 @@ export const AppStoreProvider = ({
 			.catch(error => {
 				// console.log(error)
 			})
+
+		getGroups().then(groups => {
+			if (groups) {
+				setGroups(groups)
+			}
+		})
 
 		getAvailableAppList()
 			.then(data => {
@@ -132,8 +141,9 @@ export const AppStoreProvider = ({
 		() => ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
+			groups: [groups, setGroups],
 			availableApps,
-			containers: [data?.data || [], error],
+			containers: [data?.data || null, error],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
@@ -144,6 +154,8 @@ export const AppStoreProvider = ({
 			setDebug,
 			user,
 			setUser,
+			groups,
+			setGroups,
 			data,
 			error,
 			availableApps,
