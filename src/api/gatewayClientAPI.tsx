@@ -1,5 +1,5 @@
 import { mutate } from 'swr'
-import { Application, Container, TreeNode, UserCredentials } from './types'
+import { Application, Container, Group, TreeNode, User, UserCredentials } from './types'
 import { uniq } from './utils'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
@@ -43,9 +43,7 @@ export const forceRemove = (id: string): void => {
 
 // NextCloud API
 
-export const getUser = async (userid?: string) => {
-	if (!userid) return {}
-
+export const getUser = async (userid?: string): Promise<User> => {
 	const user = fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -55,7 +53,7 @@ export const getUser = async (userid?: string) => {
 	return user
 }
 
-export const getGroups = async () => {
+export const getGroups = async (): Promise<Group>  => {
 	const groups = fetch(`${API_GATEWAY}/groups`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -63,6 +61,16 @@ export const getGroups = async () => {
 	}).then(checkError)
 
 	return groups
+}
+
+export const getUsersForGroup = async (groupid: string) => {
+	const users = fetch(`${API_GATEWAY}/groups/${groupid}`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
+
+	return users
 }
 
 export const search = async (term: string) => {

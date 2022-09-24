@@ -54,16 +54,28 @@ export interface NavigationItem {
 
 export interface User {
 	id: string
-	displayName: string | null
+	displayName?: string | null
+	email?: string | null
+	lastLogin: number
+	groups?: string[]
 }
-
 export interface Group {
 	label: string
 	id: string
+	pi: string
+	email: string
+	city: string
+	country: string
 	logo?: string
 	description?: string
 	website?: string
-	users?: User[]
+	socialnetworks: {
+		facebook?: string
+		youtube?: string
+		twitter?: string
+		instagram?: string
+		researchgate?: string
+	}
 }
 
 export interface Application {
