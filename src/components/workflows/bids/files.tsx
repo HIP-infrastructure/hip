@@ -242,19 +242,17 @@ const Files = ({
 	return (
 		<Box sx={{}}>
 			<Box>
-				<Paper elevation={1} sx={{ p: 1 }}>
+				<Paper elevation={1} sx={{ p: 1, backgroundColor: '#E4E4E4' }}>
 					<Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Typography variant='h6'>
-                            Files to be imported
-                        </Typography>
-                        <Box sx={{ flex: '1 0' }} />
-                    </Box>
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}
+					>
+						<Typography variant='h6'>Files to be imported</Typography>
+						<Box sx={{ flex: '1 0' }} />
+					</Box>
 					<TableContainer component={Paper}>
 						<Table size='small' aria-label='Files to be imported'>
 							<TableHead>
@@ -291,212 +289,232 @@ const Files = ({
 				</Paper>
 			</Box>
 			<Box>
-                <Paper elevation={1} sx={{ p: 1 }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Typography variant='h6'>
-                            Add a new file to be imported / converted
-                        </Typography>
-                        <Box sx={{ flex: '1 0' }} />
-                    </Box>
-                    <Box>
-                        <Paper elevation={1} sx={{ display: 'flex', p: 1, mb: 4, gap: '8px' }}>
+				<Paper elevation={1} sx={{ p: 1 }}>
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}
+					>
+						<Typography variant='h6'>
+							Add a new file to be imported / converted
+						</Typography>
+						<Box sx={{ flex: '1 0' }} />
+					</Box>
+					<Box>
+						<Paper
+							elevation={1}
+							sx={{ display: 'flex', p: 1, mb: 4, gap: '8px' }}
+						>
+							<Box sx={{ flex: '2 0' }}>
+								<Typography
+									sx={{ mt: 1, mb: 2 }}
+									variant='body2'
+									color='text.secondary'
+								>
+									Select the subject, modality, the BIDS entities, and the
+									corresponding file or folder
+								</Typography>
+								<Box
+									sx={{
+										display: 'flex',
+										flexDirection: 'column',
+										gap: '0.8em 0.8em',
+									}}
+								>
+									{selectedBidsDataset?.participants && (
+										<TextField
+											select
+											fullWidth
+											size='small'
+											disabled={submitted}
+											name='subject'
+											label='Subject'
+											value={selectedSubject}
+											onChange={event => {
+												setSelectedSubject(event.target.value)
+											}}
+											// error={touched.subject && errors.subject ? true : false}
+											// helperText={
+											// 	touched.subject && errors.subject ? errors.subject : null
+											// }
+										>
+											{selectedBidsDataset?.participants?.map(p => (
+												<MenuItem
+													key={p.participant_id}
+													value={p.participant_id}
+												>
+													{p.participant_id}
+												</MenuItem>
+											))}
+										</TextField>
+									)}
+									{selectedSubject && (
+										<Box sx={{ display: 'flex' }}>
+											<TextField
+												sx={{ flex: '1 1' }}
+												select
+												size='small'
+												disabled={submitted}
+												name='modality'
+												label='Modality'
+												value={modality}
+												onChange={event => {
+													const m = MODALITIES.find(
+														modality => modality.name === event.target.value
+													)
+													if (m) setModality(m)
+												}}
+											>
+												{MODALITIES?.map(m => (
+													<MenuItem value={m.name} key={m.name}>
+														{m.name} ({m.type})
+													</MenuItem>
+												))}
+											</TextField>
+											<Box sx={{ flex: '1 1' }} />
+										</Box>
+									)}
+									{modality && (
+										<Typography
+											sx={{ mt: 1 }}
+											variant='body2'
+											color='text.secondary'
+										>
+											BIDS entities
+										</Typography>
+									)}
+									{modality && (
+										<Box
+											sx={{
+												display: 'flex',
+												gap: '0.8em 0.8em',
+												flexWrap: 'wrap',
+											}}
+										>
+											{entities?.map(entity => (
+												<Box key={entity.name}>
+													<Box
+														sx={{
+															maxWidth: '200px',
+															flex: 'inherit',
+															display: 'flex',
+															alignItems: 'center',
+														}}
+													>
+														<EntityOptions
+															entity={entity}
+															onChange={option => {
+																setSelectedEntities(s => ({
+																	...(s || {}),
+																	[entity.name]: option,
+																}))
+																//handleChange()
+															}}
+														/>
+														<Tooltip title={entity.description}>
+															<Info color='action' />
+														</Tooltip>
+													</Box>
+													<Typography
+														gutterBottom
+														variant='caption'
+														color='text.secondary'
+													>
+														{entity.requirements.find(
+															r => r.dataType === modality?.type
+														)?.required
+															? 'required *'
+															: ''}
+													</Typography>
+												</Box>
+											))}
+										</Box>
+									)}
+									{modality && (
+										<Autocomplete
+											sx={{ mt: 2 }}
+											options={options || []}
+											inputValue={fileInputValue}
+											// eslint-disable-next-line @typescript-eslint/no-explicit-any
+											onInputChange={(event: any, newInputValue: string) => {
+												handleSelectedPath(newInputValue)
+												setFileInputValue(newInputValue)
+											}}
+											disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
+											id='input-tree-view'
+											// eslint-disable-next-line @typescript-eslint/no-explicit-any
+											renderInput={(params: any) => (
+												<TextField {...params} label='Files' />
+											)}
+											renderOption={(props, option) => {
+												const node = tree?.find(
+													node => node.data.path === option
+												)
 
-                            <Box sx={{ flex: '2 0' }}>
-                                <Typography sx={{ mt: 1, mb: 2}} variant='body2' color='text.secondary'>
-                                    Select the subject, modality, the BIDS entities, and the corresponding file or folder
-                                </Typography>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '0.8em 0.8em',
-                                    }}
-                                >
-                                    {selectedBidsDataset?.participants && (
-                                        <TextField
-                                            select
-                                            fullWidth
-                                            size='small'
-                                            disabled={submitted}
-                                            name='subject'
-                                            label='Subject'
-                                            value={selectedSubject}
-                                            onChange={event => {
-                                                setSelectedSubject(event.target.value)
-                                            }}
-                                            // error={touched.subject && errors.subject ? true : false}
-                                            // helperText={
-                                            // 	touched.subject && errors.subject ? errors.subject : null
-                                            // }
-                                        >
-                                            {selectedBidsDataset?.participants?.map(p => (
-                                                <MenuItem key={p.participant_id} value={p.participant_id}>
-                                                    {p.participant_id}
-                                                </MenuItem>
-                                            ))}
-                                        </TextField>
-                                    )}
-                                    {selectedSubject && (
-                                        <Box sx={{ display: 'flex' }}>
-                                            <TextField
-                                                sx={{ flex: '1 1' }}
-                                                select
-                                                size='small'
-                                                disabled={submitted}
-                                                name='modality'
-                                                label='Modality'
-                                                value={modality}
-                                                onChange={event => {
-                                                    const m = MODALITIES.find(
-                                                        modality => modality.name === event.target.value
-                                                    )
-                                                    if (m) setModality(m)
-                                                }}
-                                            >
-                                                {MODALITIES?.map(m => (
-                                                    <MenuItem value={m.name} key={m.name}>
-                                                        {m.name} ({m.type})
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>
-                                            <Box sx={{ flex: '1 1' }} />
-                                        </Box>
-                                    )}
-                                    {modality && (
-                                        <Typography sx={{ mt: 1 }} variant='body2' color='text.secondary'>
-                                            BIDS entities
-                                        </Typography>
-                                    )}
-                                    {modality && (
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                gap: '0.8em 0.8em',
-                                                flexWrap: 'wrap',
-                                            }}
-                                        >
-                                            {entities?.map(entity => (
-                                                <Box key={entity.name}>
-                                                    <Box
-                                                        sx={{
-                                                            maxWidth: '200px',
-                                                            flex: 'inherit',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                        }}
-                                                    >
-                                                        <EntityOptions
-                                                            entity={entity}
-                                                            onChange={option => {
-                                                                setSelectedEntities(s => ({
-                                                                    ...(s || {}),
-                                                                    [entity.name]: option,
-                                                                }))
-                                                                //handleChange()
-                                                            }}
-                                                        />
-                                                        <Tooltip title={entity.description}>
-                                                            <Info color='action' />
-                                                        </Tooltip>
-                                                    </Box>
-                                                    <Typography
-                                                        gutterBottom
-                                                        variant='caption'
-                                                        color='text.secondary'
-                                                    >
-                                                        {entity.requirements.find(
-                                                            r => r.dataType === modality?.type
-                                                        )?.required
-                                                            ? 'required *'
-                                                            : ''}
-                                                    </Typography>
-                                                </Box>
-                                            ))}
-                                        </Box>
-                                    )}
-                                    {modality && (
-                                        <Autocomplete
-                                            sx={{ mt: 2 }}
-                                            options={options || []}
-                                            inputValue={fileInputValue}
-                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                            onInputChange={(event: any, newInputValue: string) => {
-                                                handleSelectedPath(newInputValue)
-                                                setFileInputValue(newInputValue)
-                                            }}
-                                            disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
-                                            id='input-tree-view'
-                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                            renderInput={(params: any) => (
-                                                <TextField {...params} label='Files' />
-                                            )}
-                                            renderOption={(props, option) => {
-                                                const node = tree?.find(node => node.data.path === option)
-
-                                                return node?.data.type === 'dir' ? (
-                                                    <Box
-                                                        component='li'
-                                                        sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
-                                                        {...props}
-                                                    >
-                                                        <Folder color='action' />
-                                                        {option}
-                                                    </Box>
-                                                ) : (
-                                                    <Box
-                                                        component='li'
-                                                        sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
-                                                        {...props}
-                                                    >
-                                                        <Article color='action' />
-                                                        {option}
-                                                    </Box>
-                                                )
-                                            }}
-                                        />
-                                    )}
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                        }}
-                                    >
-                                        <Box></Box>
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box sx={{ flex: '1 0' }}>
-                                <Typography sx={{ mt: 1 , mb: 2 }} variant='body2' color='text.secondary'>
-                                    Subject description
-                                </Typography>
-                                <ParticipantInfo subject={selectedSubject} />
-                            </Box>
-                        </Paper>
-                    </Box>
-                    <Box sx={{ m: 3, textAlign: 'center' }}>
-                        <LoadingButton
-                            sx={{ width: 320 }}
-                            color='primary'
-                            type='submit'
-                            disabled={currentBidsFile === undefined}
-                            loading={submitted}
-                            onClick={handleAddFile}
-                            loadingPosition='start'
-                            startIcon={<Save />}
-                            variant='contained'
-                        >
-                            Add File
-                        </LoadingButton>
-                    </Box>
-                </Paper>
-		    </Box>
+												return node?.data.type === 'dir' ? (
+													<Box
+														component='li'
+														sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
+														{...props}
+													>
+														<Folder color='action' />
+														{option}
+													</Box>
+												) : (
+													<Box
+														component='li'
+														sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
+														{...props}
+													>
+														<Article color='action' />
+														{option}
+													</Box>
+												)
+											}}
+										/>
+									)}
+									<Box
+										sx={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'space-between',
+										}}
+									>
+										<Box></Box>
+									</Box>
+								</Box>
+							</Box>
+							<Box sx={{ flex: '1 0' }}>
+								<Typography
+									sx={{ mt: 1, mb: 2 }}
+									variant='body2'
+									color='text.secondary'
+								>
+									Subject description
+								</Typography>
+								<ParticipantInfo subject={selectedSubject} />
+							</Box>
+						</Paper>
+					</Box>
+					<Box sx={{ m: 3, textAlign: 'center' }}>
+						<LoadingButton
+							sx={{ width: 320 }}
+							color='primary'
+							type='submit'
+							disabled={currentBidsFile === undefined}
+							loading={submitted}
+							onClick={handleAddFile}
+							loadingPosition='start'
+							startIcon={<Save />}
+							variant='contained'
+						>
+							Add File
+						</LoadingButton>
+					</Box>
+				</Paper>
+			</Box>
 		</Box>
 	)
 }

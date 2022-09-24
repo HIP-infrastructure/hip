@@ -112,7 +112,7 @@ const Sessions = (): JSX.Element => {
 				}
 			/>
 
-			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2, ml: 1 }}>
+			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
 					<CircularProgress
 						size={32}

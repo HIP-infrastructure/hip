@@ -121,7 +121,7 @@ const spaces = [
 	// },
 ]
 
-const Dahsboard = () => {
+const About = () => {
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
@@ -253,4 +253,4 @@ const Dahsboard = () => {
 	)
 }
 
-export default Dahsboard
+export default About
