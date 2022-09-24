@@ -5,25 +5,13 @@ import {
 	CircularProgress,
 	List,
 	ListItem,
+	ListItemAvatar,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 } from '@mui/material'
 import { Application, Container, ContainerState } from '../api/types'
 import { color, loading } from '../api/utils'
-import anywave from '../assets/anywave__logo.png'
-import bidsmanager from '../assets/bidsmanager__logo.png'
-import brainstorm from '../assets/brainstorm__logo.png'
-import dcm2niix from '../assets/dcm2niix__logo.png'
-import freesurfer from '../assets/freesurfer__logo.png'
-import fsl from '../assets/fsl__logo.png'
-import hibop from '../assets/hibop__logo.png'
-import localizer from '../assets/localizer__logo.png'
-import mne from '../assets/mne__logo.png'
-import mricrogl from '../assets/mrcicogl__logo.png'
-import mrideface from '../assets/mrideface__logo.png'
-import slicer from '../assets/slicer__logo.png'
-import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
 import React from 'react'
@@ -33,22 +21,6 @@ interface Session {
 	handleToggleApp?: (app: Application) => void
 }
 
-const logos: { [key: string]: string } = {
-	brainstorm,
-	anywave,
-	localizer,
-	fsl,
-	hibop,
-	slicer,
-	mricrogl,
-	freesurfer,
-	dcm2niix,
-	bidsmanager,
-	mrideface,
-	tvb,
-	mne,
-}
-
 const AppList = ({ session, handleToggleApp }: Session) => {
 	const { availableApps } = useAppStore()
 
@@ -56,7 +28,11 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 		session?.apps?.find(s => s.app === name)
 
 	const AppAvatar = ({ name, label }: { name: string; label?: string }) => (
-		<Avatar alt={label} src={logos[name]} sx={{ width: 32, height: 32 }} />
+		<Avatar
+			alt={label}
+			src={`${process.env.REACT_APP_GATEWAY_API}/public/media/${name}__logo.png`}
+			sx={{ width: 32, height: 32 }}
+		/>
 	)
 
 	const AppState = ({ state }: { state?: ContainerState }) => {
@@ -84,9 +60,9 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 					disabled={session?.state !== ContainerState.RUNNING}
 					onClick={() => handleToggleApp && handleToggleApp(app)}
 				>
-					<ListItemIcon>
+					<ListItemAvatar>
 						<AppAvatar name={app.name} label={app.label} />
-					</ListItemIcon>
+					</ListItemAvatar>
 					<ListItemText primary={app.label} />
 					<AppState state={startedApp?.state} />
 				</ListItemButton>

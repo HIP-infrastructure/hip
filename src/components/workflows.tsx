@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import TitleBar from './UI/titleBar'
 
-import bidsManagerLogo from '../assets/bidsmanager__logo.png'
 import { Workflow } from '../api/types'
 import { useNavigate } from 'react-router-dom'
 import WorkflowsStatus from './UI/workflowsStatus'
@@ -43,7 +42,7 @@ const Workflows = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={bidsManagerLogo}
+							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/bidsmanager__logo.png]}`}
 							alt={workflow.label}
 						/>
 						<CardContent>

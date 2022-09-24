@@ -26,6 +26,7 @@ import {
 	ListItemText,
 	PaperProps,
 	Switch,
+	CircularProgress,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
@@ -74,7 +75,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 
 	const placeholderSpaces = (
 		center: Group | undefined | null = undefined
-	): NavigationItem => ({
+	): NavigationItem & { loading: boolean } => ({
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
 		route: null,
@@ -82,6 +83,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		disabled: center === null,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
+		loading: center === undefined ? true : center === null ? true : false,
 		title: null,
 		children: [
 			{
@@ -191,6 +193,12 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			color: '#efefef',
 			image: null,
 			disabled: false,
+			loading:
+				user?.groups === undefined
+					? true
+					: user?.groups === null
+					? true
+					: false,
 			title: null,
 			children: [
 				...(groups
@@ -265,7 +273,10 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		>
 			<List sx={{ bgcolor: 'background.paper' }} component='nav'>
 				{menu.map(
-					({ id, disabled, route, label, children, color, image }, index) => (
+					(
+						{ id, disabled, route, label, children, color, image, loading },
+						index
+					) => (
 						<Box key={label} sx={{ bgcolor: '#fff' }}>
 							<ListItemButton
 								onClick={() => handleClickNavigate({ route, id })}
@@ -295,12 +306,15 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 									<Box
 										sx={{
 											display: 'flex',
-											justifyContent: 'start',
+											justifyContent: 'space-between',
 											alignItems: 'center',
 											gap: 2,
 										}}
 									>
 										<strong>{label}</strong>
+										{loading && (
+											<CircularProgress size={18} color='secondary' />
+										)}
 									</Box>
 								</ListItemText>
 								{id &&
@@ -342,17 +356,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 															<Avatar
 																alt={label}
 																src={`${process.env.REACT_APP_GATEWAY_API}/public/${image}`}
-																sx={{ width: 18, height: 18 }}
 															/>
 														)}
-														{!image && (
-															<Avatar
-																alt={label}
-																sx={{ width: 18, height: 18 }}
-															>
-																{label[0]}
-															</Avatar>
-														)}
+														{!image && <Avatar alt={label}>{label[0]}</Avatar>}
 													</ListItemAvatar>
 												)}
 												<ListItemText>

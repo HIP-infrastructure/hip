@@ -10,37 +10,8 @@ import {
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
-import anywave from '../assets/anywave__logo.png'
-import brainstorm from '../assets/brainstorm__logo.png'
-import dcm2niix from '../assets/dcm2niix__logo.png'
-import freesurfer from '../assets/freesurfer__logo.png'
-import fsl from '../assets/fsl__logo.png'
-import hibop from '../assets/hibop__logo.png'
-import localizer from '../assets/localizer__logo.png'
-import mricrogl from '../assets/mrcicogl__logo.png'
-import mrideface from '../assets/mrideface__logo.png'
-import slicer from '../assets/slicer__logo.png'
-import tvb from '../assets/tvb__logo.png'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
-import mne from '../assets/mne__logo.png'
-import bidsmanager from '../assets/bidsmanager__logo.png'
-
-const s: { [key: string]: string } = {
-	brainstorm,
-	anywave,
-	localizer,
-	fsl,
-	hibop,
-	slicer,
-	mricrogl,
-	freesurfer,
-	dcm2niix,
-	bidsmanager,
-	mrideface,
-	tvb,
-	mne,
-}
 
 const Apps = () => {
 	const { availableApps } = useAppStore()
@@ -65,7 +36,7 @@ const Apps = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={s[app.name]}
+							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/${app.name}__logo.png`}
 							alt={app.label}
 						/>
 						<CardContent sx={{ flexGrow: 1, pb: 0, mb: 0 }}>
