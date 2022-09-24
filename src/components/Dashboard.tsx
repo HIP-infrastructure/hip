@@ -77,14 +77,14 @@ const Dashboard = () => {
 
 	return (
 		<>
-			<TitleBar title={`${center?.label} Private Space`} description={''} />
+			<TitleBar title={`${center?.label || ''} Private Space`} description={''} />
 			<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
 				Welcome {user?.displayName}
 			</Typography>
 
 			{groups && !center && (
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
-					You don't seem to have access to any private space. Please contact
+					You don't seem to belong to any group. Please contact
 					your administrator.
 				</Typography>
 			)}

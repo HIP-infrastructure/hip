@@ -83,7 +83,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		disabled: true,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
-		loading: center === undefined ? true : center === null ? true : false,
+		loading: center === undefined ? true : center === null ? false : false,
 		title: null,
 		children: [
 			{
@@ -91,7 +91,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				label: 'Dashboard',
 				icon: <Dashboard />,
 				title: center ? center.label : 'Dashboard',
-				disabled: center === undefined || center === null,
+				disabled: center === undefined ? true : center === null ? false : false,
 				color: null,
 				image: null,
 				children: [],
