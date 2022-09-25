@@ -1,25 +1,24 @@
+import * as React from 'react'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
-import React from 'react'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
+import About from './components/About'
 import Apps from './components/apps'
 import CollaborativeData from './components/collab/data'
 import CollaborativeSessions from './components/collab/sessions'
 import CollaborativeWorkflows from './components/collab/workflows'
-import Dashboard from './components/Dashboard'
 import Data from './components/data'
 import Documentation from './components/documentation'
+import Group from './components/groups/Group'
+import Groups from './components/groups/index'
 import Navigation from './components/navigation'
-import PublicData from './components/public/data'
 import PublicSessions from './components/public/sessions'
 import PublicWorkflows from './components/public/workflows'
 import Session from './components/session'
 import Sessions from './components/sessions'
-import Spaces from './components/spaces'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
-import About from './components/About'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
 export interface Space {
 	label: string
@@ -77,11 +76,12 @@ const App = () => (
 			<Route index element={<About />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
-			<Route path={'private/:id'} element={<Outlet />}>
-				<Route index element={<Dashboard />} />
-				<Route path={'sessions'} element={<Sessions />} />
-				<Route path={'data'} element={<Data />} />
-				<Route path={'workflows'} element={<Outlet />}>
+			<Route path={'private'} element={<Groups />}>
+				<Route index element={<Groups />} />
+				<Route path={':id'} element={<Group />} />
+				<Route path={':id/sessions'} element={<Sessions />} />
+				<Route path={':id/data'} element={<Data />} />
+				<Route path={':id/workflows'} element={<Outlet />}>
 					<Route index element={<Workflows />} />
 					<Route path={'bids'} element={<BidsConverter />} />
 				</Route>
@@ -95,7 +95,7 @@ const App = () => (
 			<Route path={'public'} element={<Outlet />}>
 				<Route index element={<PublicSessions />} />
 				<Route path={'sessions'} element={<PublicSessions />} />
-				<Route path={'data'} element={<PublicData />} />
+				<Route path={'data'} element={<Route />} />
 				<Route path={'workflows'} element={<PublicWorkflows />} />
 			</Route>
 			<Route

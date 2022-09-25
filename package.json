@@ -23,7 +23,7 @@
 		"react": "^18.1.0",
 		"react-data-grid": "^7.0.0-beta.13",
 		"react-dom": "^18.1.0",
-		"react-router-dom": "^6.3.0",
+		"react-router-dom": "^6.4.1",
 		"react-scripts": "5.0.1",
 		"react-shepherd": "^4.1.0",
 		"react-transition-group": "^4.4.2",

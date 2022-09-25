@@ -69,13 +69,9 @@ export interface Group {
 	logo?: string
 	description?: string
 	website?: string
-	socialnetworks: {
-		facebook?: string
-		youtube?: string
-		twitter?: string
-		instagram?: string
-		researchgate?: string
-	}
+	socialnetwork: {
+		[index: string]: any
+	}[]
 }
 
 export interface Application {

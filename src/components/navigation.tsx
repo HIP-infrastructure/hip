@@ -78,9 +78,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	): NavigationItem & { loading: boolean } => ({
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
-		route: null,
+		route: center ? `private/${center?.id}` : 'private/default',
 		color: '#efefef',
-		disabled: true,
+		disabled: center === undefined ? true : center === null ? false : false,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
 		loading: center === undefined ? true : center === null ? false : false,
