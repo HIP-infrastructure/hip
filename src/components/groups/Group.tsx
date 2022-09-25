@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
-import {
-	Grid, Typography
-} from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
@@ -11,6 +9,7 @@ import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
 import MainCard from './MainCard'
 import Members from './Members'
+import Data from './Data'
 
 const Dashboard = () => {
 	const {
@@ -61,17 +60,25 @@ const Dashboard = () => {
 	}, [userIds])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+	const isMember = group && user?.groups?.includes(group?.id)
 
 	return (
 		<>
-			<TitleBar
-				title={`${group?.label || ''} Private Space`}
-				description={''}
-			/>
-
-			<Typography sx={{ mt: 2, color: 'secondary.light' }} gutterBottom variant='h6'>
-				Welcome {user?.displayName}
-			</Typography>
+			<Box sx={{ mb: 2 }}>
+				<TitleBar
+					title={`${group?.label || ''} Private Space`}
+					description={''}
+				/>
+			</Box>
+			{isMember && (
+				<Typography
+					sx={{ color: 'secondary.light' }}
+					gutterBottom
+					variant='h6'
+				>
+					Welcome {user?.displayName}
+				</Typography>
+			)}
 
 			{groups && !group && (
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
@@ -81,12 +88,17 @@ const Dashboard = () => {
 			)}
 
 			<Grid item xs={12}>
-				<Grid container spacing={2}>
-					<Grid item xs={12} md={9}>
+				<Grid container spacing={3}>
+					<Grid item xs={3}>
 						<MainCard group={group} />
 					</Grid>
-					<Grid item xs={12} md={3}>
+					<Grid item xs={3}>
 						<Members group={group} users={users} />
+					</Grid>
+					<Grid item xs={3}>
+						{isMember && (
+							<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+						)}
 					</Grid>
 				</Grid>
 			</Grid>

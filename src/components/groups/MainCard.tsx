@@ -123,7 +123,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/public/media/2690963615_neural_network__brain__dark__cyberpunk__drops__xray__machine_made_of_neurons_diagram_highly_detailed___ar_5_8.png`}
+						src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
 						alt={group.label}
 						title={group.label}
 					/>
@@ -136,7 +136,6 @@ const MainCard = ({ group }: { group?: Group }) => {
 								justifyContent: 'space-between',
 							}}
 						>
-							
 							<Box>
 								<Typography variant='h5' gutterBottom>
 									{group?.label}
@@ -184,15 +183,6 @@ const MainCard = ({ group }: { group?: Group }) => {
 											)}
 									</Stack>
 								</Stack>
-							</Box>
-							<Box sx={{ width: 320 }}>
-								<CardMedia
-									component='img'
-									height='160'
-									src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
-									alt={group.label}
-									title={group.label}
-								/>
 							</Box>
 						</Box>
 					</CardContent>
