@@ -136,10 +136,11 @@ const MainCard = ({ group }: { group?: Group }) => {
 								justifyContent: 'space-between',
 							}}
 						>
-							<Box>
+							<Stack>
 								<Typography variant='h5' gutterBottom>
 									{group?.label}
 								</Typography>
+
 								<Typography
 									sx={{ mt: 2 }}
 									gutterBottom
@@ -148,42 +149,33 @@ const MainCard = ({ group }: { group?: Group }) => {
 								>
 									{group.description}
 								</Typography>
-								<Stack>
-									<Typography>{group.pi}</Typography>
-									<Typography>
-										{group.city}, {group.country}
+
+								<Typography>{group.pi}</Typography>
+								<Typography gutterBottom>
+									{group.city}, {group.country}
+								</Typography>
+
+								{group.website && (
+									<Typography gutterBottom>
+										<Link to={group.website} target='_blank' style={linkStyle}>
+											{group.website}
+										</Link>
 									</Typography>
-									{group.website && (
-										<Typography gutterBottom>
-											<Link
-												to={group.website}
-												target='_blank'
-												style={linkStyle}
-											>
-												{group.website}
-											</Link>
-										</Typography>
-									)}
-									<Stack sx={{ mt: 2 }} direction='row' spacing={1}>
-										{group.website && (
-											<SocialButton
-												network={'website'}
-												url={group.website}
-											></SocialButton>
+								)}
+
+								<Stack sx={{ mt: 2 }} direction='row' spacing={1}>
+									{group.socialnetwork &&
+										Object.keys(group.socialnetwork).map(
+											(key: any) =>
+												key && (
+													<SocialButton
+														network={key}
+														url={group.socialnetwork[key]}
+													></SocialButton>
+												)
 										)}
-										{group.socialnetwork &&
-											Object.keys(group.socialnetwork).map(
-												(key: any) =>
-													key && (
-														<SocialButton
-															network={key}
-															url={group.socialnetwork[key]}
-														></SocialButton>
-													)
-											)}
-									</Stack>
 								</Stack>
-							</Box>
+							</Stack>
 						</Box>
 					</CardContent>
 				</Card>

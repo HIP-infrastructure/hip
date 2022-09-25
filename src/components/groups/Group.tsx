@@ -82,7 +82,7 @@ const Dashboard = () => {
 
 			{groups && !group && (
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
-					You don't seem to belong to any group. Please contact your
+					You don&apos;t seem to belong to any group. Please contact your
 					administrator.
 				</Typography>
 			)}

@@ -243,17 +243,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		},
 	]
 
-	let activeStyle = {
+	const activeStyle = {
 		color: '#0277bd',
 		fontWeight: 'bold',
-	}
-
-	const checkActive = (match: any, location: any) => {
-		console.log(location)
-		if (!location) return false
-		const { pathname } = location
-		const { url } = match
-		return pathname === url ? true : false
 	}
 
 	return (

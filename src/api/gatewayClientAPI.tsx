@@ -53,7 +53,7 @@ export const getUser = async (userid?: string): Promise<User> => {
 	return user
 }
 
-export const getGroups = async (): Promise<Group>  => {
+export const getGroups = async (): Promise<Group[]>  => {
 	const groups = fetch(`${API_GATEWAY}/groups`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
