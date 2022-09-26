@@ -73,6 +73,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	return (
 		<List
 			sx={{
+				mb: 6,
 				width: '100%',
 				maxWidth: 360,
 				bgcolor: 'background.paper',
