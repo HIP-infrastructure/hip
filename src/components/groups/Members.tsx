@@ -27,6 +27,7 @@ const Members = ({ group, users }: { group?: Group; users?: User[] }) => {
 				<Card
 					sx={{
 						display: 'flex',
+						width: 320,
 						flexDirection: 'column',
 					}}
 					key={`members-${group.label}`}
@@ -56,10 +57,10 @@ const Members = ({ group, users }: { group?: Group; users?: User[] }) => {
 									}}
 								>
 									<Stack>
-										<Typography variant='subtitle1'>
+										<Typography variant='subtitle2'>
 											{user.displayName}
 										</Typography>
-										<Typography variant='body2'>{user.email}</Typography>
+										<Typography color='text.secondary' variant='body2'>{user.email}</Typography>
 									</Stack>
 
 									<IconButton

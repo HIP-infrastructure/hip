@@ -9,116 +9,64 @@ import {
 	CircularProgress,
 	Typography,
 } from '@mui/material'
+
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ContainerType } from '../api/types'
-import CollaborativeImage from '../assets/dashboard__collaborative.png'
-import PrivateImage from '../assets/dashboard__private.png'
-import PublicImage from '../assets/dashboard__public.png'
 import { ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
-import DocCard from './UI/DocCard'
-import chuvLogo from '../assets/group__chuv__logo.png'
+import AboutCard from './UI/AboutCard'
 
 const spaces = [
 	{
 		label: 'About',
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
+		buttonLabel: 'More...',
+		url: 'https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/',
 		description: 'What is the HIP and why you would use it',
-		link: 'https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+		image: 'public/media/discover_about.png',
+		credit: 'Midjourney https://www.midjourney.com/',
+		state: 'beta',
 	},
 	{
-		label: 'Quick Start',
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
+		label: 'Onboarding Guide',
+		buttonLabel: 'Onboarding Guide',
+		url: 'https://hip-infrastructure.github.io/build/html/hip_beta_onboarding.html',
 		description:
-			'See the <a href="https://hip-infrastructure.github.io/build/html/hip_beta_onboarding.html"> quick start guide</a> for a quick overview of the platform.',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+			'See the onboarding guide for a quick overview of the platform.',
+		image: 'public/media/discover_onboarding.png',
+		credit: 'Midjourney https://www.midjourney.com/',
+		state: 'beta',
 	},
-	// {
-	// 	label: 'Known Issues',
-	// 	state: 'beta',
-	// 	route: `${ROUTE_PREFIX}/private/sessions`,
-	// 	description: 'What is in the beta release',
-	// 	image: PrivateImage,
-	// 	credit:
-	// 		'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
-	// },
 	{
 		label: 'Beta Release Notes',
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
+		buttonLabel: 'More...',
+		url: `${ROUTE_PREFIX}/private/sessions`,
 		description: 'Features, Know issues, roadmap',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+		image: 'public/media/discover_release.png',
+		credit: 'Midjourney https://www.midjourney.com/',
+		state: 'beta',
 	},
 
 	{
 		label: 'Collaborate ',
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
+		buttonLabel: 'more...',
+		url: `${ROUTE_PREFIX}/private/sessions`,
 		description:
 			'How to interact with your team, users of other centers, create shared documents,or even initiate projects.',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+		image: 'public/media/discover_collaborate.png',
+		credit: 'Midjourney https://www.midjourney.com/',
+		state: 'beta',
 	},
 
 	{
 		label: "Users' Feedback ",
-		state: 'beta',
-		route: `${ROUTE_PREFIX}/private/sessions`,
+		buttonLabel: 'Feedback',
+		url: `${ROUTE_PREFIX}/private/sessions`,
 		description: 'We need your insights!!!',
-		image: PrivateImage,
-		credit:
-			'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
+		image: 'public/media/discover_feedback.png',
+		credit: 'Midjourney https://www.midjourney.com/',
+		state: 'beta',
 	},
-	// {
-	// 	label: 'Private Space',
-	// 	buttonLabel: 'My private space',
-	// 	state: 'beta',
-	// 	route: `${ROUTE_PREFIX}/private/sessions`,
-	// 	description:
-	// 		'Password-protected space for each iEEG data provider to upload and curate own data.',
-	// 	image: PrivateImage,
-	// 	credit:
-	// 		'Photo by Hal Gatewood on Unsplash, https://unsplash.com/@halacious',
-	// 	counts: [2, 2, 34],
-	// 	disabled: false,
-	// },
-	// {
-	// 	label: 'Collaborative',
-	// 	buttonLabel: 'Collaborative space',
-	// 	state: 'not implemented',
-	// 	route: `${ROUTE_PREFIX}/collaborative/sessions`,
-	// 	description:
-	// 		'Collaborative space where scientists accredited by the consortium of data providers perform iEEG data analyses on shared data.',
-	// 	image: CollaborativeImage,
-	// 	credit:
-	// 		'Photo by Milad Fakurian on Unsplash, https://unsplash.com/@fakurian',
-	// 	counts: [2, 4, 54],
-	// 	disabled: true,
-	// },
-	// {
-	// 	label: 'Public',
-	// 	buttonLabel: 'Public space',
-	// 	state: 'not implemented',
-	// 	route: `${ROUTE_PREFIX}/public/sessions`,
-	// 	description:
-	// 		'Public space where public iEEG data are made available by individual iEEG data providers to be used by any scientist.',
-	// 	image: PublicImage,
-	// 	credit:
-	// 		'Photo by  Jesse Martini on Unsplash, https://unsplash.com/@jessemartini',
-	// 	counts: [1, 4, 17],
-	// 	disabled: true,
-	// },
 ]
 
 const About = () => {
@@ -148,105 +96,14 @@ const About = () => {
 				sx={{
 					display: 'flex',
 					width: '75vw',
-					height: '560px',
 					justifyContent: 'start',
 					flexWrap: 'wrap',
-					gap: '32px 16px',
+					gap: '32px 32px',
 					alignItems: 'start',
 				}}
 			>
-				{spaces?.map((space, i) => (
-					<Card
-						sx={{
-							width: 320,
-							display: 'flex',
-							flexDirection: 'column',
-							height: 320,
-						}}
-						key={space.label}
-					>
-						<Box sx={{ position: 'relative' }}>
-							<CardMedia
-								component='img'
-								height='160'
-								src={space.image}
-								alt={space.label}
-								title={space.credit}
-							/>
-						</Box>
-						<CardContent sx={{ flexGrow: 1 }}>
-							<Box sx={{ display: 'flex' }}>
-								<Box sx={{ flex: 1 }}>
-									<Box
-										sx={{ display: 'flex', justifyContent: 'space-between' }}
-									>
-										<Typography variant='h5'>{space?.label}</Typography>
-
-										<Chip
-											label={space.state}
-											color={space.state === 'beta' ? 'success' : 'warning'}
-											variant='outlined'
-										/>
-									</Box>
-									<Typography
-										gutterBottom
-										variant='caption'
-										color='text.secondary'
-									></Typography>
-								</Box>
-							</Box>
-
-							<Typography
-								sx={{ mt: 2 }}
-								gutterBottom
-								variant='body2'
-								color='text.secondary'
-							>
-								{space.description}
-							</Typography>
-							{/* {!space.disabled && (
-								<>
-									<Typography
-										sx={{ mt: 2 }}
-										variant='body2'
-										color='text.secondary'
-									>
-										{sessions?.length}{' '}
-										<em>
-											<a href=''>Opened desktop</a>
-										</em>
-									</Typography>
-									<Box sx={{ display: 'flex', alignItems: 'center' }}>
-										<Box sx={{ mr: 0.5 }}>
-											<Typography variant='body2' color='text.secondary'>
-												{!bidsDatasets && <CircularProgress size={12} />}
-												{bidsDatasets?.data?.reduce(
-													(a, b) => a + (b?.participants?.length || 0),
-													0
-												)}{' '}
-												<em>subjects</em> in{' '}
-												{!bidsDatasets && <CircularProgress size={12} />}
-												{bidsDatasets?.data?.length}
-												<em> BIDS databases</em>
-											</Typography>
-										</Box>
-									</Box>
-								</>
-							)} */}
-						</CardContent>
-
-						{/* <CardActions sx={{ p: 2, alignSelf: 'end' }}>
-							<Button
-								onClick={() => {
-									navigate(space.route)
-								}}
-								disabled={space.disabled}
-								variant='outlined'
-							>
-								{space.buttonLabel}
-							</Button>
-						</CardActions> */}
-					</Card>
+				{spaces?.map((doc, i) => (
+					<AboutCard key={doc.url} doc={doc} />
 				))}
 			</Box>
 		</Box>

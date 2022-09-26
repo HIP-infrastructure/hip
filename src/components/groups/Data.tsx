@@ -32,6 +32,7 @@ const Data = ({
 			<Card
 				sx={{
 					display: 'flex',
+					width: 320,
 					flexDirection: 'column',
 				}}
 				key={`data-group`}

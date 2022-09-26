@@ -1,17 +1,21 @@
 import * as React from 'react'
 import {
 	Facebook,
-	Instagram, Language, LinkedIn,
+	Instagram,
+	Language,
+	LinkedIn,
 	Twitter,
-	YouTube
+	YouTube,
 } from '@mui/icons-material'
 import {
-	Box, Card, CardContent,
+	Box,
+	Card,
+	CardContent,
 	CardMedia,
 	CircularProgress,
 	IconButton,
 	Stack,
-	Typography
+	Typography,
 } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { Group } from '../../api/types'
@@ -36,57 +40,33 @@ const MainCard = ({ group }: { group?: Group }) => {
 				break
 
 			case 'twitter':
-				component = (
-					<Twitter
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <Twitter />
 				break
 
 			case 'instagram':
-				component = (
-					<Instagram
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <Instagram />
 				break
 
 			case 'linkedin':
-				component = (
-					<LinkedIn
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <LinkedIn />
 				break
 
 			case 'youtube':
-				component = (
-					<YouTube
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <YouTube />
 				break
 
 			default:
-				component = (
-					<Language
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <Language />
 				break
 		}
 		return (
-			<IconButton aria-label={network} size='small'>
+			<IconButton
+				aria-label={network}
+				size='small'
+				onClick={() => {
+					window.open(`${url}`, '_blank')
+				}}
+			>
 				{component}
 			</IconButton>
 		)
@@ -106,6 +86,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 				<Card
 					sx={{
 						display: 'flex',
+						width: 320,
 						flexDirection: 'column',
 					}}
 					key={`center-${group.label}`}
@@ -140,20 +121,25 @@ const MainCard = ({ group }: { group?: Group }) => {
 									{group.description}
 								</Typography>
 
-								<Typography>{group.pi}</Typography>
-								<Typography gutterBottom>
+								<Typography variant='subtitle2'>{group.pi}</Typography>
+								<Typography variant='body2' gutterBottom>
 									{group.city}, {group.country}
 								</Typography>
 
 								{group.website && (
-									<Typography gutterBottom>
+									<Typography
+										sx={{ wordWrap: 'break-word' }}
+										gutterBottom
+										variant='caption'
+										color='text.secondary'
+									>
 										<Link to={group.website} target='_blank' style={linkStyle}>
 											{group.website}
 										</Link>
 									</Typography>
 								)}
 
-								<Stack sx={{ mt: 2 }} direction='row' spacing={1}>
+								<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
 									{group.socialnetwork &&
 										Object.keys(group.socialnetwork).map(
 											(key: any) =>
@@ -164,7 +150,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 													></SocialButton>
 												)
 										)}
-								</Stack>
+								</Box>
 							</Stack>
 						</Box>
 					</CardContent>

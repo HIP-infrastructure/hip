@@ -24,7 +24,7 @@ const linkStyle = {
 	color: '#0277bd',
 }
 
-const DocCard = ({ doc }: { doc: Doc }) => {
+const AboutCard = ({ doc }: { doc: Doc }) => {
 	const handleClickLink = (url: string) => {
 		window.open(url)
 	}
@@ -33,7 +33,7 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 		<Card
 			sx={{
 				width: 320,
-				height: 420,
+				height: 380,
 				display: 'flex',
 				flexDirection: 'column',
 			}}
@@ -79,6 +79,7 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 			{doc.buttonLabel && (
 				<CardActions sx={{ p: 2, alignSelf: 'end' }}>
 					<Button
+						disabled
 						onClick={() => {
 							handleClickLink(doc.url)
 						}}
@@ -92,4 +93,4 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 	)
 }
 
-export default DocCard
+export default AboutCard

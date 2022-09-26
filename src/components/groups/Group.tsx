@@ -71,11 +71,7 @@ const Dashboard = () => {
 				/>
 			</Box>
 			{isMember && (
-				<Typography
-					sx={{ color: 'secondary.light' }}
-					gutterBottom
-					variant='h6'
-				>
+				<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
 					Welcome {user?.displayName}
 				</Typography>
 			)}
@@ -87,21 +83,22 @@ const Dashboard = () => {
 				</Typography>
 			)}
 
-			<Grid item xs={12}>
-				<Grid container spacing={3}>
-					<Grid item xs={3}>
-						<MainCard group={group} />
-					</Grid>
-					<Grid item xs={3}>
-						<Members group={group} users={users} />
-					</Grid>
-					<Grid item xs={3}>
-						{isMember && (
-							<Data bidsDatasets={bidsDatasets} sessions={sessions} />
-						)}
-					</Grid>
-				</Grid>
-			</Grid>
+			<Box sx={{ width: 0.75, mt: 4 }}>
+				<Box
+					sx={{
+						display: 'flex',
+						width: '75vw',
+						justifyContent: 'start',
+						flexWrap: 'wrap',
+						gap: '32px 32px',
+						alignItems: 'start',
+					}}
+				>
+					<MainCard group={group} />
+					<Members group={group} users={users} />
+					{isMember && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
+				</Box>
+			</Box>
 		</>
 	)
 }
