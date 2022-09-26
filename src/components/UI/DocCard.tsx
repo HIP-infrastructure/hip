@@ -8,6 +8,7 @@ import {
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 export interface Doc {
 	label: string
@@ -16,6 +17,11 @@ export interface Doc {
 	description: string
 	image?: string
 	credit: string
+}
+
+const linkStyle = {
+	textDecoration: 'underline',
+	color: '#0277bd',
 }
 
 const DocCard = ({ doc }: { doc: Doc }) => {
@@ -60,14 +66,13 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 				</Typography>
 				<Typography
 					sx={{ wordWrap: 'break-word' }}
-					onClick={() => {
-						handleClickLink(doc.url)
-					}}
 					gutterBottom
 					variant='caption'
 					color='text.secondary'
 				>
-					{doc.url}
+					<Link to={doc.url} target='_blank' style={linkStyle}>
+						{doc.url}
+					</Link>
 				</Typography>
 			</CardContent>
 

@@ -12,11 +12,6 @@ import {
 } from '@mui/material'
 import { Group, User } from '../../api/types'
 
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
-
 const Members = ({ group, users }: { group?: Group; users?: User[] }) => {
 	return (
 		<>
