@@ -1,30 +1,20 @@
 import * as React from 'react'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Facebook,
-	Instagram,
-	LinkedIn,
+	Instagram, Language, LinkedIn,
 	Twitter,
-	YouTube,
-	Language,
+	YouTube
 } from '@mui/icons-material'
 import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
+	Box, Card, CardContent,
 	CardMedia,
 	CircularProgress,
 	IconButton,
 	Stack,
-	Typography,
+	Typography
 } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, Group, User } from '../../api/types'
-import { useAppStore } from '../../store/appProvider'
+import { Link } from 'react-router-dom'
+import { Group } from '../../api/types'
 
 const linkStyle = {
 	textDecoration: 'underline',
