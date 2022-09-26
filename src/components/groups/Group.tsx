@@ -42,7 +42,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (!group) return
 
-		getUsersForGroup(group.label).then(({ users }) => {
+		getUsersForGroup(group.id).then(({ users }) => {
 			setUserIds(users)
 		})
 	}, [group])
