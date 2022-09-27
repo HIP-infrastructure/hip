@@ -42,7 +42,7 @@ const Members = ({ group, users }: { group?: Group; users?: User[] }) => {
 							/>
 					</Box>
 					<CardContent>
-						<Typography sx={{ mb: 2 }} variant='h5' gutterBottom>
+						<Typography sx={{ mb: 2 }} variant='h5'>
 							Members
 						</Typography>
 

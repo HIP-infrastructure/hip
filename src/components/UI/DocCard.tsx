@@ -51,11 +51,8 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 				)}
 			</Box>
 			<CardContent sx={{ flexGrow: 1 }}>
-				<Box sx={{ display: 'flex' }}>
-					<Box sx={{ flex: 1 }}>
-						<Typography variant='h5'>{doc?.label}</Typography>
-					</Box>
-				</Box>
+				<Typography variant='h5'>{doc?.label}</Typography>
+
 				<Typography
 					sx={{ mt: 2 }}
 					gutterBottom
@@ -75,7 +72,7 @@ const DocCard = ({ doc }: { doc: Doc }) => {
 					</Link>
 				</Typography> */}
 			</CardContent>
-
+			<Box sx={{ flexGrow: 1 }}></Box>
 			{doc.buttonLabel && (
 				<CardActions sx={{ p: 2, alignSelf: 'end' }}>
 					<Button

@@ -9,15 +9,7 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-
-export interface Doc {
-	label: string
-	buttonLabel?: string
-	url: string
-	description: string
-	image?: string
-	credit: string
-}
+import { Doc } from '../About'
 
 const linkStyle = {
 	textDecoration: 'underline',
@@ -33,7 +25,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 		<Card
 			sx={{
 				width: 320,
-				height: 380,
+				height: 450,
 				display: 'flex',
 				flexDirection: 'column',
 			}}
@@ -50,12 +42,11 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 					/>
 				)}
 			</Box>
-			<CardContent sx={{ flexGrow: 1 }}>
-				<Box sx={{ display: 'flex' }}>
-					<Box sx={{ flex: 1 }}>
-						<Typography variant='h5'>{doc?.label}</Typography>
-					</Box>
-				</Box>
+			<CardContent>
+				<Typography variant='h5' gutterBottom>{doc?.label}</Typography>
+
+				{doc.subtitle && <Typography variant='subtitle2'>{doc?.subtitle}</Typography>}
+
 				<Typography
 					sx={{ mt: 2 }}
 					gutterBottom
@@ -64,31 +55,32 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 				>
 					{doc.description}
 				</Typography>
-				{/* <Typography
-					sx={{ wordWrap: 'break-word' }}
-					gutterBottom
-					variant='caption'
-					color='text.secondary'
-				>
-					<Link to={doc.url} target='_blank' style={linkStyle}>
-						{doc.url}
-					</Link>
-				</Typography> */}
 			</CardContent>
-
-			{doc.buttonLabel && (
-				<CardActions sx={{ p: 2, alignSelf: 'end' }}>
+			<Box sx={{ flexGrow: 1 }}></Box>
+			<CardActions sx={{ p: 2, alignSelf: 'end' }}>
+				{doc.url && (
 					<Button
-						disabled
 						onClick={() => {
-							handleClickLink(doc.url)
+							handleClickLink(doc.url || '')
 						}}
 						variant='outlined'
 					>
 						{doc.buttonLabel}
 					</Button>
-				</CardActions>
-			)}
+				)}
+				{doc.route && (
+					<Typography
+						sx={{ wordWrap: 'break-word' }}
+						gutterBottom
+						variant='caption'
+						color='text.secondary'
+					>
+						<Link to={doc.route} target='_blank' style={linkStyle}>
+							{doc.buttonLabel}
+						</Link>
+					</Typography>
+				)}
+			</CardActions>
 		</Card>
 	)
 }

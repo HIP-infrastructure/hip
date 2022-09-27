@@ -98,7 +98,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 					/>
 
 					<CardContent>
-						<Typography variant='h5' gutterBottom>
+						<Typography variant='h5'>
 							{group?.label}
 						</Typography>
 
