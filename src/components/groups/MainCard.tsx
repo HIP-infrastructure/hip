@@ -14,10 +14,9 @@ import {
 	CardMedia,
 	CircularProgress,
 	IconButton,
-	Stack,
+	Link,
 	Typography,
 } from '@mui/material'
-import { Link } from 'react-router-dom'
 import { Group } from '../../api/types'
 
 const linkStyle = {
@@ -85,9 +84,8 @@ const MainCard = ({ group }: { group?: Group }) => {
 			{group && (
 				<Card
 					sx={{
-						display: 'flex',
 						width: 320,
-						flexDirection: 'column',
+						height: 440,
 					}}
 					key={`center-${group.label}`}
 				>
@@ -100,58 +98,48 @@ const MainCard = ({ group }: { group?: Group }) => {
 					/>
 
 					<CardContent>
-						<Box
-							sx={{
-								display: 'flex',
-								direction: 'row',
-								justifyContent: 'space-between',
-							}}
+						<Typography variant='h5' gutterBottom>
+							{group?.label}
+						</Typography>
+
+						<Typography
+							sx={{ mt: 2 }}
+							gutterBottom
+							variant='body2'
+							color='text.secondary'
 						>
-							<Stack>
-								<Typography variant='h5' gutterBottom>
-									{group?.label}
-								</Typography>
+							{group.description}
+						</Typography>
 
-								<Typography
-									sx={{ mt: 2 }}
-									gutterBottom
-									variant='body2'
-									color='text.secondary'
-								>
-									{group.description}
-								</Typography>
+						<Typography variant='subtitle2'>{group.pi}</Typography>
+						<Typography variant='body2' gutterBottom>
+							{group.city}, {group.country}
+						</Typography>
 
-								<Typography variant='subtitle2'>{group.pi}</Typography>
-								<Typography variant='body2' gutterBottom>
-									{group.city}, {group.country}
-								</Typography>
+						{group.website && (
+							<Typography
+								sx={{ wordWrap: 'break-word' }}
+								gutterBottom
+								variant='caption'
+								color='text.secondary'
+							>
+								<Link href={group.website} target='_blank' style={linkStyle}>
+									{group.website}
+								</Link>
+							</Typography>
+						)}
 
-								{group.website && (
-									<Typography
-										sx={{ wordWrap: 'break-word' }}
-										gutterBottom
-										variant='caption'
-										color='text.secondary'
-									>
-										<Link to={group.website} target='_blank' style={linkStyle}>
-											{group.website}
-										</Link>
-									</Typography>
+						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
+							{group.socialnetwork &&
+								Object.keys(group.socialnetwork).map(
+									(key: any) =>
+										key && (
+											<SocialButton
+												network={key}
+												url={group.socialnetwork[key]}
+											></SocialButton>
+										)
 								)}
-
-								<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
-									{group.socialnetwork &&
-										Object.keys(group.socialnetwork).map(
-											(key: any) =>
-												key && (
-													<SocialButton
-														network={key}
-														url={group.socialnetwork[key]}
-													></SocialButton>
-												)
-										)}
-								</Box>
-							</Stack>
 						</Box>
 					</CardContent>
 				</Card>

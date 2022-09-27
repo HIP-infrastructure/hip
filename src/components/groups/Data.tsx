@@ -31,37 +31,45 @@ const Data = ({
 
 			<Card
 				sx={{
-					display: 'flex',
 					width: 320,
-					flexDirection: 'column',
+					height: 440,
 				}}
 				key={`data-group`}
 			>
-				<Box sx={{ position: 'relative' }}>
-					<CardMedia
-						component='img'
-						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
-					/>
-				</Box>
-				<CardContent sx={{ flexGrow: 1 }}>
-					<Typography variant='h5'>Data</Typography>
+				<CardMedia
+					component='img'
+					height='160'
+					src={`${process.env.REACT_APP_GATEWAY_API}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
+				/>
+
+				<CardContent>
+					<Typography variant='h5' gutterBottom>
+						Data
+					</Typography>
+
+					<Typography
+						sx={{ mt: 2 }}
+						gutterBottom
+						variant='body2'
+						color='text.secondary'
+					>
+						Password-protected space for center data provider to upload and
+						curate own data.
+					</Typography>
 					<>
-						<Typography sx={{ mt: 2 }} variant='body2' color='text.secondary'>
-							{sessions?.length} <em>Opened desktop</em>
+						<Typography sx={{ mt: 2 }} variant='body2'>
+							{sessions?.length} Opened desktop
 						</Typography>
 						<Box sx={{ display: 'flex', alignItems: 'center' }}>
 							<Box sx={{ mr: 0.5 }}>
-								<Typography variant='body2' color='text.secondary'>
+								<Typography variant='subtitle2'>
 									{!bidsDatasets && <CircularProgress size={12} />}
 									{bidsDatasets?.data?.reduce(
 										(a, b) => a + (b?.participants?.length || 0),
 										0
 									)}{' '}
-									<em>subjects</em> in{' '}
-									{!bidsDatasets && <CircularProgress size={12} />}
-									{bidsDatasets?.data?.length}
-									<em> BIDS datasets</em>
+									subjects in {!bidsDatasets && <CircularProgress size={12} />}
+									{bidsDatasets?.data?.length} BIDS datasets
 								</Typography>
 							</Box>
 						</Box>

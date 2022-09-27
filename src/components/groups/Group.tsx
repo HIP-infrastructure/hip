@@ -95,8 +95,8 @@ const Dashboard = () => {
 					}}
 				>
 					<MainCard group={group} />
-					<Members group={group} users={users} />
 					{isMember && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
+					<Members group={group} users={users} />
 				</Box>
 			</Box>
 		</>
