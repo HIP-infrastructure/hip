@@ -44,7 +44,7 @@ const Data = ({
 				/>
 
 				<CardContent>
-					<Typography variant='h5' gutterBottom>
+					<Typography variant='h5'>
 						Data
 					</Typography>
 

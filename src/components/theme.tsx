@@ -23,6 +23,14 @@ const theme = createTheme({
 				disableRipple: true,
 			},
 		},
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					display: 'flex',
+					flexDirection: 'column',
+				}
+			}
+		}
 	},
 })
 
