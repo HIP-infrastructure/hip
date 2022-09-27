@@ -21,7 +21,7 @@ const Apps = () => {
 			<TitleBar
 				title={'App Catalog'}
 				description={
-					'A list of all the applications made available to the HIP users. The applications can be started from an existing desktop'
+					'A list of all the applications made available to the HIP users. The applications can be started from an existing desktop. Software and applications contained in the HIP are made available pursuant to the terms of their respective licenses.'
 				}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
