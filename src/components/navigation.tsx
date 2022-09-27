@@ -27,6 +27,7 @@ import {
 	PaperProps,
 	Switch,
 	CircularProgress,
+	Link
 } from '@mui/material'
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
@@ -173,9 +174,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				},
 				{
 					id: null,
-					route: 'feedback',
-					link: 'https://hip.collab.local/apps/forms/AF468tdy9qx2mmfF/submit',
-					label: 'Feedback form',
+					route: null,
+					link: '/apps/forms/',
+					label: 'Feedback forms',
 					icon: <GradingIcon />,
 					title: null,
 					color: null,
@@ -328,6 +329,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 										image,
 										icon,
 										color,
+										link,
 										children: kids,
 									}) => (
 										<List
@@ -339,7 +341,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												key={label}
 												sx={{ pl: 3 }}
 												disabled={disabled}
-												onClick={() => handleClickNavigate({ route, id })}
+												onClick={() => !link && handleClickNavigate({ route, id })}
 											>
 												{icon && <ListItemIcon>{icon}</ListItemIcon>}
 												{!icon && (
@@ -354,16 +356,29 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 													</ListItemAvatar>
 												)}
 												<ListItemText>
-													<NavLink
-														end
-														to={`${ROUTE_PREFIX}/${route}`}
-														style={({ isActive }) =>
-															isActive ? activeStyle : { color: '#37474f' }
-														}
-														onClick={() => handleClickNavigate({ route, id })}
-													>
-														{label}
-													</NavLink>
+													<>
+													{!link && (
+														<NavLink
+															end
+															to={`${ROUTE_PREFIX}/${route}`}
+															style={({ isActive }) =>
+																isActive ? activeStyle : { color: '#37474f' }
+															}
+															onClick={() => handleClickNavigate({ route, id })}
+														>
+															{label}
+														</NavLink>
+													)}
+													{link && (
+														<Link href={link} style={{
+															color: 'rgb(55, 71, 79)',
+															textDecoration: 'none',
+															border: 0
+														}}>
+															{label}
+														</Link>
+													)}
+													</>
 												</ListItemText>
 											</ListItemButton>
 											<Collapse
