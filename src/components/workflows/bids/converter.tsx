@@ -92,39 +92,39 @@ const BidsConverter = () => {
 		})
 
 		setResponse(undefined)
-		importSubject(createSubjectDto as CreateSubjectDto)
+		try {
+			const import_response = await importSubject(createSubjectDto as CreateSubjectDto)
+			showNotif('Subject imported', 'success')
+			setResponse({ data: import_response })
+			// reload datasets
+			getBidsDatasets(user?.uid)
 			.then(data => {
-				showNotif('Subject imported', 'success')
-				setResponse({ data })
-
-				// reload datasets
-				getBidsDatasets(user?.uid)
-					.then(data => {
-						if (data) {
-							setBidsDatasets({ data })
-						}
-					})
-					.catch(error => {
-						setBidsDatasets({ error })
-					})
+				if (data) {
+					setBidsDatasets({ data })
+				}
 			})
 			.catch(error => {
-				showNotif('Subject importation failed', 'error')
-				setResponse({ error })
-
-				// FIXME:
-				// Actually, from the API, it's not clear if it failed, so
-				// reload datasets anyway
-				getBidsDatasets(user?.uid)
-					.then(data => {
-						if (data) {
-							setBidsDatasets({ data })
-						}
-					})
-					.catch(error => {
-						setBidsDatasets({ error })
-					})
+				setBidsDatasets({ error })
 			})
+		} catch (error: any) {
+			showNotif('Subject importation failed', 'error')
+			console.error(error)
+			setResponse({ error })
+
+			// FIXME:
+			// Actually, from the API, it's not clear if it failed, so
+			// reload datasets anyway
+			getBidsDatasets(user?.uid)
+				.then(data => {
+					if (data) {
+						setBidsDatasets({ data })
+					}
+				})
+				.catch(error => {
+					setBidsDatasets({ error })
+				})	
+		}
+		
 	}
 
 	const StepNavigation = ({

@@ -63,14 +63,33 @@ export const importSubject = async (
 	createSubject: CreateSubjectDto
 ): Promise<CreateSubjectDto> => {
 	const url = `${API_GATEWAY}/tools/bids/subject`
+
 	return fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify(createSubject),
-	}).then(checkError)
+		body: JSON.stringify(createSubject)
+	})
+	.then(res => res.json())
+	.catch( e => {
+		console.log('Handling following exception in importSubject...')
+		console.log(JSON.stringify(e))
+	})
+
+	/*
+	return fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(createSubject)
+	}).then(data => data.json())
+	*/
+	
+}
 }
 
 export const subEditClinical = async (
