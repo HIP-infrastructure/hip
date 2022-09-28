@@ -10,6 +10,7 @@ import TitleBar from '../UI/titleBar'
 import MainCard from './MainCard'
 import Members from './Members'
 import Data from './Data'
+import { useNotification } from '../../hooks/useNotification'
 
 const Dashboard = () => {
 	const {
@@ -19,6 +20,7 @@ const Dashboard = () => {
 		user: [user],
 	} = useAppStore()
 
+	const { showNotif } = useNotification()
 	const [userIds, setUserIds] = useState([])
 	const [users, setUsers] = useState<User[]>([])
 	const [group, setGroup] = useState<Group | undefined>()
@@ -42,20 +44,28 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (!group) return
 
-		getUsersForGroup(group.id).then(({ users }) => {
-			setUserIds(users)
-		})
+		getUsersForGroup(group.id)
+			.then(({ users }) => {
+				setUserIds(users)
+			})
+			.catch(err => {
+				showNotif(err.message, 'error')
+			})
 	}, [group])
 
 	useEffect(() => {
 		if (!userIds) return
 
 		userIds.map(user => {
-			getUser(user).then(user => {
-				if (!user) return
+			getUser(user)
+				.then(user => {
+					if (!user) return
 
-				setUsers(users => [...users, user])
-			})
+					setUsers(users => [...users, user])
+				})
+				.catch(err => {
+					showNotif(err.message, 'error')
+				})
 		})
 	}, [userIds])
 

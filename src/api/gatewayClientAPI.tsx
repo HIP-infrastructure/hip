@@ -1,5 +1,12 @@
 import { mutate } from 'swr'
-import { Application, Container, Group, TreeNode, User, UserCredentials } from './types'
+import {
+	Application,
+	Container,
+	Group,
+	TreeNode,
+	User,
+	UserCredentials,
+} from './types'
 import { uniq } from './utils'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
@@ -14,9 +21,13 @@ export const checkError = async (response: Response) => {
 		if (response.status >= 200 && response.status <= 299) {
 			return await response.json()
 		} else {
-			if (response.status > 400 && response.status <= 403)
-				throw new Error('You have been logged out. Please log in again.')
-			else if (response.status >= 500 && response.status <= 599) {
+			if (response.status > 400 && response.status <= 403) {
+				const error = await response.json()
+				throw new Error(
+					error?.message ?? 'You have been logged out. Please log in again.',
+					error?.statusCode ?? 'Unauthorized',
+				)
+			} else if (response.status >= 500 && response.status <= 599) {
 				throw new Error(
 					`Bad response from server: ${response.statusText} ${response.status}`
 				)
@@ -53,7 +64,7 @@ export const getUser = async (userid?: string): Promise<User> => {
 	return user
 }
 
-export const getGroups = async (): Promise<Group[]>  => {
+export const getGroups = async (): Promise<Group[]> => {
 	const groups = fetch(`${API_GATEWAY}/groups`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
