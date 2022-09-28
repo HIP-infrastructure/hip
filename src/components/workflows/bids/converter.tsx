@@ -9,7 +9,7 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { getBidsDatasets, importSubject } from '../../../api/bids'
+import { getBidsDatasets, importSubject, importSubjectAxios } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
@@ -93,7 +93,7 @@ const BidsConverter = () => {
 
 		setResponse(undefined)
 		try {
-			const import_response = await importSubject(createSubjectDto as CreateSubjectDto)
+			const import_response = await importSubjectAxios(createSubjectDto as CreateSubjectDto)
 			showNotif('Subject imported', 'success')
 			setResponse({ data: import_response })
 			// reload datasets

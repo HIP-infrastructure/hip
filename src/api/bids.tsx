@@ -9,6 +9,7 @@ import {
 	IError,
 	Participant,
 } from './types'
+import axios from 'axios'
 
 export const getBidsDatasets = async (
 	owner?: string
@@ -89,6 +90,37 @@ export const importSubject = async (
 	}).then(data => data.json())
 	*/
 	
+}
+
+export const importSubjectAxios = async (
+	createSubject: CreateSubjectDto
+): Promise<CreateSubjectDto> => {
+	const url = `${API_GATEWAY}/tools/bids/subject`
+	const body = JSON.stringify(createSubject)
+	const headers = {
+		headers: {
+		  // Overwrite Axios's automatically set Content-Type
+		  'Content-Type': 'application/json',
+		  requesttoken: window.OC.requestToken
+		  //'Access-Control-Allow-Origin': `${API_GATEWAY}`,
+		  //'Access-Control-Allow-Credentials': 'true',
+		  //'Access-Control-Allow-Methods': 'POST',
+		  //'Access-Control-Allow-Headers': 'Origin,Cache-Control,Accept,X-Access-Token,X-Requested-With,Content-Type,Access-Control-Request-Method',
+		}
+	}
+
+	console.log('Sending POST request with Axios to:')
+	console.log(url)
+	console.log(body)
+	console.log(headers)
+	
+	return axios.post(url, body, headers)
+	.then(res => res.data)
+	.catch( e => {
+		console.log('Handling following exception in importSubjectAxios...')
+		console.log(JSON.stringify(e))
+	})
+
 }
 }
 
