@@ -29,13 +29,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 		let component
 		switch (network) {
 			case 'facebook':
-				component = (
-					<Facebook
-						onClick={() => {
-							window.open(`${url}`, '_blank')
-						}}
-					/>
-				)
+				component = <Facebook />
 				break
 
 			case 'twitter':
@@ -98,9 +92,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 					/>
 
 					<CardContent>
-						<Typography variant='h5'>
-							{group?.label}
-						</Typography>
+						<Typography variant='h5'>{group?.label}</Typography>
 
 						<Typography
 							sx={{ mt: 2 }}
@@ -135,6 +127,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 									(key: any) =>
 										key && (
 											<SocialButton
+												key={key}
 												network={key}
 												url={group.socialnetwork[key]}
 											></SocialButton>
