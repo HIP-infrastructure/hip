@@ -10,12 +10,10 @@ import { getSubject } from '../../../api/bids'
 import { BIDSSubjectFile } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 
-type IExistingFile =
-	| {
-			modality: string
-			files: string[]
-	  }[]
-	| undefined
+type IExistingFile = {
+		modality: string
+		files: string[]
+	}[] | undefined
 
 const ParticipantInfo = ({ subject }: { subject?: string }) => {
 	const {

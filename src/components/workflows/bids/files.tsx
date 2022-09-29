@@ -126,7 +126,7 @@ const Files = ({
 								id: 0,
 							},
 						},
-				  ]),
+				]),
 			...(tree
 				?.filter(node => new RegExp(fileInputValue || '').test(node.data.path))
 				?.filter(node => {
