@@ -65,10 +65,7 @@ export const getUser = async (userid?: string): Promise<User> => {
 }
 
 export const getGroups = async (): Promise<Group[]> => {
-	const groups = fetch(`${API_GATEWAY}/groups`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
+	const groups = fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {
 	}).then(checkError)
 
 	return groups
