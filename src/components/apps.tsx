@@ -6,10 +6,9 @@ import {
 	CardMedia,
 	Chip,
 	Link,
-	Modal,
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import * as React from 'react'
 import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 

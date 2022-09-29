@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
-import { Box, Grid, Typography } from '@mui/material'
+// import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
 import { ContainerType, Group, User } from '../../api/types'
+import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
+import Data from './Data'
 import MainCard from './MainCard'
 import Members from './Members'
-import Data from './Data'
-import { useNotification } from '../../hooks/useNotification'
 
 const Dashboard = () => {
 	const {
@@ -25,8 +25,7 @@ const Dashboard = () => {
 	const [users, setUsers] = useState<User[]>([])
 	const [group, setGroup] = useState<Group | undefined>()
 
-	const { trackEvent } = useMatomo()
-	const navigate = useNavigate()
+	// const { trackEvent } = useMatomo()
 
 	const { id } = useParams()
 
@@ -39,7 +38,7 @@ const Dashboard = () => {
 			?.find((_, i) => i === 0)
 
 		if (center) setGroup(center)
-	}, [id])
+	}, [id, groups])
 
 	useEffect(() => {
 		if (!group) return
@@ -51,12 +50,12 @@ const Dashboard = () => {
 			.catch(err => {
 				showNotif(err.message, 'error')
 			})
-	}, [group])
+	}, [group, showNotif])
 
 	useEffect(() => {
 		if (!userIds) return
 
-		userIds.map(user => {
+		userIds.forEach(user => {
 			getUser(user)
 				.then(user => {
 					if (!user) return
@@ -67,7 +66,7 @@ const Dashboard = () => {
 					showNotif(err.message, 'error')
 				})
 		})
-	}, [userIds])
+	}, [userIds, showNotif])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 	const isMember = group && user?.groups?.includes(group?.id)

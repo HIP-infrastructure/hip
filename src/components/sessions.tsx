@@ -18,7 +18,7 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
 	createSession,
@@ -50,7 +50,6 @@ const Sessions = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
 
 	const modalRef = useRef<ModalComponentHandle>(null)
-	const [shouldCreateSession, setShouldCreateSession] = useState(true)
 	const navigate = useNavigate()
 
 	const handleOpenSession = (sessionId: string) => {
@@ -70,7 +69,6 @@ const Sessions = (): JSX.Element => {
 		)
 
 		if (reply) {
-			setShouldCreateSession(false)
 			removeAppsAndSession(sessionId, user?.uid || '')
 
 			trackEvent({

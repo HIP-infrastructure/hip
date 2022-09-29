@@ -28,9 +28,9 @@ const theme = createTheme({
 				root: {
 					display: 'flex',
 					flexDirection: 'column',
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 })
 

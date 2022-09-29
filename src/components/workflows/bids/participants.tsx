@@ -123,11 +123,15 @@ const Participants = (): JSX.Element => {
 						</Button>
 					</Box>
 					<Box sx={{ flex: '1 0' }}>
-                        <Typography sx={{ mt: 1 , mb: 2 }} variant='body2' color='text.secondary'>
-                            Subject description
-                        </Typography>
-                        <ParticipantInfo subject={selectedSubject} />
-                    </Box>
+						<Typography
+							sx={{ mt: 1, mb: 2 }}
+							variant='body2'
+							color='text.secondary'
+						>
+							Subject description
+						</Typography>
+						<ParticipantInfo subject={selectedSubject} />
+					</Box>
 				</Box>
 			</Box>
 			<CreateParticipant

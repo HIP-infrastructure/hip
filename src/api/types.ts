@@ -212,8 +212,8 @@ export interface GridApiRef {
 }
 
 export interface IError {
-	statusCode: string;
-	message: string;
+	statusCode: string
+	message: string
 }
 
 export interface CreateBidsDatasetDto {

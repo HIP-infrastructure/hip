@@ -7,7 +7,6 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemButton,
-	ListItemIcon,
 	ListItemText,
 } from '@mui/material'
 import { Application, Container, ContainerState } from '../api/types'

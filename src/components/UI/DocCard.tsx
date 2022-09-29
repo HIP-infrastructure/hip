@@ -8,7 +8,6 @@ import {
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 
 export interface Doc {
 	label: string
@@ -17,11 +16,6 @@ export interface Doc {
 	description: string
 	image?: string
 	credit: string
-}
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
 }
 
 const DocCard = ({ doc }: { doc: Doc }) => {

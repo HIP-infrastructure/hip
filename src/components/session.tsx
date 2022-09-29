@@ -14,7 +14,6 @@ import {
 	Drawer,
 	IconButton,
 	MenuItem,
-	Modal,
 	Select,
 	SelectChangeEvent,
 	Toolbar,
@@ -51,7 +50,7 @@ const Session = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
 		containers: [containers],
-		user: [user, setUser],
+		user: [user],
 	} = useAppStore()
 
 	const params = useParams()

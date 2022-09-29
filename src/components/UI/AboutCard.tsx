@@ -43,9 +43,13 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 				)}
 			</Box>
 			<CardContent>
-				<Typography variant='h5' gutterBottom>{doc?.label}</Typography>
+				<Typography variant='h5' gutterBottom>
+					{doc?.label}
+				</Typography>
 
-				{doc.subtitle && <Typography variant='subtitle2'>{doc?.subtitle}</Typography>}
+				{doc.subtitle && (
+					<Typography variant='subtitle2'>{doc?.subtitle}</Typography>
+				)}
 
 				<Typography
 					sx={{ mt: 2 }}

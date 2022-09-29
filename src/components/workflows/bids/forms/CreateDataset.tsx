@@ -93,7 +93,7 @@ const CreateDataset = ({
 							},
 						}
 						const cd = await createBidsDataset(createBidsDatasetDto)
-						
+
 						if ((cd as IError).statusCode) {
 							showNotif((cd as IError).message, 'error')
 							setSubmitted(false)

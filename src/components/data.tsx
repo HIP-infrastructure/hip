@@ -5,7 +5,6 @@ import TitleBar from './UI/titleBar'
 import DataGrid from 'react-data-grid'
 import { BIDSDataset } from '../api/types'
 
-
 const Data = (): JSX.Element => {
 	const {
 		BIDSDatasets: [bidsDatasets],

@@ -25,7 +25,7 @@ export const checkError = async (response: Response) => {
 				const error = await response.json()
 				throw new Error(
 					error?.message ?? 'You have been logged out. Please log in again.',
-					error?.statusCode ?? 'Unauthorized',
+					error?.statusCode ?? 'Unauthorized'
 				)
 			} else if (response.status >= 500 && response.status <= 599) {
 				throw new Error(

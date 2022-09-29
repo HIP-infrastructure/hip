@@ -1,4 +1,4 @@
-import React, { useEffect, useState }  from 'react'
+import React, { useEffect, useState } from 'react'
 import { Add } from '@mui/icons-material'
 import {
 	Alert,
@@ -147,7 +147,11 @@ const Datasets = (): JSX.Element => {
 					</Button>
 				</Paper>
 				<Box sx={{ flex: '1 0' }}>
-					<Typography sx={{ mt: 1 , mb: 2 }} variant='body2' color='text.secondary'>
+					<Typography
+						sx={{ mt: 1, mb: 2 }}
+						variant='body2'
+						color='text.secondary'
+					>
 						Dataset description
 					</Typography>
 					<Paper
@@ -162,7 +166,8 @@ const Datasets = (): JSX.Element => {
 										<strong>Dataset name:</strong> {selectedBidsDataset?.Name}
 									</Typography>
 									<Typography sx={{ mb: 1.5 }} color='text.secondary'>
-										<strong>Authors:</strong> {selectedBidsDataset?.Authors?.toString()}
+										<strong>Authors:</strong>{' '}
+										{selectedBidsDataset?.Authors?.toString()}
 									</Typography>
 									<Typography variant='body1'>
 										<strong>Number of participants</strong>
