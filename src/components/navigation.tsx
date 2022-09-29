@@ -27,7 +27,7 @@ import {
 	PaperProps,
 	Switch,
 	CircularProgress,
-	Link
+	Link,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
@@ -80,6 +80,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
 		route: center ? `private/${center?.id}` : 'private/default',
+		link: null,
 		color: '#efefef',
 		disabled: center === undefined ? true : center === null ? false : false,
 		image: center?.logo || null,
@@ -89,6 +90,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		children: [
 			{
 				route: center ? `private/${center?.id}` : 'private/default',
+				link: null,
 				label: 'Dashboard',
 				icon: <Dashboard />,
 				title: center ? center.label : 'Dashboard',
@@ -101,6 +103,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				route: center
 					? `private/${center.id}/sessions`
 					: 'private/default/sessions',
+				link: null,
 				label: 'Desktops',
 				icon: <Monitor />,
 				title: 'Remote virtual desktops',
@@ -113,6 +116,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				route: center
 					? `private/${center.id}/workflows/bids`
 					: 'private/default/workflows/bids',
+				link: null,
 				label: 'BIDS',
 				icon: <Assignment />,
 				title: 'BIDS datasets: Import, and manage data in BIDS format',
@@ -134,6 +138,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'hip',
 			label: 'DISCOVER',
 			route: null,
+			link: null,
 			color: '#efefef',
 			image: null,
 			disabled: false,
@@ -142,6 +147,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					id: null,
 					route: '',
+					link: null,
 					label: 'About',
 					icon: <Info />,
 					title: null,
@@ -153,6 +159,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					id: null,
 					route: 'apps',
+					link: null,
 					label: 'App Catalog',
 					icon: <Apps />,
 					title: 'List of applications available on the HIP',
@@ -164,6 +171,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					id: null,
 					route: 'documentation',
+					link: null,
 					label: 'Documentation',
 					icon: <HelpCenter />,
 					title: null,
@@ -191,6 +199,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'centers',
 			label: 'CENTERS',
 			route: null,
+			link: null,
 			color: '#efefef',
 			image: null,
 			disabled: false,
@@ -209,6 +218,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 						type: 'center',
 						label: `${center.label}`,
 						route: `private/${center.id}`,
+						link: null,
 						color: null,
 						disabled: false,
 						image: center.logo ? center.logo : null,
@@ -222,6 +232,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'collaborative',
 			label: 'COLLABORATIVE',
 			route: 'collaborative',
+			link: null,
 			title: null,
 			color: '#efefef',
 			image: null,
@@ -234,6 +245,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			id: 'public',
 			label: 'PUBLIC',
 			route: 'public',
+			link: null,
 			color: '#efefef',
 			image: null,
 			icon: <Public />,
@@ -341,7 +353,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												key={label}
 												sx={{ pl: 3 }}
 												disabled={disabled}
-												onClick={() => !link && handleClickNavigate({ route, id })}
+												onClick={() =>
+													!link && handleClickNavigate({ route, id })
+												}
 											>
 												{icon && <ListItemIcon>{icon}</ListItemIcon>}
 												{!icon && (
@@ -357,27 +371,32 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												)}
 												<ListItemText>
 													<>
-													{!link && (
-														<NavLink
-															end
-															to={`${ROUTE_PREFIX}/${route}`}
-															style={({ isActive }) =>
-																isActive ? activeStyle : { color: '#37474f' }
-															}
-															onClick={() => handleClickNavigate({ route, id })}
-														>
-															{label}
-														</NavLink>
-													)}
-													{link && (
-														<Link href={link} style={{
-															color: 'rgb(55, 71, 79)',
-															textDecoration: 'none',
-															border: 0
-														}}>
-															{label}
-														</Link>
-													)}
+														{!link && (
+															<NavLink
+																end
+																to={`${ROUTE_PREFIX}/${route}`}
+																style={({ isActive }) =>
+																	isActive ? activeStyle : { color: '#37474f' }
+																}
+																onClick={() =>
+																	handleClickNavigate({ route, id })
+																}
+															>
+																{label}
+															</NavLink>
+														)}
+														{link && (
+															<Link
+																href={link}
+																style={{
+																	color: 'rgb(55, 71, 79)',
+																	textDecoration: 'none',
+																	border: 0,
+																}}
+															>
+																{label}
+															</Link>
+														)}
 													</>
 												</ListItemText>
 											</ListItemButton>

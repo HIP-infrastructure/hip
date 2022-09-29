@@ -43,7 +43,7 @@ export interface UserCredentials {
 export interface NavigationItem {
 	id?: string
 	route?: string | null
-	link?: string
+	link?: string | null
 	icon: JSX.Element
 	label: string
 	children: NavigationItem[]
