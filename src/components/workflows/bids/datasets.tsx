@@ -18,7 +18,7 @@ import {
 	Typography,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
-import { getBidsDatasets } from '../../../api/bids'
+import { getAndIndexBidsDatasets, getBidsDatasets } from '../../../api/bids'
 import { BIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDataset from './forms/CreateDataset'
@@ -51,7 +51,7 @@ const Datasets = (): JSX.Element => {
 	useEffect(() => {
 		if (datasetCreated) {
 			setBidsDatasets(undefined)
-			getBidsDatasets(user?.uid)
+			getAndIndexBidsDatasets(user?.uid)
 				.then(data => {
 					if (data) {
 						setBidsDatasets({ data })

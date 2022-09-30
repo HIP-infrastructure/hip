@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
-import { getBidsDatasets } from '../api/bids'
+import { getBidsDatasets, getAndIndexBidsDatasets } from '../api/bids'
 import {
 	API_CONTAINERS,
 	checkError,
@@ -117,7 +117,7 @@ export const AppStoreProvider = ({
 				setAvailableApps({ error })
 			})
 
-		getBidsDatasets(currentUser.uid)
+		getAndIndexBidsDatasets(currentUser.uid)
 			.then(data => {
 				if (data) {
 					setBidsDatasets({ data })
