@@ -20,6 +20,20 @@ export const getBidsDatasets = async (
 	}).then(checkError)
 }
 
+export const getAndIndexBidsDatasets = async (
+	owner?: string
+): Promise<BIDSDataset[]> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets?owner=${owner}`
+	return fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify({}),
+	}).then(checkError)
+}
+
 export const createBidsDataset = async (
 	CreateBidsDatasetDto: CreateBidsDatasetDto
 ): Promise<BIDSDatasetResponse | IError> => {
