@@ -6,7 +6,7 @@ import {
 	API_CONTAINERS,
 	checkError,
 	getAvailableAppList,
-	getGroups,
+	getCenters,
 	getUser,
 } from '../api/gatewayClientAPI'
 import {
@@ -14,7 +14,7 @@ import {
 	BIDSDataset,
 	Container,
 	File,
-	Group,
+	HIPGroup,
 	Participant,
 	UserCredentials,
 } from '../api/types'
@@ -25,7 +25,7 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	groups: [Group[] | null, React.Dispatch<React.SetStateAction<Group[] | null>>]
+	groups: [HIPGroup[] | null, React.Dispatch<React.SetStateAction<HIPGroup[] | null>>]
 	availableApps: { data?: Application[]; error?: Error } | undefined
 	containers: [Container[] | null, Error | undefined]
 	BIDSDatasets: [
@@ -70,7 +70,7 @@ export const AppStoreProvider = ({
 	const [availableApps, setAvailableApps] =
 		useState<IAppState['availableApps']>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [groups, setGroups] = useState<Group[] | null>(null)
+	const [groups, setGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: Error
@@ -103,7 +103,7 @@ export const AppStoreProvider = ({
 				// console.log(error)
 			})
 
-		getGroups().then(groups => {
+		getCenters().then(groups => {
 			if (groups) {
 				setGroups(groups)
 			}

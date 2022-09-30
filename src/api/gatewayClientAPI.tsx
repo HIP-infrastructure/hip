@@ -2,7 +2,7 @@ import { mutate } from 'swr'
 import {
 	Application,
 	Container,
-	Group,
+	HIPGroup,
 	TreeNode,
 	User,
 	UserCredentials,
@@ -64,7 +64,7 @@ export const getUser = async (userid?: string): Promise<User> => {
 	return user
 }
 
-export const getGroups = async (): Promise<Group[]> => {
+export const getCenters = async (): Promise<HIPGroup[]> => {
 	const groups = fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {
 	}).then(checkError)
 
@@ -72,7 +72,7 @@ export const getGroups = async (): Promise<Group[]> => {
 }
 
 export const getUsersForGroup = async (groupid: string) => {
-	const users = fetch(`${API_GATEWAY}/groups/${groupid}`, {
+	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},

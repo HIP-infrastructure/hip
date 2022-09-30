@@ -17,14 +17,14 @@ import {
 	Link,
 	Typography,
 } from '@mui/material'
-import { Group } from '../../api/types'
+import { HIPGroup } from '../../api/types'
 
 const linkStyle = {
 	textDecoration: 'underline',
 	color: '#0277bd',
 }
 
-const MainCard = ({ group }: { group?: Group }) => {
+const MainCard = ({ group }: { group?: HIPGroup }) => {
 	const SocialButton = ({ network, url }: { network: string; url: any }) => {
 		let component
 		switch (network) {

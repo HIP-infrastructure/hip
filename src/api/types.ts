@@ -60,7 +60,7 @@ export interface User {
 	lastLogin: number
 	groups?: string[]
 }
-export interface Group {
+export interface HIPGroup {
 	label: string
 	id: string
 	pi: string

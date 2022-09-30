@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, Group, User } from '../../api/types'
+import { ContainerType, HIPGroup, User } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
@@ -23,7 +23,7 @@ const Dashboard = () => {
 	const { showNotif } = useNotification()
 	const [userIds, setUserIds] = useState([])
 	const [users, setUsers] = useState<User[]>([])
-	const [group, setGroup] = useState<Group | undefined>()
+	const [group, setGroup] = useState<HIPGroup | undefined>()
 
 	// const { trackEvent } = useMatomo()
 
@@ -44,13 +44,13 @@ const Dashboard = () => {
 		if (!group) return
 
 		getUsersForGroup(group.id)
-			.then(({ users }) => {
+			.then((users) => {
 				setUserIds(users)
 			})
 			.catch(err => {
 				showNotif(err.message, 'error')
 			})
-	}, [group, showNotif])
+	}, [group])
 
 	useEffect(() => {
 		if (!userIds) return
@@ -66,7 +66,7 @@ const Dashboard = () => {
 					showNotif(err.message, 'error')
 				})
 		})
-	}, [userIds, showNotif])
+	}, [userIds])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 	const isMember = group && user?.groups?.includes(group?.id)

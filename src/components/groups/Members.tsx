@@ -10,9 +10,9 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
-import { Group, User } from '../../api/types'
+import { HIPGroup, User } from '../../api/types'
 
-const Members = ({ group, users }: { group?: Group; users?: User[] }) => {
+const Members = ({ group, users }: { group?: HIPGroup; users?: User[] }) => {
 	return (
 		<>
 			{!group && (

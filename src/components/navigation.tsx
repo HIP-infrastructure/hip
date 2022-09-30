@@ -35,7 +35,7 @@ import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
 import GradingIcon from '@mui/icons-material/Grading'
-import { Group, NavigationItem } from '../api/types'
+import { HIPGroup, NavigationItem } from '../api/types'
 
 const PRIVATE = 'private'
 
@@ -75,7 +75,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	}
 
 	const placeholderSpaces = (
-		center: Group | undefined | null = undefined
+		center: HIPGroup | undefined | null = undefined
 	): NavigationItem & { loading: boolean } => ({
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
