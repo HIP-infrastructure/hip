@@ -50,7 +50,11 @@ export interface IAppState {
 
 export const fetcher = async (url: string): Promise<void> => {
 	try {
-		const res = await fetch(url)
+		const res = await fetch(url, {
+			headers: {	
+				'Content-Type': 'application/json',
+				requesttoken: window.OC.requestToken,
+			}})
 		return checkError(res)
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {

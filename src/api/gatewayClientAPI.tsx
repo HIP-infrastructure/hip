@@ -44,12 +44,20 @@ export const checkError = async (response: Response) => {
 // Debug functions
 export const fetchRemote = (): void => {
 	const url = `${API_CONTAINERS}/fetch`
-	fetch(url).then(checkError)
+	fetch(url, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
 }
 
 export const forceRemove = (id: string): void => {
 	const url = `${API_CONTAINERS}/forceRemove/${id}`
-	fetch(url).then(checkError)
+	fetch(url, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
 }
 
 // NextCloud API
@@ -94,7 +102,11 @@ export const search = async (term: string) => {
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	//try {
 	const url = `/apps/hip/document/files?path=${path}`
-	const response = await fetch(url)
+	const response = await fetch(url,{
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
 	const node: TreeNode[] = await response.json()
 
 	return node
@@ -114,6 +126,7 @@ export const createSession = (userId: string): Promise<Container> => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
 	})
@@ -158,6 +171,7 @@ export const createSessionAndApp = (
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId: user.uid }),
 	})
@@ -177,6 +191,7 @@ export const removeAppsAndSession = (
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
@@ -191,6 +206,7 @@ export const pauseAppsAndSession = (
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
@@ -205,6 +221,7 @@ export const resumeAppsAndSession = (
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
 	}).then(() => mutate(`${API_CONTAINERS}/${userId}`))
@@ -220,6 +237,7 @@ export const stopApp = (
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
 	})
