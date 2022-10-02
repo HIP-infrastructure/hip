@@ -5,6 +5,7 @@ import {
 	CardContent,
 	CardMedia,
 	Chip,
+	Divider,
 	Link,
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
@@ -35,9 +36,10 @@ const Apps = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/${app.name}__logo.png`}
+							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/288x140-${app.name}__logo.png`}
 							alt={app.label}
 						/>
+						<Divider />
 						<CardContent sx={{ flexGrow: 1, pb: 0, mb: 0 }}>
 							<Box sx={{ display: 'flex' }}>
 								<Typography variant='h5' sx={{ flex: 1 }}>
