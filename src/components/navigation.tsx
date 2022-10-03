@@ -183,8 +183,21 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					id: null,
 					route: null,
-					link: '/apps/forms/',
-					label: 'Feedback forms',
+					link: 'https://thehip.app/apps/forms/X6fZisdX6sc5R9ZW',
+					label: 'Bug Report',
+					icon: <GradingIcon />,
+					title: null,
+					color: null,
+					disabled: false,
+					image: null,
+					children: [],
+					divider: true,
+				},
+				{
+					id: null,
+					route: null,
+					link: 'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87',
+					label: 'Feedback',
 					icon: <GradingIcon />,
 					title: null,
 					color: null,
@@ -352,7 +365,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												sx={{ pl: 3 }}
 												disabled={disabled}
 												onClick={() =>
-													!link && handleClickNavigate({ route, id })
+													link
+														? window.open(`${link}`, '_blank')
+														: handleClickNavigate({ route, id })
 												}
 											>
 												{icon && <ListItemIcon>{icon}</ListItemIcon>}
@@ -385,7 +400,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 														)}
 														{link && (
 															<Link
-																href={link}
+																href={void(0)}
 																style={{
 																	color: 'rgb(55, 71, 79)',
 																	textDecoration: 'none',
