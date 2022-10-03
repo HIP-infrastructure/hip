@@ -7,6 +7,7 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemButton,
+	ListItemSecondaryAction,
 	ListItemText,
 } from '@mui/material'
 import { Application, Container, ContainerState } from '../api/types'
@@ -38,7 +39,18 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	const AppState = ({ state }: { state?: ContainerState }) => {
 		if (!state) return <PlayCircleOutlined color='primary' />
 
-		if (loading(state)) return <CircularProgress size={16} />
+		if (loading(state))
+			return (
+				<CircularProgress
+					sx={{
+						position: 'absolute',
+						right: '3px',
+						top: '-10px',
+						transform: 'translateY(-50%)',
+					}}
+					size={16}
+				/>
+			)
 
 		if (state === ContainerState.RUNNING)
 			return <StopCircleOutlined color={color(state)} />
@@ -77,7 +89,9 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 						<AppAvatar name={app.name} label={app.label} />
 					</ListItemAvatar>
 					<ListItemText primary={app.label} />
-					<AppState state={startedApp?.state} />
+					<ListItemSecondaryAction>
+						<AppState state={startedApp?.state} />
+					</ListItemSecondaryAction>
 				</ListItemButton>
 			</SmallToolTip>
 		)
