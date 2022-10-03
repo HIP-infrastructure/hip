@@ -211,21 +211,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					: false,
 			title: null,
 			children: [
-				...(groups
-					?.filter(center => !user?.groups?.includes(center.id))
-					.map(center => ({
-						id: null,
-						type: 'center',
-						label: `${center.label}`,
-						route: `private/${center.id}`,
-						link: null,
-						color: null,
-						disabled: false,
-						image: center.logo ? center.logo : null,
-						icon: null,
-						title: null,
-						children: [],
-					})) || []),
+				...(groups?.map((center: HIPGroup) => ({
+					id: null,
+					type: 'center',
+					label: `${center.label}`,
+					route: `private/${center.id}`,
+					link: null,
+					color: null,
+					disabled: false,
+					image: center.logo ? center.logo : null,
+					icon: null,
+					title: null,
+					children: [],
+				})) || []),
 			],
 		},
 		{
