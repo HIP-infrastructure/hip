@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Apps,
