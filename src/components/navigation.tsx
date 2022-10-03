@@ -2,47 +2,44 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Apps,
 	Assignment,
+	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	GroupWork,
 	HealthAndSafety,
 	HelpCenter,
+	Info,
 	Monitor,
 	Public,
-	Info,
-	Dashboard,
 } from '@mui/icons-material'
+import GradingIcon from '@mui/icons-material/Grading'
 import {
 	Avatar,
 	Box,
+	CircularProgress,
 	Collapse,
 	Divider,
 	Drawer,
-	FormControlLabel,
+	Link,
 	List,
+	ListItemAvatar,
 	ListItemButton,
 	ListItemIcon,
-	ListItemAvatar,
 	ListItemText,
 	PaperProps,
-	Switch,
-	CircularProgress,
-	Link,
 } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { HIPGroup, NavigationItem } from '../api/types'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
-import GradingIcon from '@mui/icons-material/Grading'
-import { HIPGroup, NavigationItem } from '../api/types'
 
 const PRIVATE = 'private'
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
 	const {
-		debug: [debug, setDebug],
 		user: [user],
 		groups: [groups],
 	} = useAppStore()
@@ -400,7 +397,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 														)}
 														{link && (
 															<Link
-																href={void(0)}
+																href={void 0}
 																style={{
 																	color: 'rgb(55, 71, 79)',
 																	textDecoration: 'none',
@@ -449,13 +446,6 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					)
 				)}
 			</List>
-
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
-			</Box>
 		</Drawer>
 	)
 }

@@ -89,6 +89,22 @@ export const getUsersForGroup = async (groupid: string): Promise<string[]> => {
 	return users
 }
 
+export const scanUserFiles = async (userid: string): Promise<string> => {
+	return fetch(`${API_GATEWAY}/users/${userid}/scan-files`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(result => result.text())
+}
+
+export const setNCWorkspace = async (userid: string): Promise<string> => {
+	return fetch(`${API_GATEWAY}/users/${userid}/set-workspace`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(result => result.text())
+}
+
 export const search = async (term: string) => {
 	return fetch(`${API_GATEWAY}/files/search/${term}`, {
 		headers: {
@@ -97,19 +113,6 @@ export const search = async (term: string) => {
 	})
 		.then(checkError)
 		.then(data => data.json())
-}
-
-export const getFiles = async (path: string): Promise<TreeNode[]> => {
-	//try {
-	const url = `/apps/hip/document/files?path=${path}`
-	const response = await fetch(url,{
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-	const node: TreeNode[] = await response.json()
-
-	return node
 }
 
 // Sessions & apps
