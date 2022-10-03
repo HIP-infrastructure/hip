@@ -15,15 +15,7 @@ import { HIPGroup, User } from '../../api/types'
 const Members = ({ group, users }: { group?: HIPGroup; users?: User[] }) => {
 	return (
 		<>
-			{!group && (
-				<CircularProgress
-					size={32}
-					color='secondary'
-					sx={{ position: 'absolute', top: 10, left: 10 }}
-				/>
-			)}
-
-			{group && users && (
+			{group && (
 				<Card
 					sx={{
 						display: 'flex',
@@ -48,7 +40,20 @@ const Members = ({ group, users }: { group?: HIPGroup; users?: User[] }) => {
 							Members
 						</Typography>
 
+						{users === undefined && (
+							<CircularProgress
+							size={16}
+							color='secondary'
+							sx={{ top: 10, left: 10 }}
+						/>
+						)}
+
 						<Stack spacing={1}>
+							{users?.length === 0 && 
+							<Typography variant='subtitle2'>
+								No members yet
+							</Typography>
+							}
 							{users?.map(user => (
 								<Box
 									key={user.id}

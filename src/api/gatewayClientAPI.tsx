@@ -79,7 +79,7 @@ export const getCenters = async (): Promise<HIPGroup[]> => {
 	return groups
 }
 
-export const getUsersForGroup = async (groupid: string) => {
+export const getUsersForGroup = async (groupid: string): Promise<string[]> => {
 	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

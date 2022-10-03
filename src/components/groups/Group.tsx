@@ -12,61 +12,67 @@ import Data from './Data'
 import MainCard from './MainCard'
 import Members from './Members'
 
+const isFulfilled = <T,>(p:PromiseSettledResult<T>): p is PromiseFulfilledResult<T> => p.status === 'fulfilled';
+			
+const isRejected = <T,>(p:PromiseSettledResult<T>): p is PromiseRejectedResult => p.status === 'rejected';
+
 const Dashboard = () => {
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
-		groups: [groups],
+		groups: [groups, setGroups],
 		user: [user],
 	} = useAppStore()
 
 	const { showNotif } = useNotification()
-	const [userIds, setUserIds] = useState([])
-	const [users, setUsers] = useState<User[]>([])
+	const [id, setId] = useState<string | undefined>()
 	const [group, setGroup] = useState<HIPGroup | undefined>()
 
 	// const { trackEvent } = useMatomo()
 
-	const { id } = useParams()
+	const { id: incomingId } = useParams()
+
+	const processPromises = async (center: HIPGroup, requests: Promise<User>[] ) => {
+		const results= await Promise.allSettled(requests)
+		if (!results) return
+
+		const fulfilledValues = results.filter(isFulfilled).map(p => p.value);
+
+		const rejectedReasons = results.filter(isRejected).map(p => p.reason);
+
+		if (rejectedReasons.length > 0) {
+			showNotif(rejectedReasons.toString(), 'error')
+		}
+
+		setGroups(groups => (groups || []).map(group => group.id === center.id ? { ...center, users: fulfilledValues } : group))
+	}
 
 	useEffect(() => {
-		setUsers([])
-		setUserIds([])
-		setGroup(undefined)
+		if (!incomingId || incomingId ===  id) return
+		setId(incomingId)
+	},[id])
+
+	useEffect(() => {	
+
 		const center = groups
 			?.filter(group => group.id === id)
 			?.find((_, i) => i === 0)
 
-		if (center) setGroup(center)
-	}, [id, groups])
+		if (!center) return
 
-	useEffect(() => {
-		if (!group) return
-
-		getUsersForGroup(group.id)
+		if (!center?.users) {
+			getUsersForGroup(center.id)
 			.then((users) => {
-				setUserIds(users)
+				const requests = users.map(user => getUser(user))
+				processPromises(center, requests)
 			})
 			.catch(err => {
 				showNotif(err.message, 'error')
 			})
-	}, [group])
+		}
 
-	useEffect(() => {
-		if (!userIds) return
-
-		userIds.forEach(user => {
-			getUser(user)
-				.then(user => {
-					if (!user) return
-
-					setUsers(users => [...users, user])
-				})
-				.catch(err => {
-					showNotif(err.message, 'error')
-				})
-		})
-	}, [userIds])
+		if (center) setGroup(center)
+	}, [id, groups, processPromises])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
 	const isMember = group && user?.groups?.includes(group?.id)
@@ -105,7 +111,7 @@ const Dashboard = () => {
 				>
 					<MainCard group={group} />
 					{isMember && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
-					<Members group={group} users={users} />
+					<Members group={group} users={group?.users} />
 				</Box>
 			</Box>
 		</>

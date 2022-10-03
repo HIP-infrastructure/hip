@@ -73,6 +73,7 @@ export interface HIPGroup {
 	socialnetwork: {
 		[index: string]: any
 	}[]
+	users?: User[]
 }
 
 export interface Application {
