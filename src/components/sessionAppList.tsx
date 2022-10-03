@@ -22,6 +22,7 @@ interface Session {
 
 const AppList = ({ session, handleToggleApp }: Session) => {
 	const { availableApps } = useAppStore()
+	const [debounce, setDebounce] = React.useState<{ [key: string]: boolean }>({})
 
 	const appInSession = ({ name }: { name: string }) =>
 		session?.apps?.find(s => s.app === name)
@@ -56,8 +57,21 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 				<ListItemButton
 					sx={{ cursor: 'pointer' }}
 					aria-label={label}
-					disabled={session?.state !== ContainerState.RUNNING}
-					onClick={() => handleToggleApp && handleToggleApp(app)}
+					disabled={
+						debounce[app.name] || session?.state !== ContainerState.RUNNING
+					}
+					onClick={() => {
+						handleToggleApp && handleToggleApp(app)
+						setDebounce({ ...debounce, [app.name]: true })
+						setTimeout(
+							() =>
+								setDebounce(debounce => ({
+									...debounce,
+									[app.name]: false,
+								})),
+							15 * 1000
+						)
+					}}
 				>
 					<ListItemAvatar>
 						<AppAvatar name={app.name} label={app.label} />
