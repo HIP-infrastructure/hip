@@ -62,6 +62,7 @@ export const forceRemove = (id: string): void => {
 
 // NextCloud API
 
+
 export const getUser = async (userid?: string): Promise<User> => {
 	const user = fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
@@ -103,6 +104,15 @@ export const setNCWorkspace = async (userid: string): Promise<string> => {
 			requesttoken: window.OC.requestToken,
 		},
 	}).then(result => result.text())
+}
+
+export const getFiles = async (path: string): Promise<TreeNode[]> => {
+	//try {
+	const url = `/apps/hip/document/files?path=${path}`
+	const response = await fetch(url)
+	const node: TreeNode[] = await response.json()
+
+	return node
 }
 
 export const search = async (term: string) => {
