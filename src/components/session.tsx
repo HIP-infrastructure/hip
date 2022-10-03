@@ -286,7 +286,7 @@ const Session = (): JSX.Element => {
 			>
 				<DrawerHeader>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
-						<Typography variant='subtitle2'>close</Typography>
+						<Typography variant='subtitle2'>hide</Typography>
 						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
 					</IconButton>
 				</DrawerHeader>
