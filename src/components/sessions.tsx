@@ -48,6 +48,7 @@ const Sessions = (): JSX.Element => {
 		debug: [debug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
+	const [showAdminView, setShowAdminView] = React.useState(false)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
@@ -84,6 +85,7 @@ const Sessions = (): JSX.Element => {
 			...s,
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
+		?.filter((s: Container) => showAdminView ? s.user === user?.uid : true)
 
 	return (
 		<>
@@ -94,19 +96,32 @@ const Sessions = (): JSX.Element => {
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
-					<Button
-						variant='contained'
-						color='primary'
-						onClick={() => {
-							createSession(user?.uid || '')
-							trackEvent({
-								category: 'server',
-								action: 'start',
-							})
-						}}
-					>
-						Create Desktop
-					</Button>
+					<Box>
+						{user?.isAdmin && 
+							<Button
+							variant='contained'
+							color='primary'
+							onClick={() => {
+								setShowAdminView(!showAdminView)
+							}}
+							>
+								Toggle admin view
+							</Button>
+						}
+						<Button
+							variant='contained'
+							color='primary'
+							onClick={() => {
+								createSession(user?.uid || '')
+								trackEvent({
+									category: 'server',
+									action: 'start',
+								})
+							}}
+						>
+							Create Desktop
+						</Button>
+					</Box>
 				}
 			/>
 
