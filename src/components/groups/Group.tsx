@@ -45,8 +45,7 @@ const Dashboard = () => {
 		const results = await Promise.allSettled(requests)
 		if (!results) return
 
-		const fulfilledValues = results.filter(isFulfilled).map(p => p.value)
-
+		const users = results.filter(isFulfilled).map(p => p.value).filter(u => u.enabled)
 		const rejectedReasons = results.filter(isRejected).map(p => p.reason)
 
 		if (rejectedReasons.length > 0) {
@@ -55,7 +54,7 @@ const Dashboard = () => {
 
 		setGroups(groups =>
 			(groups || []).map(group =>
-				group.id === center.id ? { ...center, users: fulfilledValues } : group
+				group.id === center.id ? { ...center, users } : group
 			)
 		)
 	}

@@ -59,6 +59,7 @@ export interface User {
 	email?: string | null
 	lastLogin: number
 	groups?: string[]
+	enabled: boolean
 }
 export interface HIPGroup {
 	label: string
