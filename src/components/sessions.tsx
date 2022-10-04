@@ -48,7 +48,7 @@ const Sessions = (): JSX.Element => {
 		debug: [debug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
-	const [showAdminView, setShowAdminView] = React.useState(false)
+	const [showAdminView, setShowAdminView] = React.useState(true)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
@@ -85,7 +85,7 @@ const Sessions = (): JSX.Element => {
 			...s,
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
-		?.filter((s: Container) => showAdminView ? s.user === user?.uid : true)
+		?.filter((s: Container) => user && showAdminView ? true : s.user === user?.uid)
 
 	return (
 		<>
