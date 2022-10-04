@@ -70,7 +70,7 @@ const Tools = () => {
 						variant='body2'
 						color='text.secondary'
 					>
-						Scan files not synchronized with the interface
+						Perform a files scan to synchronize the backend storage with the interface
 					</Typography>
 					<Box
 						sx={{
@@ -92,7 +92,7 @@ const Tools = () => {
 
 					<TextareaAutosize
 						aria-label='scan result textarea'
-						style={{ width: 300 }}
+						style={{ width: 290 }}
 						defaultValue={scanResult}
 					/>
 				</CardContent>

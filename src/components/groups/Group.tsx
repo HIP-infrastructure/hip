@@ -1,6 +1,6 @@
 // import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import * as React from 'react'
-import { Box, FormControlLabel, Switch, Typography } from '@mui/material'
+import { Box, FormControlLabel, Grid, Switch, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
@@ -43,6 +43,7 @@ const Dashboard = () => {
 		requests: Promise<User>[]
 	) => {
 		const results = await Promise.allSettled(requests)
+		
 		if (!results) return
 
 		const users = results.filter(isFulfilled).map(p => p.value).filter(u => u.enabled)
@@ -110,21 +111,27 @@ const Dashboard = () => {
 			)}
 
 			<Box sx={{ width: 0.75, mt: 4 }}>
-				<Box
-					sx={{
+					<Box sx={{
 						display: 'flex',
-						width: '75vw',
 						justifyContent: 'start',
-						flexWrap: 'wrap',
-						gap: '32px 32px',
 						alignItems: 'start',
-					}}
-				>
-					<MainCard group={group} />
-					{isMember && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
-					<Members group={group} users={group?.users} />
-					{debug && isMember && <Tools />}
-				</Box>
+					}}>
+						<Box sx={{
+							flex: isMember ? '2 1 0%' : '0 1 0%',
+							display: 'flex',
+							justifyContent: 'start',
+							gap: '32px 32px',
+							flexWrap: 'wrap',
+							alignItems: 'start',
+						}}>
+							<MainCard group={group} />
+							{isMember && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
+							{debug && isMember && <Tools />}
+						</Box>
+						<Box sx={{ ml: isMember ? 0: 4, flex: '1 0 0%'}}>
+							<Members group={group} users={group?.users} />
+						</Box>
+					</Box>
 			</Box>
 
 			<Box sx={{ ml: 2, mt: 8 }}>
