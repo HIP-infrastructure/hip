@@ -85,7 +85,7 @@ export const AppStoreProvider = ({
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { data, error } = useSWR<any, Error | undefined>(
-		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
+		() => (user ? `${API_CONTAINERS}/${user?.uid}${user?.isAdmin && '?isAdmin=1' || ''}` : null),
 		fetcher
 	)
 
@@ -133,7 +133,7 @@ export const AppStoreProvider = ({
 
 		setInterval(() => {
 			try {
-				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
+				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}${currentUser?.isAdmin && '?isAdmin=1' || ''}`)
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (error: any) {
 				throw new Error(error.message)

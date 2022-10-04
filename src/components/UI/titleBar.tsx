@@ -33,7 +33,7 @@ const TitleBar = (props: ITitleBar) => {
 			</AppBar>
 			{description && (
 				<Typography
-					sx={{ pl: 1, pt: 2, fontWeight: 'bold' }}
+					sx={{ pt: 2, fontWeight: 'bold' }}
 					color='inherit'
 					variant='subtitle2'
 				>

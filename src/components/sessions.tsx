@@ -110,6 +110,12 @@ const Sessions = (): JSX.Element => {
 				}
 			/>
 
+			{user?.isAdmin && (
+				<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='subtitle2'>
+					Welcome {user?.displayName}, beware, you are an admin and you can see every desktops
+				</Typography>
+			)}
+
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
 					<CircularProgress
@@ -139,7 +145,11 @@ const Sessions = (): JSX.Element => {
 				)}
 				{sessions?.map((session, i) => (
 					<Card
-						sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }}
+						sx={{ 
+							maxWidth: 320, 
+							display: 'flex', 
+							flexDirection: 'column'
+						}}
 						key={session.name}
 					>
 						<Box sx={{ position: 'relative' }}>
@@ -181,13 +191,24 @@ const Sessions = (): JSX.Element => {
 									<Typography variant='h5'>
 										{`Desktop #${session?.name}`}
 									</Typography>
-									<Typography
-										gutterBottom
-										variant='caption'
-										color='text.secondary'
-									>
-										{session?.user}
-									</Typography>
+									{user?.uid !== session.user && 
+										<Typography
+											gutterBottom
+											variant='caption'
+											color='#FA6812'
+										>
+											{session?.user}
+										</Typography>
+									}
+									{user?.uid === session.user && 
+										<Typography
+											gutterBottom
+											variant='caption'
+											color='text.secondary'
+										>
+											{session?.user}
+										</Typography>
+									}
 								</Box>
 								<Box>
 									<Chip
