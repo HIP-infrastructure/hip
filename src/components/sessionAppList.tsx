@@ -81,7 +81,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 									...debounce,
 									[app.name]: false,
 								})),
-							15 * 1000
+							10 * 1000
 						)
 					}}
 				>
