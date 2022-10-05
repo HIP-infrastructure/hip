@@ -19,7 +19,9 @@ import Session from './components/session'
 import Sessions from './components/sessions'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
+import BidsBrowser from './components/workflows/bids/browser'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
+
 export interface Space {
 	label: string
 	route: string
@@ -84,6 +86,7 @@ const App = () => (
 				<Route path={':id/workflows'} element={<Outlet />}>
 					<Route index element={<Workflows />} />
 					<Route path={'bidsimport'} element={<BidsConverter />} />
+					<Route path={'bidssearch'} element={<BidsBrowser />} />
 				</Route>
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>

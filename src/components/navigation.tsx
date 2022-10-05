@@ -125,6 +125,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				image: null,
 				children: [],
 			},
+			{
+				route: center
+					? `private/${center.id}/workflows/bidssearch`  // FIXME: Not sure this is defined in Apps
+					: 'private/default/workflows/bidssearch',
+				link: null,
+				label: 'BIDS Browser',
+				icon: <Assignment />,
+				title: 'Browse the datasets in the BIDS format',
+				disabled: false,
+				color: null,
+				image: null,
+				children: [],
+			},
 		],
 	})
 
