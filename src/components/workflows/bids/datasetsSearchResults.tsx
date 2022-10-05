@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Add } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
+
 import {
 	Alert,
 	Box,
@@ -51,10 +51,6 @@ const DatasetsResults = (): JSX.Element => {
 				? <Box sx={{ width: '100%', mt: 3 }}>
 					<Box sx={{ mt: 2 }}>
 						<Box sx={boxStyle}>
-							{/* <Typography variant='subtitle1' sx={{ mb: 1 }}>
-								<strong>Select or create a BIDS Dataset</strong>
-							</Typography> */}
-
 							<Box
 								sx={{
 									display: 'flex',
