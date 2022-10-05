@@ -57,7 +57,7 @@ const Layout = (): JSX.Element => {
 						zIndex: '10000',
 						transform: 'translateX(-50%)',
 						}} variant='h6'>
-						YOU ARE NOT ON PRODUCTION: {process.env.REACT_APP_HOSTNAME}
+						{process.env.REACT_APP_HOSTNAME}
 					</Typography>
 				)}
 			<Box

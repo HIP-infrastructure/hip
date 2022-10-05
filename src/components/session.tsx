@@ -85,7 +85,7 @@ const Session = (): JSX.Element => {
 
 						setSessionIsAlive(true)
 						setTimeout(() => {
-							(intervalRef.current as any)?.focus()
+							fullScreenRef.current?.focus()
 						}, 5000)
 					}
 				})
