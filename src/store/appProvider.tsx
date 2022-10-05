@@ -34,6 +34,12 @@ export interface IAppState {
 			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
 		>
 	]
+	BIDSDatasetsResults: [
+		{ data?: BIDSDataset[]; error?: Error } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
+		>
+	]
 	selectedBidsDataset: [
 		BIDSDataset | undefined,
 		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
@@ -72,6 +78,10 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [groups, setGroups] = useState<Group[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
+		data?: BIDSDataset[]
+		error?: Error
+	}>()
+	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<{
 		data?: BIDSDataset[]
 		error?: Error
 	}>()
@@ -145,6 +155,7 @@ export const AppStoreProvider = ({
 			availableApps,
 			containers: [data?.data || null, error],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
+			BIDSDatasetsResults: [bidsDatasetsResults, setBidsDatasetsResults],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
@@ -161,6 +172,8 @@ export const AppStoreProvider = ({
 			availableApps,
 			bidsDatasets,
 			setBidsDatasets,
+			bidsDatasetsResults,
+			setBidsDatasetsResults,
 			selectedBidsDataset,
 			setSelectedBidsDataset,
 			selectedParticipants,
