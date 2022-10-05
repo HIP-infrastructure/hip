@@ -84,6 +84,9 @@ const Session = (): JSX.Element => {
 						if (intervalRef.current) clearInterval(intervalRef.current)
 
 						setSessionIsAlive(true)
+						setTimeout(() => {
+							(intervalRef.current as any)?.focus()
+						}, 5000)
 					}
 				})
 				.catch(e => {
