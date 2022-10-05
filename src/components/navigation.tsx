@@ -114,10 +114,10 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			},
 			{
 				route: center
-					? `private/${center.id}/workflows/bids`
-					: 'private/default/workflows/bids',
+					? `private/${center.id}/workflows/bidsimport`
+					: 'private/default/workflows/bidsimport',
 				link: null,
-				label: 'BIDS',
+				label: 'BIDS Importer',
 				icon: <Assignment />,
 				title: 'BIDS datasets: Import, and manage data in BIDS format',
 				disabled: false,

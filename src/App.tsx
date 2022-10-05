@@ -83,7 +83,7 @@ const App = () => (
 				<Route path={':id/data'} element={<Data />} />
 				<Route path={':id/workflows'} element={<Outlet />}>
 					<Route index element={<Workflows />} />
-					<Route path={'bids'} element={<BidsConverter />} />
+					<Route path={'bidsimport'} element={<BidsConverter />} />
 				</Route>
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
