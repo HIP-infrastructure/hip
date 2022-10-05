@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
@@ -43,10 +43,23 @@ const Layout = (): JSX.Element => {
 	// const handleDrawerToggle = () => {
 	// 	setMobileOpen(!mobileOpen)
 	// }
+	
 
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
+				{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
+					<Typography sx={{ 
+						position: 'absolute', 
+						top: '10px',
+						right: '0px',
+						color: '#FA7E12', 
+						zIndex: '10000',
+						transform: 'translateX(-50%)',
+						}} variant='h6'>
+						YOU ARE NOT ON PRODUCTION: {process.env.REACT_APP_HOSTNAME}
+					</Typography>
+				)}
 			<Box
 				component='nav'
 				sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
