@@ -52,7 +52,7 @@ const Layout = (): JSX.Element => {
 					<Typography sx={{ 
 						position: 'absolute', 
 						top: '10px',
-						right: '0px',
+						right: '200px',
 						color: '#FA7E12', 
 						zIndex: '10000',
 						transform: 'translateX(-50%)',
