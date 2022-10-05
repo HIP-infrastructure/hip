@@ -51,9 +51,9 @@ const Layout = (): JSX.Element => {
 				{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
 					<Typography sx={{ 
 						position: 'absolute', 
-						top: '10px',
+						top: '8px',
 						right: '200px',
-						color: '#FA7E12', 
+						color: '#FA6812', 
 						zIndex: '10000',
 						transform: 'translateX(-50%)',
 						}} variant='h6'>

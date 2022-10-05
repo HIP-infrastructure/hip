@@ -84,9 +84,7 @@ const Session = (): JSX.Element => {
 						if (intervalRef.current) clearInterval(intervalRef.current)
 
 						setSessionIsAlive(true)
-						setTimeout(() => {
-							fullScreenRef.current?.focus()
-						}, 5000)
+						focusOnIframe(5)
 					}
 				})
 				.catch(e => {
@@ -119,6 +117,12 @@ const Session = (): JSX.Element => {
 		}
 	}, [fullscreen])
 
+	const focusOnIframe = (t: number) => {
+		setTimeout(() => {
+			fullScreenRef.current?.focus()
+		}, t * 1000)
+	}
+
 	// Start an app
 	const handleToggleApp = (app: Application) => {
 		const targetApp = session?.apps?.find(a => a.app === app.name)
@@ -138,6 +142,8 @@ const Session = (): JSX.Element => {
 		}
 		createApp(session, user, app.name)
 
+		focusOnIframe(1)
+
 		trackEvent({
 			category: 'app',
 			action: 'start',
@@ -146,10 +152,12 @@ const Session = (): JSX.Element => {
 
 	const handleDrawerOpen = () => {
 		setDrawerOpen(true)
+		focusOnIframe(1)
 	}
 
 	const handleDrawerClose = () => {
 		setDrawerOpen(false)
+		focusOnIframe(1)
 	}
 
 	const handleBackLocation = () => {
