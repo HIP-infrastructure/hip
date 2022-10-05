@@ -165,7 +165,7 @@ const Sessions = (): JSX.Element => {
 							display: 'flex', 
 							flexDirection: 'column'
 						}}
-						key={session.name}
+						key={session.id}
 					>
 						<Box sx={{ position: 'relative' }}>
 							<Tooltip
