@@ -18,8 +18,11 @@ import {
 	TableRow, */
 	Typography,
 } from '@mui/material'
-import { BIDSDataset } from '../../../api/types'
+
+import DatasetCard from '../../datasetCard'
 import { useAppStore } from '../../../store/appProvider'
+import { BIDSDataset } from '../../../api/types'
+
 
 const boxStyle = {
 	border: 1,
@@ -64,179 +67,8 @@ const DatasetsResults = (): JSX.Element => {
 										flex: 1,
 									}}
 								>
-									{/* <TableContainer sx={{ maxHeight: 440 }}>
-										<Table stickyHeader size='small' aria-label='BIDS Datasets tables'>
-											<TableHead>
-												<TableRow>
-													<TableCell>Id</TableCell>
-													<TableCell sx={{ width: 320 }}>Name</TableCell>
-													<TableCell>Participants</TableCell>
-												</TableRow>
-											</TableHead>
-											<TableBody>
-												{rows.map(row => (
-													<TableRow
-														hover
-														role='checkbox'
-														tabIndex={-1}
-														key={row.id}
-													>
-														<TableCell>{row.id}</TableCell>
-														<TableCell>{row.Name}</TableCell>
-														<TableCell>{row.participants?.length}</TableCell>
-													</TableRow>
-												))}
-											</TableBody>
-										</Table>
-									</TableContainer> */}
-
 									{rows.map(row => (
-										<>
-											<Paper
-												sx={{
-													flex: 1,
-													mb: 2
-												}}
-											>
-												<Card sx={{ display: 'flex' }}>
-													<Box sx={{ display: 'flex', flexDirection: 'column', m: 0}}>
-														<CardContent sx={{ flex: '1 0 auto', m: 0 }}>
-														<Typography component="div" variant="h5">
-															{row?.Name} &nbsp;
-															<Typography
-																variant="subtitle1"
-																color="text.secondary"
-																component="div"
-																display="inline"
-															>
-																{row?.Authors}
-															</Typography>
-															&nbsp;
-															<Typography
-																variant="subtitle1"
-																color="text.secondary"
-																component="div"
-																display="inline"
-															>
-																(Creation date TBC)
-															</Typography>
-														</Typography>
-														</CardContent>
-														<Box sx={{ display: 'flex', mt: -2, mb: -2 }}>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	Dataset id: {row?.id} (
-																		<Link
-																			target='_blank'
-																			href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${row?.path}`}
-																		>
-																			{row?.path}
-																		</Link>
-																	)
-																</Typography>
-															</CardContent>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	#Event files: TBC
-																</Typography>
-															</CardContent>
-														</Box>
-														<Divider variant="middle" />
-														<Box sx={{ display: 'flex', mt: 0, mb: -2 }}>
-															<CardContent sx={{ flex: '1 0 auto' }} >
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																	display="inline"
-																>
-																	#Participants: {row?.participants?.length}
-																</Typography>
-																&nbsp;
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																	display="inline"
-																>
-																	Ages(yrs): TBC
-																</Typography>
-															</CardContent>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	#Sessions: TBC
-																</Typography>
-															</CardContent>
-														</Box>
-														<Divider variant="middle" />
-														<Box sx={{ display: 'flex', mt: 0, mb: -2 }}>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																	display="inline"
-																>
-																	Modality(s): TBC
-																</Typography>
-																&nbsp;
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																	display="inline"
-																>
-																	Format(s): TBC
-																</Typography>
-															</CardContent>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	#SEEG Channels: TBC
-																</Typography>
-															</CardContent>
-														</Box>
-														<Divider variant="middle" />
-														<Box sx={{ display: 'flex' }}>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	Dataset size: TBC
-																</Typography>
-															</CardContent>
-															<CardContent sx={{ flex: '1 0 auto' }}>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	component="div"
-																>
-																	#Files: TBC
-																</Typography>
-															</CardContent>
-														</Box>
-													</Box>
-													<CardActions></CardActions>
-												</Card>
-											</Paper>
-										</>
+										<DatasetCard key={row.id} dataset={row} />
 									))}
 									<Box
 										sx={{
