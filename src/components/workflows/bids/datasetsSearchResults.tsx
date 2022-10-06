@@ -3,19 +3,8 @@ import React, { useEffect, useState } from 'react'
 import {
 	Alert,
 	Box,
-	Card,
-	CardActions,
-	CardContent,
 	CircularProgress,
-	Divider,
-	Link,
 	Paper,
-	/* Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow, */
 	Typography,
 } from '@mui/material'
 
@@ -105,7 +94,7 @@ const DatasetsResults = (): JSX.Element => {
 									variant='body2'
 									color='text.secondary'
 								>
-									No dataset found containing your query
+									No results found - Search with a different query
 								</Typography>
 							</Box>
 						</Box>
