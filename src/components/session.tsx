@@ -23,7 +23,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { createApp, stopApp } from '../api/gatewayClientAPI'
+import { createApp, getContainers, stopApp } from '../api/gatewayClientAPI'
 import {
 	AppContainer,
 	Application,
@@ -49,7 +49,7 @@ const Session = (): JSX.Element => {
 
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
-		containers: [containers],
+		containers: [containers, setContainers],
 		user: [user],
 	} = useAppStore()
 
@@ -63,7 +63,7 @@ const Session = (): JSX.Element => {
 	const [sessionIsAlive, setSessionIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
 
-	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+	const sessions = containers?.data?.filter(c => c.type === ContainerType.SESSION)
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -71,6 +71,16 @@ const Session = (): JSX.Element => {
 		return () => {
 			document.body.classList.remove('body-fixed')
 		}
+	}, [])
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			user &&
+				getContainers(user)
+					.then(data => setContainers({ data }))
+					.catch(error => setContainers({ error }))
+		}, 2 * 1000)
+		return () => clearInterval(interval);
 	}, [])
 
 	// Check for XPra readiness
@@ -98,10 +108,10 @@ const Session = (): JSX.Element => {
 
 	// get session and its children apps from params
 	useEffect(() => {
-		const s = containers?.find(c => c.id === params.id)
+		const s = containers?.data?.find(c => c.id === params.id)
 		if (s) {
 			// && (s.id !== session?.id)) {
-			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
+			s.apps = containers?.data?.filter(c => c.parentId === s.id) as AppContainer[]
 			setSession(s)
 		}
 	}, [params, session, setSession, containers])

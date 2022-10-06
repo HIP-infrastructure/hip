@@ -19,7 +19,6 @@ const linkStyle = {
 
 const Tools = () => {
 	const {
-		containers: [containers],
 		user: [user],
 	} = useAppStore()
 

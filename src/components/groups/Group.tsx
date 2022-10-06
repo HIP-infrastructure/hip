@@ -91,7 +91,7 @@ const Dashboard = () => {
 		if (center) setGroup(center)
 	}, [id, groups, processPromises])
 
-	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+	const sessions = containers?.data?.filter(c => c.type === ContainerType.SESSION)
 	const isMember = group && user?.groups?.includes(group?.id)
 
 	return (

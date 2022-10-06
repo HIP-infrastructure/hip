@@ -1,3 +1,8 @@
+
+export interface APIContainersResponse {
+	data?: Container[]
+	error?: string
+}
 export interface Container {
 	id: string
 	name: string

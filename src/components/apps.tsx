@@ -14,7 +14,7 @@ import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 
 const Apps = () => {
-	const { availableApps } = useAppStore()
+	const { availableApps: [availableApps] } = useAppStore()
 
 	return (
 		<>
@@ -25,8 +25,8 @@ const Apps = () => {
 				}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{availableApps?.error && availableApps?.error && (
-					<Alert severity='error'>{availableApps?.error.message}</Alert>
+				{availableApps?.error && (
+					<Alert severity='error'>{availableApps?.error}</Alert>
 				)}
 				{availableApps?.data?.map((app, i) => (
 					<Card

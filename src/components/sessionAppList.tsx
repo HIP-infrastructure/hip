@@ -22,7 +22,7 @@ interface Session {
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
-	const { availableApps } = useAppStore()
+	const { availableApps: [availableApps] } = useAppStore()
 	const [debounce, setDebounce] = React.useState<{ [key: string]: boolean }>({})
 
 	const appInSession = ({ name }: { name: string }) =>
@@ -112,7 +112,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 		>
 			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
 			{availableApps?.error && availableApps?.error && (
-				<Alert severity='error'>{availableApps?.error.message}</Alert>
+				<Alert severity='error'>{availableApps?.error}</Alert>
 			)}
 			{availableApps?.data?.map(app => (
 				<Button app={app} key={app.name} />

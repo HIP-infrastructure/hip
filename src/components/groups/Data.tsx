@@ -15,7 +15,7 @@ const Data = ({
 }: {
 	bidsDatasets?: {
 		data?: BIDSDataset[] | undefined
-		error?: Error | undefined
+		error?: string | undefined
 	}
 	sessions?: Container[]
 }) => {

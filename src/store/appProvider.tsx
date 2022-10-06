@@ -1,12 +1,12 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import useSWR, { mutate } from 'swr'
 import { getBidsDatasets } from '../api/bids'
 import {
 	API_CONTAINERS,
 	checkError,
 	getAvailableAppList,
 	getCenters,
+	getContainers,
 	getUser,
 } from '../api/gatewayClientAPI'
 import {
@@ -25,13 +25,26 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	groups: [HIPGroup[] | null, React.Dispatch<React.SetStateAction<HIPGroup[] | null>>]
-	availableApps: { data?: Application[]; error?: Error } | undefined
-	containers: [Container[] | null, Error | undefined]
-	BIDSDatasets: [
-		{ data?: BIDSDataset[]; error?: Error } | undefined,
+	groups: [
+		HIPGroup[] | null,
+		React.Dispatch<React.SetStateAction<HIPGroup[] | null>>
+	]
+	availableApps: [
+		{ data?: Application[]; error?: string } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
+			React.SetStateAction<{ data?: Application[]; error?: string } | undefined>
+		>
+	]
+	containers: [
+		{ data?: Container[]; error?: string } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: Container[]; error?: string } | undefined>
+		>
+	]
+	BIDSDatasets: [
+		{ data?: BIDSDataset[]; error?: string } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
 		>
 	]
 	selectedBidsDataset: [
@@ -48,20 +61,6 @@ export interface IAppState {
 	]
 }
 
-export const fetcher = async (url: string): Promise<void> => {
-	try {
-		const res = await fetch(url, {
-			headers: {	
-				'Content-Type': 'application/json',
-				requesttoken: window.OC.requestToken,
-			}})
-		return checkError(res)
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		throw new Error(error.message)
-	}
-}
-
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
 // Provide state for the HIP app
@@ -71,23 +70,24 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] =
-		useState<IAppState['availableApps']>()
+	const [availableApps, setAvailableApps] = useState<{
+		data?: Application[]
+		error?: string
+	}>()
+	const [containers, setContainers] = useState<{
+		data?: Container[]
+		error?: string
+	}>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [groups, setGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
-		error?: Error
+		error?: string
 	}>()
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { data, error } = useSWR<any, Error | undefined>(
-		() => (user ? `${API_CONTAINERS}/${user?.uid}${user?.isAdmin && '?isAdmin=1' || ''}` : null),
-		fetcher
-	)
 
 	// Fetch initial data
 	React.useEffect(() => {
@@ -114,12 +114,8 @@ export const AppStoreProvider = ({
 		})
 
 		getAvailableAppList()
-			.then(data => {
-				if (data) setAvailableApps({ data })
-			})
-			.catch(error => {
-				setAvailableApps({ error })
-			})
+			.then(data => setAvailableApps({ data }))
+			.catch(error => setAvailableApps({ error }))
 
 		getBidsDatasets(currentUser.uid)
 			.then(data => {
@@ -131,14 +127,13 @@ export const AppStoreProvider = ({
 				setBidsDatasets({ error })
 			})
 
-		setInterval(() => {
-			try {
-				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}${currentUser?.isAdmin && '?isAdmin=1' || ''}`)
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (error: any) {
-				throw new Error(error.message)
-			}
-		}, 3 * 1000)
+		getContainers(currentUser)
+			.then(data => {
+				setContainers({ data })
+			})
+			.catch(error => {
+				setContainers({ error })
+			})
 	}, [])
 
 	const value: IAppState = React.useMemo(
@@ -146,8 +141,8 @@ export const AppStoreProvider = ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
 			groups: [groups, setGroups],
-			availableApps,
-			containers: [data?.data || null, error],
+			availableApps: [availableApps, setAvailableApps],
+			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
@@ -160,9 +155,10 @@ export const AppStoreProvider = ({
 			setUser,
 			groups,
 			setGroups,
-			data,
-			error,
+			containers,
+			setContainers,
 			availableApps,
+			setAvailableApps,
 			bidsDatasets,
 			setBidsDatasets,
 			selectedBidsDataset,
