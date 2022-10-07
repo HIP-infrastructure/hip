@@ -47,6 +47,12 @@ export const checkError = async (response: Response) => {
 
 // Nextcloud HIP API
 
+export const isLoggedIn = async () => fetch(`${API_GATEWAY}/users/isloggedin`, {
+	headers: {
+		requesttoken: window.OC.requestToken,
+	},
+}).then(checkError)
+
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
@@ -60,7 +66,7 @@ export const getCenters = async (): Promise<HIPGroup[]> =>
 		{}
 	).then(checkError)
 
-export const getUsersForGroup = async (groupid: string): Promise<string[]> => {
+export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
 	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

@@ -2,12 +2,11 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import { getBidsDatasets } from '../api/bids'
 import {
-	API_CONTAINERS,
-	checkError,
 	getAvailableAppList,
 	getCenters,
 	getContainers,
 	getUser,
+	isLoggedIn,
 } from '../api/gatewayClientAPI'
 import {
 	Application,
@@ -124,6 +123,10 @@ export const AppStoreProvider = ({
 		getContainers(currentUser)
 			.then(data => setContainers({ data }))
 			.catch(error => setContainers({ error }))
+
+		setInterval(() => {
+			isLoggedIn()
+		}, 30 * 1000)
 	}, [])
 
 	const value: IAppState = React.useMemo(
