@@ -70,7 +70,7 @@ const spaces: Doc[] = [
 	},
 	{
 		label: "Users' Feedback ",
-		subtitle: 'Bug reports, feature requests, and general feedback',
+		// subtitle: 'Bug reports, feature requests, and general feedback',
 		buttonLabel: 'Feedback',
 		url: `/apps/forms/`,
 		description:

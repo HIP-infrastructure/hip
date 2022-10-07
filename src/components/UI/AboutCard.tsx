@@ -25,7 +25,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 		<Card
 			sx={{
 				width: 320,
-				height: 450,
+				height: 400,
 				display: 'flex',
 				flexDirection: 'column',
 			}}
@@ -61,7 +61,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 				</Typography>
 			</CardContent>
 			<Box sx={{ flexGrow: 1 }}></Box>
-			<CardActions sx={{ p: 2, alignSelf: 'end' }}>
+			<CardActions sx={{ alignSelf: 'end' }}>
 				{doc.url && (
 					<Button
 						onClick={() => {
