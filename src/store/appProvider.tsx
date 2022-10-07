@@ -118,22 +118,12 @@ export const AppStoreProvider = ({
 			.catch(error => setAvailableApps({ error }))
 
 		getBidsDatasets(currentUser.uid)
-			.then(data => {
-				if (data) {
-					setBidsDatasets({ data })
-				}
-			})
-			.catch(error => {
-				setBidsDatasets({ error })
-			})
+			.then(data => setBidsDatasets({ data }))
+			.catch(error => setBidsDatasets({ error }))
 
 		getContainers(currentUser)
-			.then(data => {
-				setContainers({ data })
-			})
-			.catch(error => {
-				setContainers({ error })
-			})
+			.then(data => setContainers({ data }))
+			.catch(error => setContainers({ error }))
 	}, [])
 
 	const value: IAppState = React.useMemo(

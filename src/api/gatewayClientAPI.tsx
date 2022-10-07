@@ -29,30 +29,16 @@ export const checkError = async (response: Response) => {
 
 		if (!response.ok) {
 			const error = data?.message || response.status
+			if (response.status > 400 && response.status <= 403) {
+				window.location.href = '/login'
+			}
+
 			return Promise.reject(error)
 		}
 
 		if (data?.error) return Promise.reject(data.error.message)
 
 		return data
-		// if (response.status > 400 && response.status <= 403) {
-		// 	const error = await response.json()
-		// 	const error =  Error(
-		// 		error?.message ?? 'You have been logged out. Please reload your browser, and log in again.',
-		// 		error?.statusCode ?? 'Unauthorized'
-		// 	)
-		// 	return { data: null, error }
-		// } else if (response.status >= 500 && response.status <= 599) {
-		// 	const error = await response.json()
-		// 	throw new Error(
-		// 		error?.message ?? `Bad response from server: ${response.statusText} ${response.status}`,
-		// 		error?.statusCode ?? 'Unauthorized'
-		// 	)
-		// } else if (response.status >= 200 && response.status <= 299) {
-		// 		const { data, error } = await response.json()
-
-		// 		return { data, error }
-		// }
 	} catch (error) {
 		if (error instanceof Error) return Promise.reject(error.message)
 		return Promise.reject(String(error))
