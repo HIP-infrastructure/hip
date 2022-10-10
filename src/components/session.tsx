@@ -34,7 +34,6 @@ import {
 	APP_MARGIN_TOP,
 	DRAWER_WIDTH,
 	ROUTE_PREFIX,
-	XPRA_PARAMS,
 } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
@@ -279,7 +278,7 @@ const Session = (): JSX.Element => {
 					<iframe
 						ref={fullScreenRef}
 						title='Desktop'
-						src={`${session.url}?${XPRA_PARAMS}`}
+						src={session.url}
 						allowFullScreen
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',

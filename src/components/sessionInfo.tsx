@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Container } from '../api/types'
 import { color } from '../api/utils'
 
-import { DRAWER_WIDTH, XPRA_PARAMS } from '../constants'
+import { DRAWER_WIDTH } from '../constants'
 
 const SessionInfo = ({ session }: { session?: Container }) => {
 	return (
@@ -37,7 +37,7 @@ const SessionInfo = ({ session }: { session?: Container }) => {
 					/>
 				</Box>
 				<Link
-					href={`${session?.url || ''}?${XPRA_PARAMS}`}
+					href={session?.url || ''}
 					target='_blank'
 					rel='noopener'
 					underline='hover'
