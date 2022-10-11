@@ -106,7 +106,14 @@ export interface TreeNode {
 	label: string
 	icon: string
 	data: Document
-	children?: boolean
+	children?: TreeNode[]
+}
+
+export interface File2 {
+	name: string
+	isDirectory: boolean
+	path: string
+	parentPath?: string
 }
 
 export interface Document {

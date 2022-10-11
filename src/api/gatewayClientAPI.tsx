@@ -5,6 +5,8 @@ import {
 	TreeNode,
 	User,
 	UserCredentials,
+	File,
+	File2,
 	APIContainersResponse,
 } from './types'
 import { uniq } from './utils'
@@ -36,7 +38,7 @@ export const checkError = async (response: Response) => {
 			return Promise.reject(error)
 		}
 
-		if (data?.error) return Promise.reject(data.error.message)
+		if (data?.error) return Promise.reject(data.error.message || data.error)
 
 		return data
 	} catch (error) {
@@ -47,11 +49,12 @@ export const checkError = async (response: Response) => {
 
 // Nextcloud HIP API
 
-export const isLoggedIn = async () => fetch(`${API_GATEWAY}/users/isloggedin`, {
-	headers: {
-		requesttoken: window.OC.requestToken,
-	},
-}).then(checkError)
+export const isLoggedIn = async () =>
+	fetch(`${API_GATEWAY}/users/isloggedin`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
 
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
@@ -99,6 +102,13 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 
 	return node
 }
+
+export const getFiles2 = async (path: string): Promise<File2[]> =>
+	fetch(`${API_GATEWAY}/files?path=${encodeURIComponent(path)}`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
 
 export const search = async (term: string) =>
 	fetch(`${API_GATEWAY}/files/search/${term}`, {

@@ -12,6 +12,7 @@ import {
 	Info,
 	Monitor,
 	Public,
+	AdminPanelSettings
 } from '@mui/icons-material'
 import GradingIcon from '@mui/icons-material/Grading'
 import {
@@ -80,7 +81,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 		route: center ? `private/${center?.id}` : 'private/default',
 		link: null,
 		color: '#efefef',
-		disabled: center === undefined ? true : center === null ? false : false,
+		disabled: center === undefined ? true : center === null ? true : false,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
 		loading: center === undefined ? true : center === null ? false : false,
@@ -92,7 +93,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				label: 'Dashboard',
 				icon: <Dashboard />,
 				title: center ? center.label : 'Dashboard',
-				disabled: center === undefined ? true : center === null ? false : false,
+				disabled: center === undefined ? true : center === null ? true : false,
 				color: null,
 				image: null,
 				children: [],
@@ -123,12 +124,23 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				image: null,
 				children: [],
 			},
+			...(user?.isAdmin && [{
+				route: 'admin',
+				link: null,
+				label: 'ADMIN',
+				icon: <AdminPanelSettings />,
+				title: '',
+				disabled: false,
+				color: null,
+				image: null,
+				children: []
+			}] || []),
 		],
 	})
 
 	const privateSpaces = groups
 		?.filter(center => user?.groups?.includes(center.id))
-		.map(center => placeholderSpaces(center)) || [placeholderSpaces()]
+		.map(center => placeholderSpaces(center)) || [placeholderSpaces(null)]
 
 	const menu = [
 		...(privateSpaces.length > 0 ? privateSpaces : [placeholderSpaces(null)]),

@@ -20,6 +20,8 @@ import Sessions from './components/sessions'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
+import Admin from './components/Admin'
+
 export interface Space {
 	label: string
 	route: string
@@ -39,10 +41,11 @@ const Layout = (): JSX.Element => {
 	// const [mobileOpen, setMobileOpen] = React.useState(false)
 	const theme = useTheme()
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
+	const [mobileOpen, setMobileOpen] = React.useState(false)
 
-	// const handleDrawerToggle = () => {
-	// 	setMobileOpen(!mobileOpen)
-	// }
+	const handleDrawerToggle = () => {
+		setMobileOpen(!mobileOpen)
+	}
 	
 
 	return (
@@ -67,8 +70,8 @@ const Layout = (): JSX.Element => {
 				{isSmUp ? null : (
 					<Navigation
 						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-						// open={mobileOpen}
-						// onClose={handleDrawerToggle}
+						open={mobileOpen}
+						onClose={handleDrawerToggle}
 					/>
 				)}
 				<Navigation PaperProps={{ style: { width: DRAWER_WIDTH } }} />
@@ -89,6 +92,7 @@ const App = () => (
 			<Route index element={<About />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
+			<Route path={'admin'} element={<Admin />} />
 			<Route path={'private'} element={<Groups />}>
 				<Route index element={<Groups />} />
 				<Route path={':id'} element={<Group />} />
