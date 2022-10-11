@@ -8,6 +8,7 @@ import {
 	File,
 	File2,
 	APIContainersResponse,
+	GroupFolder,
 } from './types'
 import { uniq } from './utils'
 
@@ -58,6 +59,13 @@ export const isLoggedIn = async () =>
 
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	}).then(checkError)
+
+export const getGroupFolders = async (userid?: string): Promise<GroupFolder[]> =>
+	fetch(`${API_GATEWAY}/groups/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},

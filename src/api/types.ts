@@ -15,6 +15,12 @@ export interface Container {
 	apps?: AppContainer[]
 }
 
+export interface GroupFolder {
+	id: number
+	label: string
+	path: string
+}
+
 export type AppContainer = Container & ContainerOptions
 
 export interface ContainerOptions {

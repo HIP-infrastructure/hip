@@ -40,6 +40,21 @@ function CloseSquare(props: SvgIconProps) {
 	)
 }
 
+const StyledTreeItem = styled((props: TreeItemProps) => (
+	<TreeItem {...props} />
+))(({ theme }) => ({
+	[`& .${treeItemClasses.iconContainer}`]: {
+		'& .close': {
+			opacity: 0.3,
+		},
+	},
+	[`& .${treeItemClasses.group}`]: {
+		marginLeft: 15,
+		paddingLeft: 18,
+		borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
+	},
+}))
+
 const root = {
 	name: 'root',
 	isDirectory: true,
@@ -47,8 +62,16 @@ const root = {
 	parentPath: 'root',
 }
 
-const DataBrowser = () => {
-	const [files, setFiles] = React.useState<File2[]>([root])
+const DataBrowser = ({ groups }: { groups?: string[] }) => {
+	const [files, setFiles] = React.useState<File2[]>([
+		root,
+		...(groups?.map(name => ({
+			name,
+			isDirectory: true,
+			path: `/groupfolder/${name}`,
+			parentPath: '/',
+		})) || []),
+	])
 	const [expanded, setExpanded] = React.useState(['/'])
 
 	useEffect(() => {
@@ -95,9 +118,9 @@ const DataBrowser = () => {
 				return false
 			})
 			.map(f => (
-				<TreeItem key={file.path} label={renderLabel(f)} nodeId={f.path}>
+				<StyledTreeItem key={file.path} label={renderLabel(f)} nodeId={f.path}>
 					{subItems(f)}
-				</TreeItem>
+				</StyledTreeItem>
 			))
 
 		// Display a fake item to show the expand icon
@@ -105,7 +128,7 @@ const DataBrowser = () => {
 			items.length > 0 ? (
 				items
 			) : (
-				<TreeItem label='...' nodeId={'...'} />
+				<StyledTreeItem label='...' nodeId={'...'} />
 			)
 		) : null
 	}
@@ -118,9 +141,20 @@ const DataBrowser = () => {
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
 				defaultEndIcon={<CloseSquare />}
-				onNodeToggle={(_event: any, filesIds: string[]) =>
-					setExpanded(filesIds)
-				}
+				onNodeToggle={(_event: any, filesIds: string[]) => {
+					const clickedId = filesIds[0]
+					const directoryExists = files.find(f => f.parentPath === clickedId)
+
+					if (directoryExists) {
+						setExpanded(filesIds)
+					} else {
+						getFiles2(clickedId)
+							.then(data => setFiles(f => [...f, ...data]))
+							.then(() => {
+								setExpanded(items => [...items, clickedId])
+							})
+					}
+				}}
 				expanded={expanded}
 				sx={{
 					flexGrow: 1,
@@ -131,13 +165,13 @@ const DataBrowser = () => {
 				{files
 					.filter(f => f.parentPath === '/')
 					.map(file => (
-						<TreeItem
+						<StyledTreeItem
 							key={file.path}
 							label={renderLabel(file)}
 							nodeId={file.path}
 						>
 							{subItems(file)}
-						</TreeItem>
+						</StyledTreeItem>
 					))}
 			</TreeView>
 		</Box>

@@ -43,7 +43,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
 	const {
 		user: [user],
-		groups: [groups],
+		hipGroups: [groups],
 	} = useAppStore()
 	const navigate = useNavigate()
 

@@ -24,7 +24,7 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	groups: [
+	hipGroups: [
 		HIPGroup[] | null,
 		React.Dispatch<React.SetStateAction<HIPGroup[] | null>>
 	]
@@ -78,7 +78,7 @@ export const AppStoreProvider = ({
 		error?: string
 	}>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [groups, setGroups] = useState<HIPGroup[] | null>(null)
+	const [hipGroups, setHipGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -108,7 +108,7 @@ export const AppStoreProvider = ({
 
 		getCenters().then(groups => {
 			if (groups) {
-				setGroups(groups)
+				setHipGroups(groups)
 			}
 		})
 
@@ -133,7 +133,7 @@ export const AppStoreProvider = ({
 		() => ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
-			groups: [groups, setGroups],
+			hipGroups: [hipGroups, setHipGroups],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
@@ -146,8 +146,8 @@ export const AppStoreProvider = ({
 			setDebug,
 			user,
 			setUser,
-			groups,
-			setGroups,
+			hipGroups,
+			setHipGroups,
 			containers,
 			setContainers,
 			availableApps,
