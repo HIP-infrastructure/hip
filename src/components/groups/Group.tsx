@@ -38,29 +38,44 @@ const Dashboard = () => {
 
 	const { showNotif } = useNotification()
 	const [id, setId] = useState<string | undefined>()
-	const [group, setGroup] = useState<HIPGroup | undefined>()
+	const [group, setGroup] = useState<HIPGroup | undefined | null>()
 
 	// const { trackEvent } = useMatomo()
 	const { id: incomingId } = useParams()
 
 	useEffect(() => {
-		if (!incomingId || incomingId === id) return
+		if (!incomingId || incomingId === 'default' || incomingId === id) return
 		setId(incomingId)
-	}, [id])
+	}, [incomingId])
 
 	useEffect(() => {
+		if (!id || !groups) return
+
 		const center = groups
 			?.filter(group => group.id === id)
 			?.find((_, i) => i === 0)
 
-		if (!center) return
+		if (!center) {
+			setGroup(null)
+			return
+		}
+
+		setGroup(center)
+	}, [id, groups])
+
+	useEffect(() => {
+		if (!id || !groups || !group) return
+
+		const center = groups
+			?.filter(group => group.id === id)
+			?.find((_, i) => i === 0)
 
 		if (!center?.users) {
-			getUsersForGroup(center.id)
+			getUsersForGroup(group.id)
 				.then(users => {
 					setGroups(groups =>
-						(groups || []).map(group =>
-							group.id === center.id ? { ...center, users } : group
+						(groups || []).map(g =>
+							g.id === group.id ? { ...group, users } : g
 						)
 					)
 				})
@@ -68,9 +83,7 @@ const Dashboard = () => {
 					showNotif(err.message, 'error')
 				})
 		}
-
-		if (center) setGroup(center)
-	}, [id, groups])
+	}, [id, groups, group])
 
 	const sessions = containers?.data?.filter(
 		c => c.type === ContainerType.SESSION
@@ -91,10 +104,7 @@ const Dashboard = () => {
 				</Typography>
 			)}
 
-			{
-				// FIXME: too early to show this
-			}
-			{groups && !group && (
+			{groups && group === null && (
 				<Box>
 					<Card
 						sx={{
