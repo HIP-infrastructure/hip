@@ -96,7 +96,7 @@ export const importSubject = async (
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
+			requesttoken: window.OC.requestToken
 		},
 		body: JSON.stringify(createSubject),
 	}).then(checkError)

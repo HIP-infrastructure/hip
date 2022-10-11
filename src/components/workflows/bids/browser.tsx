@@ -1,31 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
-import {
-	Alert,
-	Box,
-	Button,
-	CardActions,
-	CardContent,
-	CircularProgress,
-	Link,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from '@mui/material'
-
-import { getBidsDatasets, importSubject, getMatchingBidsDatasets } from '../../../api/bids'
-import { CreateSubjectDto, BIDSDataset } from '../../../api/types'
-import { useNotification } from '../../../hooks/useNotification'
+import { getMatchingBidsDatasets } from '../../../api/bids'
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
 
 import DatasetsResults from './datasetsSearchResults'
-import Summary from './summary'
 
 const boxStyle = {
 	border: 1,
@@ -56,12 +35,9 @@ const BidsBrowser = () => {
 	function handleDatasetsSearch(event: React.FormEvent<SearchTermFormElement>) {
 		event.preventDefault()
 		setSearchTerm(event.currentTarget.elements.searchTermText.value)
-		console.log('Handle search query:')
-		console.log(searchTerm)
 	}
 
 	useEffect(() => {
-		console.log('Update list of datasets')
 		if (searchTerm) {
 			setBidsDatasetsResults(undefined)
 			getMatchingBidsDatasets(user?.uid, searchTerm)
@@ -73,10 +49,9 @@ const BidsBrowser = () => {
 				.catch(error => {
 					setBidsDatasetsResults({ error })
 				})
-		}
-		else {
+		} else {
 			setBidsDatasetsResults(undefined)
-			getBidsDatasets(user?.uid)
+			getMatchingBidsDatasets(user?.uid, "*")
 				.then(data => {
 					if (data) {
 						setBidsDatasetsResults({ data })
@@ -87,8 +62,6 @@ const BidsBrowser = () => {
 				})
 		}
 	}, [searchTerm])
-
-	console.log(`Search query : ${searchTerm}`)
 
 	return (
 		<>

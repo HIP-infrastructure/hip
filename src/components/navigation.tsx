@@ -127,7 +127,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			},
 			{
 				route: center
-					? `private/${center.id}/workflows/bidssearch`  // FIXME: Not sure this is defined in Apps
+					? `private/${center.id}/workflows/bidssearch`
 					: 'private/default/workflows/bidssearch',
 				link: null,
 				label: 'BIDS Browser',

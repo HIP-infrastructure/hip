@@ -18,7 +18,7 @@ import {
 	Typography,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
-import { getAndIndexBidsDatasets, getBidsDatasets } from '../../../api/bids'
+import { getAndIndexBidsDatasets } from '../../../api/bids'
 import { BIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDataset from './forms/CreateDataset'
@@ -31,9 +31,7 @@ const Datasets = (): JSX.Element => {
 		user: [user],
 		BIDSDatasets: [BIDSDatasets, setBidsDatasets],
 		selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		selectedFiles: [_selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
