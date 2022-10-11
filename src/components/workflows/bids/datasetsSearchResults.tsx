@@ -10,7 +10,7 @@ import {
 
 import DatasetCard from '../../datasetCard'
 import { useAppStore } from '../../../store/appProvider'
-import { BIDSDataset } from '../../../api/types'
+import { IndexedBIDSDataset } from '../../../api/types'
 
 
 const boxStyle = {
@@ -24,7 +24,7 @@ const boxStyle = {
 }
 
 const DatasetsResults = (): JSX.Element => {
-	const [rows, setRows] = useState<BIDSDataset[]>([])
+	const [rows, setRows] = useState<IndexedBIDSDataset[]>([])
 
 	const {
 		user: [user],

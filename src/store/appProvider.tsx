@@ -12,6 +12,7 @@ import {
 import {
 	Application,
 	BIDSDataset,
+	IndexedBIDSDataset,
 	Container,
 	File,
 	Group,
@@ -35,9 +36,9 @@ export interface IAppState {
 		>
 	]
 	BIDSDatasetsResults: [
-		{ data?: BIDSDataset[]; error?: Error } | undefined,
+		{ data?: IndexedBIDSDataset[]; error?: Error } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
+			React.SetStateAction<{ data?: IndexedBIDSDataset[]; error?: Error } | undefined>
 		>
 	]
 	selectedBidsDataset: [
@@ -82,7 +83,7 @@ export const AppStoreProvider = ({
 		error?: Error
 	}>()
 	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<{
-		data?: BIDSDataset[]
+		data?: IndexedBIDSDataset[]
 		error?: Error
 	}>()
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()

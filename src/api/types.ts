@@ -138,6 +138,37 @@ export interface BIDSDataset {
 	DatasetDOI?: string
 }
 
+export interface IndexedBIDSDataset {
+	id: string
+	User?: string
+	Path?: string
+	Name: string
+	BIDSVersion?: string
+	License?: string
+	Authors?: string[]
+	Acknowledgements?: string
+	HowToAcknowledge?: string
+	Funding?: string[]
+	ReferencesAndLinks?: string[]
+	DatasetDOI?: string
+	CreationDate: string
+	ParticipantsCount: number
+	ParticipantsGroups: string[]
+	AgeRange: number[]
+	Participants?: Participant[]
+	SessionsCount?: number
+	Tasks?: string[]
+	RunsCount?: number
+	Modalities?: string[]
+	Formats?: string[]
+	SEEGChannelCount?: number
+	SamplingFrequency?: number
+	RecordingDuration?: number
+	EventsFileCount?: number
+	Size?: string
+	FileCount?: number
+}
+
 export type IOption = { label: string; inputValue?: string }
 
 export interface IEntity {

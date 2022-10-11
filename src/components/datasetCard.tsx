@@ -1,171 +1,194 @@
-import React, { useEffect, useState } from 'react'
-import { Add } from '@mui/icons-material'
+import React from 'react'
 import {
 	Box,
     Card,
-	CardActions,
 	CardContent,
-    Divider,
-	Link,
-	Paper,
+    Link,
+	Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
 	Typography,
 } from '@mui/material'
-import { BIDSDataset } from '../api/types'
+import { IndexedBIDSDataset } from '../api/types'
 
-type Props = {dataset: BIDSDataset}
+type Props = {dataset: IndexedBIDSDataset}
 
 const DatasetCard = ({dataset} : Props): JSX.Element => {
 
-	return (
-		<>
-            <Paper
-                sx={{
-                    flex: 1,
-                    mb: 2
-                }}
-            >
-                <Card sx={{ display: 'flex' }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', m: 0}}>
-                        <CardContent sx={{ flex: '1 0 auto', m: 0 }}>
-                        <Typography component="div" variant="h5">
-                            {dataset?.Name} &nbsp;
-                            <Typography
-                                variant="subtitle1"
-                                color="text.secondary"
-                                component="div"
-                                display="inline"
-                            >
-                                {dataset?.Authors}
-                            </Typography>
-                            &nbsp;
-                            <Typography
-                                variant="subtitle1"
-                                color="text.secondary"
-                                component="div"
-                                display="inline"
-                            >
-                                (Creation date TBC)
-                            </Typography>
-                        </Typography>
-                        </CardContent>
-                        <Box sx={{ display: 'flex', mt: -2, mb: -2 }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                >
-                                    Dataset id: {dataset?.id} (
-                                        <Link
-                                            target='_blank'
-                                            href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${dataset?.path}`}
-                                        >
-                                            {dataset?.path}
-                                        </Link>
-                                    )
-                                </Typography>
-                            </CardContent>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                >
-                                    #Event files: TBC
-                                </Typography>
-                            </CardContent>
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ display: 'flex', mt: 0, mb: -2 }}>
-                            <CardContent sx={{ flex: '1 0 auto' }} >
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                    display="inline"
-                                >
-                                    #Participants: {dataset?.participants?.length}
-                                </Typography>
-                                &nbsp;
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                    display="inline"
-                                >
-                                    Ages(yrs): TBC
-                                </Typography>
-                            </CardContent>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                >
-                                    #Sessions: TBC
-                                </Typography>
-                            </CardContent>
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ display: 'flex', mt: 0, mb: -2 }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                    display="inline"
-                                >
-                                    Modality(s): TBC
-                                </Typography>
-                                &nbsp;
-                                (
+    return (
+        <>
+            <Card sx={{ display: 'flex', mb: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', m: 0}}>
+                    <CardContent sx={{ flex: '1 0 auto', m: 0 }}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <Typography component="div" variant="h5">
+                                    {dataset?.Name} &nbsp;
                                     <Typography
                                         variant="subtitle1"
                                         color="text.secondary"
                                         component="div"
                                         display="inline"
                                     >
-                                        Format(s): TBC
+                                        {dataset?.Authors}
                                     </Typography>
-                                )
-                            </CardContent>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
+                                </Typography>
+                            </TableCell>
+                            <TableCell align="right">
                                 <Typography
                                     variant="subtitle1"
                                     color="text.secondary"
                                     component="div"
+                                    display="inline"
                                 >
-                                    #SEEG Channels: TBC
+                                    ({dataset?.CreationDate})
                                 </Typography>
-                            </CardContent>
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ display: 'flex' }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                >
-                                    Dataset size: TBC
-                                </Typography>
-                            </CardContent>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    color="text.secondary"
-                                    component="div"
-                                >
-                                    #Files: TBC
-                                </Typography>
-                            </CardContent>
-                        </Box>
-                    </Box>
-                    <CardActions></CardActions>
-                </Card>
-            </Paper>
+                            </TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell component="th" scope="row">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        Dataset id: {dataset?.id} (
+                                            <Link
+                                                target='_blank'
+                                                href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${dataset?.Path}`}
+                                            >
+                                                {dataset?.Path}
+                                            </Link>
+                                        )
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        #Event files: {dataset?.EventsFileCount}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell component="th" scope="row">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                        marginBottom="-2pt"
+                                    >
+                                        #Participants: {dataset?.ParticipantsCount}
+                                    </Typography>
+                                    &nbsp;
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                        marginBottom="-2pt"
+                                        marginTop="-2pt"
+                                        // display="inline"
+                                    >
+                                        Ages(yrs): [{dataset?.AgeRange?.join(', ')}]
+                                    </Typography>
+                                    &nbsp;
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                        marginBottom="-2pt"
+                                        marginTop="-2pt"
+                                        // display="inline"
+                                    >
+                                        Groups: {dataset?.ParticipantsGroups?.join(', ')}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        #Sessions: {dataset?.SessionsCount}
+                                    </Typography>
+                                    &nbsp;
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                        display="inline"
+                                    >
+                                        Tasks: {dataset?.Tasks?.join(', ')}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell component="th" scope="row">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                        display="inline"
+                                    >
+                                        Modality(s): {dataset?.Modalities?.join(', ')}
+                                    </Typography>
+                                    &nbsp;&nbsp;
+                                    (
+                                        <Typography
+                                            variant="subtitle1"
+                                            color="text.secondary"
+                                            component="div"
+                                            display="inline"
+                                        >
+                                            Format(s): {dataset?.Formats?.join(', ')}
+                                        </Typography>
+                                    )
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        #SEEG Channels: {dataset?.SEEGChannelCount}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell component="th" scope="row">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        Dataset size: {dataset?.Size}B
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="text.secondary"
+                                        component="div"
+                                    >
+                                        #Files: {dataset?.FileCount}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                    </CardContent>
+                </Box>
+            </Card>
         </>
-	)
+    )
 }
 
 DatasetCard.displayName = 'DatasetCard'

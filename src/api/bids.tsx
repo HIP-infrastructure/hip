@@ -7,6 +7,7 @@ import {
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
 	IError,
+	IndexedBIDSDataset,
 	Participant,
 } from './types'
 
@@ -37,7 +38,7 @@ export const getAndIndexBidsDatasets = async (
 export const getMatchingBidsDatasets = async (
 	userId?: string,
 	query?: string
-): Promise<BIDSDataset[]> => {
+): Promise<IndexedBIDSDataset[]> => {
 	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}`
 	console.log(`Get matching BIDS dataset with ${url}`)
 	return fetch(url, {
