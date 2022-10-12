@@ -146,41 +146,38 @@ const Dashboard = () => {
 				</Box>
 			)}
 
-			<Box sx={{ width: 0.75, mt: 4 }}>
+			<Box sx={{ mt: 4 }}>
 				<Box
 					sx={{
-						display: 'flex',
-						justifyContent: 'start',
-						alignItems: 'start',
+						display: 'grid',
+						gridTemplateColumns: '320px 320px 320px',
+						gap: 4,
 					}}
 				>
-					<Box
-						sx={{
-							flex: isMember ? '2 1 0%' : '0 1 0%',
-							display: 'flex',
-							justifyContent: 'start',
-							gap: '32px 32px',
-							flexWrap: 'wrap',
-							alignItems: 'start',
-						}}
-					>
+					<Box sx={{ gridColumn: '1', gridRow: '1' }}>
 						{group && <MainCard group={group} />}
-						{isMember && (
-							<Data bidsDatasets={bidsDatasets} sessions={sessions} />
-						)}
-						{debug && isMember && <Tools />}
 					</Box>
-					<Box sx={{ ml: isMember ? 0 : 4, flex: '1 0 0%' }}>
-						{group && <Members group={group} users={group?.users} />}
-					</Box>
+					{isMember && (
+						<>
+							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
+								<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+							</Box>
+							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
+								<Tools />
+							</Box>
+							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
+								{group && <Members group={group} users={group?.users} />}
+							</Box>
+						</>
+					)}
+					{!isMember && (
+						<>
+							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
+								{group && <Members group={group} users={group?.users} />}
+							</Box>
+						</>
+					)}
 				</Box>
-			</Box>
-
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
 			</Box>
 		</>
 	)

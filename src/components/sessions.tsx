@@ -15,7 +15,10 @@ import {
 	CardMedia,
 	Chip,
 	CircularProgress,
+	FormControlLabel,
+	FormGroup,
 	IconButton,
+	Switch,
 	Tooltip,
 	Typography,
 } from '@mui/material'
@@ -47,7 +50,7 @@ const Sessions = (): JSX.Element => {
 	const {
 		user: [user],
 		containers: [containers, setContainers],
-		debug: [debug],
+		debug: [debug, setDebug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
 	const [showAdminView, setShowAdminView] = React.useState(false)
@@ -135,17 +138,21 @@ const Sessions = (): JSX.Element => {
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
-					<Box>
+					<Box sx={{display: 'flex'}}>
 						{user?.isAdmin && (
-							<Button
-								variant='contained'
-								color='primary'
-								onClick={() => {
-									setShowAdminView(!showAdminView)
-								}}
-							>
-								Toggle admin view
-							</Button>
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={showAdminView}
+											onChange={() => {
+												setShowAdminView(!showAdminView)
+											}}
+										/>
+									}
+									label='Admin view'
+								/>
+							</FormGroup>
 						)}
 						<Button
 							variant='contained'
@@ -163,16 +170,6 @@ const Sessions = (): JSX.Element => {
 					</Box>
 				}
 			/>
-
-			{user?.isAdmin && (
-				<Typography
-					sx={{ color: 'secondary.light' }}
-					gutterBottom
-					variant='subtitle2'
-				>
-					Welcome {user?.displayName}, you are an admin 
-				</Typography>
-			)}
 
 			{containers?.error && <Alert severity='error'>{containers?.error}</Alert>}
 
@@ -391,6 +388,12 @@ const Sessions = (): JSX.Element => {
 						</CardActions>
 					</Card>
 				))}
+			</Box>
+			<Box sx={{ ml: 2, mt: 8 }}>
+				<FormControlLabel
+					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
+					label='Debug'
+				/>
 			</Box>
 		</>
 	)
