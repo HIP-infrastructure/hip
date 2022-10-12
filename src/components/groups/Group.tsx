@@ -12,8 +12,8 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getUser, getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, HIPGroup, User } from '../../api/types'
+import { getUsersForGroup } from '../../api/gatewayClientAPI'
+import { ContainerType, HIPGroup } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
@@ -46,7 +46,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (!incomingId || incomingId === 'default' || incomingId === id) return
 		setId(incomingId)
-	}, [incomingId])
+	}, [incomingId, id, setId])
 
 	useEffect(() => {
 		if (!id || !groups) return
@@ -61,7 +61,7 @@ const Dashboard = () => {
 		}
 
 		setGroup(center)
-	}, [id, groups])
+	}, [id, groups, setGroup, showNotif])
 
 	useEffect(() => {
 		if (!id || !groups || !group) return
@@ -83,7 +83,7 @@ const Dashboard = () => {
 					showNotif(err.message, 'error')
 				})
 		}
-	}, [id, groups, group])
+	}, [id, groups, group, setGroups, showNotif])
 
 	const sessions = containers?.data?.filter(
 		c => c.type === ContainerType.SESSION
@@ -164,14 +164,14 @@ const Dashboard = () => {
 							alignItems: 'start',
 						}}
 					>
-						<MainCard group={group} />
+						{group && <MainCard group={group} />}
 						{isMember && (
 							<Data bidsDatasets={bidsDatasets} sessions={sessions} />
 						)}
 						{debug && isMember && <Tools />}
 					</Box>
 					<Box sx={{ ml: isMember ? 0 : 4, flex: '1 0 0%' }}>
-						<Members group={group} users={group?.users} />
+						{group && <Members group={group} users={group?.users} />}
 					</Box>
 				</Box>
 			</Box>

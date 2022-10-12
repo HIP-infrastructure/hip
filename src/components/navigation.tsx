@@ -12,7 +12,7 @@ import {
 	Info,
 	Monitor,
 	Public,
-	AdminPanelSettings
+	AdminPanelSettings,
 } from '@mui/icons-material'
 import GradingIcon from '@mui/icons-material/Grading'
 import {
@@ -124,17 +124,20 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				image: null,
 				children: [],
 			},
-			...(user?.isAdmin && [{
-				route: 'admin',
-				link: null,
-				label: 'ADMIN',
-				icon: <AdminPanelSettings />,
-				title: '',
-				disabled: false,
-				color: null,
-				image: null,
-				children: []
-			}] || []),
+			...((user?.isAdmin && [
+				{
+					route: 'admin',
+					link: null,
+					label: 'ADMIN',
+					icon: <AdminPanelSettings />,
+					title: '',
+					disabled: false,
+					color: null,
+					image: null,
+					children: [],
+				},
+			]) ||
+				[]),
 		],
 	})
 

@@ -9,13 +9,8 @@ import {
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
-import { scanUserFiles, setNCWorkspace } from '../../api/gatewayClientAPI'
+import { scanUserFiles } from '../../api/gatewayClientAPI'
 import { useAppStore } from '../../store/appProvider'
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
 
 const Tools = () => {
 	const {
@@ -33,13 +28,13 @@ const Tools = () => {
 		setScanning(false)
 	}
 
-	const setWorkspace = async () => {
-		if (!user) return
-		setScanning(true)
-		const res = await setNCWorkspace(user.uid || '')
-		setScanResult(res)
-		setScanning(false)
-	}
+	// const setWorkspace = async () => {
+	// 	if (!user) return
+	// 	setScanning(true)
+	// 	const res = await setNCWorkspace(user.uid || '')
+	// 	setScanResult(res)
+	// 	setScanning(false)
+	// }
 
 	return (
 		<>
@@ -69,7 +64,8 @@ const Tools = () => {
 						variant='body2'
 						color='text.secondary'
 					>
-						Perform a files scan to synchronize the backend storage with the interface
+						Perform a files scan to synchronize the backend storage with the
+						interface
 					</Typography>
 					<Box
 						sx={{

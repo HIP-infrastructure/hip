@@ -50,7 +50,7 @@ const Sessions = (): JSX.Element => {
 		debug: [debug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
-	const [showAdminView, setShowAdminView] = React.useState(true)
+	const [showAdminView, setShowAdminView] = React.useState(false)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
@@ -68,7 +68,7 @@ const Sessions = (): JSX.Element => {
 					)
 		}, 2 * 1000)
 		return () => clearInterval(interval)
-	}, [])
+	}, [setContainers, user])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
@@ -170,8 +170,7 @@ const Sessions = (): JSX.Element => {
 					gutterBottom
 					variant='subtitle2'
 				>
-					Welcome {user?.displayName}, beware, you are an admin and you can see
-					every desktops
+					Welcome {user?.displayName}, you are an admin 
 				</Typography>
 			)}
 

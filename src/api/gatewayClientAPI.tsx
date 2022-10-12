@@ -5,7 +5,6 @@ import {
 	TreeNode,
 	User,
 	UserCredentials,
-	File,
 	File2,
 	APIContainersResponse,
 	GroupFolder,
@@ -64,7 +63,9 @@ export const getUser = async (userid?: string): Promise<User> =>
 		},
 	}).then(checkError)
 
-export const getGroupFolders = async (userid?: string): Promise<GroupFolder[]> =>
+export const getGroupFolders = async (
+	userid?: string
+): Promise<GroupFolder[]> =>
 	fetch(`${API_GATEWAY}/groups/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

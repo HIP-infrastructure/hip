@@ -1,6 +1,5 @@
-import { ExpandMore, ChevronRight } from '@mui/icons-material'
 import { TreeView, TreeItem, TreeItemProps, treeItemClasses } from '@mui/lab'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { getFiles2 } from '../api/gatewayClientAPI'
@@ -141,7 +140,7 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
 				defaultEndIcon={<CloseSquare />}
-				onNodeToggle={(_event: any, filesIds: string[]) => {
+				onNodeToggle={(_event, filesIds: string[]) => {
 					const clickedId = filesIds[0]
 					const directoryExists = files.find(f => f.parentPath === clickedId)
 

@@ -17,7 +17,7 @@ const Admin = () => {
 		getGroupFolders(user?.uid).then(groupFolders => {
 			setGroupFolders(groupFolders)
 		})
-	}, [])
+	}, [user])
 
 	return (
 		<Box>

@@ -42,18 +42,16 @@ const Members = ({ group, users }: { group?: HIPGroup; users?: User[] }) => {
 
 						{users === undefined && (
 							<CircularProgress
-							size={16}
-							color='secondary'
-							sx={{ top: 10, left: 10 }}
-						/>
+								size={16}
+								color='secondary'
+								sx={{ top: 10, left: 10 }}
+							/>
 						)}
 
 						<Stack spacing={1}>
-							{users?.length === 0 && 
-							<Typography variant='subtitle2'>
-								No members yet
-							</Typography>
-							}
+							{users?.length === 0 && (
+								<Typography variant='subtitle2'>No members yet</Typography>
+							)}
 							{users?.map(user => (
 								<Box
 									key={user.id}

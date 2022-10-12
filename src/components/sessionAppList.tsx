@@ -22,7 +22,9 @@ interface Session {
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
-	const { availableApps: [availableApps] } = useAppStore()
+	const {
+		availableApps: [availableApps],
+	} = useAppStore()
 	const [debounce, setDebounce] = React.useState<{ [key: string]: boolean }>({})
 
 	const appInSession = ({ name }: { name: string }) =>

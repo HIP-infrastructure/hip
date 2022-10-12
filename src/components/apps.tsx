@@ -14,7 +14,9 @@ import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 
 const Apps = () => {
-	const { availableApps: [availableApps] } = useAppStore()
+	const {
+		availableApps: [availableApps],
+	} = useAppStore()
 
 	return (
 		<>

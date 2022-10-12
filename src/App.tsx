@@ -46,23 +46,25 @@ const Layout = (): JSX.Element => {
 	// const handleDrawerToggle = () => {
 	// 	setMobileOpen(!mobileOpen)
 	// }
-	
 
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
-				{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-					<Typography sx={{ 
-						position: 'absolute', 
+			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
+				<Typography
+					sx={{
+						position: 'absolute',
 						top: '8px',
 						right: '200px',
-						color: '#FA6812', 
+						color: '#FA6812',
 						zIndex: '10000',
 						transform: 'translateX(-50%)',
-						}} variant='h6'>
-						{process.env.REACT_APP_HOSTNAME}
-					</Typography>
-				)}
+					}}
+					variant='h6'
+				>
+					{process.env.REACT_APP_HOSTNAME}
+				</Typography>
+			)}
 			<Box
 				component='nav'
 				sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}

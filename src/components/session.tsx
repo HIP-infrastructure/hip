@@ -30,11 +30,7 @@ import {
 	Container,
 	ContainerType,
 } from '../api/types'
-import {
-	APP_MARGIN_TOP,
-	DRAWER_WIDTH,
-	ROUTE_PREFIX,
-} from '../constants'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
 import SessionInfo from './sessionInfo'
@@ -62,7 +58,9 @@ const Session = (): JSX.Element => {
 	const [sessionIsAlive, setSessionIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
 
-	const sessions = containers?.data?.filter(c => c.type === ContainerType.SESSION)
+	const sessions = containers?.data?.filter(
+		c => c.type === ContainerType.SESSION
+	)
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -79,8 +77,8 @@ const Session = (): JSX.Element => {
 					.then(data => setContainers({ data }))
 					.catch(error => setContainers({ error }))
 		}, 2 * 1000)
-		return () => clearInterval(interval);
-	}, [])
+		return () => clearInterval(interval)
+	}, [setContainers, user])
 
 	// Check for XPra readiness
 	useEffect(() => {
@@ -110,7 +108,9 @@ const Session = (): JSX.Element => {
 		const s = containers?.data?.find(c => c.id === params.id)
 		if (s) {
 			// && (s.id !== session?.id)) {
-			s.apps = containers?.data?.filter(c => c.parentId === s.id) as AppContainer[]
+			s.apps = containers?.data?.filter(
+				c => c.parentId === s.id
+			) as AppContainer[]
 			setSession(s)
 		}
 	}, [params, session, setSession, containers])

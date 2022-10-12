@@ -1,4 +1,3 @@
-
 export interface APIContainersResponse {
 	data?: Container[]
 	error?: string
@@ -83,8 +82,8 @@ export interface HIPGroup {
 	description?: string
 	website?: string
 	socialnetwork: {
-		[index: string]: any
-	}[]
+		[index: string]: string
+	}
 	users?: User[]
 }
 
@@ -112,7 +111,7 @@ export interface TreeNode {
 	label: string
 	icon: string
 	data: Document
-	children?: TreeNode[]
+	children?: boolean
 }
 
 export interface File2 {

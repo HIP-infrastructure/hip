@@ -25,7 +25,7 @@ const linkStyle = {
 }
 
 const MainCard = ({ group }: { group?: HIPGroup }) => {
-	const SocialButton = ({ network, url }: { network: string; url: any }) => {
+	const SocialButton = ({ network, url }: { network: string; url: string }) => {
 		let component
 		switch (network) {
 			case 'facebook':
@@ -124,7 +124,7 @@ const MainCard = ({ group }: { group?: HIPGroup }) => {
 						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
 							{group.socialnetwork &&
 								Object.keys(group.socialnetwork).map(
-									(key: any) =>
+									(key) =>
 										key && (
 											<SocialButton
 												key={key}

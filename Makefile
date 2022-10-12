@@ -21,7 +21,7 @@ t.lint: dep
 	npm run lint
 
 #build: @ Builds the project
-build: dep b.clean b.bundle b.package
+build: dep b.clean t.lint b.bundle b.package
 
 #b.clean: @ Removes all build artifacts
 b.clean:
