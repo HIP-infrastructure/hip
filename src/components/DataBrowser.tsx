@@ -1,11 +1,11 @@
-import { TreeView, TreeItem, TreeItemProps, treeItemClasses } from '@mui/lab'
-import { Box, CircularProgress } from '@mui/material'
+import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
+import { Box, CircularProgress, TextField } from '@mui/material'
+import { alpha, styled } from '@mui/material/styles'
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { getFiles2 } from '../api/gatewayClientAPI'
-import { File2 } from '../api/types'
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
-import { alpha, styled } from '@mui/material/styles'
+import { getFiles2, search } from '../api/gatewayClientAPI'
+import { File2, ISearch } from '../api/types'
 
 function MinusSquare(props: SvgIconProps) {
 	return (
@@ -72,16 +72,60 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 		})) || []),
 	])
 	const [expanded, setExpanded] = React.useState(['/'])
+	const [term, setTerm] = React.useState('')
+	const [searchResults, setSearchResults] = React.useState<File2[]>([])
 
 	useEffect(() => {
 		getFiles2('/').then(data => {
-			setFiles(f =>
-				[...f, ...data].sort(
-					(a: File2, b: File2) => -b.name.localeCompare(a.name)
-				)
+			const r = [...files, ...data].sort(
+				(a: File2, b: File2) => -b.name.localeCompare(a.name)
 			)
+			setFiles(r
+			)
+			setSearchResults(r)
 		})
 	}, [])
+
+	useEffect(() => {
+		if (term.length > 1) {
+			search(term).then((result: ISearch) => {
+				const nextFiles: File2[] = result.entries.map(file => ({
+					name: file.title,
+					isDirectory: false,
+					path: file.attributes.path,
+					parentPath: file.attributes.path.split('/').slice(0, -1).join('/'),
+				}))
+
+				const tf = new Set<string>()
+				const parentPathes = new Set(nextFiles?.map(f => f.parentPath) || [])
+				Array.from(parentPathes).forEach(path => {
+					const parts = path?.split('/')
+					let p = ''
+					parts?.forEach(part => {
+						p += part
+						tf.add(p)
+						p += '/'
+					})
+				})
+				Array.from(tf).forEach((path: string) => {
+					if (path) {
+						const p = path.split('/').slice(0, -1).join('/')
+
+						nextFiles.push({
+							name: path.split('/').pop() || 'unknown',
+							isDirectory: true,
+							path: path === '' ? '/' : path,
+							parentPath: p === '' ? '/' : p,
+						})
+					}
+				})
+				setFiles(nextFiles)
+				setExpanded([...(nextFiles?.map(n => n.parentPath || '') || [])])
+			})
+		} else {
+			setFiles(searchResults)
+		}
+	}, [term])
 
 	const renderLabel = (item: File2) => {
 		return (
@@ -141,6 +185,14 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 					sx={{ top: 10, left: 10 }}
 				/>
 			)}
+			<TextField
+				id='outlined-basic'
+				onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
+					setTerm(e.target.value)
+				}
+				label='Outlined'
+				variant='outlined'
+			/>
 			<TreeView
 				aria-label='file system navigator'
 				defaultExpanded={[root.path]}

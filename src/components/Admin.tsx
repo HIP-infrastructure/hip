@@ -35,7 +35,8 @@ const Admin = () => {
 			</Box>
 			<Box sx={{ mb: 4 }}>
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
-					Experimental async File Browser for private and groupfolders using Node fs class
+					Experimental async File Browser for private data and groupfolders using Node fs class.
+					Search via NC files api
 				</Typography>
 				{groupFolders && <DataBrowser groups={groupFolders.map(g => g.label)} />}
 			</Box>
