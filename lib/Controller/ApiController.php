@@ -22,11 +22,17 @@ class ApiController extends Controller
         $this->userSession = $userSession;
     }
 
+     /**
+     * @NoAdminRequired
+     */
     public function isloggedin()
     {
         return $this->userSession->isLoggedIn();
     }
 
+    /**
+     * @NoAdminRequired
+     */
     public function uid()
     {
         return $this->userSession->getUser()->getUID();
