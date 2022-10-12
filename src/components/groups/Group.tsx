@@ -4,11 +4,7 @@ import {
 	Box,
 	Card,
 	CardContent,
-	CardMedia,
-	FormControlLabel,
-	Link,
-	Switch,
-	Typography,
+	CardMedia, Link, Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -32,8 +28,7 @@ const Dashboard = () => {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
 		hipGroups: [groups, setGroups],
-		user: [user],
-		debug: [debug, setDebug],
+		user: [user]
 	} = useAppStore()
 
 	const { showNotif } = useNotification()

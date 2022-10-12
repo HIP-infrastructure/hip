@@ -1,5 +1,5 @@
 import { TreeView, TreeItem, TreeItemProps, treeItemClasses } from '@mui/lab'
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { getFiles2 } from '../api/gatewayClientAPI'
@@ -134,6 +134,13 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 
 	return (
 		<Box>
+			{!files && (
+				<CircularProgress
+					size={32}
+					color='secondary'
+					sx={{ top: 10, left: 10 }}
+				/>
+			)}
 			<TreeView
 				aria-label='file system navigator'
 				defaultExpanded={[root.path]}
@@ -157,7 +164,6 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 				expanded={expanded}
 				sx={{
 					flexGrow: 1,
-					maxWidth: 400,
 					overflowY: 'auto',
 				}}
 			>
