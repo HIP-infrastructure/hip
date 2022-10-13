@@ -4,8 +4,8 @@ import { alpha, styled } from '@mui/material/styles'
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { getFiles2, search } from '../api/gatewayClientAPI'
-import { File2, ISearch } from '../api/types'
+import { getFiles2, search } from '../../api/gatewayClientAPI'
+import { File2, ISearch } from '../../api/types'
 
 function MinusSquare(props: SvgIconProps) {
 	return (
@@ -62,29 +62,31 @@ const root = {
 }
 
 const DataBrowser = ({ groups }: { groups?: string[] }) => {
-	const [files, setFiles] = React.useState<File2[]>([
-		root,
-		...(groups?.map(name => ({
-			name,
-			isDirectory: true,
-			path: `/groupfolder/${name}`,
-			parentPath: '/',
-		})) || []),
-	])
+	const [files, setFiles] = React.useState<File2[]>([root])
 	const [expanded, setExpanded] = React.useState(['/'])
 	const [term, setTerm] = React.useState('')
-	const [searchResults, setSearchResults] = React.useState<File2[]>([])
+	const [filesCache, setFilesCache] = React.useState<File2[]>([])
 
 	useEffect(() => {
 		getFiles2('/').then(data => {
-			const r = [...files, ...data].sort(
-				(a: File2, b: File2) => -b.name.localeCompare(a.name)
-			)
-			setFiles(r
-			)
-			setSearchResults(r)
+			const r = sortFile(data)
+			setFiles(r)
+			setFilesCache(r)
 		})
 	}, [])
+
+	useEffect(() => {
+		const r = sortFile([
+			...files,
+			...(groups?.map(name => ({
+				name,
+				isDirectory: true,
+				path: `/groupfolder/${name}`,
+				parentPath: '/',
+			})) || [])])
+
+		setFiles(r)
+	}, [groups, files])
 
 	useEffect(() => {
 		if (term.length > 1) {
@@ -123,9 +125,12 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 				setExpanded([...(nextFiles?.map(n => n.parentPath || '') || [])])
 			})
 		} else {
-			setFiles(searchResults)
+			setFiles(filesCache)
 		}
-	}, [term])
+	}, [term, filesCache, setFiles])
+
+	const sortFile = (data: File2[]) =>
+		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
 
 	const renderLabel = (item: File2) => {
 		return (
@@ -186,11 +191,12 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 				/>
 			)}
 			<TextField
-				id='outlined-basic'
+				id='search-textfield'
+				sx={{ width: '100%', mb: 2 }}
 				onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
 					setTerm(e.target.value)
 				}
-				label='Outlined'
+				label='Search'
 				variant='outlined'
 			/>
 			<TreeView

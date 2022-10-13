@@ -128,7 +128,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					route: 'admin',
 					link: null,
-					label: 'ADMIN',
+					label: 'Admin',
 					icon: <AdminPanelSettings />,
 					title: '',
 					disabled: false,
