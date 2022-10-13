@@ -139,28 +139,29 @@ const FileChooser = (): JSX.Element => {
 								}) || []
 							],
 					].map(f => (
-						<Box
-							sx={{ display: 'flex', alignItems: 'center' }}
-							component='li'
-							key={f.path}
-						>
-							{f.isDirectory ? (
-								<Folder color='action' />
-							) : (
-								<Article color='action' />
-							)}
-							<Typography variant='subtitle2' color='text.secondary'>
-								<div
-									onClick={(
-										event: React.MouseEvent<HTMLDivElement, MouseEvent>
-									) => {
-										setSelectedFile(f)
-									}}
-								>
-									{f.name}
-								</div>
-							</Typography>
-						</Box>
+						<Box key={`${f}`}></Box>
+						// <Box
+						// 	sx={{ display: 'flex', alignItems: 'center' }}
+						// 	component='li'
+						// 	key={f.path}
+						// >
+						// 	{f.isDirectory ? (
+						// 		<Folder color='action' />
+						// 	) : (
+						// 		<Article color='action' />
+						// 	)}
+						// 	<Typography variant='subtitle2' color='text.secondary'>
+						// 		<div
+						// 			onClick={(
+						// 				event: React.MouseEvent<HTMLDivElement, MouseEvent>
+						// 			) => {
+						// 				setSelectedFile(f)
+						// 			}}
+						// 		>
+						// 			{f.name}
+						// 		</div>
+						// 	</Typography>
+						// </Box>
 					))}
 				</Box>
 			</Box>
