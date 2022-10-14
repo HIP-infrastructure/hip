@@ -6,6 +6,7 @@ import {
 	Visibility,
 } from '@mui/icons-material'
 import {
+	Alert,
 	Box,
 	Button,
 	Card,
@@ -14,15 +15,19 @@ import {
 	CardMedia,
 	Chip,
 	CircularProgress,
+	FormControlLabel,
+	FormGroup,
 	IconButton,
+	Switch,
 	Tooltip,
 	Typography,
 } from '@mui/material'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
 	createSession,
 	forceRemove,
+	getContainers,
 	pauseAppsAndSession,
 	removeAppsAndSession,
 	resumeAppsAndSession,
@@ -44,13 +49,29 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 const Sessions = (): JSX.Element => {
 	const {
 		user: [user],
-		containers: [containers],
-		debug: [debug],
+		containers: [containers, setContainers],
+		debug: [debug, setDebug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
+	const [showAdminView, setShowAdminView] = React.useState(false)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			user &&
+				getContainers(user)
+					.then(data => setContainers({ data }))
+					.catch(error =>
+						setContainers(containers => ({
+							data: containers?.data,
+							error,
+						}))
+					)
+		}, 2 * 1000)
+		return () => clearInterval(interval)
+	}, [setContainers, user])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
@@ -70,6 +91,13 @@ const Sessions = (): JSX.Element => {
 
 		if (reply) {
 			removeAppsAndSession(sessionId, user?.uid || '')
+				.then(data => setContainers({ data }))
+				.catch(error =>
+					setContainers(containers => ({
+						data: containers?.data,
+						error,
+					}))
+				)
 
 			trackEvent({
 				category: 'server',
@@ -78,12 +106,28 @@ const Sessions = (): JSX.Element => {
 		}
 	}
 
-	const sessions = containers
+	const createNewSession = async () => {
+		createSession(user?.uid || '')
+			.then(data => setContainers(c => ({ data: [...(c?.data || []), data] })))
+			.catch(error =>
+				setContainers(containers => ({
+					data: containers?.data,
+					error,
+				}))
+			)
+	}
+
+	const sessions = containers?.data
 		?.filter((container: Container) => container.type === ContainerType.SESSION)
 		.map((s: Container) => ({
 			...s,
-			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
+			apps: (containers?.data as AppContainer[]).filter(
+				a => a.parentId === s.id
+			),
 		}))
+		?.filter((s: Container) =>
+			user && showAdminView ? true : s.user === user?.uid
+		)
 
 	return (
 		<>
@@ -94,21 +138,40 @@ const Sessions = (): JSX.Element => {
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
-					<Button
-						variant='contained'
-						color='primary'
-						onClick={() => {
-							createSession(user?.uid || '')
-							trackEvent({
-								category: 'server',
-								action: 'start',
-							})
-						}}
-					>
-						Create Desktop
-					</Button>
+					<Box sx={{display: 'flex'}}>
+						{user?.isAdmin && (
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={showAdminView}
+											onChange={() => {
+												setShowAdminView(!showAdminView)
+											}}
+										/>
+									}
+									label='Admin view'
+								/>
+							</FormGroup>
+						)}
+						<Button
+							variant='contained'
+							color='primary'
+							onClick={() => {
+								createNewSession()
+								trackEvent({
+									category: 'server',
+									action: 'start',
+								})
+							}}
+						>
+							Create Desktop
+						</Button>
+					</Box>
 				}
 			/>
+
+			{containers?.error && <Alert severity='error'>{containers?.error}</Alert>}
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
@@ -131,7 +194,7 @@ const Sessions = (): JSX.Element => {
 						<Button
 							variant='contained'
 							color='primary'
-							onClick={() => createSession(user?.uid || '')}
+							onClick={createNewSession}
 						>
 							Create Desktop
 						</Button>
@@ -139,8 +202,12 @@ const Sessions = (): JSX.Element => {
 				)}
 				{sessions?.map((session, i) => (
 					<Card
-						sx={{ maxWidth: 320, display: 'flex', flexDirection: 'column' }}
-						key={session.name}
+						sx={{
+							maxWidth: 320,
+							display: 'flex',
+							flexDirection: 'column',
+						}}
+						key={session.id}
 					>
 						<Box sx={{ position: 'relative' }}>
 							<Tooltip
@@ -181,13 +248,20 @@ const Sessions = (): JSX.Element => {
 									<Typography variant='h5'>
 										{`Desktop #${session?.name}`}
 									</Typography>
-									<Typography
-										gutterBottom
-										variant='caption'
-										color='text.secondary'
-									>
-										{session?.user}
-									</Typography>
+									{user?.uid !== session.user && (
+										<Typography gutterBottom variant='caption' color='#FA6812'>
+											{session?.user}
+										</Typography>
+									)}
+									{user?.uid === session.user && (
+										<Typography
+											gutterBottom
+											variant='caption'
+											color='text.secondary'
+										>
+											{session?.user}
+										</Typography>
+									)}
 								</Box>
 								<Box>
 									<Chip
@@ -231,7 +305,9 @@ const Sessions = (): JSX.Element => {
 										edge='end'
 										color='primary'
 										aria-label='force remove'
-										onClick={() => forceRemove(session.id)}
+										onClick={() => {
+											forceRemove(session.id)
+										}}
 									>
 										<Clear />
 									</IconButton>
@@ -312,6 +388,12 @@ const Sessions = (): JSX.Element => {
 						</CardActions>
 					</Card>
 				))}
+			</Box>
+			<Box sx={{ ml: 2, mt: 8 }}>
+				<FormControlLabel
+					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
+					label='Debug'
+				/>
 			</Box>
 		</>
 	)

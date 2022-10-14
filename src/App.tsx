@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
@@ -21,6 +21,7 @@ import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
 import BidsBrowser from './components/workflows/bids/browser'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
+import Admin from './components/Admin'
 
 export interface Space {
 	label: string
@@ -41,6 +42,7 @@ const Layout = (): JSX.Element => {
 	// const [mobileOpen, setMobileOpen] = React.useState(false)
 	const theme = useTheme()
 	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
+	// const [mobileOpen, setMobileOpen] = React.useState(false)
 
 	// const handleDrawerToggle = () => {
 	// 	setMobileOpen(!mobileOpen)
@@ -49,6 +51,21 @@ const Layout = (): JSX.Element => {
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
+			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
+				<Typography
+					sx={{
+						position: 'absolute',
+						top: '8px',
+						right: '200px',
+						color: '#FA6812',
+						zIndex: '10000',
+						transform: 'translateX(-50%)',
+					}}
+					variant='h6'
+				>
+					{process.env.REACT_APP_HOSTNAME}
+				</Typography>
+			)}
 			<Box
 				component='nav'
 				sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
@@ -78,6 +95,7 @@ const App = () => (
 			<Route index element={<About />} />
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
+			<Route path={'admin'} element={<Admin />} />
 			<Route path={'private'} element={<Groups />}>
 				<Route index element={<Groups />} />
 				<Route path={':id'} element={<Group />} />

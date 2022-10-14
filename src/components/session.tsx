@@ -23,19 +23,14 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { createApp, stopApp } from '../api/gatewayClientAPI'
+import { createApp, getContainers, stopApp } from '../api/gatewayClientAPI'
 import {
 	AppContainer,
 	Application,
 	Container,
 	ContainerType,
 } from '../api/types'
-import {
-	APP_MARGIN_TOP,
-	DRAWER_WIDTH,
-	ROUTE_PREFIX,
-	XPRA_PARAMS,
-} from '../constants'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
 import SessionInfo from './sessionInfo'
@@ -49,7 +44,7 @@ const Session = (): JSX.Element => {
 
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
-		containers: [containers],
+		containers: [containers, setContainers],
 		user: [user],
 	} = useAppStore()
 
@@ -63,7 +58,9 @@ const Session = (): JSX.Element => {
 	const [sessionIsAlive, setSessionIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
 
-	const sessions = containers?.filter(c => c.type === ContainerType.SESSION)
+	const sessions = containers?.data?.filter(
+		c => c.type === ContainerType.SESSION
+	)
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -72,6 +69,16 @@ const Session = (): JSX.Element => {
 			document.body.classList.remove('body-fixed')
 		}
 	}, [])
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			user &&
+				getContainers(user)
+					.then(data => setContainers({ data }))
+					.catch(error => setContainers({ error }))
+		}, 2 * 1000)
+		return () => clearInterval(interval)
+	}, [setContainers, user])
 
 	// Check for XPra readiness
 	useEffect(() => {
@@ -84,6 +91,7 @@ const Session = (): JSX.Element => {
 						if (intervalRef.current) clearInterval(intervalRef.current)
 
 						setSessionIsAlive(true)
+						focusOnIframe(5)
 					}
 				})
 				.catch(e => {
@@ -97,10 +105,12 @@ const Session = (): JSX.Element => {
 
 	// get session and its children apps from params
 	useEffect(() => {
-		const s = containers?.find(c => c.id === params.id)
+		const s = containers?.data?.find(c => c.id === params.id)
 		if (s) {
 			// && (s.id !== session?.id)) {
-			s.apps = containers?.filter(c => c.parentId === s.id) as AppContainer[]
+			s.apps = containers?.data?.filter(
+				c => c.parentId === s.id
+			) as AppContainer[]
 			setSession(s)
 		}
 	}, [params, session, setSession, containers])
@@ -115,6 +125,12 @@ const Session = (): JSX.Element => {
 			})
 		}
 	}, [fullscreen])
+
+	const focusOnIframe = (t: number) => {
+		setTimeout(() => {
+			fullScreenRef.current?.focus()
+		}, t * 1000)
+	}
 
 	// Start an app
 	const handleToggleApp = (app: Application) => {
@@ -135,6 +151,8 @@ const Session = (): JSX.Element => {
 		}
 		createApp(session, user, app.name)
 
+		focusOnIframe(1)
+
 		trackEvent({
 			category: 'app',
 			action: 'start',
@@ -143,10 +161,12 @@ const Session = (): JSX.Element => {
 
 	const handleDrawerOpen = () => {
 		setDrawerOpen(true)
+		focusOnIframe(1)
 	}
 
 	const handleDrawerClose = () => {
 		setDrawerOpen(false)
+		focusOnIframe(1)
 	}
 
 	const handleBackLocation = () => {
@@ -258,7 +278,7 @@ const Session = (): JSX.Element => {
 					<iframe
 						ref={fullScreenRef}
 						title='Desktop'
-						src={`${session.url}?${XPRA_PARAMS}`}
+						src={session.url}
 						allowFullScreen
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
@@ -286,7 +306,7 @@ const Session = (): JSX.Element => {
 			>
 				<DrawerHeader>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
-						<Typography variant='subtitle2'>close</Typography>
+						<Typography variant='subtitle2'>hide</Typography>
 						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
 					</IconButton>
 				</DrawerHeader>

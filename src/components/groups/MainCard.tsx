@@ -17,15 +17,15 @@ import {
 	Link,
 	Typography,
 } from '@mui/material'
-import { Group } from '../../api/types'
+import { HIPGroup } from '../../api/types'
 
 const linkStyle = {
 	textDecoration: 'underline',
 	color: '#0277bd',
 }
 
-const MainCard = ({ group }: { group?: Group }) => {
-	const SocialButton = ({ network, url }: { network: string; url: any }) => {
+const MainCard = ({ group }: { group?: HIPGroup }) => {
+	const SocialButton = ({ network, url }: { network: string; url: string }) => {
 		let component
 		switch (network) {
 			case 'facebook':
@@ -124,7 +124,7 @@ const MainCard = ({ group }: { group?: Group }) => {
 						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
 							{group.socialnetwork &&
 								Object.keys(group.socialnetwork).map(
-									(key: any) =>
+									(key) =>
 										key && (
 											<SocialButton
 												key={key}

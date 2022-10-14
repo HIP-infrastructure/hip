@@ -5,6 +5,7 @@ import {
 	CardContent,
 	CardMedia,
 	Chip,
+	Divider,
 	Link,
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
@@ -13,7 +14,9 @@ import { useAppStore } from '../store/appProvider'
 import TitleBar from './UI/titleBar'
 
 const Apps = () => {
-	const { availableApps } = useAppStore()
+	const {
+		availableApps: [availableApps],
+	} = useAppStore()
 
 	return (
 		<>
@@ -24,8 +27,8 @@ const Apps = () => {
 				}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{availableApps?.error && availableApps?.error && (
-					<Alert severity='error'>{availableApps?.error.message}</Alert>
+				{availableApps?.error && (
+					<Alert severity='error'>{availableApps?.error}</Alert>
 				)}
 				{availableApps?.data?.map((app, i) => (
 					<Card
@@ -35,9 +38,10 @@ const Apps = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/${app.name}__logo.png`}
+							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/288x140-${app.name}__logo.png`}
 							alt={app.label}
 						/>
+						<Divider />
 						<CardContent sx={{ flexGrow: 1, pb: 0, mb: 0 }}>
 							<Box sx={{ display: 'flex' }}>
 								<Typography variant='h5' sx={{ flex: 1 }}>

@@ -2,12 +2,13 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import { getBidsDatasets, getAndIndexBidsDatasets } from '../api/bids'
+
 import {
-	API_CONTAINERS,
-	checkError,
 	getAvailableAppList,
-	getGroups,
+	getCenters,
+	getContainers,
 	getUser,
+	isLoggedIn,
 } from '../api/gatewayClientAPI'
 import {
 	Application,
@@ -15,7 +16,7 @@ import {
 	IndexedBIDSDataset,
 	Container,
 	File,
-	Group,
+	HIPGroup,
 	Participant,
 	UserCredentials,
 } from '../api/types'
@@ -26,13 +27,26 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	groups: [Group[] | null, React.Dispatch<React.SetStateAction<Group[] | null>>]
-	availableApps: { data?: Application[]; error?: Error } | undefined
-	containers: [Container[] | null, Error | undefined]
-	BIDSDatasets: [
-		{ data?: BIDSDataset[]; error?: Error } | undefined,
+	hipGroups: [
+		HIPGroup[] | null,
+		React.Dispatch<React.SetStateAction<HIPGroup[] | null>>
+	]
+	availableApps: [
+		{ data?: Application[]; error?: string } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDataset[]; error?: Error } | undefined>
+			React.SetStateAction<{ data?: Application[]; error?: string } | undefined>
+		>
+	]
+	containers: [
+		{ data?: Container[]; error?: string } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: Container[]; error?: string } | undefined>
+		>
+	]
+	BIDSDatasets: [
+		{ data?: BIDSDataset[]; error?: string } | undefined,
+		React.Dispatch<
+			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
 		>
 	]
 	BIDSDatasetsResults: [
@@ -55,16 +69,6 @@ export interface IAppState {
 	]
 }
 
-export const fetcher = async (url: string): Promise<void> => {
-	try {
-		const res = await fetch(url)
-		return checkError(res)
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (error: any) {
-		throw new Error(error.message)
-	}
-}
-
 export const AppContext = React.createContext<IAppState>({} as IAppState)
 
 // Provide state for the HIP app
@@ -74,13 +78,19 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] =
-		useState<IAppState['availableApps']>()
+	const [availableApps, setAvailableApps] = useState<{
+		data?: Application[]
+		error?: string
+	}>()
+	const [containers, setContainers] = useState<{
+		data?: Container[]
+		error?: string
+	}>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [groups, setGroups] = useState<Group[] | null>(null)
+	const [hipGroups, setHipGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
-		error?: Error
+		error?: string
 	}>()
 	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<{
 		data?: IndexedBIDSDataset[]
@@ -90,11 +100,6 @@ export const AppStoreProvider = ({
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { data, error } = useSWR<any, Error | undefined>(
-		() => (user ? `${API_CONTAINERS}/${user?.uid}` : null),
-		fetcher
-	)
 
 	// Fetch initial data
 	React.useEffect(() => {
@@ -114,47 +119,36 @@ export const AppStoreProvider = ({
 				// console.log(error)
 			})
 
-		getGroups().then(groups => {
+		getCenters().then(groups => {
 			if (groups) {
-				setGroups(groups)
+				setHipGroups(groups)
 			}
 		})
 
 		getAvailableAppList()
-			.then(data => {
-				if (data) setAvailableApps({ data })
-			})
-			.catch(error => {
-				setAvailableApps({ error })
-			})
+			.then(data => setAvailableApps({ data }))
+			.catch(error => setAvailableApps({ error }))
 
 		getAndIndexBidsDatasets(currentUser.uid)
-			.then(data => {
-				if (data) {
-					setBidsDatasets({ data })
-				}
-			})
-			.catch(error => {
-				setBidsDatasets({ error })
-			})
+			.then(data => setBidsDatasets({ data }))
+			.catch(error => setBidsDatasets({ error }))
+
+		getContainers(currentUser)
+			.then(data => setContainers({ data }))
+			.catch(error => setContainers({ error }))
 
 		setInterval(() => {
-			try {
-				mutate(`${API_CONTAINERS}/${currentUser?.uid || ''}`)
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (error: any) {
-				throw new Error(error.message)
-			}
-		}, 3 * 1000)
+			isLoggedIn()
+		}, 30 * 1000)
 	}, [])
 
 	const value: IAppState = React.useMemo(
 		() => ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
-			groups: [groups, setGroups],
-			availableApps,
-			containers: [data?.data || null, error],
+			hipGroups: [hipGroups, setHipGroups],
+			availableApps: [availableApps, setAvailableApps],
+			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
 			BIDSDatasetsResults: [bidsDatasetsResults, setBidsDatasetsResults],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
@@ -166,11 +160,12 @@ export const AppStoreProvider = ({
 			setDebug,
 			user,
 			setUser,
-			groups,
-			setGroups,
-			data,
-			error,
+			hipGroups,
+			setHipGroups,
+			containers,
+			setContainers,
 			availableApps,
+			setAvailableApps,
 			bidsDatasets,
 			setBidsDatasets,
 			bidsDatasetsResults,

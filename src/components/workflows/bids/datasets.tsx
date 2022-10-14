@@ -129,7 +129,7 @@ const Datasets = (): JSX.Element => {
 						{!BIDSDatasets && <CircularProgress sx={{ m: 2 }} size={16} />}
 						{BIDSDatasets?.error && (
 							<Alert sx={{ m: 2 }} severity='error'>
-								{BIDSDatasets?.error.message}
+								{BIDSDatasets?.error}
 							</Alert>
 						)}
 					</Box>

@@ -92,7 +92,7 @@ const Data = (): JSX.Element => {
 			<TitleBar title='Data' />
 
 			{bidsDatasets?.error && bidsDatasets?.error && (
-				<Alert severity='error'>{bidsDatasets?.error.message}</Alert>
+				<Alert severity='error'>{bidsDatasets?.error}</Alert>
 			)}
 
 			<Box sx={{ mt: 2 }}>

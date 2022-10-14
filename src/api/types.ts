@@ -1,3 +1,7 @@
+export interface APIContainersResponse {
+	data?: Container[]
+	error?: string
+}
 export interface Container {
 	id: string
 	name: string
@@ -8,6 +12,12 @@ export interface Container {
 	type: ContainerType
 	parentId?: string
 	apps?: AppContainer[]
+}
+
+export interface GroupFolder {
+	id: number
+	label: string
+	path: string
 }
 
 export type AppContainer = Container & ContainerOptions
@@ -59,8 +69,9 @@ export interface User {
 	email?: string | null
 	lastLogin: number
 	groups?: string[]
+	enabled: boolean
 }
-export interface Group {
+export interface HIPGroup {
 	label: string
 	id: string
 	pi: string
@@ -71,8 +82,9 @@ export interface Group {
 	description?: string
 	website?: string
 	socialnetwork: {
-		[index: string]: any
-	}[]
+		[index: string]: string
+	}
+	users?: User[]
 }
 
 export interface Application {
@@ -100,6 +112,13 @@ export interface TreeNode {
 	icon: string
 	data: Document
 	children?: boolean
+}
+
+export interface File2 {
+	name: string
+	isDirectory: boolean
+	path: string
+	parentPath?: string
 }
 
 export interface Document {

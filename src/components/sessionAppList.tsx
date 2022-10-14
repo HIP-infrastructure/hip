@@ -7,6 +7,7 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemButton,
+	ListItemSecondaryAction,
 	ListItemText,
 } from '@mui/material'
 import { Application, Container, ContainerState } from '../api/types'
@@ -21,7 +22,10 @@ interface Session {
 }
 
 const AppList = ({ session, handleToggleApp }: Session) => {
-	const { availableApps } = useAppStore()
+	const {
+		availableApps: [availableApps],
+	} = useAppStore()
+	const [debounce, setDebounce] = React.useState<{ [key: string]: boolean }>({})
 
 	const appInSession = ({ name }: { name: string }) =>
 		session?.apps?.find(s => s.app === name)
@@ -37,7 +41,18 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 	const AppState = ({ state }: { state?: ContainerState }) => {
 		if (!state) return <PlayCircleOutlined color='primary' />
 
-		if (loading(state)) return <CircularProgress size={16} />
+		if (loading(state))
+			return (
+				<CircularProgress
+					sx={{
+						position: 'absolute',
+						right: '3px',
+						top: '-10px',
+						transform: 'translateY(-50%)',
+					}}
+					size={16}
+				/>
+			)
 
 		if (state === ContainerState.RUNNING)
 			return <StopCircleOutlined color={color(state)} />
@@ -56,14 +71,29 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 				<ListItemButton
 					sx={{ cursor: 'pointer' }}
 					aria-label={label}
-					disabled={session?.state !== ContainerState.RUNNING}
-					onClick={() => handleToggleApp && handleToggleApp(app)}
+					disabled={
+						debounce[app.name] || session?.state !== ContainerState.RUNNING
+					}
+					onClick={() => {
+						handleToggleApp && handleToggleApp(app)
+						setDebounce({ ...debounce, [app.name]: true })
+						setTimeout(
+							() =>
+								setDebounce(debounce => ({
+									...debounce,
+									[app.name]: false,
+								})),
+							10 * 1000
+						)
+					}}
 				>
 					<ListItemAvatar>
 						<AppAvatar name={app.name} label={app.label} />
 					</ListItemAvatar>
 					<ListItemText primary={app.label} />
-					<AppState state={startedApp?.state} />
+					<ListItemSecondaryAction>
+						<AppState state={startedApp?.state} />
+					</ListItemSecondaryAction>
 				</ListItemButton>
 			</SmallToolTip>
 		)
@@ -84,7 +114,7 @@ const AppList = ({ session, handleToggleApp }: Session) => {
 		>
 			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
 			{availableApps?.error && availableApps?.error && (
-				<Alert severity='error'>{availableApps?.error.message}</Alert>
+				<Alert severity='error'>{availableApps?.error}</Alert>
 			)}
 			{availableApps?.data?.map(app => (
 				<Button app={app} key={app.name} />

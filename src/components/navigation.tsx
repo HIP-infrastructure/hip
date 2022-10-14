@@ -1,50 +1,49 @@
+import * as React from 'react'
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Apps,
 	Assignment,
+	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	GroupWork,
 	HealthAndSafety,
 	HelpCenter,
+	Info,
 	Monitor,
 	Public,
-	Info,
-	Dashboard,
+	AdminPanelSettings,
 } from '@mui/icons-material'
+import GradingIcon from '@mui/icons-material/Grading'
 import {
 	Avatar,
 	Box,
+	CircularProgress,
 	Collapse,
 	Divider,
 	Drawer,
-	FormControlLabel,
+	Link,
 	List,
+	ListItemAvatar,
 	ListItemButton,
 	ListItemIcon,
-	ListItemAvatar,
 	ListItemText,
 	PaperProps,
-	Switch,
-	CircularProgress,
-	Link,
 } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { HIPGroup, NavigationItem } from '../api/types'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import SmallToolTip from './UI/smallToolTip'
-import GradingIcon from '@mui/icons-material/Grading'
-import { Group, NavigationItem } from '../api/types'
 
 const PRIVATE = 'private'
 
 const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	const { trackPageView } = useMatomo()
 	const {
-		debug: [debug, setDebug],
 		user: [user],
-		groups: [groups],
+		hipGroups: [groups],
 	} = useAppStore()
 	const navigate = useNavigate()
 
@@ -75,14 +74,14 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 	}
 
 	const placeholderSpaces = (
-		center: Group | undefined | null = undefined
+		center: HIPGroup | undefined | null = undefined
 	): NavigationItem & { loading: boolean } => ({
 		id: 'private',
 		label: center?.label || 'WORKSPACE',
 		route: center ? `private/${center?.id}` : 'private/default',
 		link: null,
 		color: '#efefef',
-		disabled: center === undefined ? true : center === null ? false : false,
+		disabled: center === undefined ? true : center === null ? true : false,
 		image: center?.logo || null,
 		icon: <HealthAndSafety />,
 		loading: center === undefined ? true : center === null ? false : false,
@@ -94,7 +93,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				label: 'Dashboard',
 				icon: <Dashboard />,
 				title: center ? center.label : 'Dashboard',
-				disabled: center === undefined ? true : center === null ? false : false,
+				disabled: center === undefined ? true : center === null ? true : false,
 				color: null,
 				image: null,
 				children: [],
@@ -138,12 +137,26 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				image: null,
 				children: [],
 			},
+			...((user?.isAdmin && [
+				{
+					route: 'admin',
+					link: null,
+					label: 'Admin',
+					icon: <AdminPanelSettings />,
+					title: '',
+					disabled: false,
+					color: null,
+					image: null,
+					children: [],
+				},
+			]) ||
+				[]),
 		],
 	})
 
 	const privateSpaces = groups
 		?.filter(center => user?.groups?.includes(center.id))
-		.map(center => placeholderSpaces(center)) || [placeholderSpaces()]
+		.map(center => placeholderSpaces(center)) || [placeholderSpaces(null)]
 
 	const menu = [
 		...(privateSpaces.length > 0 ? privateSpaces : [placeholderSpaces(null)]),
@@ -196,8 +209,21 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 				{
 					id: null,
 					route: null,
-					link: '/apps/forms/',
-					label: 'Feedback forms',
+					link: 'https://thehip.app/apps/forms/X6fZisdX6sc5R9ZW',
+					label: 'Bug Report',
+					icon: <GradingIcon />,
+					title: null,
+					color: null,
+					disabled: false,
+					image: null,
+					children: [],
+					divider: true,
+				},
+				{
+					id: null,
+					route: null,
+					link: 'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87',
+					label: 'Feedback',
 					icon: <GradingIcon />,
 					title: null,
 					color: null,
@@ -224,21 +250,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					: false,
 			title: null,
 			children: [
-				...(groups
-					?.filter(center => !user?.groups?.includes(center.id))
-					.map(center => ({
-						id: null,
-						type: 'center',
-						label: `${center.label}`,
-						route: `private/${center.id}`,
-						link: null,
-						color: null,
-						disabled: false,
-						image: center.logo ? center.logo : null,
-						icon: null,
-						title: null,
-						children: [],
-					})) || []),
+				...(groups?.map((center: HIPGroup) => ({
+					id: null,
+					type: 'center',
+					label: `${center.label}`,
+					route: `private/${center.id}`,
+					link: null,
+					color: null,
+					disabled: false,
+					image: center.logo ? center.logo : null,
+					icon: null,
+					title: null,
+					children: [],
+				})) || []),
 			],
 		},
 		{
@@ -367,7 +391,9 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												sx={{ pl: 3 }}
 												disabled={disabled}
 												onClick={() =>
-													!link && handleClickNavigate({ route, id })
+													link
+														? window.open(`${link}`, '_blank')
+														: handleClickNavigate({ route, id })
 												}
 											>
 												{icon && <ListItemIcon>{icon}</ListItemIcon>}
@@ -400,7 +426,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 														)}
 														{link && (
 															<Link
-																href={link}
+																href={void 0}
 																style={{
 																	color: 'rgb(55, 71, 79)',
 																	textDecoration: 'none',
@@ -449,13 +475,6 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 					)
 				)}
 			</List>
-
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
-			</Box>
 		</Drawer>
 	)
 }
