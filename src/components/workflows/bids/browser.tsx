@@ -51,7 +51,7 @@ const BidsBrowser = () => {
 				})
 		} else {
 			setBidsDatasetsResults(undefined)
-			getMatchingBidsDatasets(user?.uid, "*")
+			getMatchingBidsDatasets(user?.uid, "*", nb_of_results)
 				.then(data => {
 					if (data) {
 						setBidsDatasetsResults({ data })
