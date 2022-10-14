@@ -40,7 +40,7 @@ import {
 } from '../api/types'
 import { color, loading } from '../api/utils'
 import SessionImage from '../assets/session-thumbnail.png'
-import { ROUTE_PREFIX } from '../constants'
+import { POLLING, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import Modal, { ModalComponentHandle } from './UI/Modal'
 import TitleBar from './UI/titleBar'
@@ -69,7 +69,7 @@ const Sessions = (): JSX.Element => {
 							error,
 						}))
 					)
-		}, 2 * 1000)
+		}, POLLING * 1000)
 		return () => clearInterval(interval)
 	}, [setContainers, user])
 
