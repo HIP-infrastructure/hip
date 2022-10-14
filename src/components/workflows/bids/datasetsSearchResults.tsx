@@ -92,7 +92,7 @@ const DatasetsResults = (): JSX.Element => {
 									variant='body2'
 									color='text.secondary'
 								>
-									No results found - Search with a different query
+									No results found - Please try with new keywords
 								</Typography>
 							</Box>
 						</Box>
