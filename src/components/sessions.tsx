@@ -53,7 +53,9 @@ const Sessions = (): JSX.Element => {
 		debug: [debug, setDebug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
-	const [showAdminView, setShowAdminView] = React.useState(false)
+	const [showAdminView, setShowAdminView] = React.useState(
+		localStorage.getItem('admin-view') === 'true'
+	)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
@@ -138,7 +140,7 @@ const Sessions = (): JSX.Element => {
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
-					<Box sx={{display: 'flex'}}>
+					<Box sx={{ display: 'flex' }}>
 						{user?.isAdmin && (
 							<FormGroup>
 								<FormControlLabel
@@ -146,6 +148,7 @@ const Sessions = (): JSX.Element => {
 										<Switch
 											checked={showAdminView}
 											onChange={() => {
+												localStorage.setItem('admin-view', String(!showAdminView))
 												setShowAdminView(!showAdminView)
 											}}
 										/>
