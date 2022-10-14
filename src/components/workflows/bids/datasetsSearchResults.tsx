@@ -35,8 +35,6 @@ const DatasetsResults = (): JSX.Element => {
 		setRows(bidsDatasetsResults?.data ?? [])
 	}, [bidsDatasetsResults])
 
-	console.log(`Content of query results: ${rows}`)
-
 	return (
 		<>
 			{rows.length > 0

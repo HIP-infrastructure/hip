@@ -86,29 +86,26 @@ const DatasetCard = ({dataset} : Props): JSX.Element => {
                                         component="div"
                                         marginBottom="-2pt"
                                     >
-                                        #Participants: {dataset?.ParticipantsCount}
-                                    </Typography>
-                                    &nbsp;
-                                    <Typography
-                                        variant="subtitle1"
-                                        color="text.secondary"
-                                        component="div"
-                                        marginBottom="-2pt"
-                                        marginTop="-2pt"
-                                        // display="inline"
-                                    >
-                                        Ages(yrs): [{dataset?.AgeRange?.join(', ')}]
-                                    </Typography>
-                                    &nbsp;
-                                    <Typography
-                                        variant="subtitle1"
-                                        color="text.secondary"
-                                        component="div"
-                                        marginBottom="-2pt"
-                                        marginTop="-2pt"
-                                        // display="inline"
-                                    >
-                                        Groups: {dataset?.ParticipantsGroups?.join(', ')}
+                                        #Participants: {dataset?.ParticipantsCount}&nbsp;
+                                        (
+                                            <Typography
+                                                variant="subtitle1"
+                                                color="text.secondary"
+                                                component="div"
+                                                display="inline"
+                                            >
+                                                Ages(yrs): [{dataset?.AgeRange?.join(', ')}]
+                                            </Typography>
+                                            &nbsp;/&nbsp;
+                                            <Typography
+                                                variant="subtitle1"
+                                                color="text.secondary"
+                                                component="div"
+                                                display="inline"
+                                            >
+                                                Groups: {dataset?.ParticipantsGroups?.join(', ')}
+                                            </Typography>
+                                        )
                                     </Typography>
                                 </TableCell>
                                 <TableCell align="right">
