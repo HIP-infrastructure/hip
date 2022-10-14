@@ -25,6 +25,8 @@ const BidsBrowser = () => {
 
 	const [searchTerm, setSearchTerm] = React.useState("")
 
+	const nb_of_results = 20
+
 	interface FormElements extends HTMLFormControlsCollection {
 		searchTermText: HTMLInputElement
 	}
@@ -40,7 +42,7 @@ const BidsBrowser = () => {
 	useEffect(() => {
 		if (searchTerm) {
 			setBidsDatasetsResults(undefined)
-			getMatchingBidsDatasets(user?.uid, searchTerm)
+			getMatchingBidsDatasets(user?.uid, searchTerm, nb_of_results)
 				.then(data => {
 					if (data) {
 						setBidsDatasetsResults({ data })
