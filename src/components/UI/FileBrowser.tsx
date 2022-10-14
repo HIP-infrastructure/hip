@@ -4,8 +4,9 @@ import { alpha, styled } from '@mui/material/styles'
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { getFiles2, search } from '../../api/gatewayClientAPI'
-import { File2, ISearch } from '../../api/types'
+import { getFiles2, getGroupFolders, search } from '../../api/gatewayClientAPI'
+import { File2, GroupFolder, ISearch } from '../../api/types'
+import { useAppStore } from '../../store/appProvider'
 
 function MinusSquare(props: SvgIconProps) {
 	return (
@@ -61,11 +62,18 @@ const root = {
 	parentPath: 'root',
 }
 
-const DataBrowser = ({ groups }: { groups?: string[] }) => {
+const FileBrowser = () => {
 	const [files, setFiles] = React.useState<File2[]>([root])
 	const [expanded, setExpanded] = React.useState(['/'])
 	const [term, setTerm] = React.useState('')
 	const [filesCache, setFilesCache] = React.useState<File2[]>([])
+	const [groupFolders, setGroupFolders] = React.useState<GroupFolder[] | null>(
+		null
+	)
+
+	const {
+		user: [user],
+	} = useAppStore()
 
 	useEffect(() => {
 		getFiles2('/').then(data => {
@@ -76,17 +84,26 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 	}, [])
 
 	useEffect(() => {
+		getGroupFolders(user?.uid).then(groupFolders => {
+			setGroupFolders(groupFolders)
+		})
+	}, [user])
+
+	useEffect(() => {
+		if (!groupFolders) return
+
 		const r = sortFile([
 			...files,
-			...(groups?.map(name => ({
-				name,
+			...(groupFolders?.map(group => ({
+				name: group.label,
 				isDirectory: true,
-				path: `/groupfolder/${name}`,
+				path: `/groupfolder/${group.label}`,
 				parentPath: '/',
-			})) || [])])
+			})) || []),
+		])
 
 		setFiles(r)
-	}, [groups, files])
+	}, [groupFolders])
 
 	useEffect(() => {
 		if (term.length > 1) {
@@ -241,4 +258,4 @@ const DataBrowser = ({ groups }: { groups?: string[] }) => {
 	)
 }
 
-export default DataBrowser
+export default FileBrowser
