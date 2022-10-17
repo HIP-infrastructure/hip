@@ -1,17 +1,16 @@
 import { Article, Folder } from '@mui/icons-material'
 import {
-	Autocomplete,
 	Box,
-	Divider,
 	TextField,
 	Typography,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { getFiles, getFiles2 } from '../../api/gatewayClientAPI'
-import { File2, TreeNode } from '../../api/types'
+import React, { useEffect } from 'react'
+import { getFiles2 } from '../../api/gatewayClientAPI'
+import { File2 } from '../../api/types'
 
-const root = {
-	name: '..',
+
+const root: File2 = {
+	name: '/',
 	isDirectory: true,
 	path: '/',
 	parentPath: 'root',
