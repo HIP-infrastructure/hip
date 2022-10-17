@@ -42,9 +42,13 @@ export const checkError = async (response: Response) => {
 
 		return data
 	} catch (error) {
-		if (error instanceof Error) return Promise.reject(error.message)
-		return Promise.reject(String(error))
+		catchError(error)
 	}
+}
+
+const catchError = (error: unknown) => {
+	if (error instanceof Error) return Promise.reject(error.message)
+	return Promise.reject(String(error))
 }
 
 // Nextcloud HIP API
@@ -54,14 +58,18 @@ export const isLoggedIn = async () =>
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const getGroupFolders = async (
 	userid?: string
@@ -70,20 +78,23 @@ export const getGroupFolders = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const getCenters = async (): Promise<HIPGroup[]> =>
-	fetch(
-		`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`,
-		{}
-	).then(checkError)
+	fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {})
+		.then(checkError)
+		.catch(catchError)
 
 export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
 	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 	return users
 }
@@ -93,7 +104,9 @@ export const scanUserFiles = async (userid: string): Promise<string> => {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(result => result.text())
+	})
+		.then(result => result.text())
+		.catch(catchError)
 }
 
 export const setNCWorkspace = async (userid: string): Promise<string> => {
@@ -101,7 +114,9 @@ export const setNCWorkspace = async (userid: string): Promise<string> => {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(result => result.text())
+	})
+		.then(result => result.text())
+		.catch(catchError)
 }
 
 export const getFiles = async (path: string): Promise<TreeNode[]> => {
@@ -117,14 +132,18 @@ export const getFiles2 = async (path: string): Promise<File2[]> =>
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const search = async (term: string) =>
 	fetch(`${API_GATEWAY}/files/search/${term}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 // Remote App API
 
@@ -133,30 +152,32 @@ export const getAvailableAppList = (): Promise<Application[]> =>
 
 export const getContainers = (
 	currentUser: UserCredentials
-): Promise<Container[]> =>
-	fetch(
-		`${API_CONTAINERS}?userId=${currentUser.uid}${
-			(currentUser.isAdmin && '&isAdmin=1') || ''
-		}`,
-		{
-			headers: {
-				'Content-Type': 'application/json',
-				requesttoken: window.OC.requestToken,
-			},
-		}
-	).then(checkError)
+): Promise<Container[]> => {
+	const url = currentUser.isAdmin
+		? `${API_REMOTE_APP}/admin/containers`
+		: API_CONTAINERS
+	const userUrl = `${url}?userId=${currentUser.uid}`
+	return fetch(userUrl, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkError)
+		.catch(catchError)
+}
 
 export const createSession = (userId: string): Promise<Container> => {
 	const sessionId = uniq('session')
-	const url = `${API_CONTAINERS}`
-	return fetch(url, {
+	return fetch(API_CONTAINERS, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId, sessionId }),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
 
 export const createApp = (
@@ -177,7 +198,9 @@ export const createApp = (
 			userId: user.uid,
 			appId,
 		}),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
 
 export const removeAppsAndSession = (sessionId: string, userId: string) =>
@@ -188,7 +211,9 @@ export const removeAppsAndSession = (sessionId: string, userId: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const pauseAppsAndSession = (sessionId: string, userId: string) =>
 	fetch(`${API_CONTAINERS}/${sessionId}`, {
@@ -198,7 +223,9 @@ export const pauseAppsAndSession = (sessionId: string, userId: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId, cmd: 'pause' }),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const resumeAppsAndSession = (sessionId: string, userId: string) =>
 	fetch(`${API_CONTAINERS}/${sessionId}`, {
@@ -208,7 +235,9 @@ export const resumeAppsAndSession = (sessionId: string, userId: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId, cmd: 'resume' }),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 export const stopApp = (sessionId: string, userId: string, appId: string) =>
 	fetch(`${API_CONTAINERS}/${sessionId}/apps/${appId}`, {
@@ -218,7 +247,9 @@ export const stopApp = (sessionId: string, userId: string, appId: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify({ userId }),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 
 // Debug function
 export const forceRemove = (id: string): Promise<APIContainersResponse> => {
@@ -228,5 +259,7 @@ export const forceRemove = (id: string): Promise<APIContainersResponse> => {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
