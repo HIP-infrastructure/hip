@@ -123,7 +123,7 @@ const Session = (): JSX.Element => {
 			const url = `${s.url}?path=${path}`
 			setSession({ ...s, url })
 		}
-	}, [params, session, setSession, containers])
+	}, [params, setSession, containers])
 
 	useEffect(() => {
 		if (fullscreen) {
