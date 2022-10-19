@@ -38,10 +38,10 @@ export const getAndIndexBidsDatasets = async (
 export const getMatchingBidsDatasets = async (
 	userId?: string,
 	query?: string,
+	page?: number,
 	nb_of_results?: number
 ): Promise<IndexedBIDSDataset[]> => {
-	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&nb_of_results=${nb_of_results}`
-	console.log(`Get matching BIDS dataset with ${url}`)
+	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nb_of_results=${nb_of_results}`
 	return fetch(url, {
 		method: 'POST',
 		headers: {
