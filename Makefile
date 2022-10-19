@@ -3,6 +3,7 @@
 #dep: @ Install all depencies defined in package.json
 dep:
 	npm install
+	npm i -g husky
 	npm run prepare
 
 #dep.init: @ Install all depencies for Ubuntu
