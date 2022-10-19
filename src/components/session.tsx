@@ -29,7 +29,12 @@ import {
 	Container,
 	ContainerType,
 } from '../api/types'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, POLLING, ROUTE_PREFIX } from '../constants'
+import {
+	APP_MARGIN_TOP,
+	DRAWER_WIDTH,
+	POLLING,
+	ROUTE_PREFIX,
+} from '../constants'
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
 import SessionInfo from './sessionInfo'
@@ -85,8 +90,9 @@ const Session = (): JSX.Element => {
 	useEffect(() => {
 		if (intervalRef.current || !session?.url) return
 		if (sessionIsAlive) return
-
 		intervalRef.current = setInterval(() => {
+			// console.time(session.url)
+			// debugger
 			fetch(session.url, { method: 'HEAD' })
 				.then(result => {
 					if (result.status === 200) {
@@ -103,24 +109,19 @@ const Session = (): JSX.Element => {
 					// console.log(e)
 				})
 		}, 1000)
-
-		return () => {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current)
-				intervalRef.current = undefined
-			}
-		}
 	}, [session])
 
 	// get session and its children apps from params
 	useEffect(() => {
 		const s = containers?.data?.find(c => c.id === params.id)
 		if (s) {
-			// && (s.id !== session?.id)) {
 			s.apps = containers?.data?.filter(
 				c => c.parentId === s.id
 			) as AppContainer[]
-			setSession(s)
+			const pathId = s?.url.split('/').slice(-2, -1) || ''
+			const path = encodeURIComponent(`/session/${pathId}/`)
+			const url = `${s.url}?path=${path}`
+			setSession({ ...s, url })
 		}
 	}, [params, session, setSession, containers])
 
