@@ -17,8 +17,9 @@ const linkStyle = {
 }
 
 const AboutCard = ({ doc }: { doc: Doc }) => {
-	const handleClickLink = (url: string) => {
-		window.open(url)
+	const handleClickLink = ({ url, target }: Doc) => {
+		if (target === 'self') window.location.href = url || ''
+		else window.open(url)
 	}
 
 	return (
@@ -65,7 +66,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 				{doc.url && (
 					<Button
 						onClick={() => {
-							handleClickLink(doc.url || '')
+							handleClickLink(doc || '')
 						}}
 						variant='outlined'
 					>
