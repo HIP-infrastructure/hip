@@ -91,8 +91,6 @@ const Session = (): JSX.Element => {
 		if (intervalRef.current || !session?.url) return
 		if (sessionIsAlive) return
 		intervalRef.current = setInterval(() => {
-			// console.time(session.url)
-			// debugger
 			fetch(session.url, { method: 'HEAD' })
 				.then(result => {
 					if (result.status === 200) {
