@@ -25,7 +25,7 @@ const MatomoInstance = ({ children }: { children: JSX.Element }) => {
 		'https://stats.humanbrainproject.eu/'
 	const MATOMO_SITE_ID = process.env.REACT_APP_MATOMO_SITE_ID || '28'
 	const matomoInstance =
-		process.env.NODE_ENV === 'development' &&
+		process.env.NODE_ENV === 'production' &&
 		MATOMO_URL_BASE &&
 		MATOMO_SITE_ID &&
 		createInstance({
@@ -37,10 +37,9 @@ const MatomoInstance = ({ children }: { children: JSX.Element }) => {
 			},
 		})
 
-	if (matomoInstance)
-		return <MatomoProvider value={matomoInstance}>{children}</MatomoProvider>
+	if (!matomoInstance) return children
 
-	return children
+	return <MatomoProvider value={matomoInstance}>{children}</MatomoProvider>
 }
 
 const DebugRouter = ({ children }: { children: JSX.Element }) => {
