@@ -1,13 +1,9 @@
 import { Article, Folder } from '@mui/icons-material'
-import {
-	Box,
-	TextField,
-	Typography,
-} from '@mui/material'
+import { Box, Divider, TextField, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
 import { getFiles2 } from '../../api/gatewayClientAPI'
 import { File2 } from '../../api/types'
-
+import { useNotification } from '../../hooks/useNotification'
 
 const root: File2 = {
 	name: '/',
@@ -19,15 +15,25 @@ const root: File2 = {
 const FileChooser = (): JSX.Element => {
 	const [files, setFiles] = React.useState<File2[]>([root])
 	const [fileListVisible, setFileListVisible] = React.useState(false)
+	const [requestSent, setRequestSent] = React.useState(false)
 	const [selectedFile, setSelectedFile] = React.useState<File2>(root)
+	const { showNotif } = useNotification()
 
 	useEffect(() => {
 		const exists = files.find(i => i.parentPath === selectedFile.path)
-		if (!exists)
-			getFiles2(selectedFile.path).then(data => {
-				setFiles(f => sortFile([...f, ...data]))
-			})
-	}, [selectedFile, files])
+		if (!exists) {
+			setRequestSent(true)
+			getFiles2(selectedFile.path)
+				.then(data => {
+					setFiles(f => sortFile([...f, ...data]))
+				})
+				.catch(err => {
+					showNotif(err.message, 'error')
+				}).finally(() => {
+					setRequestSent(false)
+				})
+		}
+	}, [selectedFile, files, showNotif, setRequestSent])
 
 	const sortFile = (data: File2[]) =>
 		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
@@ -51,7 +57,7 @@ const FileChooser = (): JSX.Element => {
 		<Box>
 			<Box>
 				<TextField
-					id='search-textfield'
+					id='file-textfield'
 					sx={{ width: '100%', mb: 2 }}
 					label='Files'
 					variant='outlined'
@@ -66,9 +72,20 @@ const FileChooser = (): JSX.Element => {
 					{folder?.map((f, i) => (
 						<>
 							<Box
-								sx={{ display: 'flex', alignItems: 'bottom', gap: 1 }}
+								sx={{
+									display: 'flex',
+									alignItems: 'top',
+									gap: 1,
+									'&:hover': { backgroundColor: 'whitesmoke' },
+									cursor: requestSent ? 'wait': 'pointer',
+								}}
 								component='li'
 								key={f.path}
+								onClick={(
+									event: React.MouseEvent<HTMLDivElement, MouseEvent>
+								) => {
+									!requestSent && setSelectedFile(f)
+								}}
 							>
 								{f.isDirectory ? (
 									<Folder color='action' />
@@ -76,18 +93,10 @@ const FileChooser = (): JSX.Element => {
 									<Article color='action' />
 								)}
 								<Typography gutterBottom color='text.secondary'>
-									<div
-										onClick={(
-											event: React.MouseEvent<HTMLDivElement, MouseEvent>
-										) => {
-											setSelectedFile(f)
-										}}
-									>
-										{f.name}
-									</div>
+									{f.name}
 								</Typography>
 							</Box>
-							{/* {i === 0 && f.path !== '/' && <Divider />} */}
+							{i === 0 && <Divider />}
 						</>
 					))}
 				</Box>
