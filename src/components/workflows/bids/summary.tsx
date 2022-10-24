@@ -84,9 +84,9 @@ const Summary = ({
 
 				<Link
 					target='_blank'
-					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}`}
+					href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.Path}`}
 				>
-					{selectedBidsDataset?.path}
+					{selectedBidsDataset?.Path}
 				</Link>
 			</Box>
 		</Box>

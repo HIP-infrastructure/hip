@@ -30,13 +30,13 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 	useEffect(() => {
 		setSelectedSubjectExistingBIDSFiles(undefined)
 
-		if (!(selectedBidsDataset?.path && user?.uid && subject)) {
+		if (!(selectedBidsDataset?.Path && user?.uid && subject)) {
 			return
 		}
 
 		setSubjectExists(true)
 		getSubject(
-			selectedBidsDataset?.path,
+			selectedBidsDataset?.Path,
 			user?.uid,
 			subject.replace('sub-', '')
 		)
@@ -84,7 +84,7 @@ const ParticipantInfo = ({ subject }: { subject?: string }) => {
 									Existing files for BIDS subject {}
 									<Link
 										target='_blank'
-										href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}/${subject}`}
+										href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.Path}/${subject}`}
 									>
 										{subject}
 									</Link>

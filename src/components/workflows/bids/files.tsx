@@ -210,7 +210,7 @@ const Files = ({
 	// }
 
 	const handleAddFile = () => {
-		const participant = selectedBidsDataset?.participants?.find(
+		const participant = selectedBidsDataset?.Participants?.find(
 			p => p.participant_id === selectedSubject
 		)
 
@@ -323,7 +323,7 @@ const Files = ({
 										gap: '0.8em 0.8em',
 									}}
 								>
-									{selectedBidsDataset?.participants && (
+									{selectedBidsDataset?.Participants && (
 										<TextField
 											select
 											fullWidth
@@ -340,7 +340,7 @@ const Files = ({
 											// 	touched.subject && errors.subject ? errors.subject : null
 											// }
 										>
-											{selectedBidsDataset?.participants?.map(p => (
+											{selectedBidsDataset?.Participants?.map(p => (
 												<MenuItem
 													key={p.participant_id}
 													value={p.participant_id}

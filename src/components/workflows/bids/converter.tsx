@@ -63,7 +63,7 @@ const BidsConverter = () => {
 	}
 
 	const handleImportSubject = async () => {
-		if (!user?.uid && !selectedBidsDataset?.path) {
+		if (!user?.uid && !selectedBidsDataset?.Path) {
 			showNotif('No dataset selected', 'error')
 			return
 		}
@@ -80,7 +80,7 @@ const BidsConverter = () => {
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
 			dataset: selectedBidsDataset?.Name,
-			path: selectedBidsDataset?.path,
+			path: selectedBidsDataset?.Path,
 			files: selectedFiles,
 			subjects,
 		}

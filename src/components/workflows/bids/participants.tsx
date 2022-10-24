@@ -29,8 +29,8 @@ const Participants = (): JSX.Element => {
 	} = useAppStore()
 
 	useEffect(() => {
-		if (selectedBidsDataset?.participants)
-			setRows(selectedBidsDataset.participants)
+		if (selectedBidsDataset?.Participants)
+			setRows(selectedBidsDataset.Participants)
 	}, [selectedBidsDataset, setRows])
 
 	const handleEditParticipant = (id: string) => {
@@ -42,7 +42,7 @@ const Participants = (): JSX.Element => {
 	}, [participantEditId])
 
 	const columns = [
-		...(selectedBidsDataset?.participants
+		...(selectedBidsDataset?.Participants
 			?.reduce(
 				(a, c) => Array.from(new Set([...a, ...Object.keys(c)])),
 				[] as string[]

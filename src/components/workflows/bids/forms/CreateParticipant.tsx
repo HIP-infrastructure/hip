@@ -55,9 +55,9 @@ const CreateParticipant = ({
 	} = useAppStore()
 
 	useEffect(() => {
-		if (selectedBidsDataset?.participants) {
+		if (selectedBidsDataset?.Participants) {
 			const one = JSON.parse(
-				JSON.stringify(selectedBidsDataset.participants)
+				JSON.stringify(selectedBidsDataset.Participants)
 			).pop()
 			if (one) {
 				const participantFields = Object.keys(one)
@@ -67,8 +67,8 @@ const CreateParticipant = ({
 	}, [selectedBidsDataset])
 
 	useEffect(() => {
-		if (selectedBidsDataset?.participants && participantEditId) {
-			const participant = selectedBidsDataset?.participants.find(
+		if (selectedBidsDataset?.Participants && participantEditId) {
+			const participant = selectedBidsDataset?.Participants.find(
 				p => p.participant_id === participantEditId
 			)
 			if (participant) {
@@ -111,7 +111,7 @@ const CreateParticipant = ({
 							if (
 								!user?.uid ||
 								!selectedBidsDataset?.Name ||
-								!selectedBidsDataset?.path
+								!selectedBidsDataset?.Path
 							) {
 								showNotif('Participant not saved', 'error')
 								return
@@ -121,7 +121,7 @@ const CreateParticipant = ({
 							const subEditClinicalDto: EditSubjectClinicalDto = {
 								owner: user.uid,
 								dataset: selectedBidsDataset.Name,
-								path: selectedBidsDataset.path,
+								path: selectedBidsDataset.Path,
 								subject: `${participant_id}`.replace('sub-', ''),
 								clinical: { ...other },
 							}
@@ -130,14 +130,14 @@ const CreateParticipant = ({
 									if (
 										user.uid &&
 										selectedBidsDataset &&
-										selectedBidsDataset.path
+										selectedBidsDataset.Path
 									) {
-										getParticipants(selectedBidsDataset.path, user.uid).then(
+										getParticipants(selectedBidsDataset.Path, user.uid).then(
 											data => {
 												setSelectedBidsDataset({
 													...selectedBidsDataset,
 													// in case user added a new participant and is editing others
-													participants: selectedBidsDataset?.participants?.map(
+													Participants: selectedBidsDataset?.Participants?.map(
 														p => {
 															const id = data.find(
 																d => d.participant_id === p.participant_id
@@ -165,13 +165,13 @@ const CreateParticipant = ({
 							setSelectedParticipants([values])
 
 							const nextParticipants = [
-								...(selectedBidsDataset?.participants || []),
+								...(selectedBidsDataset?.Participants || []),
 								values,
 							]
 							if (nextParticipants && selectedBidsDataset)
 								setSelectedBidsDataset({
 									...selectedBidsDataset,
-									participants: nextParticipants,
+									Participants: nextParticipants,
 								})
 
 							showNotif('Participant created.', 'success')
@@ -222,7 +222,7 @@ const CreateParticipant = ({
 									handleCreateField={({ key }) => {
 										if (key) {
 											const nextParticipants =
-												selectedBidsDataset?.participants?.map(p => ({
+												selectedBidsDataset?.Participants?.map(p => ({
 													...p,
 													[key]: '',
 												}))
@@ -230,7 +230,7 @@ const CreateParticipant = ({
 											if (nextParticipants && selectedBidsDataset)
 												setSelectedBidsDataset({
 													...selectedBidsDataset,
-													participants: nextParticipants,
+													Participants: nextParticipants,
 												})
 
 											if (editMode) {

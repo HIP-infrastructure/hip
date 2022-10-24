@@ -19,25 +19,25 @@ import {
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import { getAndIndexBidsDatasets } from '../../../api/bids'
-import { BIDSDataset } from '../../../api/types'
+import { BIDSDataset, IndexedBIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDataset from './forms/CreateDataset'
 
 const Datasets = (): JSX.Element => {
-	const [rows, setRows] = useState<BIDSDataset[]>([])
+	const [rows, setRows] = useState<IndexedBIDSDataset[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [datasetCreated, setDatasetCreated] = useState(false)
 	const {
 		user: [user],
-		BIDSDatasets: [BIDSDatasets, setBidsDatasets],
+		BIDSDatasets: [bidsDatasets, setBidsDatasets],
 		selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 		selectedParticipants: [_selectedParticipants, setSelectedParticipants],
 		selectedFiles: [_selectedFiles, setSelectedFiles],
 	} = useAppStore()
 
 	useEffect(() => {
-		if (BIDSDatasets?.data) setRows(BIDSDatasets?.data)
-	}, [BIDSDatasets])
+		if (bidsDatasets?.data) setRows(bidsDatasets?.data)
+	}, [bidsDatasets])
 
 	useEffect(() => {
 		if (selectedBidsDataset) {
@@ -113,7 +113,7 @@ const Datasets = (): JSX.Element => {
 											/>
 										</TableCell>
 										<TableCell>{row.Name}</TableCell>
-										<TableCell>{row.participants?.length}</TableCell>
+										<TableCell>{row.ParticipantsCount}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
@@ -126,10 +126,10 @@ const Datasets = (): JSX.Element => {
 							alignItems: 'center',
 						}}
 					>
-						{!BIDSDatasets && <CircularProgress sx={{ m: 2 }} size={16} />}
-						{BIDSDatasets?.error && (
+						{!bidsDatasets && <CircularProgress sx={{ m: 2 }} size={16} />}
+						{bidsDatasets?.error && (
 							<Alert sx={{ m: 2 }} severity='error'>
-								{BIDSDatasets?.error}
+								{bidsDatasets?.error}
 							</Alert>
 						)}
 					</Box>
@@ -171,7 +171,7 @@ const Datasets = (): JSX.Element => {
 										<strong>Number of participants</strong>
 									</Typography>
 									<Typography gutterBottom variant='body1'>
-										{selectedBidsDataset?.participants?.length}
+										{selectedBidsDataset?.ParticipantsCount}
 									</Typography>
 									<Typography variant='body1'>
 										<strong>Version</strong>
@@ -233,9 +233,9 @@ const Datasets = (): JSX.Element => {
 									<Box>
 										<Link
 											target='_blank'
-											href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.path}`}
+											href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedBidsDataset?.Path}`}
 										>
-											{selectedBidsDataset?.path}
+											{selectedBidsDataset?.Path}
 										</Link>
 									</Box>
 								</CardContent>

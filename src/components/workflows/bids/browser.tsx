@@ -5,8 +5,12 @@ import {
 	InputLabel,
 	NativeSelect,
 	FormControl,
-	Box
+	Box,
+	Input,
+	IconButton,
+	TextField
 } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
@@ -56,7 +60,7 @@ const BidsBrowser = () => {
 
 	function handlePageChange (event: React.ChangeEvent<unknown>, value: number) {
 		event.preventDefault()
-		setPage(value);
+		setPage(value)
 	}
 
 	useEffect(() => {
@@ -104,9 +108,6 @@ const BidsBrowser = () => {
 				setNumberOfPages(1)
 			}
 		}
-		else {
-			setNumberOfPages(1)
-		}
 	}, [totalNumberOfDatasets, numberOfResultsPerPage])
 
 	return (
@@ -115,16 +116,43 @@ const BidsBrowser = () => {
 				title='BIDS Browser'
 				description={'Browse BIDS datasets on the HIP'}
 			/>
-			<form onSubmit={handleDatasetsSearch}>
-				<div>
-					<input
-						id="searchTermText"
-						type="text"
-						placeholder="Search"
-					/>
-					<input type="submit" value="Search" />
-				</div>
-			</form>
+			<Box
+				display="flex"
+				// justifyContent="center"
+				// alignItems="center"
+			>
+				<form onSubmit={handleDatasetsSearch}>
+					<div>
+						<FormControl>
+							<TextField name="search" label="Search" id="searchTermText" variant="outlined" />
+						</FormControl>
+						<FormControl>
+							<IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+								<SearchIcon />
+							</IconButton>
+						</FormControl>
+					</div>
+					<div>
+						<FormControl sx={{ m: 1, minWidth: 80, maxWidth: 80 }}>
+							<InputLabel variant="standard" htmlFor="uncontrolled-native">
+								#Results / page
+							</InputLabel>
+							<NativeSelect
+								defaultValue={numberOfResultsPerPage}
+								inputProps={{
+									name: 'numberOfResultsPerPage',
+									id: 'uncontrolled-native',
+								}}
+								onChange={handleNumberOfResultsSearch}
+							>
+								<option value={5}>5</option>
+								<option value={10}>10</option>
+								<option value={20}>20</option>
+							</NativeSelect>
+						</FormControl>
+					</div>
+				</form>
+			</Box>
 
 			<Box sx={{ width: '100%', mt: 3 }}>
 				<Box sx={{ mt: 2 }}>
@@ -142,33 +170,19 @@ const BidsBrowser = () => {
 								display="flex"
 								justifyContent="center"
 								alignItems="center"
-								minHeight="100vh"
 							>
 								<Pagination count={numberOfPages} page={page} onChange={handlePageChange} />
-								<FormControl sx={{ m: 1, minWidth: 40, maxWidth: 40 }}>
-									<InputLabel variant="standard" htmlFor="uncontrolled-native">
-										#Results / page
-									</InputLabel>
-									<NativeSelect
-										defaultValue={numberOfResultsPerPage}
-										inputProps={{
-											name: 'numberOfResultsPerPage',
-											id: 'uncontrolled-native',
-										}}
-										onChange={handleNumberOfResultsSearch}
-									>
-										<option value={5}>5</option>
-										<option value={10}>10</option>
-										<option value={20}>20</option>
-									</NativeSelect>
-								</FormControl>
-
 							</Box>
 
 							<DatasetsSearchResults page={page}/>
 
-							<Pagination count={numberOfPages} page={page} onChange={handlePageChange} />
-
+							<Box
+								display="flex"
+								justifyContent="center"
+								alignItems="center"
+							>
+								<Pagination count={numberOfPages} page={page} onChange={handlePageChange} />
+							</Box>
 							
 						</Box>
 					</Box>

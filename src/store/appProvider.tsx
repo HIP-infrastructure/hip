@@ -43,9 +43,9 @@ export interface IAppState {
 		>
 	]
 	BIDSDatasets: [
-		{ data?: BIDSDataset[]; error?: string } | undefined,
+		{ data?: IndexedBIDSDataset[]; error?: string } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
+			React.SetStateAction<{ data?: IndexedBIDSDataset[]; error?: string } | undefined>
 		>
 	]
 	BIDSDatasetsResults: [
@@ -55,8 +55,8 @@ export interface IAppState {
 		>
 	]
 	selectedBidsDataset: [
-		BIDSDataset | undefined,
-		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
+		IndexedBIDSDataset | undefined,
+		React.Dispatch<React.SetStateAction<IndexedBIDSDataset | undefined>>
 	]
 	selectedParticipants: [
 		Participant[] | undefined,
@@ -88,14 +88,14 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [hipGroups, setHipGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
-		data?: BIDSDataset[]
+		data?: IndexedBIDSDataset[]
 		error?: string
 	}>()
 	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<{
 		data?: IndexedBIDSDataset[]
 		error?: Error
 	}>()
-	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
+	const [selectedBidsDataset, setSelectedBidsDataset] = useState<IndexedBIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()

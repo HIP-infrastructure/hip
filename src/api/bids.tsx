@@ -13,7 +13,7 @@ import {
 
 export const getBidsDatasets = async (
 	owner?: string
-): Promise<BIDSDataset[]> => {
+): Promise<IndexedBIDSDataset[]> => {
 	return fetch(`${API_GATEWAY}/tools/bids/datasets?owner=${owner}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -23,7 +23,7 @@ export const getBidsDatasets = async (
 
 export const getAndIndexBidsDatasets = async (
 	owner?: string
-): Promise<BIDSDataset[]> => {
+): Promise<IndexedBIDSDataset[]> => {
 	const url = `${API_GATEWAY}/tools/bids/datasets?owner=${owner}`
 	return fetch(url, {
 		method: 'POST',
