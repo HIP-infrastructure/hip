@@ -1,15 +1,6 @@
-import {
-	Box,
-	Card,
-	CardContent,
-	CardMedia,
-	Typography,
-} from '@mui/material'
-import { useEffect, useState } from 'react'
-import { getGroupFolders } from '../api/gatewayClientAPI'
-import { GroupFolder } from '../api/types'
+import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
 import { useAppStore } from '../store/appProvider'
-import TreeBrowser from './UI/TreeBrowser'
+import FileBrowser from './UI/FileBrowser'
 import FileChooser from './UI/FileChooser'
 import TitleBar from './UI/titleBar'
 import * as React from 'react'
@@ -37,7 +28,7 @@ const AdminCard = ({
 			<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
 				{description}
 			</Typography>
-			<Box >{children}</Box>
+			<Box>{children}</Box>
 		</CardContent>
 	</Card>
 )
@@ -46,14 +37,6 @@ const Admin = () => {
 	const {
 		user: [user],
 	} = useAppStore()
-
-	const [groupFolders, setGroupFolders] = useState<GroupFolder[] | null>(null)
-
-	useEffect(() => {
-		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroupFolders(groupFolders)
-		})
-	}, [user])
 
 	return (
 		<Box sx={{ width: 0.75 }}>
@@ -74,7 +57,7 @@ const Admin = () => {
 					title='File Browser'
 					description='File Browser for private data and groupfolders using Node fs class. Search via NC files api'
 				>
-					<TreeBrowser groups={groupFolders?.map(g => g.label)} />
+					<FileBrowser />
 				</AdminCard>
 
 				<AdminCard title='File Chooser' description='MUI File Chooser + NC api'>

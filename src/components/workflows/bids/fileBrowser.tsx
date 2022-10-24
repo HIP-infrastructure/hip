@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
-import { TreeNode } from '../../api/types'
-import FilePanel from './filePanel'
+import { TreeNode } from '../../../api/types'
+import FilePanel from '../../UI/filePanel'
 
 interface ITreeSelect {
 	nodesPanes?: TreeNode[][]

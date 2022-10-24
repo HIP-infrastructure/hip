@@ -54,7 +54,6 @@ const BidsBrowser = () => {
 
 	function handleNumberOfResultsSearch(event: React.ChangeEvent<HTMLSelectElement>) {
 		event.preventDefault()
-		console.log(``)
 		setNumberOfResultsPerPage(parseInt(event.target.value))
 	}	
 
