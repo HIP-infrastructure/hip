@@ -20,7 +20,7 @@ const FileChooser = (): JSX.Element => {
 	const { showNotif } = useNotification()
 
 	useEffect(() => {
-		const exists = files.find(i => i.parentPath === selectedFile.path)
+		const exists = files.find(i => i.parentPath === selectedFile.path) || requestSent
 		if (!exists) {
 			setRequestSent(true)
 			getFiles2(selectedFile.path)
@@ -33,7 +33,7 @@ const FileChooser = (): JSX.Element => {
 					setRequestSent(false)
 				})
 		}
-	}, [selectedFile, files, showNotif, setRequestSent])
+	}, [requestSent,selectedFile, files, showNotif, setRequestSent])
 
 	const sortFile = (data: File2[]) =>
 		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
