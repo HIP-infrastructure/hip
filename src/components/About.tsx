@@ -8,6 +8,7 @@ export interface Doc {
 	subtitle?: string
 	buttonLabel?: string
 	url?: string
+	target?: 'self' | 'blank'
 	route?: string
 	description: string
 	image?: string
@@ -61,6 +62,7 @@ const spaces: Doc[] = [
 		label: 'Support',
 		buttonLabel: 'Support',
 		url: `https://thehip.app/call/yizibxg5`,
+		target: 'self',
 		description:
 			'If you have any questions or need help, please contact us through the chat. We will be happy to help you!',
 		image:
@@ -73,7 +75,8 @@ const spaces: Doc[] = [
 		label: "Users' Feedback ",
 		// subtitle: 'Bug reports, feature requests, and general feedback',
 		buttonLabel: 'Feedback',
-		url: `/apps/forms/`,
+		url: 'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87',
+		target: 'self',
 		description:
 			'Hi! We would love to get feedback from our users about our product. Please leave a review or contact us through this form. Thank you!',
 		image: 'public/media/discover_feedback.png',

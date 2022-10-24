@@ -41,11 +41,6 @@ const Admin = () => {
 	return (
 		<Box sx={{ width: 0.75 }}>
 			<TitleBar title={'Admin'} description={''} />
-			<Box sx={{ mb: 2 }}>
-				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
-					Welcome {user?.displayName}
-				</Typography>
-			</Box>
 
 			<Box sx={{ mb: 2 }}>
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
@@ -55,12 +50,15 @@ const Admin = () => {
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				<AdminCard
 					title='File Browser'
-					description='File Browser for private data and groupfolders using Node fs class. Search via NC files api'
+					description='Private data and groupfolders File Browser using Node fs. Search via NC files api'
 				>
 					<FileBrowser />
 				</AdminCard>
 
-				<AdminCard title='File Chooser' description='MUI File Chooser + NC api'>
+				<AdminCard
+					title='File Chooser'
+					description='Choose file through Node fs'
+				>
 					<FileChooser />
 				</AdminCard>
 			</Box>

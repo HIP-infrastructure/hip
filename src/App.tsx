@@ -10,8 +10,8 @@ import CollaborativeSessions from './components/collab/sessions'
 import CollaborativeWorkflows from './components/collab/workflows'
 import Data from './components/data'
 import Documentation from './components/documentation'
-import Group from './components/groups/Group'
-import Groups from './components/groups/index'
+import Dashboard from './components/Dashboard/Dashboard'
+import Groups from './components/Dashboard/index'
 import Navigation from './components/navigation'
 import PublicSessions from './components/public/sessions'
 import PublicWorkflows from './components/public/workflows'
@@ -98,7 +98,7 @@ const App = () => (
 			<Route path={'admin'} element={<Admin />} />
 			<Route path={'private'} element={<Groups />}>
 				<Route index element={<Groups />} />
-				<Route path={':id'} element={<Group />} />
+				<Route path={':id'} element={<Dashboard />} />
 				<Route path={':id/sessions'} element={<Sessions />} />
 				<Route path={':id/data'} element={<Data />} />
 				<Route path={':id/workflows'} element={<Outlet />}>

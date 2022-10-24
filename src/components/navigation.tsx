@@ -392,7 +392,7 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 												disabled={disabled}
 												onClick={() =>
 													link
-														? window.open(`${link}`, '_blank')
+														? window.location.href = link
 														: handleClickNavigate({ route, id })
 												}
 											>

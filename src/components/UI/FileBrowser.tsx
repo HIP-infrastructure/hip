@@ -62,7 +62,7 @@ const root = {
 	parentPath: 'root',
 }
 
-const DataBrowser = () => {
+const FileBrowser = () => {
 	const {
 		user: [user],
 	} = useAppStore()
@@ -256,4 +256,4 @@ const DataBrowser = () => {
 	)
 }
 
-export default DataBrowser
+export default FileBrowser

@@ -40,7 +40,7 @@ import {
 } from '../api/types'
 import { color, loading } from '../api/utils'
 import SessionImage from '../assets/session-thumbnail.png'
-import { ROUTE_PREFIX } from '../constants'
+import { POLLING, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import Modal, { ModalComponentHandle } from './UI/Modal'
 import TitleBar from './UI/titleBar'
@@ -53,7 +53,9 @@ const Sessions = (): JSX.Element => {
 		debug: [debug, setDebug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
-	const [showAdminView, setShowAdminView] = React.useState(false)
+	const [showAdminView, setShowAdminView] = React.useState(
+		localStorage.getItem('admin-view') === 'true'
+	)
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
@@ -63,13 +65,13 @@ const Sessions = (): JSX.Element => {
 			user &&
 				getContainers(user)
 					.then(data => setContainers({ data }))
-					.catch(error =>
+					.catch(error => {
 						setContainers(containers => ({
 							data: containers?.data,
 							error,
 						}))
-					)
-		}, 2 * 1000)
+					})
+		}, POLLING * 1000)
 		return () => clearInterval(interval)
 	}, [setContainers, user])
 
@@ -138,7 +140,7 @@ const Sessions = (): JSX.Element => {
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
-					<Box sx={{display: 'flex'}}>
+					<Box sx={{ display: 'flex' }}>
 						{user?.isAdmin && (
 							<FormGroup>
 								<FormControlLabel
@@ -146,6 +148,10 @@ const Sessions = (): JSX.Element => {
 										<Switch
 											checked={showAdminView}
 											onChange={() => {
+												localStorage.setItem(
+													'admin-view',
+													String(!showAdminView)
+												)
 												setShowAdminView(!showAdminView)
 											}}
 										/>
@@ -315,17 +321,19 @@ const Sessions = (): JSX.Element => {
 							)}
 
 							<Tooltip title='Shut down' placement='top'>
-								<IconButton
-									disabled={session.state !== ContainerState.RUNNING}
-									edge='end'
-									color='primary'
-									aria-label='Shut down'
-									onClick={() => {
-										confirmRemove(session.id)
-									}}
-								>
-									<PowerSettingsNew />
-								</IconButton>
+								<span>
+									<IconButton
+										disabled={session.state !== ContainerState.RUNNING}
+										edge='end'
+										color='primary'
+										aria-label='Shut down'
+										onClick={() => {
+											confirmRemove(session.id)
+										}}
+									>
+										<PowerSettingsNew />
+									</IconButton>
+								</span>
 							</Tooltip>
 
 							{session.state === ContainerState.PAUSED && (
@@ -353,37 +361,41 @@ const Sessions = (): JSX.Element => {
 									title='Pause the session. You can resume it later'
 									placement='top'
 								>
-									<IconButton
-										disabled={session.state !== ContainerState.RUNNING}
-										edge='end'
-										color='primary'
-										aria-label='pause'
-										onClick={() => {
-											pauseAppsAndSession(session.id, user?.uid || '')
-											trackEvent({
-												category: 'server',
-												action: 'pause',
-											})
-										}}
-									>
-										<Pause />
-									</IconButton>
+									<span>
+										<IconButton
+											disabled={session.state !== ContainerState.RUNNING}
+											edge='end'
+											color='primary'
+											aria-label='pause'
+											onClick={() => {
+												pauseAppsAndSession(session.id, user?.uid || '')
+												trackEvent({
+													category: 'server',
+													action: 'pause',
+												})
+											}}
+										>
+											<Pause />
+										</IconButton>
+									</span>
 								</Tooltip>
 							)}
 
 							<Tooltip title='Open' placement='top'>
-								<IconButton
-									disabled={session.state !== ContainerState.RUNNING}
-									sx={{ ml: 0.6 }}
-									edge='end'
-									color='primary'
-									aria-label='Open'
-									onClick={() => {
-										handleOpenSession(session.id)
-									}}
-								>
-									<Visibility />
-								</IconButton>
+								<span>
+									<IconButton
+										disabled={session.state !== ContainerState.RUNNING}
+										sx={{ ml: 0.6 }}
+										edge='end'
+										color='primary'
+										aria-label='Open'
+										onClick={() => {
+											handleOpenSession(session.id)
+										}}
+									>
+										<Visibility />
+									</IconButton>
+								</span>
 							</Tooltip>
 						</CardActions>
 					</Card>

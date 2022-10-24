@@ -21,7 +21,6 @@ import {
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
-import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createApp, getContainers, stopApp } from '../api/gatewayClientAPI'
 import {
@@ -30,10 +29,16 @@ import {
 	Container,
 	ContainerType,
 } from '../api/types'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
+import {
+	APP_MARGIN_TOP,
+	DRAWER_WIDTH,
+	POLLING,
+	ROUTE_PREFIX,
+} from '../constants'
 import { useAppStore } from '../store/appProvider'
 import AppList from './sessionAppList'
 import SessionInfo from './sessionInfo'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
@@ -70,25 +75,29 @@ const Session = (): JSX.Element => {
 		}
 	}, [])
 
+	// Polling for containers state
 	useEffect(() => {
 		const interval = setInterval(() => {
 			user &&
 				getContainers(user)
 					.then(data => setContainers({ data }))
 					.catch(error => setContainers({ error }))
-		}, 2 * 1000)
+		}, POLLING * 1000)
 		return () => clearInterval(interval)
 	}, [setContainers, user])
 
 	// Check for XPra readiness
 	useEffect(() => {
 		if (intervalRef.current || !session?.url) return
-
+		if (sessionIsAlive) return
 		intervalRef.current = setInterval(() => {
-			fetch(session.url)
+			fetch(session.url, { method: 'HEAD' })
 				.then(result => {
 					if (result.status === 200) {
-						if (intervalRef.current) clearInterval(intervalRef.current)
+						if (intervalRef.current) {
+							clearInterval(intervalRef.current)
+							intervalRef.current = undefined
+						}
 
 						setSessionIsAlive(true)
 						focusOnIframe(5)
@@ -98,22 +107,21 @@ const Session = (): JSX.Element => {
 					// console.log(e)
 				})
 		}, 1000)
-		return () => {
-			if (intervalRef.current) clearInterval(intervalRef.current)
-		}
 	}, [session])
 
 	// get session and its children apps from params
 	useEffect(() => {
 		const s = containers?.data?.find(c => c.id === params.id)
 		if (s) {
-			// && (s.id !== session?.id)) {
 			s.apps = containers?.data?.filter(
 				c => c.parentId === s.id
 			) as AppContainer[]
-			setSession(s)
+			const pathId = s?.url.split('/').slice(-2, -1) || ''
+			const path = encodeURIComponent(`/session/${pathId}/`)
+			const url = `${s.url}?path=${path}`
+			setSession({ ...s, url })
 		}
-	}, [params, session, setSession, containers])
+	}, [params, setSession, containers])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -279,7 +287,7 @@ const Session = (): JSX.Element => {
 						ref={fullScreenRef}
 						title='Desktop'
 						src={session.url}
-						allowFullScreen
+						allow={'autoplay; fullscreen; clipboard-write;'}
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
 							height: 'calc(100vh - 100px)',
