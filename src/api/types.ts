@@ -142,22 +142,22 @@ export interface Participant {
 
 export type BIDSDatasetResponse = { data?: BIDSDataset[]; error?: Error }
 
-export interface BIDSDataset {
-	id: string
-	path?: string
-	participants?: Participant[]
-	Name: string
-	BIDSVersion?: string
-	License?: string
-	Authors?: string[]
-	Acknowledgements?: string
-	HowToAcknowledge?: string
-	Funding?: string[]
-	ReferencesAndLinks?: string[]
-	DatasetDOI?: string
-}
+// export interface BIDSDataset {
+// 	id: string
+// 	path?: string
+// 	participants?: Participant[]
+// 	Name: string
+// 	BIDSVersion?: string
+// 	License?: string
+// 	Authors?: string[]
+// 	Acknowledgements?: string
+// 	HowToAcknowledge?: string
+// 	Funding?: string[]
+// 	ReferencesAndLinks?: string[]
+// 	DatasetDOI?: string
+// }
 
-export interface IndexedBIDSDataset {
+export interface BIDSDataset {
 	id: string
 	User?: string
 	Path?: string

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { 
+import {
 	Pagination,
 	InputLabel,
 	NativeSelect,
@@ -8,14 +8,14 @@ import {
 	Box,
 	Input,
 	IconButton,
-	TextField
+	TextField,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-
 import { useAppStore } from '../../../store/appProvider'
 import TitleBar from '../../UI/titleBar'
-import { getMatchingBidsDatasets } from '../../../api/bids'
+import { queryBidsDatasets } from '../../../api/bids'
 import DatasetsSearchResults from './datasetsSearchResults'
+import { BIDSDataset } from '../../../api/types'
 
 const boxStyle = {
 	border: 1,
@@ -27,87 +27,89 @@ const boxStyle = {
 	flexFlow: 'row',
 }
 
+interface FormElements extends HTMLFormControlsCollection {
+	searchTermText: HTMLInputElement
+}
+interface SearchTermFormElement extends HTMLFormElement {
+	readonly elements: FormElements
+}
+
 const BidsBrowser = () => {
-	
 	const {
 		user: [user],
-		BIDSDatasetsResults: [bidsDatasetsResults, setBidsDatasetsResults],
+		BIDSDatasets: [bidsDatasets],
 	} = useAppStore()
 
-	const [searchTerm, setSearchTerm] = React.useState("")
-	const [numberOfPages, setNumberOfPages] = React.useState<number>(1)
-	const [page, setPage] = React.useState<number>(1)
-	const [numberOfResultsPerPage, setNumberOfResultsPerPage] = React.useState<number>(20)
-	const [totalNumberOfDatasets, setTotalNumberOfDatasets] = React.useState<number>(0)
+	const [searchTerm, setSearchTerm] = useState('')
+	const [numberOfPages, setNumberOfPages] = useState<number>(1)
+	const [page, setPage] = useState<number>(1)
+	const [numberOfResultsPerPage, setNumberOfResultsPerPage] =
+		useState<number>(20)
+	const [totalNumberOfDatasets, setTotalNumberOfDatasets] =
+		useState<number>(0)
+	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<
+		BIDSDataset[] | undefined
+	>([])
 
-	interface FormElements extends HTMLFormControlsCollection {
-		searchTermText: HTMLInputElement
-	}
-	interface SearchTermFormElement extends HTMLFormElement {
-		readonly elements: FormElements
-	}
+	useEffect(() => {
+		if (!bidsDatasets?.data) return
+		setBidsDatasetsResults(bidsDatasets.data)
+		setTotalNumberOfDatasets(bidsDatasets.data.length)
+	}, [bidsDatasets])
+
+	useEffect(() => {
+		setBidsDatasetsResults(undefined)
+		if (searchTerm) {
+			queryBidsDatasets(user?.uid || '', searchTerm, page, numberOfResultsPerPage)
+				.then(data => {
+					if (data) {
+						setBidsDatasetsResults(data)
+					}
+				})
+				.catch(error => {
+					// setBidsDatasetsResults({ error })
+				})
+		} else {
+			queryBidsDatasets(user?.uid || '', '*', page, numberOfResultsPerPage)
+				.then(data => {
+					if (data) {
+						setBidsDatasetsResults(data)
+					}
+				})
+				.catch(error => {
+					// setBidsDatasetsResults({ error })
+				})
+		}
+	}, [searchTerm, page, numberOfResultsPerPage])
+
+	useEffect(() => {
+		if (bidsDatasetsResults) {
+			if (totalNumberOfDatasets > 0) {
+				setNumberOfPages(
+					Math.ceil(totalNumberOfDatasets / numberOfResultsPerPage)
+				)
+			} else {
+				setNumberOfPages(1)
+			}
+		}
+	}, [totalNumberOfDatasets, numberOfResultsPerPage])
 
 	function handleDatasetsSearch(event: React.FormEvent<SearchTermFormElement>) {
 		event.preventDefault()
 		setSearchTerm(event.currentTarget.elements.searchTermText.value)
 	}
 
-	function handleNumberOfResultsSearch(event: React.ChangeEvent<HTMLSelectElement>) {
+	function handleNumberOfResultsSearch(
+		event: React.ChangeEvent<HTMLSelectElement>
+	) {
 		event.preventDefault()
 		setNumberOfResultsPerPage(parseInt(event.target.value))
-	}	
+	}
 
-	function handlePageChange (event: React.ChangeEvent<unknown>, value: number) {
+	function handlePageChange(event: React.ChangeEvent<unknown>, value: number) {
 		event.preventDefault()
 		setPage(value)
 	}
-
-	useEffect(() => {
-		getMatchingBidsDatasets(user?.uid, "*", page, 200)
-			.then(data => {
-				if (data) {
-					setTotalNumberOfDatasets(data.length)
-				}
-				else {
-					setTotalNumberOfDatasets(0)
-				}
-			})
-	}, [])
-
-	useEffect(() => {
-		setBidsDatasetsResults(undefined)
-		if (searchTerm) {
-			getMatchingBidsDatasets(user?.uid, searchTerm, page, numberOfResultsPerPage)
-				.then(data => {
-					if (data) {
-						setBidsDatasetsResults({ data })
-					}
-				})
-				.catch(error => {
-					setBidsDatasetsResults({ error })
-				})
-		} else {
-			getMatchingBidsDatasets(user?.uid, "*", page, numberOfResultsPerPage)
-				.then(data => {
-					if (data) {
-						setBidsDatasetsResults({ data })
-					}
-				})
-				.catch(error => {
-					setBidsDatasetsResults({ error })
-				})
-		}
-	}, [searchTerm, page, numberOfResultsPerPage])
-
-	useEffect(() => {
-		if (bidsDatasetsResults && bidsDatasetsResults.data) {
-			if (totalNumberOfDatasets > 0) {
-				setNumberOfPages(Math.ceil(totalNumberOfDatasets / numberOfResultsPerPage))
-			} else {
-				setNumberOfPages(1)
-			}
-		}
-	}, [totalNumberOfDatasets, numberOfResultsPerPage])
 
 	return (
 		<>
@@ -116,24 +118,29 @@ const BidsBrowser = () => {
 				description={'Browse BIDS datasets on the HIP'}
 			/>
 			<Box
-				display="flex"
+				display='flex'
 				// justifyContent="center"
 				// alignItems="center"
 			>
 				<form onSubmit={handleDatasetsSearch}>
 					<div>
 						<FormControl>
-							<TextField name="search" label="Search" id="searchTermText" variant="outlined" />
+							<TextField
+								name='search'
+								label='Search'
+								id='searchTermText'
+								variant='outlined'
+							/>
 						</FormControl>
 						<FormControl>
-							<IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+							<IconButton type='submit' sx={{ p: '10px' }} aria-label='search'>
 								<SearchIcon />
 							</IconButton>
 						</FormControl>
 					</div>
 					<div>
 						<FormControl sx={{ m: 1, minWidth: 80, maxWidth: 80 }}>
-							<InputLabel variant="standard" htmlFor="uncontrolled-native">
+							<InputLabel variant='standard' htmlFor='uncontrolled-native'>
 								#Results / page
 							</InputLabel>
 							<NativeSelect
@@ -165,24 +172,23 @@ const BidsBrowser = () => {
 								flexDirection: 'column',
 							}}
 						>
-							<Box
-								display="flex"
-								justifyContent="center"
-								alignItems="center"
-							>
-								<Pagination count={numberOfPages} page={page} onChange={handlePageChange} />
+							<Box display='flex' justifyContent='center' alignItems='center'>
+								<Pagination
+									count={numberOfPages}
+									page={page}
+									onChange={handlePageChange}
+								/>
 							</Box>
 
-							<DatasetsSearchResults page={page}/>
+							<DatasetsSearchResults page={page} datasets={bidsDatasetsResults}/>
 
-							<Box
-								display="flex"
-								justifyContent="center"
-								alignItems="center"
-							>
-								<Pagination count={numberOfPages} page={page} onChange={handlePageChange} />
+							<Box display='flex' justifyContent='center' alignItems='center'>
+								<Pagination
+									count={numberOfPages}
+									page={page}
+									onChange={handlePageChange}
+								/>
 							</Box>
-							
 						</Box>
 					</Box>
 				</Box>

@@ -18,13 +18,13 @@ import {
 	Typography,
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
-import { getAndIndexBidsDatasets } from '../../../api/bids'
-import { BIDSDataset, IndexedBIDSDataset } from '../../../api/types'
+import { indexBidsDatasets } from '../../../api/bids'
+import { BIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../store/appProvider'
 import CreateDataset from './forms/CreateDataset'
 
 const Datasets = (): JSX.Element => {
-	const [rows, setRows] = useState<IndexedBIDSDataset[]>([])
+	const [rows, setRows] = useState<BIDSDataset[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [datasetCreated, setDatasetCreated] = useState(false)
 	const {
@@ -48,8 +48,7 @@ const Datasets = (): JSX.Element => {
 
 	useEffect(() => {
 		if (datasetCreated) {
-			setBidsDatasets(undefined)
-			getAndIndexBidsDatasets(user?.uid)
+			indexBidsDatasets(user?.uid)
 				.then(data => {
 					if (data) {
 						setBidsDatasets({ data })
@@ -60,7 +59,7 @@ const Datasets = (): JSX.Element => {
 				})
 			setDatasetCreated(false)
 		}
-	}, [datasetCreated, setBidsDatasets, user?.uid])
+	}, [datasetCreated, user?.uid])
 
 	return (
 		<>

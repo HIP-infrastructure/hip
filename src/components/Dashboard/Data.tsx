@@ -66,10 +66,10 @@ const Data = ({
 								<Typography variant='subtitle2'>
 									{!bidsDatasets && <CircularProgress size={12} />}
 									{bidsDatasets?.data?.reduce(
-										(a, b) => a + (b?.participants?.length || 0),
+										(a, b) => a + (b?.ParticipantsCount || 0),
 										0
 									)}{' '}
-									subjects in {!bidsDatasets && <CircularProgress size={12} />}
+									subjects in {''}
 									{bidsDatasets?.data?.length} BIDS datasets
 								</Typography>
 							</Box>

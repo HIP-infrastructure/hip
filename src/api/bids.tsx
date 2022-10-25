@@ -1,4 +1,4 @@
-import { API_GATEWAY, checkError } from './gatewayClientAPI'
+import { API_GATEWAY, catchError, checkError } from './gatewayClientAPI'
 import {
 	BIDSDataset,
 	BIDSDatasetResponse,
@@ -7,47 +7,37 @@ import {
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
 	IError,
-	IndexedBIDSDataset,
 	Participant,
 } from './types'
 
-export const getBidsDatasets = async (
+export const indexBidsDatasets = async (
 	owner?: string
-): Promise<IndexedBIDSDataset[]> => {
-	return fetch(`${API_GATEWAY}/tools/bids/datasets?owner=${owner}`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	}).then(checkError)
-}
-
-export const getAndIndexBidsDatasets = async (
-	owner?: string
-): Promise<IndexedBIDSDataset[]> => {
-	const url = `${API_GATEWAY}/tools/bids/datasets?owner=${owner}`
+): Promise<BIDSDataset[]> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/index?owner=${owner}`
 	return fetch(url, {
-		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify({}),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
 
-export const getMatchingBidsDatasets = async (
-	userId?: string,
-	query?: string,
-	page?: number,
-	nb_of_results?: number
-): Promise<IndexedBIDSDataset[]> => {
-	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nb_of_results=${nb_of_results}`
+export const queryBidsDatasets = async (
+	userId: string,
+	query = '*',
+	page = 0,
+	nbOfResults = 200
+): Promise<BIDSDataset[]> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
 	return fetch(url, {
-		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-	}).then(response => response.json())
+	})
+		.then(response => response.json())
+		.catch(catchError)
 }
 
 export const createBidsDataset = async (
@@ -61,7 +51,9 @@ export const createBidsDataset = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(CreateBidsDatasetDto),
-	}).then(data => data.json())
+	})
+		.then(data => data.json())
+		.catch(catchError)
 }
 
 export const getParticipants = async (
@@ -73,7 +65,9 @@ export const getParticipants = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(data => data.json())
+	})
+		.then(data => data.json())
+		.catch(catchError)
 }
 
 export const getSubject = async (
@@ -86,7 +80,9 @@ export const getSubject = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
 
 export const importSubject = async (
@@ -97,10 +93,12 @@ export const importSubject = async (
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken
+			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createSubject),
-	}).then(checkError)
+	})
+		.then(checkError)
+		.catch(catchError)
 }
 
 export const subEditClinical = async (
@@ -115,7 +113,9 @@ export const subEditClinical = async (
 				requesttoken: window.OC.requestToken,
 			},
 			body: JSON.stringify(editSubject),
-		}).then(checkError)
+		})
+			.then(checkError)
+			.catch(catchError)
 	} catch (error) {
 		return Promise.reject(error)
 	}

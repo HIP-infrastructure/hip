@@ -46,7 +46,7 @@ export const checkError = async (response: Response) => {
 	}
 }
 
-const catchError = (error: unknown) => {
+export const catchError = (error: unknown) => {
 	if (error instanceof Error) return Promise.reject(error.message)
 	return Promise.reject(String(error))
 }

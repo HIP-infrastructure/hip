@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { getAndIndexBidsDatasets } from '../api/bids'
+import { indexBidsDatasets, queryBidsDatasets } from '../api/bids'
 
 import {
 	getAvailableAppList,
@@ -12,7 +12,6 @@ import {
 import {
 	Application,
 	BIDSDataset,
-	IndexedBIDSDataset,
 	Container,
 	File,
 	HIPGroup,
@@ -43,20 +42,15 @@ export interface IAppState {
 		>
 	]
 	BIDSDatasets: [
-		{ data?: IndexedBIDSDataset[]; error?: string } | undefined,
+		{ data?: BIDSDataset[]; error?: string } | undefined,
 		React.Dispatch<
-			React.SetStateAction<{ data?: IndexedBIDSDataset[]; error?: string } | undefined>
+			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
 		>
 	]
-	BIDSDatasetsResults: [
-		{ data?: IndexedBIDSDataset[]; error?: Error } | undefined,
-		React.Dispatch<
-			React.SetStateAction<{ data?: IndexedBIDSDataset[]; error?: Error } | undefined>
-		>
-	]
+
 	selectedBidsDataset: [
-		IndexedBIDSDataset | undefined,
-		React.Dispatch<React.SetStateAction<IndexedBIDSDataset | undefined>>
+		BIDSDataset | undefined,
+		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
 	]
 	selectedParticipants: [
 		Participant[] | undefined,
@@ -88,14 +82,12 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [hipGroups, setHipGroups] = useState<HIPGroup[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
-		data?: IndexedBIDSDataset[]
+		data?: BIDSDataset[]
 		error?: string
 	}>()
-	const [bidsDatasetsResults, setBidsDatasetsResults] = useState<{
-		data?: IndexedBIDSDataset[]
-		error?: Error
-	}>()
-	const [selectedBidsDataset, setSelectedBidsDataset] = useState<IndexedBIDSDataset>()
+
+	// BIDS Tools Store, to be renamed or refactored into a new type
+	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
 	const [selectedFiles, setSelectedFiles] = useState<File[]>()
@@ -128,7 +120,12 @@ export const AppStoreProvider = ({
 			.then(data => setAvailableApps({ data }))
 			.catch(error => setAvailableApps({ error }))
 
-		getAndIndexBidsDatasets(currentUser.uid)
+		queryBidsDatasets(currentUser.uid || '')
+			.then(data => setBidsDatasets({ data }))
+			.catch(error => setBidsDatasets({ error }))
+
+		// Perform a full index of the BIDS datasets
+		indexBidsDatasets(currentUser.uid)
 			.then(data => setBidsDatasets({ data }))
 			.catch(error => setBidsDatasets({ error }))
 
@@ -149,7 +146,6 @@ export const AppStoreProvider = ({
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
-			BIDSDatasetsResults: [bidsDatasetsResults, setBidsDatasetsResults],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
@@ -165,10 +161,6 @@ export const AppStoreProvider = ({
 			setContainers,
 			availableApps,
 			setAvailableApps,
-			bidsDatasets,
-			setBidsDatasets,
-			bidsDatasetsResults,
-			setBidsDatasetsResults,
 			selectedBidsDataset,
 			setSelectedBidsDataset,
 			selectedParticipants,

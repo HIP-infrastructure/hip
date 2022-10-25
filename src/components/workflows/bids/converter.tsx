@@ -9,7 +9,7 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { getBidsDatasets, importSubject } from '../../../api/bids'
+import { queryBidsDatasets, importSubject } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
@@ -98,7 +98,7 @@ const BidsConverter = () => {
 				setResponse({ data })
 
 				// reload datasets
-				getBidsDatasets(user?.uid)
+				queryBidsDatasets(user?.uid || '')
 					.then(data => {
 						if (data) {
 							setBidsDatasets({ data })
@@ -115,7 +115,7 @@ const BidsConverter = () => {
 				// FIXME:
 				// Actually, from the API, it's not clear if it failed, so
 				// reload datasets anyway
-				getBidsDatasets(user?.uid)
+				queryBidsDatasets(user?.uid || '')
 					.then(data => {
 						if (data) {
 							setBidsDatasets({ data })

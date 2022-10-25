@@ -11,9 +11,9 @@ import {
     TableRow,
 	Typography,
 } from '@mui/material'
-import { IndexedBIDSDataset } from '../api/types'
+import { BIDSDataset } from '../api/types'
 
-type Props = {dataset: IndexedBIDSDataset}
+type Props = {dataset: BIDSDataset}
 
 const DatasetCard = ({dataset} : Props): JSX.Element => {
 
