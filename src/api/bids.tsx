@@ -25,18 +25,20 @@ export const indexBidsDatasets = async (
 }
 
 export const queryBidsDatasets = async (
-	userId: string,
+	userId?: string,
 	query = '*',
 	page = 0,
 	nbOfResults = 200
 ): Promise<BIDSDataset[]> => {
+	if (!userId) return []
+	
 	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
 	return fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	})
-		.then(response => response.json())
+		.then(checkError)
 		.catch(catchError)
 }
 
@@ -52,7 +54,7 @@ export const createBidsDataset = async (
 		},
 		body: JSON.stringify(CreateBidsDatasetDto),
 	})
-		.then(data => data.json())
+		.then(checkError)
 		.catch(catchError)
 }
 
@@ -66,7 +68,7 @@ export const getParticipants = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(data => data.json())
+		.then(checkError)
 		.catch(catchError)
 }
 

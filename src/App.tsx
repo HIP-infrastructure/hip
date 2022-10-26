@@ -8,10 +8,9 @@ import Apps from './components/apps'
 import CollaborativeData from './components/collab/data'
 import CollaborativeSessions from './components/collab/sessions'
 import CollaborativeWorkflows from './components/collab/workflows'
-import Data from './components/data'
 import Documentation from './components/documentation'
 import Dashboard from './components/Dashboard/Dashboard'
-import Groups from './components/Dashboard/index'
+import DashboardOutlet from './components/Dashboard/index'
 import Navigation from './components/navigation'
 import PublicSessions from './components/public/sessions'
 import PublicWorkflows from './components/public/workflows'
@@ -20,6 +19,8 @@ import Sessions from './components/sessions'
 import Workflows from './components/workflows'
 import BidsConverter from './components/workflows/bids/converter'
 import BidsBrowser from './components/workflows/bids/browser'
+import Datasets from './components/BIDS/Datasets'
+import Dataset from './components/BIDS/Dataset'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
 import Admin from './components/Admin'
 
@@ -96,16 +97,21 @@ const App = () => (
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'admin'} element={<Admin />} />
-			<Route path={'private'} element={<Groups />}>
-				<Route index element={<Groups />} />
+			<Route path={'private'} element={<DashboardOutlet />}>
+				<Route index element={<DashboardOutlet />} />
 				<Route path={':id'} element={<Dashboard />} />
 				<Route path={':id/sessions'} element={<Sessions />} />
-				<Route path={':id/data'} element={<Data />} />
+				<Route path={':id/datasets'} element={<Outlet />}>
+					<Route index element={<Datasets />} />
+					<Route path={':datasetId'} element={<Dataset />} />
+				</Route>
+
 				<Route path={':id/workflows'} element={<Outlet />}>
 					<Route index element={<Workflows />} />
 					<Route path={'bidsimport'} element={<BidsConverter />} />
 					<Route path={'bidssearch'} element={<BidsBrowser />} />
 				</Route>
+				
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<CollaborativeSessions />} />

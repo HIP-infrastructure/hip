@@ -113,6 +113,19 @@ const Navigation = (props: { PaperProps: PaperProps }): JSX.Element => {
 			},
 			{
 				route: center
+					? `private/${center.id}/datasets`
+					: 'private/default/datasets',
+				link: null,
+				label: 'BIDS Datasets',
+				icon: <Assignment />,
+				title: 'Browse and manage datasets',
+				disabled: false,
+				color: null,
+				image: null,
+				children: [],
+			},
+			{
+				route: center
 					? `private/${center.id}/workflows/bidsimport`
 					: 'private/default/workflows/bidsimport',
 				link: null,
