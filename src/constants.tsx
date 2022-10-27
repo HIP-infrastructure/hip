@@ -5,6 +5,11 @@ export const APP_MARGIN_TOP = 50
 export const DRAWER_WIDTH = 240
 export const POLLING = 2
 
+export const linkStyle = {
+	textDecoration: 'underline',
+	color: '#0277bd',
+}
+
 export const DATA_TYPES = [
 	{ name: 'anat', description: 'structural imaging data' },
 	{ name: 'ieeg', description: 'intracranial electroencephalography data' },

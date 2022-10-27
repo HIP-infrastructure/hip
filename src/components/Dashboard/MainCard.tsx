@@ -18,11 +18,7 @@ import {
 	Typography,
 } from '@mui/material'
 import { HIPGroup } from '../../api/types'
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
+import { linkStyle } from '../../constants'
 
 const MainCard = ({ group }: { group?: HIPGroup }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {

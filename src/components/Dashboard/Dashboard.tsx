@@ -17,11 +17,7 @@ import Data from './Data'
 import MainCard from './MainCard'
 import Members from './Members'
 import Tools from './Tools'
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
+import { linkStyle } from '../../constants'
 
 const Dashboard = () => {
 	const {

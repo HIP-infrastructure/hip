@@ -9,12 +9,8 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { linkStyle } from '../../constants'
 import { Doc } from '../About'
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
 
 const AboutCard = ({ doc }: { doc: Doc }) => {
 	const handleClickLink = ({ url, target }: Doc) => {
