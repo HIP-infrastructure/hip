@@ -54,8 +54,7 @@ const Data = ({
 						variant='body2'
 						color='text.secondary'
 					>
-						Password-protected space for your center data to upload and curate
-						own data.
+						Private space for your center data.
 					</Typography>
 					<>
 						<Typography sx={{ mt: 2 }} variant='body2'>

@@ -15,7 +15,7 @@ import {
 	Paper,
 } from '@mui/material'
 import { BIDSDataset } from '../../api/types'
-import { ROUTE_PREFIX } from '../../constants'
+import { linkStyle, ROUTE_PREFIX } from '../../constants'
 import { NavLink, useParams } from 'react-router-dom'
 
 const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
@@ -35,6 +35,7 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 					<CardContent>
 						<Typography variant='h6'>
 							<NavLink
+								style={linkStyle}
 								to={`${ROUTE_PREFIX}/private/${params.id}/datasets/${dataset?.id}`}
 							>
 								{dataset?.Name}

@@ -43,7 +43,7 @@ const Dataset = () => {
 				}}
 			/>
 			<TitleBar
-				title='BIDS Browser'
+				title='BIDS Dataset'
 				button={
 					<Box sx={{ display: 'flex' }}>
 						<Button
@@ -63,14 +63,13 @@ const Dataset = () => {
 				}
 			/>
 
-			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+			<Box sx={{  mt: 2 }}>
 				<Box>
 					<Breadcrumbs aria-label='breadcrumb'>
 						<Link onClick={() => navigate(-1)}>Datasets</Link>
 						<Typography color='text.primary'>{dataset?.Name}</Typography>
 					</Breadcrumbs>
 				</Box>
-				
 				{!dataset && (
 					<CircularProgress
 						size={32}
@@ -78,8 +77,11 @@ const Dataset = () => {
 						sx={{ top: 10, left: 10 }}
 					/>
 				)}
-
-				<pre>{JSON.stringify(dataset, null, 2)}</pre>
+				<Box
+					sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}
+				>
+					<pre>{JSON.stringify(dataset, null, 2)}</pre>
+				</Box>{' '}
 			</Box>
 		</>
 	)
