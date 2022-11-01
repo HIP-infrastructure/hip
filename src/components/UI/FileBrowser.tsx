@@ -55,39 +55,47 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 	},
 }))
 
-const root = {
-	name: 'root',
-	isDirectory: true,
-	path: '/',
-	parentPath: 'root',
-}
+const FileBrowser = ({
+	path,
+	showGroups,
+	showSearch,
+}: {
+	path?: string
+	showGroups?: boolean
+	showSearch?: boolean
+}) => {
+	const rootFile = {
+		name: 'root',
+		isDirectory: true,
+		path: path || '/',
+		parentPath: 'root',
+	}
 
-const FileBrowser = () => {
 	const {
 		user: [user],
 	} = useAppStore()
 
-	const [files, setFiles] = useState<File2[]>([root])
+	const [files, setFiles] = useState<File2[]>([rootFile])
 	const [groups, setGroups] = useState<string[] | null>(null)
-	const [expanded, setExpanded] = useState(['/'])
+	const [expanded, setExpanded] = useState([rootFile.path])
 	const [term, setTerm] = useState('')
 	const [filesCache, setFilesCache] = useState<File2[]>([])
 
 	useEffect(() => {
-		getFiles2('/').then(data => {
+		getFiles2(path || '/').then(data => {
 			const r = sortFile(data)
 			setFiles(r)
 			setFilesCache(r)
 		})
-	}, [])
+	}, [path])
 
 	useEffect(() => {
-		if (groups) return
+		if (!showGroups && groups) return
 
 		getGroupFolders(user?.uid).then(groupFolders => {
 			setGroups(groupFolders?.map(g => g.label))
 		})
-	}, [user, setGroups])
+	}, [showGroups, user, setGroups])
 
 	useEffect(() => {
 		setFiles(files =>
@@ -205,18 +213,20 @@ const FileBrowser = () => {
 					sx={{ top: 10, left: 10 }}
 				/>
 			)}
-			<TextField
-				id='search-textfield'
-				sx={{ width: '100%', mb: 2 }}
-				onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
-					setTerm(e.target.value)
-				}
-				label='Search'
-				variant='outlined'
-			/>
+			{showSearch && (
+				<TextField
+					id='search-textfield'
+					sx={{ width: '100%', mb: 2 }}
+					onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
+						setTerm(e.target.value)
+					}
+					label='Search'
+					variant='outlined'
+				/>
+			)}
 			<TreeView
 				aria-label='file system navigator'
-				defaultExpanded={[root.path]}
+				defaultExpanded={[rootFile.path]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
 				defaultEndIcon={<CloseSquare />}
@@ -241,7 +251,7 @@ const FileBrowser = () => {
 				}}
 			>
 				{files
-					.filter(f => f.parentPath === '/')
+					.filter(f => f.parentPath === rootFile.path)
 					.map(file => (
 						<StyledTreeItem
 							key={file.path}

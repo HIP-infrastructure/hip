@@ -33,37 +33,28 @@ const AdminCard = ({
 	</Card>
 )
 
-const Admin = () => {
-	const {
-		user: [user],
-	} = useAppStore()
+const Admin = () => (
+	<Box sx={{ width: 0.75 }}>
+		<TitleBar title={'Admin'} description={''} />
 
-	return (
-		<Box sx={{ width: 0.75 }}>
-			<TitleBar title={'Admin'} description={''} />
-
-			<Box sx={{ mb: 2 }}>
-				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
-					UI DEMO WIDGETS
-				</Typography>
-			</Box>
-			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				<AdminCard
-					title='File Browser'
-					description='Private data and groupfolders File Browser using Node fs. Search via NC files api'
-				>
-					<FileBrowser />
-				</AdminCard>
-
-				<AdminCard
-					title='File Chooser'
-					description='Choose file through Node fs'
-				>
-					<FileChooser />
-				</AdminCard>
-			</Box>
+		<Box sx={{ mb: 2 }}>
+			<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
+				UI DEMO WIDGETS
+			</Typography>
 		</Box>
-	)
-}
+		<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+			<AdminCard
+				title='File Browser'
+				description='Private data and groupfolders File Browser using Node fs. Search via NC files api'
+			>
+				<FileBrowser showGroups={true} showSearch={true} />
+			</AdminCard>
+
+			<AdminCard title='File Chooser' description='Choose file through Node fs'>
+				<FileChooser />
+			</AdminCard>
+		</Box>
+	</Box>
+)
 
 export default Admin
