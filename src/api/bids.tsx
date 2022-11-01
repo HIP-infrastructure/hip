@@ -10,6 +10,21 @@ import {
 	Participant,
 } from './types'
 
+export const indexBidsDataset = async (
+	owner?: string,
+	path?: string
+): Promise<BIDSDataset> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/index?owner=${owner}&path=${path}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkError)
+		.catch(catchError)
+}
+
 export const indexBidsDatasets = async (
 	owner?: string
 ): Promise<BIDSDataset[]> => {
