@@ -1,3 +1,4 @@
+import { Add } from '@mui/icons-material'
 import {
 	Alert,
 	Box,
@@ -11,14 +12,13 @@ import {
 	SelectChangeEvent,
 	TextField,
 } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { indexBidsDatasets, queryBidsDatasets } from '../../api/bids'
+import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
 import CreateDataset from './CreateDataset'
-import { Add } from '@mui/icons-material'
-import { indexBidsDatasets, queryBidsDatasets } from '../../api/bids'
 import Dataset from './DatasetCard'
-import { BIDSDataset } from '../../api/types'
 
 const Datasets = () => {
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -33,7 +33,7 @@ const Datasets = () => {
 	>()
 
 	const {
-		user: [user],
+		user: [user]
 	} = useAppStore()
 
 	const queryDatasets = async () => {
@@ -48,7 +48,7 @@ const Datasets = () => {
 
 	useEffect(() => {
 		queryDatasets()
-	}, [term, page, numberOfResultsPerPage])
+	}, [queryDatasets, term, page, numberOfResultsPerPage])
 
 	useEffect(() => {
 		if (datasetCreated) {
@@ -58,7 +58,7 @@ const Datasets = () => {
 
 			setDatasetCreated(false)
 		}
-	}, [datasetCreated, user?.uid])
+	}, [queryDatasets, datasetCreated, user?.uid])
 
 	return (
 		<>

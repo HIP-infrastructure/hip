@@ -1,5 +1,4 @@
 import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
-import { useAppStore } from '../store/appProvider'
 import FileBrowser from './UI/FileBrowser'
 import FileChooser from './UI/FileChooser'
 import TitleBar from './UI/titleBar'

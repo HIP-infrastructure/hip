@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { indexBidsDatasets, queryBidsDatasets } from '../api/bids'
+import { queryBidsDatasets } from '../api/bids'
 
 import {
 	getAvailableAppList,
