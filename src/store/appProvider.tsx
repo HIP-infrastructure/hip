@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { queryBidsDatasets } from '../api/bids'
+import { createBidsDatasetsIndex, queryBidsDatasets } from '../api/bids'
 
 import {
 	getAvailableAppList,
@@ -123,6 +123,12 @@ export const AppStoreProvider = ({
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
 			.catch(error => setBidsDatasets({ error }))
+
+		// Perform a full index of the BIDS datasets
+		// indexBidsDatasets(currentUser.uid)
+
+		//Create initial elasticsearch index for datasets (if it does not exist yet)
+		createBidsDatasetsIndex()
 
 		getContainers(currentUser)
 			.then(data => setContainers({ data }))

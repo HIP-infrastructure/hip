@@ -1,4 +1,5 @@
 import { API_GATEWAY, catchError, checkError } from './gatewayClientAPI'
+
 import {
 	BIDSDataset,
 	BIDSDatasetResponse,
@@ -9,6 +10,18 @@ import {
 	IError,
 	Participant,
 } from './types'
+
+export const createBidsDatasetsIndex = async (): Promise<any> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkError)
+		.catch(catchError)
+}
 
 export const indexBidsDataset = async (
 	owner?: string,
