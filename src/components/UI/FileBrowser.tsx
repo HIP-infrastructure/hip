@@ -59,10 +59,12 @@ const FileBrowser = ({
 	path,
 	showGroups,
 	showSearch,
+	selectedFile,
 }: {
 	path?: string
 	showGroups?: boolean
 	showSearch?: boolean
+	selectedFile?: (path: string) => void
 }) => {
 	const rootFile = {
 		name: 'root',
@@ -165,11 +167,15 @@ const FileBrowser = ({
 						event.stopPropagation()
 						event.preventDefault()
 
-						getFiles2(item.path)
-							.then(data => setFiles(f => [...f, ...data]))
-							.then(() => {
-								setExpanded(items => [...items, item.path])
-							})
+						if (item.isDirectory) {
+							getFiles2(item.path)
+								.then(data => setFiles(f => [...f, ...data]))
+								.then(() => {
+									setExpanded(items => [...items, item.path])
+								})
+						} else {
+							selectedFile && selectedFile(item.path)
+						}
 					}}
 				>
 					{item.name}
