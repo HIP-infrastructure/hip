@@ -13,7 +13,7 @@ import {
 import { Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { createBidsDataset } from '../../../../api/bids'
+import { createBidsDataset, indexBidsDataset } from '../../../../api/bids'
 import { CreateBidsDatasetDto, IError } from '../../../../api/types'
 import { useNotification } from '../../../../hooks/useNotification'
 import { useAppStore } from '../../../../store/appProvider'
