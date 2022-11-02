@@ -27,7 +27,7 @@ export const checkError = async (response: Response) => {
 		const isJson = response.headers
 			.get('content-type')
 			?.includes('application/json')
-		const data = isJson ? await response.json() : null
+		const data = isJson ? await response.json() : response.text()
 
 		if (!response.ok) {
 			const error = data?.message || response.status
@@ -138,6 +138,15 @@ export const getFiles2 = async (path: string): Promise<File2[]> =>
 
 export const search = async (term: string) =>
 	fetch(`${API_GATEWAY}/files/search/${term}`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkError)
+		.catch(catchError)
+
+export const fileContent = async (path: string) =>
+	fetch(`${API_GATEWAY}/files/content?path=${encodeURIComponent(path)}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
