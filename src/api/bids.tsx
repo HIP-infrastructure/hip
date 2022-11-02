@@ -42,7 +42,7 @@ export const indexBidsDatasets = async (
 export const queryBidsDatasets = async (
 	userId?: string,
 	query = '*',
-	page = 0,
+	page = 1,
 	nbOfResults = 200
 ): Promise<BIDSDataset[]> => {
 	if (!userId) return []

@@ -124,9 +124,6 @@ export const AppStoreProvider = ({
 			.then(data => setBidsDatasets({ data }))
 			.catch(error => setBidsDatasets({ error }))
 
-		// Perform a full index of the BIDS datasets
-		// indexBidsDatasets(currentUser.uid)
-
 		getContainers(currentUser)
 			.then(data => setContainers({ data }))
 			.catch(error => setContainers({ error }))
