@@ -12,7 +12,7 @@ import {
 	SelectChangeEvent,
 	TextField,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { indexBidsDatasets, queryBidsDatasets } from '../../api/bids'
 import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
@@ -36,7 +36,7 @@ const Datasets = () => {
 		user: [user]
 	} = useAppStore()
 
-	const queryDatasets = async () => {
+	const queryDatasets = useCallback(async () => {
 		queryBidsDatasets(user?.uid, term, page, numberOfResultsPerPage)
 			.then(data => {
 				setDatasets({ data })
@@ -44,7 +44,7 @@ const Datasets = () => {
 			.catch(error => {
 				setDatasets({ error })
 			})
-	}
+	}, [queryBidsDatasets, user, term, page, numberOfResultsPerPage])
 
 	useEffect(() => {
 		queryDatasets()
