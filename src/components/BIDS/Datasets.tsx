@@ -11,6 +11,7 @@ import {
 	Select,
 	SelectChangeEvent,
 	TextField,
+	Typography,
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { indexBidsDatasets, queryBidsDatasets } from '../../api/bids'
@@ -33,7 +34,7 @@ const Datasets = () => {
 	>()
 
 	const {
-		user: [user]
+		user: [user],
 	} = useAppStore()
 
 	const queryDatasets = useCallback(async () => {
@@ -97,19 +98,21 @@ const Datasets = () => {
 
 				{datasets?.error && <Alert severity='error'>{datasets?.error}</Alert>}
 
-				<Box display='flex' justifyContent='center' alignItems='center'>
+				<Box display='flex' alignItems='center' sx={{ mb: 2 }}>
 					<TextField
 						id='search-textfield'
-						sx={{ width: '100%', mb: 2 }}
+						sx={{ width: '100%' }}
 						onChange={(e: {
 							target: { value: React.SetStateAction<string> }
 						}) => setTerm(e.target.value === '' ? '*' : e.target.value)}
 						label='Search'
+						size={'small'}
 						variant='outlined'
 					/>
 					<FormControl sx={{ m: 1, minWidth: 180, maxWidth: 180 }}>
-						<InputLabel variant='outlined'>Results / page</InputLabel>
+						<InputLabel variant='outlined'>results / page</InputLabel>
 						<Select
+							size={'small'}
 							defaultValue={numberOfResultsPerPage}
 							onChange={(event: SelectChangeEvent<number>) =>
 								setNumberOfResultsPerPage(
@@ -135,11 +138,20 @@ const Datasets = () => {
 				</Box>
 
 				<Box
-					sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: '16px 16px' }}
+					sx={{
+						mt: 2,
+						mb: 2,
+						display: 'flex',
+						flexWrap: 'wrap',
+						gap: '16px 16px',
+					}}
 				>
 					{datasets?.data?.map(dataset => (
 						<Dataset key={dataset.id} dataset={dataset} />
 					))}
+					{!datasets?.data?.length && (
+						<Typography variant='body2'>No results</Typography>
+					)}
 				</Box>
 
 				<Box display='flex' justifyContent='center' alignItems='center'>

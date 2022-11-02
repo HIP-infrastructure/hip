@@ -22,15 +22,26 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 			>
 				<Box sx={{ display: 'flex' }}>
 					<CardContent>
-						<Typography variant='h6'>
+						<Box
+							display={'flex'}
+							alignItems={'center'}
+							justifyContent={'space-between'}
+							columnGap={'8px'}
+						>
+							<Typography variant='h6'>{dataset?.Name}</Typography>
 							<NavLink
 								style={linkStyle}
 								to={`${ROUTE_PREFIX}/private/${params.id}/datasets/${dataset?.id}`}
 							>
-								{dataset?.Name}
+								View
 							</NavLink>
-						</Typography>
-						<Typography variant='body2' gutterBottom color='text.secondary'>
+						</Box>
+						<Typography
+							sx={{ mb: 2 }}
+							variant='body2'
+							gutterBottom
+							color='text.secondary'
+						>
 							{dataset?.Authors?.join(', ')}
 						</Typography>
 						<DatasetInfo dataset={dataset} />

@@ -4,6 +4,21 @@ import * as React from 'react'
 
 const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 	<>
+	{dataset?.Modalities && dataset?.Modalities?.length > 0 && (
+			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
+				<Typography variant='body2' color='text.secondary'>
+				Modalities:
+				</Typography>
+
+				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
+					{dataset?.Modalities?.map(t => (
+						<Typography key={t} variant='body2' color='text.secondary'>
+							<strong>{t}</strong>
+						</Typography>
+					))}
+				</Box>
+			</Box>
+		)}
 		{dataset?.Tasks && dataset?.Tasks?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>

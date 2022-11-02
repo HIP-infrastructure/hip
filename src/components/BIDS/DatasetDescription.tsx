@@ -9,7 +9,7 @@ const DatasetDescription = ({ dataset }: { dataset?: BIDSDataset }) => {
 				<>
 					<CardContent>
 						<Typography gutterBottom variant='h6' component='div'>
-							<strong>Dataset name:</strong> {dataset?.Name}
+							{dataset?.Name}
 						</Typography>
 						<Typography sx={{ mb: 1.5 }} color='text.secondary'>
 							<strong>Authors:</strong> {dataset?.Authors?.join(', ')}
