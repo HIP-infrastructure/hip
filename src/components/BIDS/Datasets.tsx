@@ -19,7 +19,7 @@ import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
 import CreateDataset from './CreateDataset'
-import Dataset from './DatasetCard'
+import DatasetCard from './DatasetCard'
 
 const Datasets = () => {
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -147,7 +147,7 @@ const Datasets = () => {
 					}}
 				>
 					{datasets?.data?.map(dataset => (
-						<Dataset key={dataset.id} dataset={dataset} />
+						<DatasetCard key={dataset.id} dataset={dataset} />
 					))}
 					{!datasets?.data?.length && (
 						<Typography variant='body2'>No results</Typography>
