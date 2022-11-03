@@ -14,7 +14,7 @@ import { marked } from 'marked'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { fileContent } from '../../api/gatewayClientAPI'
+import { fileContent as getFileContent } from '../../api/gatewayClientAPI'
 import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
 import FileBrowser from '../UI/FileBrowser'
@@ -22,10 +22,11 @@ import TitleBar from '../UI/titleBar'
 import DatasetDescription from './DatasetDescription'
 import DatasetInfo from './DatasetInfo'
 import Participants from './Participants'
+import CSV2Table from '../UI/CSV2Table'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
-	const [content, setContent] = useState<{ __html: string }>()
+	const [fileContent, setFileContent] = useState<JSX.Element>()
 	const [selectedFile, setSelectedFile] = useState<string>()
 	const [path, setPath] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
@@ -44,9 +45,26 @@ const Dataset = () => {
 
 	useEffect(() => {
 		if (!selectedFile) return
+		// if (!/\.json|\.txt|\.[t|c]sv/.test(selectedFile)) return
 
-		fileContent(selectedFile).then(data => {
-			setContent({ __html: marked(data) })
+		getFileContent(selectedFile).then(data => {
+			if (selectedFile.endsWith('.md')) {
+				setFileContent(
+					<div dangerouslySetInnerHTML={{ __html: marked(data) }} />
+				)
+			} else if (selectedFile.endsWith('.json')) {
+				setFileContent(
+					<pre style={{ whiteSpace: 'pre-wrap' }}>
+						{JSON.stringify(JSON.parse(data), null, 2)}
+					</pre>
+				)
+			} else if (selectedFile.endsWith('.csv')) {
+				setFileContent(CSV2Table({ data }))
+			} else if (selectedFile.endsWith('.tsv')) {
+				setFileContent(CSV2Table({ data, splitChar: '\t' }))
+			} else {
+				setFileContent(<div>{data}</div>)
+			}
 		})
 	}, [selectedFile])
 
@@ -76,13 +94,6 @@ const Dataset = () => {
 						<Typography color='text.primary'>{dataset?.Name}</Typography>
 					</Breadcrumbs>
 				</Box>
-				{!dataset && (
-					<CircularProgress
-						size={32}
-						color='secondary'
-						sx={{ top: 10, left: 10 }}
-					/>
-				)}
 
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 1 }}>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
@@ -142,16 +153,20 @@ const Dataset = () => {
 									<Box
 										elevation={2}
 										component={Paper}
-										sx={{ p: 1, flex: '1 0' }}
+										sx={{
+											overflowX: 'auto',
+											p: 1,
+											flex: '1 0',
+										}}
 									>
-										{!content && (
+										{!fileContent && (
 											<>
 												<Typography variant='h6'>Infos</Typography>
 												<DatasetDescription dataset={dataset} />
 											</>
 										)}
 
-										{content && <div dangerouslySetInnerHTML={content} />}
+										{fileContent}
 									</Box>
 								</Box>
 							</Box>
