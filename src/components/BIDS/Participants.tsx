@@ -1,23 +1,21 @@
 import { Add, Edit } from '@mui/icons-material'
 import {
 	Box,
-	Button,
-	CircularProgress,
-	IconButton,
+	Button, IconButton,
+	Paper,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
+	Typography
 } from '@mui/material'
-import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { BIDSDataset, Participant } from '../../api/types'
-import { useAppStore } from '../../store/appProvider'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
+import * as React from 'react'
 
 const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])
@@ -26,12 +24,12 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [selectedSubject, setSelectedSubject] = useState<string>()
 
 	useEffect(() => {
-		if (dataset?.Participants)
-			setRows(dataset.Participants)
+		if (dataset?.Participants) setRows(dataset.Participants)
 	}, [dataset, setRows])
 
 	const handleEditParticipant = (id: string) => {
 		setParticipantEditId(id)
+		setIsCreateDialogOpen(true)
 	}
 
 	useEffect(() => {
@@ -50,34 +48,41 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 
 	return (
 		<>
+			<CreateParticipant
+				dataset={dataset}
+				participantEditId={participantEditId}
+				open={isCreateDialogOpen}
+				handleClose={() => {
+					setParticipantEditId(undefined)
+					setIsCreateDialogOpen(!isCreateDialogOpen)
+				}}
+			/>
 			<Box sx={{ mt: 2 }}>
+				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+					<Typography variant='h6'>Participants</Typography>
+					<Button
+						color='primary'
+						size='small'
+						sx={{ m: 2 }}
+						startIcon={<Add />}
+						onClick={() => {
+							setParticipantEditId(undefined)
+							setIsCreateDialogOpen(true)
+						}}
+						variant='contained'
+					>
+						Add new Participant
+					</Button>
+				</Box>
 				<Box
 					sx={{
 						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
+						flexWrap: 'wrap',
+						gap: '16px 16px',
+						mt: 2,
 					}}
 				>
-					<Typography variant='h6'>
-						Participants
-						{!dataset && <CircularProgress size={16} />}
-					</Typography>
-					<Button
-							color='primary'
-							size='small'
-							sx={{ m: 2 }}
-							startIcon={<Add />}
-							onClick={() => {
-								setParticipantEditId(undefined)
-								setIsCreateDialogOpen(true)
-							}}
-							variant='contained'
-						>
-							Add new Participant
-						</Button>
-				</Box>
-				<Box sx={{ display: 'flex', gap: '1em', mr: 2 }}>
-					<Box sx={{ flex: 2 }}>
+					<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
 						<TableContainer sx={{ maxHeight: 440 }}>
 							<Table stickyHeader size='small' aria-label='Participants table'>
 								<TableHead>
@@ -115,28 +120,20 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 								</TableBody>
 							</Table>
 						</TableContainer>
-						
 					</Box>
-					<Box sx={{ flex: '1 0' }}>
-						<Typography
-							sx={{ mt: 1, mb: 2 }}
-							variant='body2'
-							color='text.secondary'
-						>
-							Subject description
-						</Typography>
-						<ParticipantInfo subject={selectedSubject} />
+					<Box
+						elevation={2}
+						component={Paper}
+						sx={{
+							overflow: 'auto',
+							p: 1,
+							flex: '1 1',
+						}}
+					>
+						<ParticipantInfo subject={selectedSubject} dataset={dataset}/>
 					</Box>
 				</Box>
 			</Box>
-			<CreateParticipant
-				participantEditId={participantEditId}
-				open={isCreateDialogOpen}
-				handleClose={() => {
-					setParticipantEditId(undefined)
-					setIsCreateDialogOpen(!isCreateDialogOpen)
-				}}
-			/>
 		</>
 	)
 }

@@ -1,8 +1,8 @@
 import {
-	Box,
 	Card,
 	CardActions,
 	CardContent,
+	CardMedia,
 	Paper,
 	Typography,
 } from '@mui/material'
@@ -17,25 +17,16 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 
 	return (
 		<>
-			<Card
-				elevation={3}
-				component={Paper}
-				sx={{
-					width: 320,
-					display: 'flex',
-					flexDirection: 'column',
-					pr: 2,
-				}}
-			>
+			<Card elevation={3} component={Paper} sx={{ width: 296 }}>
+				<CardMedia
+					component='img'
+					height='96'
+					image='/api/v1/public/media/480x128-543586422_neuro_imaging__database__document_management__neural_pathway__medical__futuristic__neurons_and_dendr.png'
+					alt=''
+				/>
 				<CardContent>
-					<Box
-						display={'flex'}
-						alignItems={'center'}
-						justifyContent={'space-between'}
-						columnGap={'8px'}
-					>
-						<Typography variant='h6'>{dataset?.Name}</Typography>
-					</Box>
+					<Typography variant='h6'>{dataset?.Name}</Typography>
+
 					<Typography
 						sx={{ mb: 2 }}
 						variant='body2'
@@ -46,7 +37,7 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 					</Typography>
 					<DatasetInfo dataset={dataset} />
 				</CardContent>
-				<CardActions>
+				<CardActions sx={{ p: 2 }}>
 					<NavLink
 						style={linkStyle}
 						to={`${ROUTE_PREFIX}/private/${params.id}/datasets/${dataset?.id}`}
