@@ -1,13 +1,8 @@
 import {
-	TableContainer,
-	Paper,
-	Table,
-	TableHead,
-	TableRow,
-	TableCell,
-	TableBody,
+	Table, TableBody, TableCell, TableContainer, TableHead,
+	TableRow
 } from '@mui/material'
-import React from 'react'
+import * as React from 'react'
 
 const CSV2Table = ({
 	data,
@@ -20,7 +15,7 @@ const CSV2Table = ({
 	const csvRows = data.slice(data.indexOf('\n') + 1).split('\n')
 
 	const rows = csvRows.map(i => {
-		const values = i.split(',')
+		const values = i.split(splitChar)
 		const row = csvHeader.reduce((object, header, index) => {
 			object[header] = values[index]
 			return object
@@ -37,7 +32,7 @@ const CSV2Table = ({
 				<TableHead>
 					<TableRow>
 						{headerKeys.map(key => (
-							<TableCell key={key}>{key}</TableCell>
+							<TableCell key={key}><strong>{key}</strong></TableCell>
 						))}
 					</TableRow>
 				</TableHead>
