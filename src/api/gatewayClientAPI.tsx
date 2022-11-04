@@ -22,7 +22,7 @@ export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
  * 1) server errors with status (4xx to 5xx) and
  * 2) data processing errors, as { data, error }
  */
-export const checkError = async (response: Response) => {
+export const checkForError = async (response: Response) => {
 	try {
 		const isJson = response.headers
 			.get('content-type')
@@ -59,7 +59,7 @@ export const isLoggedIn = async () =>
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const getUser = async (userid?: string): Promise<User> =>
@@ -68,7 +68,7 @@ export const getUser = async (userid?: string): Promise<User> =>
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const getGroupFolders = async (
@@ -79,12 +79,12 @@ export const getGroupFolders = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const getCenters = async (): Promise<HIPGroup[]> =>
 	fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
@@ -93,7 +93,7 @@ export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 	return users
@@ -133,7 +133,7 @@ export const getFiles2 = async (path: string): Promise<File2[]> =>
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const search = async (term: string) =>
@@ -142,7 +142,7 @@ export const search = async (term: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const fileContent = async (path: string) =>
@@ -151,13 +151,13 @@ export const fileContent = async (path: string) =>
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 // Remote App API
 
 export const getAvailableAppList = (): Promise<Application[]> =>
-	fetch(`${API_REMOTE_APP}/apps`).then(checkError)
+	fetch(`${API_REMOTE_APP}/apps`).then(checkForError)
 
 export const getContainers = (
 	currentUser: UserCredentials
@@ -171,7 +171,7 @@ export const getContainers = (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -185,7 +185,7 @@ export const createSession = (userId: string): Promise<Container> => {
 		},
 		body: JSON.stringify({ userId, sessionId }),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -208,7 +208,7 @@ export const createApp = (
 			appId,
 		}),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -221,7 +221,7 @@ export const removeAppsAndSession = (sessionId: string, userId: string) =>
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const pauseAppsAndSession = (sessionId: string, userId: string) =>
@@ -233,7 +233,7 @@ export const pauseAppsAndSession = (sessionId: string, userId: string) =>
 		},
 		body: JSON.stringify({ userId, cmd: 'pause' }),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const resumeAppsAndSession = (sessionId: string, userId: string) =>
@@ -245,7 +245,7 @@ export const resumeAppsAndSession = (sessionId: string, userId: string) =>
 		},
 		body: JSON.stringify({ userId, cmd: 'resume' }),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 export const stopApp = (sessionId: string, userId: string, appId: string) =>
@@ -257,7 +257,7 @@ export const stopApp = (sessionId: string, userId: string, appId: string) =>
 		},
 		body: JSON.stringify({ userId }),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 
 // Debug function
@@ -269,6 +269,6 @@ export const forceRemove = (id: string): Promise<APIContainersResponse> => {
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }

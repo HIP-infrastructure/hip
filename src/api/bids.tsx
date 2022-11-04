@@ -1,4 +1,4 @@
-import { API_GATEWAY, catchError, checkError } from './gatewayClientAPI'
+import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
 import {
 	BIDSDataset,
@@ -19,7 +19,7 @@ export const createBidsDatasetsIndex = async (): Promise<any> => {
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -34,7 +34,7 @@ export const indexBidsDataset = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -48,7 +48,7 @@ export const indexBidsDatasets = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -59,14 +59,14 @@ export const queryBidsDatasets = async (
 	nbOfResults = 200
 ): Promise<BIDSDataset[]> => {
 	if (!userId) return []
-	
+
 	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
 	return fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -82,7 +82,7 @@ export const createBidsDataset = async (
 		},
 		body: JSON.stringify(CreateBidsDatasetDto),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -96,7 +96,7 @@ export const getParticipants = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -111,7 +111,7 @@ export const getSubject = async (
 			requesttoken: window.OC.requestToken,
 		},
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
@@ -127,26 +127,20 @@ export const importSubject = async (
 		},
 		body: JSON.stringify(createSubject),
 	})
-		.then(checkError)
+		.then(checkForError)
 		.catch(catchError)
 }
 
 export const subEditClinical = async (
 	editSubject: EditSubjectClinicalDto
-): Promise<EditSubjectClinicalDto> => {
-	const url = `${API_GATEWAY}/tools/bids/subject`
-	try {
-		return await fetch(url, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				requesttoken: window.OC.requestToken,
-			},
-			body: JSON.stringify(editSubject),
-		})
-			.then(checkError)
-			.catch(catchError)
-	} catch (error) {
-		return Promise.reject(error)
-	}
-}
+): Promise<EditSubjectClinicalDto> =>
+	await fetch(`${API_GATEWAY}/tools/bids/subject`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(editSubject),
+	})
+		.then(checkForError)
+		.catch(catchError)
