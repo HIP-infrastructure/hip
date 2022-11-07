@@ -79,8 +79,7 @@ const BidsConverter = () => {
 
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
-			dataset: selectedBidsDataset?.Name,
-			path: selectedBidsDataset?.Path,
+			dataset_path: selectedBidsDataset?.Path,
 			files: selectedFiles,
 			subjects,
 		}

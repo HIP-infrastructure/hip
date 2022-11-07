@@ -78,8 +78,7 @@ const CreateDataset = ({
 						setSubmitted(true)
 						const createBidsDatasetDto: CreateBidsDatasetDto = {
 							owner: user.uid,
-							dataset: values.Name,
-							path: '',
+							parent_path: '',
 							DatasetDescJSON: {
 								Name: values.Name,
 								BIDSVersion: values.BIDSVersion,
