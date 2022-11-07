@@ -289,7 +289,7 @@ export interface CreateSubjectDto {
 	readonly dataset: string
 	readonly path: string // relative path for user or group eg: data/file.md
 	subjects: Participant[]
-	readonly files: File[]
+	readonly files: BIDSFile[]
 }
 
 export interface EditSubjectClinicalDto {
@@ -302,7 +302,7 @@ export interface EditSubjectClinicalDto {
 	}
 }
 
-export interface File {
+export interface BIDSFile {
 	modality: string
 	subject: string
 	path: string

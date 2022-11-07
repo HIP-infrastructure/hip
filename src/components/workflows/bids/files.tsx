@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getFiles } from '../../../api/gatewayClientAPI'
-import { File, IEntity, TreeNode } from '../../../api/types'
+import { BIDSFile, IEntity, TreeNode } from '../../../api/types'
 import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
 import { useAppStore } from '../../../store/appProvider'
@@ -35,7 +35,7 @@ const Files = ({
 	const [fileInputValue, setFileInputValue] = React.useState<string>()
 	const [submitted] = useState(false)
 	const { showNotif } = useNotification()
-	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
+	const [currentBidsFile, setCurrentBidsFile] = useState<BIDSFile>()
 	const [modality, setModality] = useState<{
 		name: string
 		type: 'anat' | 'ieeg'
@@ -187,7 +187,7 @@ const Files = ({
 		}))
 	}
 
-	const handleDeleteFile = (file: File) => {
+	const handleDeleteFile = (file: BIDSFile) => {
 		const nextFiles = selectedFiles?.filter(f => f.path !== file.path)
 		setSelectedFiles(nextFiles)
 	}
@@ -225,7 +225,7 @@ const Files = ({
 
 		if (!(modality && selectedSubject && currentBidsFile)) return
 
-		const file: File = {
+		const file: BIDSFile = {
 			modality: modality?.name,
 			subject: selectedSubject.replace('sub-', ''),
 			path: currentBidsFile?.path?.substring(1),

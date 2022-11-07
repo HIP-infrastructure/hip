@@ -13,7 +13,7 @@ import {
 	Application,
 	BIDSDataset,
 	Container,
-	File,
+	BIDSFile,
 	HIPGroup,
 	Participant,
 	UserCredentials,
@@ -57,8 +57,8 @@ export interface IAppState {
 		React.Dispatch<React.SetStateAction<Participant[] | undefined>>
 	]
 	selectedFiles: [
-		File[] | undefined,
-		React.Dispatch<React.SetStateAction<File[] | undefined>>
+		BIDSFile[] | undefined,
+		React.Dispatch<React.SetStateAction<BIDSFile[] | undefined>>
 	]
 }
 
@@ -90,7 +90,7 @@ export const AppStoreProvider = ({
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
 	const [selectedParticipants, setSelectedParticipants] =
 		useState<Participant[]>()
-	const [selectedFiles, setSelectedFiles] = useState<File[]>()
+	const [selectedFiles, setSelectedFiles] = useState<BIDSFile[]>()
 
 	// Fetch initial data
 	React.useEffect(() => {
