@@ -178,7 +178,7 @@ export interface BIDSDataset {
 	SessionsCount?: number
 	Tasks?: string[]
 	RunsCount?: number
-	Modalities?: string[]
+	DataTypes?: string[]
 	Formats?: string[]
 	SEEGChannelCount?: number
 	SamplingFrequency?: number

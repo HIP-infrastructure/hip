@@ -89,8 +89,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 
 		const createSubjectDto: Partial<CreateSubjectDto> = {
 			owner: user?.uid,
-			dataset: dataset?.Name,
-			path: dataset?.Path,
+			dataset_path: dataset?.Path,
 			files: filesToImport,
 			subjects,
 		}

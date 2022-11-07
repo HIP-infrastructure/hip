@@ -135,7 +135,7 @@ const DatasetCard = ({dataset} : Props): JSX.Element => {
                                         component="div"
                                         display="inline"
                                     >
-                                        Modality(s): {dataset?.Modalities?.join(', ')}
+                                        Datatype(s): {dataset?.DataTypes?.join(', ')}
                                     </Typography>
                                     &nbsp;&nbsp;
                                     (

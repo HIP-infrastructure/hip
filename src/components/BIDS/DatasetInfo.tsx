@@ -4,14 +4,14 @@ import * as React from 'react'
 
 const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 	<>
-	{dataset?.Modalities && dataset?.Modalities?.length > 0 && (
+	{dataset?.DataTypes && dataset?.DataTypes?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>
-				Modalities:
+				DataTypes:
 				</Typography>
 
 				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
-					{dataset?.Modalities?.map(t => (
+					{dataset?.DataTypes?.map(t => (
 						<Typography key={t} variant='body2' color='text.secondary'>
 							<strong>{t}</strong>
 						</Typography>
