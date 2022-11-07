@@ -1,9 +1,10 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
-import { Article, Delete, Folder, Info, Save } from '@mui/icons-material'
+import { Delete, Info, Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
-	Autocomplete,
 	Box,
+	Button,
+	CircularProgress,
 	IconButton,
 	MenuItem,
 	Paper,
@@ -19,151 +20,57 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { importSubject } from '../../api/bids'
-import { getFiles } from '../../api/gatewayClientAPI'
 import {
 	BIDSDataset,
 	CreateSubjectDto,
-	File,
+	BIDSFile,
 	IEntity,
 	Participant,
-	TreeNode,
 } from '../../api/types'
 import { ENTITIES, MODALITIES } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
+import FileChooser from '../UI/FileChooser'
 import EntityOptions from './EntityOptions'
 import ParticipantInfo from './ParticipantInfo'
 
 const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
-	const [tree, setTree] = useState<TreeNode[]>()
-	const [options, setOptions] = React.useState<string[]>()
-	const [fileInputValue, setFileInputValue] = React.useState<string>()
-	const [submitted] = useState(false)
-	const { showNotif } = useNotification()
-	const [currentBidsFile, setCurrentBidsFile] = useState<File>()
-	const [modality, setModality] = useState<{
+	const [entities, setEntites] = useState<IEntity[]>()
+	const [selectedParticipants, setSelectedParticipants] =
+		useState<Participant[]>()
+	const [selectedParticipant, setSelectedParticipant] = useState<string>('')
+	const [selectedModality, setSelectedModality] = useState<{
 		name: string
 		type: 'anat' | 'ieeg'
 	}>({ name: 'T1w', type: 'anat' })
-	const [selectedSubject, setSelectedSubject] = useState<string>('')
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()
-	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-	const [selectedParticipants, setSelectedParticipants] =
-		useState<Participant[]>()
-	const [entities, setEntites] = useState<IEntity[]>()
+	const [selectedFile, setSelectedFile] = useState<string>()
+	const [filesToImport, setFilesToImport] = useState<BIDSFile[]>([])
+	const [submitted, setSubmitted] = useState(false)
+	const [importResponse, setImportResponse] = useState<{
+		error?: Error
+		data?: CreateSubjectDto
+	}>()
+
 	const { trackEvent } = useMatomo()
+	const { showNotif } = useNotification()
 
 	const {
 		user: [user],
 	} = useAppStore()
 
 	useEffect(() => {
-		getFiles('/').then(f => {
-			setTree(f)
-		})
-	}, [])
-
-	useEffect(() => {
-		if (!modality) return
+		if (!selectedModality) return
 
 		const entitiesForModality =
-			(modality &&
+			(selectedModality &&
 				ENTITIES.filter(e =>
-					e.requirements.map(r => r.dataType).includes(modality?.type)
+					e.requirements.map(r => r.dataType).includes(selectedModality?.type)
 				)) ||
 			[]
 		setEntites(entitiesForModality)
-
-		// if (!selectedSubjectExistingBIDSFiles) {
-		// 	return
-		// }
-
-		// const nextEntities = entitiesForModality?.map(e => {
-		// 	const entries = selectedSubjectExistingBIDSFiles
-		// 		.filter(i => i.modality === modality?.name)
-		// 		.find(eem => {
-		// 			return Object.keys(eem).find(k => k === e.name)
-		// 		})
-		// 	if (!entries) return e
-
-		// 	const mod = (entries as Record<string, any>)[e.name]
-
-		// 	if (mod)
-		// 		return {
-		// 			...e,
-		// 			options: Array.from(new Set([...e.options, mod])).map(label => ({
-		// 				label,
-		// 			})),
-		// 		}
-		// 	else return e
-		// })
-
-		// if (nextEntities) setEntites(nextEntities)
-	}, [modality])
-
-	useEffect(() => {
-		const selectedNode = tree?.find(
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(node: { data: { path: any } }) => node.data.path === fileInputValue
-		)
-		const selectedPath = selectedNode?.data.path.split('/') || ['']
-		const parentNode = tree?.find((node: TreeNode) => {
-			const parentPath = selectedNode?.data.path.split('/')
-			parentPath?.pop()
-
-			return node.data.path === parentPath?.join('/')
-		})
-
-		const nextOptions = [
-			...(parentNode
-				? [parentNode]
-				: [{
-						key: 'root',
-						label: '../',
-						icon: 'dir',
-						data: {
-							path: '/',
-							type: 'dir',
-							size: 0,
-							updated: 'string',
-							name: '../',
-							tags: [],
-							id: 0,
-						},
-					}]),
-			...(tree
-				?.filter(node => new RegExp(fileInputValue || '').test(node.data.path))
-				?.filter(node => {
-					const pathes = node?.data.path.split('/')
-					if (pathes.length <= selectedPath.length + 1) return true
-
-					return false
-				})
-				// filter file types by modality
-				// FIXME: -> constants/types
-				?.filter(node => {
-					if (node.data.type === 'dir') return true
-
-					if (modality?.type === 'anat') {
-						return /nii|dcm/.test(node.data.path)
-					}
-
-					if (modality?.type === 'ieeg') {
-						return /vhdr|vmrk|eeg|edf|bdf|set|/.test(node.data.path)
-					}
-
-					return true
-				})
-				?.sort(
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(a: { data: { path: any } }, b: { data: { path: string } }) =>
-						-b.data.path.localeCompare(a.data.path)
-				) || []),
-		]?.map(node => node.data.path)
-
-		setOptions(nextOptions)
-	}, [tree, fileInputValue, modality])
+	}, [selectedModality])
 
 	const handleImportSubject = async () => {
 		if (!user?.uid && !dataset?.Path) {
@@ -184,7 +91,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 			owner: user?.uid,
 			dataset: dataset?.Name,
 			path: dataset?.Path,
-			files: selectedFiles,
+			files: filesToImport,
 			subjects,
 		}
 
@@ -193,67 +100,34 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 			action: 'import',
 		})
 
+		setImportResponse(undefined)
+		setSubmitted(true)
 		importSubject(createSubjectDto as CreateSubjectDto)
 			.then(data => {
+				setImportResponse({ data })
 				showNotif('Subject imported', 'success')
+
+				setSelectedParticipants(undefined)
+				setSelectedParticipant('')
+
+				setSubmitted(false)
 			})
 			.catch(error => {
+				setImportResponse({ error })
 				showNotif('Subject importation failed', 'error')
+
+				setSubmitted(false)
 			})
 	}
 
-	const handleSelectedPath = async (newInputValue: string) => {
-		const selectedNode = tree?.find(node => node.data.path === newInputValue)
-
-		if (newInputValue === '/' || selectedNode?.data.type === 'dir') {
-			if (selectedNode && !selectedNode?.children) {
-				const nextNodes = await getFiles(newInputValue)
-				setTree(nodes => [
-					...nextNodes,
-					...((nodes &&
-						nodes.map(node =>
-							node.data.path === selectedNode.data.path
-								? { ...node, children: true }
-								: node
-						)) ||
-						[]),
-				])
-			} else {
-				setTree(nodes => [...(nodes?.map((t: TreeNode) => t) || [])])
-			}
-		}
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		setCurrentBidsFile((f: any) => ({
-			...f,
-			path: selectedNode?.data.path,
-		}))
+	const handleDeleteFile = (file: BIDSFile) => {
+		const nextFiles = filesToImport?.filter(f => f.path !== file.path)
+		setFilesToImport(nextFiles)
 	}
-
-	const handleDeleteFile = (file: File) => {
-		const nextFiles = selectedFiles?.filter(f => f.path !== file.path)
-		setSelectedFiles(nextFiles)
-	}
-
-	// const handleEditFile = (file: File) => {
-	// 	setSelectedSubject(file.subject)
-	// 	if (file.modality) {
-	// 		const m = MODALITIES.find(mod => mod.name === file.modality)
-	// 		if (m) setModality(m)
-	// 	}
-
-	// 	if (file.entities) setSelectedEntities(file.entities)
-	// 	if (file.path) {
-	// 		const path = `/${file.path}`
-	// 		handleSelectedPath(path)
-	// 		setFileInputValue(path)
-	// 	}
-
-	// 	handleDeleteFile(file)
-	// }
 
 	const handleAddFile = () => {
 		const participant = dataset?.Participants?.find(
-			p => p.participant_id === selectedSubject
+			p => p.participant_id === selectedParticipant
 		)
 
 		if (
@@ -265,19 +139,19 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 			setSelectedParticipants(s => [...(s || []), participant])
 		}
 
-		if (!(modality && selectedSubject && currentBidsFile)) return
+		if (!(selectedModality && selectedParticipant && selectedFile)) return
 
-		const file: File = {
-			modality: modality?.name,
-			subject: selectedSubject.replace('sub-', ''),
-			path: currentBidsFile?.path?.substring(1),
+		const file: BIDSFile = {
+			modality: selectedModality?.name,
+			subject: selectedParticipant.replace('sub-', ''),
+			path: selectedFile,
 			entities: {
-				sub: selectedSubject.replace('sub-', ''),
+				sub: selectedParticipant.replace('sub-', ''),
 				...selectedEntities,
 			},
 		}
 
-		setSelectedFiles(f => [...(f || []), file])
+		setFilesToImport(f => [...(f || []), file])
 		showNotif('File added.', 'success')
 	}
 
@@ -297,15 +171,40 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{selectedFiles?.reverse().map(file => (
+							{filesToImport?.reverse().map(file => (
 								<TableRow key={file.path}>
 									<TableCell padding='checkbox'>
 										{/* <IconButton color='primary' aria-label='edit'>
 												<Edit onClick={() => handleEditFile(file)} />
 											</IconButton> */}
-										<IconButton color='primary' aria-label='delete'>
-											<Delete onClick={() => handleDeleteFile(file)} />
-										</IconButton>
+										{!submitted && (
+											<IconButton
+												onClick={() => handleDeleteFile(file)}
+												color='primary'
+												aria-label='delete'
+											>
+												<Delete />
+											</IconButton>
+										)}
+										{submitted && !importResponse && (
+											<CircularProgress size={16} />
+										)}
+										{importResponse?.data && (
+											<Tooltip
+												title={JSON.stringify(importResponse?.data, null, 2)}
+												placement='bottom'
+											>
+												<Info color='success' />
+											</Tooltip>
+										)}
+										{importResponse?.error && (
+											<Tooltip
+												title={importResponse?.error.message}
+												placement='bottom'
+											>
+												<Info color='error' />
+											</Tooltip>
+										)}
 									</TableCell>
 									<TableCell>{file.subject}</TableCell>
 									<TableCell>{file.modality}</TableCell>
@@ -324,7 +223,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 						sx={{ width: 320 }}
 						color='primary'
 						type='submit'
-						disabled={selectedFiles !== undefined}
+						disabled={!(filesToImport.length > 0) || submitted}
 						loading={submitted}
 						onClick={handleImportSubject}
 						loadingPosition='start'
@@ -333,6 +232,20 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 					>
 						Import Files
 					</LoadingButton>
+					{filesToImport.length > 0 && importResponse && !submitted && (
+						<Button
+							sx={{ flex: '1 1' }}
+							color='primary'
+							type='submit'
+							onClick={() => {
+								setFilesToImport([])
+								setImportResponse(undefined)
+							}}
+							variant='contained'
+						>
+							Clear imported files
+						</Button>
+					)}
 				</Box>
 			</Box>
 			<Box sx={{ mt: 2 }}>
@@ -369,9 +282,9 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 											disabled={submitted}
 											name='subject'
 											label='Subject'
-											value={selectedSubject}
+											value={selectedParticipant || ''}
 											onChange={event => {
-												setSelectedSubject(event.target.value)
+												setSelectedParticipant(event.target.value)
 											}}
 											// error={touched.subject && errors.subject ? true : false}
 											// helperText={
@@ -388,33 +301,31 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 											))}
 										</TextField>
 									)}
-									{selectedSubject && (
-										<Box sx={{ display: 'flex' }}>
-											<TextField
-												sx={{ flex: '1 1' }}
-												select
-												size='small'
-												disabled={submitted}
-												name='modality'
-												label='Modality'
-												value={modality}
-												onChange={event => {
-													const m = MODALITIES.find(
-														modality => modality.name === event.target.value
-													)
-													if (m) setModality(m)
-												}}
-											>
-												{MODALITIES?.map(m => (
-													<MenuItem value={m.name} key={m.name}>
-														{m.name} ({m.type})
-													</MenuItem>
-												))}
-											</TextField>
-											<Box sx={{ flex: '1 1' }} />
-										</Box>
-									)}
-									{modality && (
+									<Box sx={{ display: 'flex' }}>
+										<TextField
+											sx={{ flex: '1 1' }}
+											select
+											size='small'
+											disabled={submitted}
+											name='modality'
+											label='Modality'
+											value={selectedModality.name || ''}
+											onChange={event => {
+												const m = MODALITIES.find(
+													modality => modality.name === event.target.value
+												)
+												if (m) setSelectedModality(m)
+											}}
+										>
+											{MODALITIES?.map(m => (
+												<MenuItem value={m.name} key={m.name}>
+													{m.name} ({m.type})
+												</MenuItem>
+											))}
+										</TextField>
+										<Box sx={{ flex: '1 1' }} />
+									</Box>
+									{selectedModality && (
 										<Typography
 											sx={{ mt: 1 }}
 											variant='body2'
@@ -423,7 +334,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 											BIDS entities
 										</Typography>
 									)}
-									{modality && (
+									{selectedModality && (
 										<Box
 											sx={{
 												display: 'flex',
@@ -461,7 +372,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 														color='text.secondary'
 													>
 														{entity.requirements.find(
-															r => r.dataType === modality?.type
+															r => r.dataType === selectedModality?.type
 														)?.required
 															? 'required *'
 															: ''}
@@ -470,58 +381,6 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 											))}
 										</Box>
 									)}
-									{modality && (
-										<Autocomplete
-											sx={{ mt: 2 }}
-											options={options || []}
-											inputValue={fileInputValue}
-											// eslint-disable-next-line @typescript-eslint/no-explicit-any
-											onInputChange={(event: any, newInputValue: string) => {
-												handleSelectedPath(newInputValue)
-												setFileInputValue(newInputValue)
-											}}
-											disableCloseOnSelect={true} // tree?.find(node => node.data.path === inputValue)?.data.type !== 'file'}
-											id='input-tree-view'
-											// eslint-disable-next-line @typescript-eslint/no-explicit-any
-											renderInput={(params: any) => (
-												<TextField {...params} label='Files' />
-											)}
-											renderOption={(props, option) => {
-												const node = tree?.find(
-													node => node.data.path === option
-												)
-
-												return node?.data.type === 'dir' ? (
-													<Box
-														component='li'
-														sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
-														{...props}
-													>
-														<Folder color='action' />
-														{option}
-													</Box>
-												) : (
-													<Box
-														component='li'
-														sx={{ '& > svg': { mr: 1, flexShrink: 0 } }}
-														{...props}
-													>
-														<Article color='action' />
-														{option}
-													</Box>
-												)
-											}}
-										/>
-									)}
-									<Box
-										sx={{
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'space-between',
-										}}
-									>
-										<Box></Box>
-									</Box>
 								</Box>
 							</Box>
 							<Box sx={{ flex: '1 0' }}>
@@ -532,26 +391,39 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 								>
 									Subject description
 								</Typography>
-								<ParticipantInfo dataset={dataset} subject={selectedSubject} />
+								<ParticipantInfo
+									dataset={dataset}
+									subject={selectedParticipant}
+								/>
 							</Box>
 						</Paper>
+
 						<Box sx={{ m: 3, textAlign: 'center' }}></Box>
 					</Box>
-					<Box sx={{ m: 3, textAlign: 'center' }}>
-						<LoadingButton
-							sx={{ width: 320 }}
-							color='primary'
-							type='submit'
-							disabled={currentBidsFile === undefined}
-							loading={submitted}
-							onClick={handleAddFile}
-							loadingPosition='start'
-							startIcon={<Save />}
-							variant='contained'
-						>
-							Add File
-						</LoadingButton>
+					<Box sx={{ m: 3, textAlign: 'center' }}></Box>
+				</Box>
+				<Box
+					sx={{
+						mt: 2,
+						display: 'flex',
+						alignItems: 'start',
+						justifyContent: 'space-between',
+						gap: '1em',
+					}}
+				>
+					<Box sx={{ flex: '4', width: '100%' }}>
+						<FileChooser handleSelectedFile={path => setSelectedFile(path)} />
 					</Box>
+					<Button
+						sx={{ flex: '1 1' }}
+						color='primary'
+						type='submit'
+						disabled={selectedFile === undefined || submitted}
+						onClick={handleAddFile}
+						variant='contained'
+					>
+						Add File
+					</Button>
 				</Box>
 			</Box>
 		</Box>

@@ -128,7 +128,7 @@ const CreateParticipant = ({ dataset, open, handleClose, participantEditId }: { 
 						// 		setSubmitted(false)
 						// 	})
 					} else {
-						const nextParticipants = [...(dataset?.Participants || []), values]
+						// const nextParticipants = [...(dataset?.Participants || []), values]
 						// if (nextParticipants && dataset)
 						// 	setdataset({
 						// 		...dataset,
@@ -181,10 +181,10 @@ const CreateParticipant = ({ dataset, open, handleClose, participantEditId }: { 
 							<CreateField
 								handleCreateField={({ key }) => {
 									if (key) {
-										const nextParticipants = dataset?.Participants?.map(p => ({
-											...p,
-											[key]: '',
-										}))
+										// const nextParticipants = dataset?.Participants?.map(p => ({
+										// 	...p,
+										// 	[key]: '',
+										// }))
 
 										// if (nextParticipants && dataset)
 										// 	setdataset({

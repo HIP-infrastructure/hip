@@ -1,6 +1,6 @@
 import { Article, Folder } from '@mui/icons-material'
 import { Box, Divider, TextField, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getFiles2 } from '../../api/gatewayClientAPI'
 import { File2 } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
@@ -12,31 +12,44 @@ const root: File2 = {
 	parentPath: 'root',
 }
 
-const FileChooser = (): JSX.Element => {
-	const [files, setFiles] = React.useState<File2[]>([root])
-	const [fileListVisible, setFileListVisible] = React.useState(false)
-	const [requestSent, setRequestSent] = React.useState(false)
-	const [selectedFile, setSelectedFile] = React.useState<File2>(root)
+const sortFile = (data: File2[]) =>
+	data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
+
+const FileChooser = ({
+	handleSelectedFile,
+}: {
+	handleSelectedFile?: (path: string) => void
+}): JSX.Element => {
+	const [files, setFiles] = useState<File2[]>([root])
+	const [fileListVisible, setFileListVisible] = useState(false)
+	const [selectedFile, setSelectedFile] = useState<File2>(root)
+	const [loading, setLoading] = useState(false)
 	const { showNotif } = useNotification()
 
-	useEffect(() => {
-		const exists = files.find(i => i.parentPath === selectedFile.path) || requestSent
-		if (!exists) {
-			setRequestSent(true)
-			getFiles2(selectedFile.path)
+	const getFiles = useCallback(
+		(path: string) => {
+			setLoading(true)
+			getFiles2(path)
 				.then(data => {
 					setFiles(f => sortFile([...f, ...data]))
 				})
 				.catch(err => {
 					showNotif(err.message, 'error')
-				}).finally(() => {
-					setRequestSent(false)
 				})
-		}
-	}, [requestSent,selectedFile, files, showNotif, setRequestSent])
+				.finally(() => setLoading(false))
+		},
+		[setFiles, showNotif]
+	)
 
-	const sortFile = (data: File2[]) =>
-		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
+	useEffect(() => {
+		const exists = files.find(i => i.parentPath === selectedFile.path)
+		const isDirectory = selectedFile.isDirectory
+
+		if (!exists && isDirectory && !loading) {
+			getFiles(selectedFile.path)
+		}
+		handleSelectedFile && handleSelectedFile(selectedFile.path)
+	}, [loading, selectedFile, files, showNotif])
 
 	const parent = files?.find(f => f.path === selectedFile.parentPath)
 	const currentFolder: File2[] = [
@@ -77,14 +90,14 @@ const FileChooser = (): JSX.Element => {
 									alignItems: 'top',
 									gap: 1,
 									'&:hover': { backgroundColor: 'whitesmoke' },
-									cursor: requestSent ? 'wait': 'pointer',
+									cursor: 'pointer',
 								}}
 								component='li'
 								key={f.path}
 								onClick={(
 									event: React.MouseEvent<HTMLDivElement, MouseEvent>
 								) => {
-									!requestSent && setSelectedFile(f)
+									setSelectedFile(f)
 								}}
 							>
 								{f.isDirectory ? (

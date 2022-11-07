@@ -1,12 +1,13 @@
 import { Close } from '@mui/icons-material'
 import {
 	Box,
-	Breadcrumbs, IconButton,
+	Breadcrumbs,
+	IconButton,
 	Link,
 	Paper,
 	Tab,
 	Tabs,
-	Typography
+	Typography,
 } from '@mui/material'
 import { marked } from 'marked'
 import * as React from 'react'
@@ -44,7 +45,21 @@ const Dataset = () => {
 
 	useEffect(() => {
 		if (!selectedFile) return
-		// if (!/\.json|\.txt|\.[t|c]sv/.test(selectedFile)) return
+		if (/\.png|\.jpg|\.eeg|\.gz|\.zip|\.xdf/.test(selectedFile)) {
+			setFileContent(
+				<Box>
+					<Typography>No visualization available yet</Typography>
+					<Link
+						target='_blank'
+						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`}
+					>
+						View file in NextCloud
+					</Link>
+				</Box>
+			)
+
+			return
+		}
 
 		getFileContent(selectedFile).then(data => {
 			if (selectedFile.endsWith('.md')) {
@@ -59,7 +74,9 @@ const Dataset = () => {
 				)
 			} else if (selectedFile.endsWith('.csv')) {
 				setFileContent(
-					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>{CSV2Table({ data })}</Box>
+					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
+						{CSV2Table({ data })}
+					</Box>
 				)
 			} else if (selectedFile.endsWith('.tsv')) {
 				setFileContent(
@@ -149,7 +166,7 @@ const Dataset = () => {
 										component={Paper}
 										sx={{
 											overflow: 'auto',
-											p: 1,
+											p: 2,
 											flex: '1 1',
 										}}
 									>
