@@ -119,6 +119,9 @@ export const AppStoreProvider = ({
 		getAvailableAppList()
 			.then(data => setAvailableApps({ data }))
 			.catch(error => setAvailableApps({ error }))
+		
+		//Create initial elasticsearch index for datasets (if it does not exist yet)
+		createBidsDatasetsIndex()
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
@@ -126,9 +129,6 @@ export const AppStoreProvider = ({
 
 		// Perform a full index of the BIDS datasets
 		// indexBidsDatasets(currentUser.uid)
-
-		//Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
 
 		getContainers(currentUser)
 			.then(data => setContainers({ data }))
