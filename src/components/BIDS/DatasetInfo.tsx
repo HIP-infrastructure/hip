@@ -7,7 +7,7 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 	{dataset?.DataTypes && dataset?.DataTypes?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>
-				DataTypes:
+				Datatype(s):
 				</Typography>
 
 				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
@@ -22,7 +22,7 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 		{dataset?.Tasks && dataset?.Tasks?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>
-					Tasks:
+					Task(s):
 				</Typography>
 
 				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
