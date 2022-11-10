@@ -14,7 +14,7 @@ import {
 	Typography,
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { indexBidsDatasets, queryBidsDatasets } from '../../api/bids'
+import { refreshBidsDatasetsIndex, queryBidsDatasets } from '../../api/bids'
 import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
@@ -53,7 +53,7 @@ const Datasets = () => {
 
 	useEffect(() => {
 		if (datasetCreated) {
-			indexBidsDatasets(user?.uid).then(() => {
+			refreshBidsDatasetsIndex(user?.uid).then(() => {
 				queryDatasets()
 			})
 

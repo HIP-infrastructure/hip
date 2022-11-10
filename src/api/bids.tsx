@@ -23,6 +23,20 @@ export const createBidsDatasetsIndex = async (): Promise<any> => {
 		.catch(catchError)
 }
 
+export const refreshBidsDatasetsIndex = async (
+	owner?: string
+): Promise<BIDSDataset[]> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/refresh_index?owner=${owner}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
 export const indexBidsDataset = async (
 	owner?: string,
 	path?: string
@@ -38,10 +52,11 @@ export const indexBidsDataset = async (
 		.catch(catchError)
 }
 
-export const indexBidsDatasets = async (
-	owner?: string
-): Promise<BIDSDataset[]> => {
-	const url = `${API_GATEWAY}/tools/bids/datasets/index?owner=${owner}`
+export const deleteBidsDataset = async (
+	owner?: string,
+	path?: string
+): Promise<BIDSDataset> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/delete?owner=${owner}&path=${path}`
 	return fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
