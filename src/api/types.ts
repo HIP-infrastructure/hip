@@ -351,3 +351,7 @@ export class BidsDatasetDefinitionDto {
 		}
 	}
 }
+
+export interface CreateBidsDatasetParticipantsTsvDto {
+	readonly Participants: Participant[]
+}

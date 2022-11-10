@@ -7,6 +7,7 @@ import {
 	CreateBidsDatasetDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
+	CreateBidsDatasetParticipantsTsvDto,
 	IError,
 	Participant,
 } from './types'
@@ -110,6 +111,23 @@ export const getParticipants = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const writeParticipantsTSV = async (
+	datasetPath: string,
+	createBidsDatasetParticipantsTsvDto: CreateBidsDatasetParticipantsTsvDto
+): Promise<any> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/write_participants_tsv?datasetPath=${datasetPath}`
+	return fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(createBidsDatasetParticipantsTsvDto),
 	})
 		.then(checkForError)
 		.catch(catchError)
