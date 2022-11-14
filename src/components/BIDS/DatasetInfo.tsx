@@ -4,7 +4,7 @@ import * as React from 'react'
 
 const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 	<>
-	{dataset?.DataTypes && dataset?.DataTypes?.length > 0 && (
+		{dataset?.DataTypes && dataset?.DataTypes?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>
 				Datatype(s):
@@ -58,6 +58,20 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 			<Typography variant='body2' color='text.secondary'>
 				Ages: <strong>{dataset?.AgeRange?.join(' - ')}</strong>
 			</Typography>
+			{dataset?.ParticipantsGroups && dataset?.ParticipantsGroups.length > 0 && (
+				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
+					<Typography variant='body2' color='text.secondary'>
+						Groups:
+					</Typography>
+					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
+						{dataset?.ParticipantsGroups?.map(t => (
+							<Typography key={t} variant='body2' color='text.secondary'>
+								<strong>{t}</strong>
+							</Typography>
+						))}
+					</Box>
+				</Box>
+			)}
 			<Typography variant='body2' color='text.secondary'>
 				Size: <strong>{dataset?.Size}</strong>
 			</Typography>
