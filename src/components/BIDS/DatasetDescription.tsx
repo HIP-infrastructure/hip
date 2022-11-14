@@ -21,7 +21,7 @@ const DatasetDescription = ({ dataset }: { dataset?: BIDSDataset }) => {
 							{dataset?.ParticipantsCount}
 						</Typography>
 						<Typography variant='body1'>
-							<strong>Version</strong>
+							<strong>BIDS version</strong>
 						</Typography>
 						<Typography gutterBottom variant='body1'>
 							{dataset?.BIDSVersion}
@@ -39,7 +39,7 @@ const DatasetDescription = ({ dataset }: { dataset?: BIDSDataset }) => {
 							{(dataset?.Acknowledgements && dataset.Acknowledgements) || 'n/a'}
 						</Typography>
 						<Typography variant='body1'>
-							<strong>How To Acknowledge</strong>
+							<strong>How to Acknowledge</strong>
 						</Typography>
 						<Typography gutterBottom variant='body1'>
 							{(dataset?.HowToAcknowledge && dataset.HowToAcknowledge) || 'n/a'}
