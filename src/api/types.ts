@@ -180,7 +180,14 @@ export interface BIDSDataset {
 	RunsCount?: number
 	DataTypes?: string[]
 	Formats?: string[]
+	ECOGChannelCount?: number
 	SEEGChannelCount?: number
+	EEGChannelCount?: number
+	EOGChannelCount?: number
+	ECGChannelCount?: number
+	EMGChannelCount?: number
+	MiscChannelCount?: number
+	TriggerChannelCount?: number
 	SamplingFrequency?: number
 	RecordingDuration?: number
 	EventsFileCount?: number
