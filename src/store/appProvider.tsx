@@ -165,6 +165,8 @@ export const AppStoreProvider = ({
 			setContainers,
 			availableApps,
 			setAvailableApps,
+			bidsDatasets,
+			setBidsDatasets,
 			selectedBidsDataset,
 			setSelectedBidsDataset,
 			selectedParticipants,
