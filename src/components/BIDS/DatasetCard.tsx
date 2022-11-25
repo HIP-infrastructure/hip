@@ -33,7 +33,7 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 						gutterBottom
 						color='text.secondary'
 					>
-						{dataset?.Authors?.join(', ')}
+						Authors: <strong>{dataset?.Authors?.join(', ')}</strong>
 					</Typography>
 					<DatasetInfo dataset={dataset} />
 				</CardContent>
