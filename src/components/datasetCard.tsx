@@ -94,7 +94,7 @@ const DatasetCard = ({dataset} : Props): JSX.Element => {
                                                 component="div"
                                                 display="inline"
                                             >
-                                                Ages(yrs): [{dataset?.AgeRange?.join(', ')}]
+                                                Ages(yrs): [{dataset?.AgeMin}, {dataset?.AgeMax}]
                                             </Typography>
                                             &nbsp;/&nbsp;
                                             <Typography

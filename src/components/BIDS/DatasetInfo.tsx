@@ -56,7 +56,7 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 				Participants: <strong>{dataset?.ParticipantsCount}</strong>
 			</Typography>
 			<Typography variant='body2' color='text.secondary'>
-				Ages: <strong>{dataset?.AgeRange?.join(' - ')}</strong>
+				Ages: <strong>[{dataset?.AgeMin}, {dataset?.AgeMax}]</strong>
 			</Typography>
 			{dataset?.ParticipantsGroups && dataset?.ParticipantsGroups.length > 0 && (
 				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>

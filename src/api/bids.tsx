@@ -72,11 +72,14 @@ export const queryBidsDatasets = async (
 	userId?: string,
 	query = '*',
 	page = 1,
-	nbOfResults = 200
+	nbOfResults = 200,
+	ageRange = [0, 100],
+	participantsCountRange = [0, 200],
+	datatypes: string[]  = ['*']
 ): Promise<BIDSDataset[]> => {
 	if (!userId) return []
 
-	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
+	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&ageRange=${ageRange}&participantsCountRange=${participantsCountRange}&datatypes=${datatypes}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
 	return fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',

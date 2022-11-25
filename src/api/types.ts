@@ -173,7 +173,9 @@ export interface BIDSDataset {
 	CreationDate: string
 	ParticipantsCount: number
 	ParticipantsGroups: string[]
-	AgeRange: number[]
+	// AgeRange: number[]
+	AgeMin: number[]
+	AgeMax: number[]
 	Participants?: Participant[]
 	SessionsCount?: number
 	Tasks?: string[]
