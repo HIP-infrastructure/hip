@@ -3,18 +3,18 @@ import {
 	Alert,
 	Box,
 	Button,
-	Chip,
+	Checkbox,
 	CircularProgress,
 	FormControl,
+	FormControlLabel,
+	FormGroup,
 	InputLabel,
 	MenuItem,
-	OutlinedInput,
 	Pagination,
 	Select,
 	SelectChangeEvent,
 	Slider,
 	TextField,
-	Theme,
 	Typography,
 	useTheme,
 } from '@mui/material'
@@ -27,18 +27,7 @@ import TitleBar from '../UI/titleBar'
 import CreateDataset from './CreateDataset'
 import DatasetCard from './DatasetCard'
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const DatatypeMenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250,
-		},
-	},
-}
-
-const datatypes = [
+const DATATYPES = [
 	'anat',
 	'dwi',
 	'func',
@@ -60,7 +49,6 @@ const ageRangeMarks = [
 ]
 
 const Datasets = () => {
-	const theme = useTheme()
 	const {
 		user: [user],
 	} = useAppStore()
@@ -83,7 +71,8 @@ const Datasets = () => {
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
-	const [datatype, setDatatype] = React.useState<string[]>(datatypes)
+	const [selectedDatatypes, setSelectedDatatypes] =
+		React.useState<string[]>(DATATYPES)
 
 	const queryDatasets = useCallback(async () => {
 		setDatasets(undefined)
@@ -94,7 +83,7 @@ const Datasets = () => {
 			numberOfResultsPerPage,
 			debouncedAgeRange,
 			debouncedParticipantsCount,
-			datatype
+			selectedDatatypes
 		)
 			.then(data => {
 				setDatasets({ data })
@@ -108,7 +97,7 @@ const Datasets = () => {
 		term,
 		debouncedAgeRange,
 		debouncedParticipantsCount,
-		datatype,
+		selectedDatatypes,
 		page,
 		numberOfResultsPerPage,
 	])
@@ -127,23 +116,8 @@ const Datasets = () => {
 		}
 	}, [queryDatasets, datasetCreated, user?.uid])
 
-	const handleDatatypeChange = (event: SelectChangeEvent<typeof datatype>) => {
-		const {
-			target: { value },
-		} = event
-		setDatatype(
-			// On autofill we get a stringified value.
-			typeof value === 'string' ? value.split(',') : value
-		)
-	}
-
-	function getStyles(name: string, datatype: readonly string[], theme: Theme) {
-		return {
-			fontWeight:
-				datatype.indexOf(name) === -1
-					? theme.typography.fontWeightRegular
-					: theme.typography.fontWeightMedium,
-		}
+	const handleDatatypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedDatatypes(s => Array.from(new Set([...s, event.target.name])))
 	}
 
 	return (
@@ -208,32 +182,16 @@ const Datasets = () => {
 					<Box sx={{ width: 250 }} mx={2}>
 						<FormControl sx={{ m: 1, minWidth: 250, maxWidth: 250 }}>
 							<InputLabel id='datatype-label'>Datatypes</InputLabel>
-							<Select
-								labelId='datatype-label'
-								id='datatype'
-								multiple
-								value={datatype}
-								onChange={handleDatatypeChange}
-								input={<OutlinedInput id='datatype' label='Datatypes' />}
-								renderValue={selected => (
-									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-										{selected.map(value => (
-											<Chip key={value} label={value} />
-										))}
-									</Box>
-								)}
-								MenuProps={DatatypeMenuProps}
-							>
-								{datatypes.map(dt => (
-									<MenuItem
+							<FormGroup>
+								{DATATYPES.map(dt => (
+									<FormControlLabel
 										key={dt}
-										value={dt}
-										style={getStyles(dt, datatype, theme)}
-									>
-										{dt}
-									</MenuItem>
+										control={<Checkbox />}
+										label={dt}
+										// onChange={handleDatatypeChange}
+									/>
 								))}
-							</Select>
+							</FormGroup>
 						</FormControl>
 						<Box sx={{ width: 250 }} mx={2}>
 							<Typography id='input-slider' gutterBottom>
@@ -263,7 +221,12 @@ const Datasets = () => {
 						</Box>
 					</Box>
 
-					<Box display='flex' alignItems='center' sx={{ mb: 2 }}>
+					<Box
+						display='flex'
+						flexDirection='column'
+						alignItems='center'
+						sx={{ mb: 2 }}
+					>
 						{!datasets && (
 							<CircularProgress
 								size={32}

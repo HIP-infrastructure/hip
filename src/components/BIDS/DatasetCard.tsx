@@ -19,9 +19,10 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 		<>
 			<Card elevation={3} component={Paper} sx={{ width: 296 }}>
 				<CardMedia
+					sx={{ backgroundColor: `grey.${100}` }}
 					component='img'
 					height='96'
-					image='/api/v1/public/media/480x128-543586422_neuro_imaging__database__document_management__neural_pathway__medical__futuristic__neurons_and_dendr.png'
+					// image='/api/v1/public/media/480x128-543586422_neuro_imaging__database__document_management__neural_pathway__medical__futuristic__neurons_and_dendr.png'
 					alt=''
 				/>
 				<CardContent>
