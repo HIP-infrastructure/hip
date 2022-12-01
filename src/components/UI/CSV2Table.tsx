@@ -45,10 +45,10 @@ const CSV2Table = ({
 							{Object.values(row).map(
 								val =>
 									(i === 0 && (
-										<TableCell component='th' scope='row'>
+										<TableCell  key={`${i}`} component='th' scope='row'>
 											{val}
 										</TableCell>
-									)) || <TableCell>{val}</TableCell>
+									)) || <TableCell key={`${i}`}>{val}</TableCell>
 							)}
 						</TableRow>
 					))}
