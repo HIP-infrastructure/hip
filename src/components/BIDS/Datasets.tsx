@@ -8,9 +8,11 @@ import {
 	FormControl,
 	FormControlLabel,
 	FormGroup,
+	FormLabel,
 	InputLabel,
 	MenuItem,
 	Pagination,
+	Paper,
 	Select,
 	SelectChangeEvent,
 	Slider,
@@ -74,8 +76,10 @@ const Datasets = () => {
 	const [selectedDatatypes, setSelectedDatatypes] =
 		React.useState<string[]>(DATATYPES)
 
+	const [loading, setLoading] = useState(false)
+
 	const queryDatasets = useCallback(async () => {
-		setDatasets(undefined)
+		setLoading(true)
 		queryBidsDatasets(
 			user?.uid,
 			term,
@@ -87,9 +91,11 @@ const Datasets = () => {
 		)
 			.then(data => {
 				setDatasets({ data })
+				setLoading(false)
 			})
 			.catch(error => {
 				setDatasets({ error })
+				setLoading(false)
 			})
 	}, [
 		queryBidsDatasets,
@@ -116,8 +122,10 @@ const Datasets = () => {
 		}
 	}, [queryDatasets, datasetCreated, user?.uid])
 
-	const handleDatatypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSelectedDatatypes(s => Array.from(new Set([...s, event.target.name])))
+	const handleDatatypeChange = (dt: string) => {
+		setSelectedDatatypes(s =>
+			s.includes(dt) ? s.filter(d => d !== dt) : [...s, dt]
+		)
 	}
 
 	return (
@@ -178,22 +186,39 @@ const Datasets = () => {
 					</FormControl>
 				</Box>
 
+				<Box display='flex' justifyContent='center' alignItems='center'>
+					<Pagination
+						count={Math.ceil(
+							totalNumberOfDatasets || 1 / numberOfResultsPerPage
+						)}
+						page={page}
+						onChange={(_, value) => setPage(value)}
+					/>
+				</Box>
+
 				<Box display='flex' flexDirection='row'>
-					<Box sx={{ width: 250 }} mx={2}>
+					<Paper elevation={1} sx={{ p: 2 }}>
+						<Typography variant='subtitle1'>Filters</Typography>
 						<FormControl sx={{ m: 1, minWidth: 250, maxWidth: 250 }}>
-							<InputLabel id='datatype-label'>Datatypes</InputLabel>
+							<FormLabel component='legend' id='datatype-label'>
+								Datatypes
+							</FormLabel>
 							<FormGroup>
 								{DATATYPES.map(dt => (
 									<FormControlLabel
 										key={dt}
-										control={<Checkbox />}
+										control={
+											<Checkbox
+												onChange={() => handleDatatypeChange(dt)}
+												checked={selectedDatatypes.includes(dt)}
+											/>
+										}
 										label={dt}
-										// onChange={handleDatatypeChange}
 									/>
 								))}
 							</FormGroup>
 						</FormControl>
-						<Box sx={{ width: 250 }} mx={2}>
+						<Box mx={2}>
 							<Typography id='input-slider' gutterBottom>
 								Age of participants
 							</Typography>
@@ -205,7 +230,7 @@ const Datasets = () => {
 								marks={ageRangeMarks}
 							/>
 						</Box>
-						<Box sx={{ width: 250 }} mx={2}>
+						<Box mx={2}>
 							<Typography id='input-slider' gutterBottom>
 								Number of participants
 							</Typography>
@@ -219,31 +244,20 @@ const Datasets = () => {
 								marks={participantsCountRangeMarks}
 							/>
 						</Box>
-					</Box>
+					</Paper>
 
-					<Box
-						display='flex'
-						flexDirection='column'
-						alignItems='center'
-						sx={{ mb: 2 }}
-					>
-						{!datasets && (
-							<CircularProgress
-								size={32}
-								color='secondary'
-								sx={{ top: 10, left: 10 }}
-							/>
+					<Box sx={{ p: 2 }}>
+						{datasets?.data?.length === 0 && (
+							<Typography variant='body2'>No results</Typography>
 						)}
-						<Box display='flex' justifyContent='center' alignItems='center'>
-							<Pagination
-								count={Math.ceil(
-									totalNumberOfDatasets || 1 / numberOfResultsPerPage
-								)}
-								page={page}
-								onChange={(_, value) => setPage(value)}
-							/>
-						</Box>
-
+						{!datasets ||
+							(loading && (
+								<CircularProgress
+									size={32}
+									color='secondary'
+									sx={{ top: 10, left: 10 }}
+								/>
+							))}
 						<Box
 							sx={{
 								mt: 2,
@@ -256,21 +270,18 @@ const Datasets = () => {
 							{datasets?.data?.map(dataset => (
 								<DatasetCard key={dataset.id} dataset={dataset} />
 							))}
-							{!datasets?.data?.length && (
-								<Typography variant='body2'>No results</Typography>
-							)}
-						</Box>
-
-						<Box display='flex' justifyContent='center' alignItems='center'>
-							<Pagination
-								count={Math.ceil(
-									totalNumberOfDatasets || 1 / numberOfResultsPerPage
-								)}
-								page={page}
-								onChange={(_, value) => setPage(value)}
-							/>
 						</Box>
 					</Box>
+				</Box>
+
+				<Box display='flex' justifyContent='center' alignItems='center'>
+					<Pagination
+						count={Math.ceil(
+							totalNumberOfDatasets || 1 / numberOfResultsPerPage
+						)}
+						page={page}
+						onChange={(_, value) => setPage(value)}
+					/>
 				</Box>
 			</Box>
 		</>

@@ -11,18 +11,20 @@ import { BIDSDataset } from '../../api/types'
 import { linkStyle, ROUTE_PREFIX } from '../../constants'
 import DatasetInfo from './DatasetInfo'
 import * as React from 'react'
+import { nameToColor } from '../theme'
 
 const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 	const params = useParams()
 
 	return (
 		<>
-			<Card elevation={3} component={Paper} sx={{ width: 296 }}>
+			<Card elevation={3} component={Paper} sx={{ width: 320 }}>
 				<CardMedia
-					sx={{ backgroundColor: `grey.${100}` }}
+					sx={{ 
+						background: `linear-gradient(to top, ${nameToColor(dataset.Name, '33' )}), url(/api/v1/public/media/2109057773_human__neural_pathway__consciousness__autistic_thinking__futuristic__neurons_and_dendrites__photo_realistic__picture_of_the_day.png) no-repeat top center`
+					}}
 					component='img'
 					height='96'
-					// image='/api/v1/public/media/480x128-543586422_neuro_imaging__database__document_management__neural_pathway__medical__futuristic__neurons_and_dendr.png'
 					alt=''
 				/>
 				<CardContent>
