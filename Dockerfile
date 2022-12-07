@@ -7,8 +7,8 @@ WORKDIR /base
 
 RUN apt update && apt install -y gettext
 
-RUN npm install -g npm@8.3.0
-RUN npm install -g react-scripts typescript --silent
+RUN npm install --location=global npm@8.3.0
+RUN npm install --location=global react-scripts typescript --silent
 COPY package.json ./
 RUN npm install
 COPY . .
