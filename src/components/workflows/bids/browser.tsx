@@ -6,7 +6,6 @@ import {
 	NativeSelect,
 	FormControl,
 	Box,
-	Input,
 	IconButton,
 	TextField,
 } from '@mui/material'
@@ -80,7 +79,7 @@ const BidsBrowser = () => {
 					// setBidsDatasetsResults({ error })
 				})
 		}
-	}, [searchTerm, page, numberOfResultsPerPage])
+	}, [searchTerm, page, numberOfResultsPerPage, user?.uid])
 
 	useEffect(() => {
 		if (bidsDatasetsResults) {

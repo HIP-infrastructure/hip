@@ -12,7 +12,7 @@ import {
 	Participant,
 } from './types'
 
-export const createBidsDatasetsIndex = async (): Promise<any> => {
+export const createBidsDatasetsIndex = async (): Promise<void> => {
 	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
 	return fetch(url, {
 		headers: {
@@ -122,7 +122,7 @@ export const getParticipants = async (
 export const writeParticipantsTSV = async (
 	datasetPath: string,
 	createBidsDatasetParticipantsTsvDto: CreateBidsDatasetParticipantsTsvDto
-): Promise<any> => {
+): Promise<void> => {
 	const url = `${API_GATEWAY}/tools/bids/dataset/write_participants_tsv?datasetPath=${datasetPath}`
 	return fetch(url, {
 		method: 'POST',

@@ -18,7 +18,6 @@ import {
 	Slider,
 	TextField,
 	Typography,
-	useTheme,
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { queryBidsDatasets, refreshBidsDatasetsIndex } from '../../api/bids'
@@ -68,7 +67,7 @@ const Datasets = () => {
 	] = useDebounce<number[]>([0, 200])
 	const [numberOfResultsPerPage, setNumberOfResultsPerPage] =
 		useState<number>(20)
-	const [totalNumberOfDatasets, setTotalNumberOfDatasets] = useState<number>(0)
+	const [totalNumberOfDatasets] = useState<number>(0)
 	const [page, setPage] = useState<number>(1)
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
@@ -98,7 +97,6 @@ const Datasets = () => {
 				setLoading(false)
 			})
 	}, [
-		queryBidsDatasets,
 		user,
 		term,
 		debouncedAgeRange,

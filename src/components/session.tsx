@@ -107,7 +107,7 @@ const Session = (): JSX.Element => {
 					// console.log(e)
 				})
 		}, 1000)
-	}, [session])
+	}, [session, sessionIsAlive])
 
 	// get session and its children apps from params
 	useEffect(() => {
