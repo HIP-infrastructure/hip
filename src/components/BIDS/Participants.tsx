@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Add, Edit } from '@mui/icons-material'
 import {
 	Box,
@@ -15,17 +16,61 @@ import { useEffect, useState } from 'react'
 import { BIDSDataset, Participant } from '../../api/types'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
-import * as React from 'react'
+import CreateField from '../UI/createField'
+import { writeParticipantsTSV } from '../../api/bids'
+import { useAppStore } from '../../store/appProvider'
 
 const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
+	const [fields, setFields] = useState<string[]>([
+		'participant_id',
+		'age',
+		'sex',
+	])
+
+	const {
+		user: [user],
+	} = useAppStore()
 
 	useEffect(() => {
+		if (dataset?.Participants) {
+			const firstLine = JSON.parse(JSON.stringify(dataset.Participants)).pop()
+			if (firstLine) {
+				const participantFields = Object.keys(firstLine)
+				setFields(participantFields)
+			}
+		}
+	}, [dataset])
+
+	useEffect(() => {
+		console.log('Set field and reset Participants...')
+		if (dataset?.Participants) {
+			dataset.Participants.forEach((_part, index, items) => {
+				const item_keys = Object.keys(items[index])
+				fields.forEach((_field, field_id, fields) => {
+					if (!item_keys.includes(fields[field_id])) {
+						console.log('Add column ', fields[field_id])
+						items[index][fields[field_id]] = 'n/a'
+					}
+				})
+			})
+			setRows(dataset.Participants)
+			if (dataset.Path) {
+				console.log(`Write participants.tsv to ${dataset.Path}`)
+				console.log(dataset.Participants)
+				writeParticipantsTSV(user?.uid, dataset.Path, {Participants: dataset.Participants})
+			}
+		}
+	}, [dataset, fields])
+
+	useEffect(() => {
+		console.log('Update rows...')
 		if (dataset?.Participants) setRows(dataset.Participants)
-	}, [dataset, setRows])
+		// indexBidsDataset(user?.uid, dataset?.Path)
+	}, [dataset, fields, setRows])
 
 	const handleEditParticipant = (id: string) => {
 		setParticipantEditId(id)
@@ -73,6 +118,13 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 					>
 						Add new Participant
 					</Button>
+					<CreateField
+						handleCreateField={({ key }) => {
+							if (key) {
+								setFields(f => [...f, key])
+							}
+						}}
+					/>
 				</Box>
 				<Box
 					sx={{

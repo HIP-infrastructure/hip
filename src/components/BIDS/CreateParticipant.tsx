@@ -177,7 +177,7 @@ const CreateParticipant = ({ dataset, open, handleClose, participantEditId }: { 
 									)
 								})}
 							</Grid>
-
+{/* 
 							<CreateField
 								handleCreateField={({ key }) => {
 									if (key) {
@@ -198,6 +198,7 @@ const CreateParticipant = ({ dataset, open, handleClose, participantEditId }: { 
 									}
 								}}
 							/>
+*/}
 						</DialogContent>
 
 						<DialogActions>
