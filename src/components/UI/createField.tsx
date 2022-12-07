@@ -24,7 +24,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 	return (
 		<>
 			{!show && (
-				<Tooltip title='Add a new field to BIDS Clinical data'>
+				<Tooltip title='Add a new column to the BIDS participants.tsv file'>
 					<Button
 						onClick={() => setShow(!show)}
 						variant='outlined'
@@ -32,7 +32,7 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 						size='small'
 						sx={{ mt: 0.5, mb: 2, ml: 0.5 }}
 					>
-						Add Key
+						Add Column
 					</Button>
 				</Tooltip>
 			)}
