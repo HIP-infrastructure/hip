@@ -83,6 +83,7 @@ export const queryBidsDatasets = async (
 	return fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
 		},
 	})
 		.then(checkForError)
