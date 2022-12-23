@@ -9,21 +9,16 @@ import Apps from './components/apps'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers/Centers'
-import CollaborativeData from './components/collab/data'
-import CollaborativeSessions from './components/collab/sessions'
-import CollaborativeWorkflows from './components/collab/workflows'
 import Dashboard from './components/Dashboard/Dashboard'
 import DashboardOutlet from './components/Dashboard/index'
 import Documentation from './components/documentation'
-import PublicSessions from './components/public/sessions'
-import PublicWorkflows from './components/public/workflows'
+import Projects from './components/Projects/Projects'
 import Session from './components/session'
 import Sessions from './components/sessions'
 import Navigation from './components/Sidebar'
-import Workflows from './components/workflows'
-import BidsBrowser from './components/workflows/bids/browser'
-import BidsConverter from './components/workflows/bids/converter'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
+import ProjectDashboard from './components/Projects/Dashboard'
+import ProjectSessions from './components/Projects/Sessions'
 export interface Space {
 	label: string
 	route: string
@@ -104,24 +99,16 @@ const App = () => (
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-				<Route path={':id/workflows'} element={<Outlet />}>
-					<Route index element={<Workflows />} />
-					<Route path={'bidsimport'} element={<BidsConverter />} />
-					<Route path={'bidssearch'} element={<BidsBrowser />} />
-				</Route>
 				<Route path={'centers'} element={<Centers />} />
 			</Route>
-			<Route path={'collaborative'} element={<Outlet />}>
-				<Route index element={<CollaborativeSessions />} />
-				<Route path={'sessions'} element={<CollaborativeSessions />} />
-				<Route path={'data'} element={<CollaborativeData />} />
-				<Route path={'workflows'} element={<CollaborativeWorkflows />} />
-			</Route>
-			<Route path={'public'} element={<Outlet />}>
-				<Route index element={<PublicSessions />} />
-				<Route path={'sessions'} element={<PublicSessions />} />
-				<Route path={'data'} element={<Route />} />
-				<Route path={'workflows'} element={<PublicWorkflows />} />
+			<Route path={'collaborative-projects'} element={<Outlet />}>
+				<Route index element={<Projects />} />
+				<Route path={':id'} element={<ProjectDashboard />} />
+				<Route path={':id/sessions'} element={<ProjectSessions />} />
+				<Route path={':id/datasets'} element={<Outlet />}>
+					<Route index element={<Datasets />} />
+					<Route path={':datasetId'} element={<Dataset />} />
+				</Route>
 			</Route>
 			<Route
 				path='*'

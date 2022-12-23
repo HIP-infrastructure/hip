@@ -27,7 +27,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { APP_MARGIN_TOP } from '../constants'
+import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 
 const bull = (
@@ -61,7 +61,7 @@ const Sidebar = () => {
 
 	const handleClickNavigate = (route: string) => {
 		trackPageView({ documentTitle: route })
-		navigate(`/apps/hip${route}`)
+		navigate(`${ROUTE_PREFIX}${route}`)
 	}
 
 	const userCenters =
@@ -208,19 +208,38 @@ const Sidebar = () => {
 							unmountOnExit
 						>
 							<List component='div' disablePadding>
-								<ListItemButton sx={{ pl: 8 }}>
+								<ListItemButton
+									sx={{ pl: 8 }}
+									onClick={() =>
+										handleClickNavigate(`/collaborative-projects/${project.id}`)
+									}
+								>
 									<ListItemIcon>
 										<Dashboard />
 									</ListItemIcon>
 									<ListItemText primary='Dashboard' />
 								</ListItemButton>
-								<ListItemButton sx={{ pl: 8 }}>
+								<ListItemButton
+									sx={{ pl: 8 }}
+									onClick={() =>
+										handleClickNavigate(
+											`/collaborative-projects/${project.id}/sessions`
+										)
+									}
+								>
 									<ListItemIcon>
 										<Monitor />
 									</ListItemIcon>
 									<ListItemText primary='Desktops' />
 								</ListItemButton>
-								<ListItemButton sx={{ pl: 8 }}>
+								<ListItemButton
+									sx={{ pl: 8 }}
+									onClick={() =>
+										handleClickNavigate(
+											`/collaborative-projects/${project.id}/datasets`
+										)
+									}
+								>
 									<ListItemIcon>
 										<Assignment />
 									</ListItemIcon>
@@ -241,7 +260,7 @@ const Sidebar = () => {
 			<List>
 				<ListItemButton
 					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/private/centers')}
+					onClick={() => handleClickNavigate('/collaborative-projects')}
 				>
 					<ListItemIcon>
 						<Apps />
@@ -257,10 +276,7 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/')}
-				>
+				<ListItemButton sx={{ pl: 4 }} onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
 						<Dashboard />
 					</ListItemIcon>
