@@ -1,7 +1,7 @@
 import {
 	Application,
 	Container,
-	HIPGroup,
+	HIPCenter,
 	TreeNode,
 	User,
 	UserCredentials,
@@ -82,7 +82,7 @@ export const getGroupFolders = async (
 		.then(checkForError)
 		.catch(catchError)
 
-export const getCenters = async (): Promise<HIPGroup[]> =>
+export const getCenters = async (): Promise<HIPCenter[]> =>
 	fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {})
 		.then(checkForError)
 		.catch(catchError)

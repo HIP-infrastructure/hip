@@ -5,6 +5,7 @@ import {
 	refreshBidsDatasetsIndex,
 	queryBidsDatasets
 } from '../api/bids'
+import { getProjects } from '../api/project'
 import {
 	getAvailableAppList,
 	getCenters,
@@ -17,9 +18,10 @@ import {
 	BIDSDataset,
 	Container,
 	BIDSFile,
-	HIPGroup,
+	HIPCenter,
 	Participant,
 	UserCredentials,
+	HIPProject,
 } from '../api/types'
 
 export interface IAppState {
@@ -28,9 +30,13 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	hipGroups: [
-		HIPGroup[] | null,
-		React.Dispatch<React.SetStateAction<HIPGroup[] | null>>
+	hIPCenters: [
+		HIPCenter[] | null,
+		React.Dispatch<React.SetStateAction<HIPCenter[] | null>>
+	]
+	hIPProjects: [
+		HIPProject[] | null,
+		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
 	availableApps: [
 		{ data?: Application[]; error?: string } | undefined,
@@ -83,7 +89,8 @@ export const AppStoreProvider = ({
 		error?: string
 	}>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [hipGroups, setHipGroups] = useState<HIPGroup[] | null>(null)
+	const [hIPCenters, setHIPCenters] = useState<HIPCenter[] | null>(null)
+	const [hIPProjects, setHIPProjects] = useState<HIPProject[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -113,9 +120,15 @@ export const AppStoreProvider = ({
 				// console.log(error)
 			})
 
-		getCenters().then(groups => {
-			if (groups) {
-				setHipGroups(groups)
+		getCenters().then(centers => {
+			if (centers) {
+				setHIPCenters(centers)
+			}
+		})
+
+		getProjects().then(projects => {
+			if (projects) {
+				setHIPProjects(projects)
 			}
 		})
 
@@ -124,10 +137,10 @@ export const AppStoreProvider = ({
 			.catch(error => setAvailableApps({ error }))
 		
 		//Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
+		// createBidsDatasetsIndex()
 
-		// Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
+		// // Perform a full index of the BIDS datasets
+		// refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
@@ -146,7 +159,8 @@ export const AppStoreProvider = ({
 		() => ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
-			hipGroups: [hipGroups, setHipGroups],
+			hIPCenters: [hIPCenters, setHIPCenters],
+			hIPProjects: [hIPProjects, setHIPProjects],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
@@ -159,8 +173,10 @@ export const AppStoreProvider = ({
 			setDebug,
 			user,
 			setUser,
-			hipGroups,
-			setHipGroups,
+			hIPCenters,
+			setHIPCenters,
+			hIPProjects,
+			setHIPProjects,
 			containers,
 			setContainers,
 			availableApps,

@@ -8,6 +8,7 @@ import {
 	YouTube,
 } from '@mui/icons-material'
 import {
+    Avatar,
 	Box,
 	Card,
 	CardContent,
@@ -20,7 +21,7 @@ import {
 import { HIPCenter } from '../../api/types'
 import { linkStyle } from '../../constants'
 
-const MainCard = ({ group }: { group?: HIPCenter }) => {
+const Center = ({ group }: { group?: HIPCenter }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {
 		let component
 		switch (network) {
@@ -74,22 +75,33 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 			{group && (
 				<Card
 					sx={{
-						width: 320,
-						height: 440,
+						width: 280,
 					}}
 					key={`center-${group.label}`}
 				>
-					<CardMedia
+					{/* <CardMedia
 						component='img'
 						height='160'
 						src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
 						alt={group.label}
 						title={group.label}
-					/>
+					/> */}
 
 					<CardContent>
-						<Typography variant='h5'>{group?.label}</Typography>
-
+						<Box
+							sx={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+							}}
+						>
+							<Typography variant='h6'>{group?.label}</Typography>
+							<Avatar
+								alt={group?.label}
+								src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
+								sx={{ width: 32, height: 32 }}
+							/>
+						</Box>
 						<Typography
 							sx={{ mt: 2 }}
 							gutterBottom
@@ -117,10 +129,17 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 							</Typography>
 						)}
 
-						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
+						<Box
+							sx={{
+								mt: 2,
+								display: 'flex',
+								justifyContent: 'start',
+								flexWrap: 'wrap',
+							}}
+						>
 							{group.socialnetwork &&
 								Object.keys(group.socialnetwork).map(
-									(key) =>
+									key =>
 										key && (
 											<SocialButton
 												key={key}
@@ -137,4 +156,4 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 	)
 }
 
-export default MainCard
+export default Center
