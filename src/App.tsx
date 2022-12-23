@@ -19,6 +19,7 @@ import Navigation from './components/Sidebar'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
 import ProjectDashboard from './components/Projects/Dashboard'
 import ProjectSessions from './components/Projects/Sessions'
+import DataBrowser from './components/Data'
 export interface Space {
 	label: string
 	route: string
@@ -99,6 +100,7 @@ const App = () => (
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
+				<Route path={':id/data'} element={<DataBrowser />} />
 				<Route path={'centers'} element={<Centers />} />
 			</Route>
 			<Route path={'collaborative-projects'} element={<Outlet />}>
