@@ -2,6 +2,7 @@ import { Close } from '@mui/icons-material'
 import {
 	Box,
 	Breadcrumbs,
+	Button,
 	IconButton,
 	Link,
 	Paper,
@@ -19,10 +20,10 @@ import { useAppStore } from '../../store/appProvider'
 import CSV2Table from '../UI/CSV2Table'
 import FileBrowser from '../UI/FileBrowser'
 import TitleBar from '../UI/titleBar'
-import DatasetDescription from './DatasetDescription'
-import DatasetInfo from './DatasetInfo'
-import Import from './Import'
-import Participants from './Participants'
+import DatasetDescription from '../BIDS/DatasetDescription'
+import DatasetInfo from '../BIDS/DatasetInfo'
+import Participants from '../BIDS/Participants'
+import DatasetBrowser from '../UI/DatasetBrowser'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
@@ -51,7 +52,12 @@ const Dataset = () => {
 					<Typography>No visualization available yet</Typography>
 					<Link
 						target='_blank'
-						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`}
+						href={`${window.location.protocol}//${
+							window.location.host
+						}/apps/files/?dir=${selectedFile
+							.split('/')
+							.slice(0, -1)
+							.join('/')}`}
 					>
 						View file in NextCloud
 					</Link>
@@ -132,7 +138,7 @@ const Dataset = () => {
 					>
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
-						<Tab label='Import files' id={'tab-3'} />
+						<Tab label='Upload' id={'tab-3'} />
 						{/* <Tab label='Add Participant' id={'tab-4'} /> */}
 					</Tabs>
 
@@ -188,8 +194,30 @@ const Dataset = () => {
 					)}
 
 					{tabIndex === 1 && <Participants dataset={dataset} />}
-					{tabIndex === 2 && <Import dataset={dataset} />}
-					{/* {tabIndex === 3 && <CreateParticipant dataset={dataset} />} */}
+					{tabIndex === 2 && (
+						<Box>
+							<Typography>Transfer Files</Typography>
+							<Box
+								sx={{
+									width: '960px',
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'start',
+								}}
+							>
+								<DatasetBrowser />
+								<Button
+									sx={{ my: 0.5 }}
+									variant='outlined'
+									size='small'
+									aria-label='move selected right'
+								>
+									&gt;
+								</Button>
+								<DatasetBrowser path='/Marsden_Cross' />
+							</Box>
+						</Box>
+					)}
 				</Box>
 			</Box>
 		</>

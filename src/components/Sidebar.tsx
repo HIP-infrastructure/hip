@@ -9,6 +9,7 @@ import {
 	Folder,
 	Monitor,
 	Apps,
+	Create,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -149,9 +150,11 @@ const Sidebar = () => {
 							</ListItemIcon>
 							<ListItemText primary='BIDS Datasets' />
 						</ListItemButton>
-						<ListItemButton sx={{ pl: 4 }} disabled={!userCenters} onClick={() =>
-								handleClickNavigate(`/private/${center.id}/data`)
-							}>
+						<ListItemButton
+							sx={{ pl: 4 }}
+							disabled={!userCenters}
+							onClick={() => handleClickNavigate(`/private/${center.id}/data`)}
+						>
 							<ListItemIcon>
 								<AccountTree />
 							</ListItemIcon>
@@ -162,10 +165,7 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/private/centers')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/private/centers')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -192,6 +192,15 @@ const Sidebar = () => {
 					</Box>
 				}
 			>
+				<ListItemButton
+					sx={{ pl: 4 }}
+					onClick={() => handleClickNavigate(`/collaborative-projects/create`)}
+				>
+					<ListItemIcon>
+						<Create />
+					</ListItemIcon>
+					<ListItemText primary='Create new project' />
+				</ListItemButton>
 				{userProjects?.map(project => (
 					<Box key={project.id}>
 						<ListItemButton
@@ -238,7 +247,7 @@ const Sidebar = () => {
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.id}/datasets`
+											`/collaborative-projects/${project.id}/datasets/`
 										)
 									}
 								>
@@ -246,12 +255,6 @@ const Sidebar = () => {
 										<Assignment />
 									</ListItemIcon>
 									<ListItemText primary='BIDS Datasets' />
-								</ListItemButton>
-								<ListItemButton sx={{ pl: 8 }} >
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='Data' />
 								</ListItemButton>
 							</List>
 						</Collapse>
@@ -261,7 +264,6 @@ const Sidebar = () => {
 			<Divider />
 			<List>
 				<ListItemButton
-					sx={{ pl: 4 }}
 					onClick={() => handleClickNavigate('/collaborative-projects')}
 				>
 					<ListItemIcon>

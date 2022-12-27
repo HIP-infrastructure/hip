@@ -8,18 +8,21 @@ import Admin from './components/Admin'
 import Apps from './components/apps'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
-import Centers from './components/Centers/Centers'
+import ProjectDatasets from './components/Project/Datasets'
+import ProjectDataset from './components/Project/Dataset'
+import Centers from './components/Centers'
 import Dashboard from './components/Dashboard/Dashboard'
 import DashboardOutlet from './components/Dashboard/index'
 import Documentation from './components/documentation'
-import Projects from './components/Projects/Projects'
+import Projects from './components/Projects'
 import Session from './components/session'
 import Sessions from './components/sessions'
 import Navigation from './components/Sidebar'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
-import ProjectDashboard from './components/Projects/Dashboard'
-import ProjectSessions from './components/Projects/Sessions'
+import ProjectDashboard from './components/Project/Dashboard'
+import ProjectSessions from './components/Project/Sessions'
 import DataBrowser from './components/Data'
+import CreateProject from './components/Project/Create'
 export interface Space {
 	label: string
 	route: string
@@ -105,11 +108,12 @@ const App = () => (
 			</Route>
 			<Route path={'collaborative-projects'} element={<Outlet />}>
 				<Route index element={<Projects />} />
+				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':id'} element={<ProjectDashboard />} />
 				<Route path={':id/sessions'} element={<ProjectSessions />} />
 				<Route path={':id/datasets'} element={<Outlet />}>
-					<Route index element={<Datasets />} />
-					<Route path={':datasetId'} element={<Dataset />} />
+					<Route index element={<ProjectDatasets />} />
+					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
 			</Route>
 			<Route
