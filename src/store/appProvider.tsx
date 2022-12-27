@@ -137,10 +137,10 @@ export const AppStoreProvider = ({
 			.catch(error => setAvailableApps({ error }))
 		
 		//Create initial elasticsearch index for datasets (if it does not exist yet)
-		// createBidsDatasetsIndex()
+		createBidsDatasetsIndex()
 
 		// // Perform a full index of the BIDS datasets
-		// refreshBidsDatasetsIndex(currentUser.uid)
+		refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
