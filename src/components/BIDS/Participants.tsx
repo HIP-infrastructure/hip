@@ -46,28 +46,28 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	}, [dataset])
 
 	useEffect(() => {
-		console.log('Set field and reset Participants...')
+		console.log('Set field and reset Participants...') // eslint-disable-line
 		if (dataset?.Participants) {
 			dataset.Participants.forEach((_part, index, items) => {
 				const item_keys = Object.keys(items[index])
 				fields.forEach((_field, field_id, fields) => {
 					if (!item_keys.includes(fields[field_id])) {
-						console.log('Add column ', fields[field_id])
+						console.log('Add column ', fields[field_id]) // eslint-disable-line
 						items[index][fields[field_id]] = 'n/a'
 					}
 				})
 			})
 			setRows(dataset.Participants)
 			if (dataset.Path) {
-				console.log(`Write participants.tsv to ${dataset.Path}`)
-				console.log(dataset.Participants)
+				console.log(`Write participants.tsv to ${dataset.Path}`) // eslint-disable-line
+				console.log(dataset.Participants) // eslint-disable-line
 				writeParticipantsTSV(user?.uid, dataset.Path, {Participants: dataset.Participants})
 			}
 		}
 	}, [dataset, fields])
 
 	useEffect(() => {
-		console.log('Update rows...')
+		console.log('Update rows...') // eslint-disable-line
 		if (dataset?.Participants) setRows(dataset.Participants)
 		// indexBidsDataset(user?.uid, dataset?.Path)
 	}, [dataset, fields, setRows])

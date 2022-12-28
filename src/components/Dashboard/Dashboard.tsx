@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, HIPGroup } from '../../api/types'
+import { ContainerType, HIPCenter } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
@@ -23,13 +23,13 @@ const Dashboard = () => {
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
-		hipGroups: [groups, setGroups],
+		hIPCenters: [centers, setCenters],
 		user: [user]
 	} = useAppStore()
 
 	const { showNotif } = useNotification()
 	const [id, setId] = useState<string | undefined>()
-	const [group, setGroup] = useState<HIPGroup | undefined | null>()
+	const [group, setGroup] = useState<HIPCenter | undefined | null>()
 
 	// const { trackEvent } = useMatomo()
 	const { id: incomingId } = useParams()
@@ -40,9 +40,9 @@ const Dashboard = () => {
 	}, [incomingId, id, setId])
 
 	useEffect(() => {
-		if (!id || !groups) return
+		if (!id || !centers) return
 
-		const center = groups
+		const center = centers
 			?.filter(group => group.id === id)
 			?.find((_, i) => i === 0)
 
@@ -52,19 +52,19 @@ const Dashboard = () => {
 		}
 
 		setGroup(center)
-	}, [id, groups, setGroup, showNotif])
+	}, [id, centers, setGroup, showNotif])
 
 	useEffect(() => {
-		if (!id || !groups || !group) return
+		if (!id || !centers || !group) return
 
-		const center = groups
+		const center = centers
 			?.filter(group => group.id === id)
 			?.find((_, i) => i === 0)
 
 		if (!center?.users) {
 			getUsersForGroup(group.id)
 				.then(users => {
-					setGroups(groups =>
+					setCenters(groups =>
 						(groups || []).map(g =>
 							g.id === group.id ? { ...group, users } : g
 						)
@@ -74,7 +74,7 @@ const Dashboard = () => {
 					showNotif(err.message, 'error')
 				})
 		}
-	}, [id, groups, group, setGroups, showNotif])
+	}, [id, centers, group, setCenters, showNotif])
 
 	const sessions = containers?.data?.filter(
 		c => c.type === ContainerType.SESSION
@@ -95,7 +95,7 @@ const Dashboard = () => {
 				</Typography>
 			)}
 
-			{groups && group === null && (
+			{centers && group === null && (
 				<Box>
 					<Card
 						sx={{

@@ -4,26 +4,25 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
 import About from './components/About'
+import Admin from './components/Admin'
 import Apps from './components/apps'
-import CollaborativeData from './components/collab/data'
-import CollaborativeSessions from './components/collab/sessions'
-import CollaborativeWorkflows from './components/collab/workflows'
-import Documentation from './components/documentation'
+import Dataset from './components/BIDS/Dataset'
+import Datasets from './components/BIDS/Datasets'
+import ProjectDatasets from './components/Project/Datasets'
+import ProjectDataset from './components/Project/Dataset'
+import Centers from './components/Centers'
 import Dashboard from './components/Dashboard/Dashboard'
 import DashboardOutlet from './components/Dashboard/index'
-import Navigation from './components/navigation'
-import PublicSessions from './components/public/sessions'
-import PublicWorkflows from './components/public/workflows'
+import Documentation from './components/documentation'
+import Projects from './components/Projects'
 import Session from './components/session'
 import Sessions from './components/sessions'
-import Workflows from './components/workflows'
-import BidsConverter from './components/workflows/bids/converter'
-import BidsBrowser from './components/workflows/bids/browser'
-import Datasets from './components/BIDS/Datasets'
-import Dataset from './components/BIDS/Dataset'
+import Navigation from './components/Sidebar'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
-import Admin from './components/Admin'
-
+import ProjectDashboard from './components/Project/Dashboard'
+import ProjectSessions from './components/Project/Sessions'
+import DataBrowser from './components/Data'
+import CreateProject from './components/Project/Create'
 export interface Space {
 	label: string
 	route: string
@@ -73,12 +72,11 @@ const Layout = (): JSX.Element => {
 			>
 				{isSmUp ? null : (
 					<Navigation
-						PaperProps={{ style: { width: DRAWER_WIDTH } }}
-						// open={mobileOpen}
-						// onClose={handleDrawerToggle}
+					// open={mobileOpen}
+					// onClose={handleDrawerToggle}
 					/>
 				)}
-				<Navigation PaperProps={{ style: { width: DRAWER_WIDTH } }} />
+				<Navigation />
 			</Box>
 			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
 				<Outlet />
@@ -105,25 +103,18 @@ const App = () => (
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-
-				<Route path={':id/workflows'} element={<Outlet />}>
-					<Route index element={<Workflows />} />
-					<Route path={'bidsimport'} element={<BidsConverter />} />
-					<Route path={'bidssearch'} element={<BidsBrowser />} />
+				<Route path={':id/data'} element={<DataBrowser />} />
+				<Route path={'centers'} element={<Centers />} />
+			</Route>
+			<Route path={'collaborative-projects'} element={<Outlet />}>
+				<Route index element={<Projects />} />
+				<Route path={'create'} element={<CreateProject />} />
+				<Route path={':id'} element={<ProjectDashboard />} />
+				<Route path={':id/sessions'} element={<ProjectSessions />} />
+				<Route path={':id/datasets'} element={<Outlet />}>
+					<Route index element={<ProjectDatasets />} />
+					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
-				
-			</Route>
-			<Route path={'collaborative'} element={<Outlet />}>
-				<Route index element={<CollaborativeSessions />} />
-				<Route path={'sessions'} element={<CollaborativeSessions />} />
-				<Route path={'data'} element={<CollaborativeData />} />
-				<Route path={'workflows'} element={<CollaborativeWorkflows />} />
-			</Route>
-			<Route path={'public'} element={<Outlet />}>
-				<Route index element={<PublicSessions />} />
-				<Route path={'sessions'} element={<PublicSessions />} />
-				<Route path={'data'} element={<Route />} />
-				<Route path={'workflows'} element={<PublicWorkflows />} />
 			</Route>
 			<Route
 				path='*'

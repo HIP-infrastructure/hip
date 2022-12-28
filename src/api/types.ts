@@ -71,7 +71,7 @@ export interface User {
 	groups?: string[]
 	enabled: boolean
 }
-export interface HIPGroup {
+export interface HIPCenter {
 	label: string
 	id: string
 	pi: string
@@ -86,6 +86,20 @@ export interface HIPGroup {
 	}
 	users?: User[]
 }
+
+
+export interface HIPProject {
+	label: string
+	id: string
+	pi: string
+	email: string
+	city: string
+	country: string
+	logo?: string
+	description?: string
+	users?: User[]
+}
+
 
 export interface Application {
 	name: string
