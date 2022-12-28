@@ -14,10 +14,8 @@ import {
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { fileContent as getFileContent } from '../../api/gatewayClientAPI'
-import { BIDSDataset } from '../../api/types'
+import { BIDSDataset, HIPProject } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
-import CSV2Table from '../UI/CSV2Table'
 import FileBrowser from '../UI/FileBrowser'
 import TitleBar from '../UI/titleBar'
 import DatasetDescription from '../BIDS/DatasetDescription'
@@ -27,6 +25,7 @@ import DatasetBrowser from '../UI/DatasetBrowser'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
+	const [project, setProject] = useState<HIPProject>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
 	const [selectedFile, setSelectedFile] = useState<string>()
 	const [path, setPath] = useState<string>()
@@ -35,7 +34,13 @@ const Dataset = () => {
 	const navigate = useNavigate()
 	const {
 		BIDSDatasets: [datasets],
+		hIPProjects: [projects],
 	} = useAppStore()
+
+	useEffect(() => {
+		const project = projects?.find(project => project.id === params?.id)
+		setProject(project)
+	}, [projects, setProject, params])
 
 	useEffect(() => {
 		if (dataset) return
@@ -43,58 +48,6 @@ const Dataset = () => {
 		const ds = datasets?.data?.find(dataset => dataset.id === params.datasetId)
 		setDataset(ds)
 	}, [dataset, datasets, params])
-
-	useEffect(() => {
-		if (!selectedFile) return
-		if (/\.png|\.jpg|\.eeg|\.gz|\.zip|\.xdf/.test(selectedFile)) {
-			setFileContent(
-				<Box>
-					<Typography>No visualization available yet</Typography>
-					<Link
-						target='_blank'
-						href={`${window.location.protocol}//${
-							window.location.host
-						}/apps/files/?dir=${selectedFile
-							.split('/')
-							.slice(0, -1)
-							.join('/')}`}
-					>
-						View file in NextCloud
-					</Link>
-				</Box>
-			)
-
-			return
-		}
-
-		getFileContent(selectedFile).then(data => {
-			if (selectedFile.endsWith('.md')) {
-				setFileContent(
-					<div dangerouslySetInnerHTML={{ __html: data }} /> // marked(data) }} />
-				)
-			} else if (selectedFile.endsWith('.json')) {
-				setFileContent(
-					<pre style={{ whiteSpace: 'pre-wrap' }}>
-						{JSON.stringify(JSON.parse(data), null, 2)}
-					</pre>
-				)
-			} else if (selectedFile.endsWith('.csv')) {
-				setFileContent(
-					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
-						{CSV2Table({ data })}
-					</Box>
-				)
-			} else if (selectedFile.endsWith('.tsv')) {
-				setFileContent(
-					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
-						{CSV2Table({ data, splitChar: '\t' })}
-					</Box>
-				)
-			} else {
-				setFileContent(<div>{data}</div>)
-			}
-		})
-	}, [selectedFile])
 
 	// FIXME: This is a temporary solution to get datasets path
 	useEffect(() => {
@@ -113,7 +66,7 @@ const Dataset = () => {
 
 	return (
 		<>
-			<TitleBar title='BIDS Dataset' />
+			<TitleBar title={`${project?.label} BIDS Dataset`} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box>
@@ -138,8 +91,7 @@ const Dataset = () => {
 					>
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
-						<Tab label='Upload' id={'tab-3'} />
-						{/* <Tab label='Add Participant' id={'tab-4'} /> */}
+						<Tab label='Transfer files' id={'tab-3'} />
 					</Tabs>
 
 					{tabIndex === 0 && (
@@ -195,17 +147,22 @@ const Dataset = () => {
 
 					{tabIndex === 1 && <Participants dataset={dataset} />}
 					{tabIndex === 2 && (
-						<Box>
-							<Typography>Transfer Files</Typography>
+						<Box sx={{ mt: 2 }}>
+							<Typography variant='h6'>Transfer Files</Typography>
 							<Box
 								sx={{
-									width: '960px',
 									display: 'flex',
-									justifyContent: 'space-between',
-									alignItems: 'start',
+									flexWrap: 'wrap',
+									gap: '16px 16px',
+									mt: 2,
 								}}
 							>
-								<DatasetBrowser />
+								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+									<Typography gutterBottom variant='h6' component='div'>
+										My Datasets
+									</Typography>
+									<DatasetBrowser />
+								</Box>
 								<Button
 									sx={{ my: 0.5 }}
 									variant='outlined'
@@ -214,7 +171,22 @@ const Dataset = () => {
 								>
 									&gt;
 								</Button>
-								<DatasetBrowser path='/Marsden_Cross' />
+								<Box
+									elevation={2}
+									component={Paper}
+									sx={{
+										overflow: 'auto',
+										p: 2,
+										flex: '1 1',
+									}}
+								>
+									<Box>
+										<Typography gutterBottom variant='h6' component='div'>
+											{dataset?.Name}
+										</Typography>
+										<FileBrowser path={dataset?.Path} />
+									</Box>
+								</Box>
 							</Box>
 						</Box>
 					)}

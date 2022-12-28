@@ -23,6 +23,7 @@ import ProjectDashboard from './components/Project/Dashboard'
 import ProjectSessions from './components/Project/Sessions'
 import DataBrowser from './components/Data'
 import CreateProject from './components/Project/Create'
+import ProjectData from './components/Project/Data'
 export interface Space {
 	label: string
 	route: string
@@ -115,6 +116,7 @@ const App = () => (
 					<Route index element={<ProjectDatasets />} />
 					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
+				<Route path={':id/data'} element={<ProjectData />} />
 			</Route>
 			<Route
 				path='*'

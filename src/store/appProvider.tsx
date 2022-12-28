@@ -5,7 +5,7 @@ import {
 	refreshBidsDatasetsIndex,
 	queryBidsDatasets
 } from '../api/bids'
-import { getProjects } from '../api/project'
+import { getProjects } from '../api/projects'
 import {
 	getAvailableAppList,
 	getCenters,

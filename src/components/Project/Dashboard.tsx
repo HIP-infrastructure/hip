@@ -1,9 +1,9 @@
-import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
 import * as React from 'react'
 
 const ProjectDashboard = () => (
 	<Box>
-		<Box sx={{ display: 'flex', justifyContent: 'start', gap: '16px 16px'}}>
+		<Box sx={{ display: 'flex', justifyContent: 'start', gap: '16px 16px' }}>
 			<Card
 				sx={{
 					width: 320,
@@ -24,6 +24,12 @@ const ProjectDashboard = () => (
 						Members
 					</Typography>
 				</CardContent>
+				<CardActions sx={{ p: 2 }}>
+					<Button	variant='outlined'
+					>
+						Add Member
+					</Button>
+				</CardActions>
 			</Card>
 
 			<Card

@@ -4,8 +4,9 @@ import { alpha, styled } from '@mui/material/styles'
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { getFiles2, getGroupFolders, search } from '../../api/gatewayClientAPI'
-import { File2, ISearch } from '../../api/types'
+import { queryBidsDatasetsMockup } from '../../api/bids'
+import { getFiles2 } from '../../api/gatewayClientAPI'
+import { BIDSDataset, File2 } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
 
 const MinusSquare = (props: SvgIconProps) => (
@@ -25,13 +26,15 @@ const PlusSquare = (props: SvgIconProps) => (
 const DocumentSquare = (props: SvgIconProps) => (
 	<SvgIcon fontSize='inherit' style={{ width: 14, height: 14 }} {...props}>
 		{/* tslint:disable-next-line: max-line-length */}
-		<path d='M35,31.75v-25c0-2.761-2.238-5-5-5H5c-2.762,0-5,2.239-5,5v25c0,2.761,2.238,5,5,5h25C32.762,36.75,35,34.511,35,31.75z
+		<path
+			d='M35,31.75v-25c0-2.761-2.238-5-5-5H5c-2.762,0-5,2.239-5,5v25c0,2.761,2.238,5,5,5h25C32.762,36.75,35,34.511,35,31.75z
 		 M7.25,8h10.038c0.828,0,1.5,0.671,1.5,1.5s-0.672,1.5-1.5,1.5H7.25c-0.828,0-1.5-0.671-1.5-1.5S6.422,8,7.25,8z M7.25,14.5h10
 		c0.828,0,1.5,0.671,1.5,1.5s-0.672,1.5-1.5,1.5h-10c-0.828,0-1.5-0.671-1.5-1.5S6.422,14.5,7.25,14.5z M27.75,30.5H7.25
 		c-0.828,0-1.5-0.671-1.5-1.5s0.672-1.5,1.5-1.5h20.5c0.828,0,1.5,0.671,1.5,1.5S28.578,30.5,27.75,30.5z M27.75,24H7.25
 		c-0.828,0-1.5-0.671-1.5-1.5S6.422,21,7.25,21h20.5c0.828,0,1.5,0.671,1.5,1.5S28.578,24,27.75,24z M38.5,10.214v22.113
 		c0,2.442-1.979,4.423-4.423,4.423h-2.493c2.762,0,5-2.239,5-5v-25c0-0.065-0.018-0.126-0.02-0.191
-		C37.732,7.355,38.5,8.694,38.5,10.214z' />
+		C37.732,7.355,38.5,8.694,38.5,10.214z'
+		/>
 	</SvgIcon>
 )
 
@@ -52,102 +55,50 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 
 const DatasetBrowser = ({
 	path,
-	showGroups,
-	showSearch,
 	selectedFile,
 }: {
 	path?: string
-	showGroups?: boolean
-	showSearch?: boolean
 	selectedFile?: (path: string) => void
 }) => {
-	const rootFile = {
-		name: 'root',
-		isDirectory: true,
-		path: path || '/',
-		parentPath: 'root',
-	}
-
 	const {
 		user: [user],
 	} = useAppStore()
 
-	const [files, setFiles] = useState<File2[]>([rootFile])
-	const [groups, setGroups] = useState<string[] | null>(null)
-	const [expanded, setExpanded] = useState([rootFile.path])
-	const [term, setTerm] = useState('')
-	const [filesCache, setFilesCache] = useState<File2[]>([])
+	const [datasets, setDatasets] = useState<
+		{ data?: BIDSDataset[]; error?: string } | undefined
+	>()
+	const [files, setFiles] = useState<File2[]>([])
+	const [expanded, setExpanded] = useState<string[]>([])
 
 	useEffect(() => {
+		queryBidsDatasetsMockup(user?.uid)
+			.then(data => {
+				setDatasets({ data })
+			})
+			.catch(error => {
+				setDatasets({ error })
+			})
+	}, [user, setDatasets])
+
+	useEffect(() => {
+		if (datasets?.data) {
+			const nextFiles = datasets.data.map((d: BIDSDataset) => ({
+				name: d.Name,
+				isDirectory: true,
+				path: d.Path || '/',
+				parentPath: 'root',
+			}))
+			setFiles(nextFiles)
+		}
+	}, [datasets])
+
+	useEffect(() => {
+		if (!path) return
 		getFiles2(path || '/').then(data => {
 			const r = sortFile(data)
 			setFiles(r)
-			setFilesCache(r)
 		})
 	}, [path])
-
-	useEffect(() => {
-		if (!showGroups && groups) return
-
-		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroups(groupFolders?.map(g => g.label))
-		})
-	}, [showGroups, user, setGroups])
-
-	useEffect(() => {
-		setFiles(files =>
-			sortFile([
-				...files,
-				...(groups?.map(name => ({
-					name,
-					isDirectory: true,
-					path: `/groupfolder/${name}`,
-					parentPath: '/',
-				})) || []),
-			])
-		)
-	}, [groups])
-
-	useEffect(() => {
-		if (term.length > 1) {
-			search(term).then((result: ISearch) => {
-				const nextFiles: File2[] = result.entries.map(file => ({
-					name: file.title,
-					isDirectory: false,
-					path: file.attributes.path,
-					parentPath: file.attributes.path.split('/').slice(0, -1).join('/'),
-				}))
-
-				const tf = new Set<string>()
-				const parentPathes = new Set(nextFiles?.map(f => f.parentPath) || [])
-				Array.from(parentPathes).forEach(path => {
-					const parts = path?.split('/')
-					let p = ''
-					parts?.forEach(part => {
-						p += part
-						tf.add(p)
-						p += '/'
-					})
-				})
-				Array.from(tf).forEach((path: string) => {
-					if (path) {
-						const p = path.split('/').slice(0, -1).join('/')
-
-						nextFiles.push({
-							name: path.split('/').pop() || 'unknown',
-							isDirectory: true,
-							path: path === '' ? '/' : path,
-							parentPath: p === '' ? '/' : p,
-						})
-					}
-				})
-				setFiles(nextFiles)
-				setExpanded([...(nextFiles?.map(n => n.parentPath || '') || [])])
-			})
-		} else {
-			setFiles(filesCache)
-		}
-	}, [term, filesCache, setFiles])
 
 	const sortFile = (data: File2[]) =>
 		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
@@ -159,7 +110,11 @@ const DatasetBrowser = ({
 				<span>{file.name}</span>
 			)) || (
 				<Box
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+					}}
 					onClick={event => {
 						event.stopPropagation()
 						event.preventDefault()
@@ -176,7 +131,7 @@ const DatasetBrowser = ({
 					}}
 				>
 					<Box>{file.name}</Box>
-                    <Checkbox />
+					<Checkbox sx={{ p: 0, m: 0 }} />
 				</Box>
 			)
 		)
@@ -217,20 +172,9 @@ const DatasetBrowser = ({
 					sx={{ top: 10, left: 10 }}
 				/>
 			)}
-			{showSearch && (
-				<TextField
-					id='search-textfield'
-					sx={{ width: '100%', mb: 2 }}
-					onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
-						setTerm(e.target.value)
-					}
-					label='Search'
-					variant='outlined'
-				/>
-			)}
 			<TreeView
 				aria-label='file system navigator'
-				defaultExpanded={[rootFile.path]}
+				defaultExpanded={[]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
 				defaultEndIcon={<DocumentSquare />}
@@ -255,7 +199,7 @@ const DatasetBrowser = ({
 				}}
 			>
 				{files
-					.filter(f => f.parentPath === rootFile.path)
+					.filter(f => f.parentPath === 'root')
 					.map(file => (
 						<StyledTreeItem
 							key={file.path}
