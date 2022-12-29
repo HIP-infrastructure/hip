@@ -65,7 +65,7 @@ const Datasets = () => {
 			/>
 
 			<TitleBar
-				title={`${project?.label} BIDS Datasets`}
+				title={`${project?.name} BIDS Datasets`}
 				button={
 					<Box sx={{ display: 'flex' }}>
 						<Button

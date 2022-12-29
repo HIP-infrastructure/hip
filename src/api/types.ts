@@ -89,15 +89,12 @@ export interface HIPCenter {
 
 
 export interface HIPProject {
-	label: string
 	id: string
-	pi: string
-	email: string
-	city: string
-	country: string
-	logo?: string
+	name: string
 	description?: string
-	users?: User[]
+	logo: string
+	owner: string
+	members?: string[]
 }
 
 

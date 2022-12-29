@@ -18,7 +18,8 @@ const DataBrowser = () => {
 					target='_blank'
 					href={`${window.location.protocol}//${
 						window.location.host
-					}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`} rel="noreferrer"
+					}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`}
+					rel='noreferrer'
 				>
 					View file in NextCloud
 				</a>

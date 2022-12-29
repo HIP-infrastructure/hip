@@ -66,7 +66,7 @@ const Dataset = () => {
 
 	return (
 		<>
-			<TitleBar title={`${project?.label} BIDS Dataset`} />
+			<TitleBar title={`${project?.name} BIDS Dataset`} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box>
@@ -91,7 +91,7 @@ const Dataset = () => {
 					>
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
-						<Tab label='Transfer files' id={'tab-3'} />
+						<Tab label='Copy files' id={'tab-3'} />
 					</Tabs>
 
 					{tabIndex === 0 && (
@@ -148,7 +148,7 @@ const Dataset = () => {
 					{tabIndex === 1 && <Participants dataset={dataset} />}
 					{tabIndex === 2 && (
 						<Box sx={{ mt: 2 }}>
-							<Typography variant='h6'>Transfer Files</Typography>
+							<Typography variant='h6'>Copy Files</Typography>
 							<Box
 								sx={{
 									display: 'flex',

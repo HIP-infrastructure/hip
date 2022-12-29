@@ -30,15 +30,8 @@ import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
-
-const bull = (
-	<Box
-		component='span'
-		sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-	>
-		•
-	</Box>
-)
+import { getUserProjects } from '../api/projects'
+import { HIPProject } from '../api/types'
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -49,12 +42,19 @@ const Sidebar = () => {
 	const {
 		user: [user],
 		hIPCenters: [centers],
-		hIPProjects: [projects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
+	const [projects, setProjects] = React.useState<HIPProject[]>([])
+
+	React.useEffect(() => {
+		if (!user?.uid) return
+		getUserProjects(user?.uid).then(projects => {
+			setProjects(projects)
+		})
+	}, [user])
 
 	const handleClick = (projectId: string) => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
@@ -210,7 +210,7 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
-							<ListItemText primary={`${project.label}`} />
+							<ListItemText primary={`${project.name}`} />
 							{openProjects[project.id] ? <ExpandLess /> : <ExpandMore />}
 						</ListItemButton>
 						<Collapse
