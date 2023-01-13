@@ -20,7 +20,6 @@ import Sessions from './components/sessions'
 import Navigation from './components/Sidebar'
 import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
 import ProjectDashboard from './components/Project/Dashboard'
-import ProjectSessions from './components/Project/Sessions'
 import DataBrowser from './components/Data'
 import CreateProject from './components/Project/Create'
 import ProjectData from './components/Project/Data'
@@ -99,7 +98,7 @@ const App = () => (
 			<Route path={'private'} element={<DashboardOutlet />}>
 				<Route index element={<DashboardOutlet />} />
 				<Route path={':id'} element={<Dashboard />} />
-				<Route path={':id/sessions'} element={<Sessions />} />
+				<Route path={':id/sessions'} element={<Sessions domain={'center'}/>} />
 				<Route path={':id/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
@@ -111,7 +110,7 @@ const App = () => (
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':id'} element={<ProjectDashboard />} />
-				<Route path={':id/sessions'} element={<ProjectSessions />} />
+				<Route path={':id/sessions'} element={<Sessions domain={'collab'} />} />
 				<Route path={':id/datasets'} element={<Outlet />}>
 					<Route index element={<ProjectDatasets />} />
 					<Route path={':datasetId'} element={<ProjectDataset />} />

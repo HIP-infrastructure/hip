@@ -1,3 +1,5 @@
+export type Domain = 'center' | 'collab'
+
 export interface APIContainersResponse {
 	data?: Container[]
 	error?: string
@@ -12,6 +14,7 @@ export interface Container {
 	type: ContainerType
 	parentId?: string
 	apps?: AppContainer[]
+	domain?: Domain
 }
 
 export interface GroupFolder {
