@@ -17,7 +17,7 @@ export const DATA_TYPES = [
 
 export const MODALITIES: {
 	name: string
-	type: 'anat' | 'ieeg'
+	type: 'anat' | 'ieeg' | 'ct'
 }[] = [
 	{
 		name: 'T1w',
@@ -47,6 +47,10 @@ export const MODALITIES: {
 		name: 'photo',
 		type: 'ieeg',
 	},
+	{
+		name: 'ct',
+		type: 'ct',
+	},
 ]
 
 export const ENTITIES: IEntity[] = [
@@ -62,6 +66,10 @@ export const ENTITIES: IEntity[] = [
 			},
 			{
 				dataType: 'ieeg',
+				required: false,
+			},
+			{
+				dataType: 'ct',
 				required: false,
 			},
 		],
@@ -95,6 +103,10 @@ export const ENTITIES: IEntity[] = [
 				dataType: 'ieeg',
 				required: false,
 			},
+			{
+				dataType: 'ct',
+				required: false,
+			},
 		],
 		options: [],
 	},
@@ -108,6 +120,10 @@ export const ENTITIES: IEntity[] = [
 				dataType: 'anat',
 				required: false,
 			},
+			{
+				dataType: 'ct',
+				required: false,
+			},
 		],
 		options: [],
 	},
@@ -119,6 +135,10 @@ export const ENTITIES: IEntity[] = [
 		requirements: [
 			{
 				dataType: 'anat',
+				required: false,
+			},
+			{
+				dataType: 'ct',
 				required: false,
 			},
 		],

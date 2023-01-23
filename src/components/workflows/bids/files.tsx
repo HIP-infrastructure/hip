@@ -38,7 +38,7 @@ const Files = ({
 	const [currentBidsFile, setCurrentBidsFile] = useState<BIDSFile>()
 	const [modality, setModality] = useState<{
 		name: string
-		type: 'anat' | 'ieeg'
+		type: 'anat' | 'ieeg' | 'ct'
 	}>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const [selectedEntities, setSelectedEntities] =
