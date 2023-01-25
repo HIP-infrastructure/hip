@@ -86,8 +86,6 @@ const ProjectDashboard = () => {
 
 					<CardContent>
 						<Typography variant='h5'>Data</Typography>
-					</CardContent>
-					<CardActions sx={{ p: 2 }}>
 						{datasets?.data?.map(dataset => (
 							<Box key={dataset.id}>
 								<Typography>{dataset.Name}</Typography>
@@ -101,6 +99,9 @@ const ProjectDashboard = () => {
 								</Button>
 							</Box>
 						))}
+					</CardContent>
+					<CardActions sx={{ p: 2 }}>
+						
 					</CardActions>
 				</Card>
 			</Box>
