@@ -1,3 +1,5 @@
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material'
 import { BIDSDataset } from '../../api/types'
 import * as React from 'react'
@@ -78,6 +80,16 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 			<Typography variant='body2' color='text.secondary'>
 				Files: <strong>{dataset?.FileCount}</strong>
 			</Typography>
+		</Box>
+		<Box sx={{ display: 'flex', mt: 2, flexWrap: 'wrap', gap: '0px 8px' }}>
+			<Typography variant='body2' color='text.secondary'>
+				BIDS Validation:
+			</Typography>
+			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
+				{dataset?.BIDSValid ?
+					<CheckIcon sx={{ color: '#009900' }}></CheckIcon> :
+					<CloseIcon sx={{ color: '#cc0000' }}></CloseIcon>}
+			</Box>
 		</Box>
 	</>
 )
