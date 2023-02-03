@@ -41,7 +41,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [selectedParticipant, setSelectedParticipant] = useState<string>('')
 	const [selectedModality, setSelectedModality] = useState<{
 		name: string
-		type: 'anat' | 'ieeg'
+		type: 'anat' | 'ieeg' | 'ct'
 	}>({ name: 'T1w', type: 'anat' })
 	const [selectedEntities, setSelectedEntities] =
 		useState<Record<string, string>>()

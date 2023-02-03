@@ -209,6 +209,11 @@ export interface BIDSDataset {
 	EventsFileCount?: number
 	Size?: string
 	FileCount?: number
+	BIDSSchemaVersion?: string
+	BIDSErrors?: []
+	BIDSWarnings?: []
+	BIDSIgnored?: []
+	BIDSValid?: boolean
 }
 
 export type IOption = { label: string; inputValue?: string }
