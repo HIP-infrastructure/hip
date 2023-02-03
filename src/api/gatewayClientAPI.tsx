@@ -62,6 +62,15 @@ export const isLoggedIn = async () =>
 		.then(checkForError)
 		.catch(catchError)
 
+export const getUsers = async (): Promise<User[]> =>
+	fetch(`${API_GATEWAY}/users`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {

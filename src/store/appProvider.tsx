@@ -30,11 +30,11 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
-	hIPCenters: [
+	centers: [
 		HIPCenter[] | null,
 		React.Dispatch<React.SetStateAction<HIPCenter[] | null>>
 	]
-	hIPProjects: [
+	projects: [
 		HIPProject[] | null,
 		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
@@ -89,8 +89,8 @@ export const AppStoreProvider = ({
 		error?: string
 	}>()
 	const [user, setUser] = useState<UserCredentials | null>(null)
-	const [hIPCenters, setHIPCenters] = useState<HIPCenter[] | null>(null)
-	const [hIPProjects, setHIPProjects] = useState<HIPProject[] | null>(null)
+	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
+	const [projects, setProjects] = useState<HIPProject[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -122,13 +122,13 @@ export const AppStoreProvider = ({
 
 		getCenters().then(centers => {
 			if (centers) {
-				setHIPCenters(centers)
+				setCenters(centers)
 			}
 		})
 
 		getProjects().then(projects => {
 			if (projects) {
-				setHIPProjects(projects)
+				setProjects(projects)
 			}
 		})
 
@@ -137,10 +137,10 @@ export const AppStoreProvider = ({
 			.catch(error => setAvailableApps({ error }))
 		
 		//Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
+		// createBidsDatasetsIndex()
 
-		// // Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
+		// // // Perform a full index of the BIDS datasets
+		// refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
@@ -159,8 +159,8 @@ export const AppStoreProvider = ({
 		() => ({
 			debug: [debug, setDebug],
 			user: [user, setUser],
-			hIPCenters: [hIPCenters, setHIPCenters],
-			hIPProjects: [hIPProjects, setHIPProjects],
+			centers: [centers, setCenters],
+			projects: [projects, setProjects],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
@@ -173,10 +173,10 @@ export const AppStoreProvider = ({
 			setDebug,
 			user,
 			setUser,
-			hIPCenters,
-			setHIPCenters,
-			hIPProjects,
-			setHIPProjects,
+			centers,
+			setCenters,
+			projects,
+			setProjects,
 			containers,
 			setContainers,
 			availableApps,

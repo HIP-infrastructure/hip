@@ -28,10 +28,9 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { APP_MARGIN_TOP, ROUTE_PREFIX } from '../constants'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import { getUserProjects } from '../api/projects'
-import { HIPProject } from '../api/types'
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -41,13 +40,13 @@ const Sidebar = () => {
 
 	const {
 		user: [user],
-		hIPCenters: [centers],
+		centers: [centers],
+		projects: [projects, setProjects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
-	const [projects, setProjects] = React.useState<HIPProject[]>([])
 
 	React.useEffect(() => {
 		if (!user?.uid) return
@@ -75,21 +74,30 @@ const Sidebar = () => {
 	return (
 		<Drawer
 			variant='permanent'
+			anchor='left'
 			sx={{
 				'& .MuiDrawer-paper': {
 					boxSizing: 'border-box',
 					top: `${APP_MARGIN_TOP}px`,
+					width: `${DRAWER_WIDTH}px`,
 				},
 				'& .Mui-selected': {
 					color: 'white',
 					backgroundColor: '#37474f !important',
 				},
-				display: 'flex',
-				flexDirection: 'column',
-				flexFlow: 'row wrap',
-				justifyContent: 'start',
+				flexShrink: 0,
+				width: DRAWER_WIDTH,
 			}}
 		>
+			<List>
+				<ListItemButton onClick={() => handleClickNavigate('/private/centers')}>
+					<ListItemIcon>
+						<Apps />
+					</ListItemIcon>
+					<ListItemText primary='CENTERS' />
+				</ListItemButton>
+			</List>
+			<Divider />
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List
@@ -103,7 +111,7 @@ const Sidebar = () => {
 								}}
 							>
 								<ListSubheader id='center-subheader'>
-									{center.label} Center
+									My Center: {center.label}
 								</ListSubheader>
 								{userCenters ? (
 									<Avatar
@@ -165,11 +173,13 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/private/centers')}>
+				<ListItemButton
+					onClick={() => handleClickNavigate('/collaborative-projects')}
+				>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
-					<ListItemText primary='All Centers' />
+					<ListItemText primary='PROJECTS' />
 				</ListItemButton>
 			</List>
 			<Divider />
@@ -192,29 +202,20 @@ const Sidebar = () => {
 					</Box>
 				}
 			>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate(`/collaborative-projects/create`)}
-				>
-					<ListItemIcon>
-						<Create />
-					</ListItemIcon>
-					<ListItemText primary='Create new project' />
-				</ListItemButton>
 				{userProjects?.map(project => (
-					<Box key={project.id}>
+					<Box key={project.name}>
 						<ListItemButton
-							onClick={() => handleClick(project?.id)}
+							onClick={() => handleClick(project?.name)}
 							sx={{ pl: 4 }}
 						>
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
-							<ListItemText primary={`${project.name}`} />
-							{openProjects[project.id] ? <ExpandLess /> : <ExpandMore />}
+							<ListItemText primary={`${project.title}`} />
+							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
 						</ListItemButton>
 						<Collapse
-							in={openProjects[project.id]}
+							in={openProjects[project.name]}
 							timeout='auto'
 							unmountOnExit
 						>
@@ -222,7 +223,9 @@ const Sidebar = () => {
 								<ListItemButton
 									sx={{ pl: 8 }}
 									onClick={() =>
-										handleClickNavigate(`/collaborative-projects/${project.id}`)
+										handleClickNavigate(
+											`/collaborative-projects/${project.name}`
+										)
 									}
 								>
 									<ListItemIcon>
@@ -234,7 +237,7 @@ const Sidebar = () => {
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.id}/sessions`
+											`/collaborative-projects/${project.name}/sessions`
 										)
 									}
 								>
@@ -247,7 +250,7 @@ const Sidebar = () => {
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.id}/datasets/`
+											`/collaborative-projects/${project.name}/datasets/`
 										)
 									}
 								>
@@ -262,17 +265,7 @@ const Sidebar = () => {
 				))}
 			</List>
 			<Divider />
-			<List>
-				<ListItemButton
-					onClick={() => handleClickNavigate('/collaborative-projects')}
-				>
-					<ListItemIcon>
-						<Apps />
-					</ListItemIcon>
-					<ListItemText primary='All Projects' />
-				</ListItemButton>
-			</List>
-			<Divider />
+
 			<List
 				sx={{
 					marginTop: 'auto',

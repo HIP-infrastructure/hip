@@ -3,19 +3,19 @@ import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 import { BIDSDataset, File2, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
-	fetch(`${process.env.REACT_APP_GATEWAY_API}/projects`, {})
-		.then(checkForError)
-		.catch(catchError)
+	fetch(`${API_GATEWAY}/projects`, {}).then(checkForError).catch(catchError)
 
 export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
-	fetch(`${process.env.REACT_APP_GATEWAY_API}/projects?userId=${userId}`, {})
+	fetch(`${API_GATEWAY}/projects?userId=${userId}`, {})
 		.then(checkForError)
 		.catch(catchError)
 
-export const createProject = async (
-	project: HIPProject
-): Promise<HIPProject> => {
-	return fetch(`${process.env.REACT_APP_GATEWAY_API}/projects`, {
+export const createProject = async (project: {
+	admin: string
+	title: string
+	description: string
+}): Promise<any> => {
+	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -27,12 +27,17 @@ export const createProject = async (
 		.catch(catchError)
 }
 
-// addUserToProject
+export const getProject = async (name: string): Promise<HIPProject> => {
+	return fetch(`${API_GATEWAY}/projects/${name}`, {})
+		.then(checkForError)
+		.catch(catchError)
+}
+
 // removeUserFromProject
 export const updateProject = async (
 	project: HIPProject
 ): Promise<HIPProject> => {
-	return fetch(`${process.env.REACT_APP_GATEWAY_API}/projects`, {
+	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
@@ -42,6 +47,13 @@ export const updateProject = async (
 	})
 		.then(checkForError)
 		.catch(catchError)
+}
+
+export const addUserToProject = async (
+	name: string,
+	userId: string
+): Promise<any> => {
+	addUserToProject(userId, 'project?.name')
 }
 
 export const getProjectDatasets = async (

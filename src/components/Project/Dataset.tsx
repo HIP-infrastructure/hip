@@ -34,11 +34,11 @@ const Dataset = () => {
 	const navigate = useNavigate()
 	const {
 		BIDSDatasets: [datasets],
-		hIPProjects: [projects],
+		projects: [projects],
 	} = useAppStore()
 
 	useEffect(() => {
-		const project = projects?.find(project => project.id === params?.id)
+		const project = projects?.find(project => project.name === params?.id)
 		setProject(project)
 	}, [projects, setProject, params])
 

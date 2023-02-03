@@ -8,7 +8,7 @@ import {
 	YouTube,
 } from '@mui/icons-material'
 import {
-    Avatar,
+	Avatar,
 	Box,
 	Card,
 	CardContent,
@@ -76,16 +76,17 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 				<Card
 					sx={{
 						width: 280,
+						height: 440,
 					}}
 					key={`center-${group.label}`}
 				>
-					{/* <CardMedia
+					<CardMedia
 						component='img'
 						height='160'
 						src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
 						alt={group.label}
 						title={group.label}
-					/> */}
+					/>
 
 					<CardContent>
 						<Box

@@ -74,6 +74,7 @@ export interface User {
 	groups?: string[]
 	enabled: boolean
 }
+
 export interface HIPCenter {
 	label: string
 	id: string
@@ -92,11 +93,11 @@ export interface HIPCenter {
 
 
 export interface HIPProject {
-	id: string
 	name: string
+	title: string
 	description?: string
-	logo: string
-	owner: string
+	acceptMembershipRequest?: boolean
+	admins?: string[]
 	members?: string[]
 }
 

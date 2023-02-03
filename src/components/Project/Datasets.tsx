@@ -33,7 +33,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 const Datasets = () => {
 	const {
 		user: [user],
-		hIPProjects: [projects],
+		projects: [projects],
 	} = useAppStore()
 	const params = useParams()
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -52,7 +52,7 @@ const Datasets = () => {
 	}, [user?.uid])
 
 	useEffect(() => {
-		const project = projects?.find(project => project.id === params?.id)
+		const project = projects?.find(project => project.name === params?.id)
 		setProject(project)
 	}, [projects, setProject, params])
 
