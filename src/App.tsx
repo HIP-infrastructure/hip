@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
@@ -8,21 +8,22 @@ import Admin from './components/Admin'
 import Apps from './components/apps'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
-import ProjectDatasets from './components/Project/Datasets'
-import ProjectDataset from './components/Project/Dataset'
 import Centers from './components/Centers'
 import Dashboard from './components/Dashboard/Dashboard'
 import DashboardOutlet from './components/Dashboard/index'
+import DataBrowser from './components/Data'
 import Documentation from './components/documentation'
+import CreateProject from './components/Projects/Create'
+import ProjectDashboard from './components/Project/Dashboard'
+import ProjectData from './components/Project/Data'
+import ProjectDataset from './components/Project/Dataset'
+import ProjectDatasets from './components/Project/Datasets'
 import Projects from './components/Projects'
 import Session from './components/session'
 import Sessions from './components/sessions'
 import Navigation from './components/Sidebar'
-import { DRAWER_WIDTH, ROUTE_PREFIX } from './constants'
-import ProjectDashboard from './components/Project/Dashboard'
-import ProjectSessions from './components/Project/Sessions'
-import DataBrowser from './components/Data'
-import CreateProject from './components/Project/Create'
+import { ROUTE_PREFIX } from './constants'
+
 export interface Space {
 	label: string
 	route: string
@@ -38,55 +39,33 @@ const footerStyle = {
 	margin: 0,
 }
 
-const Layout = (): JSX.Element => {
-	// const [mobileOpen, setMobileOpen] = React.useState(false)
-	const theme = useTheme()
-	const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
-	// const [mobileOpen, setMobileOpen] = React.useState(false)
-
-	// const handleDrawerToggle = () => {
-	// 	setMobileOpen(!mobileOpen)
-	// }
-
-	return (
-		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
-			<CssBaseline />
-			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-				<Typography
-					sx={{
-						position: 'absolute',
-						top: '8px',
-						right: '200px',
-						color: '#FA6812',
-						zIndex: '10000',
-						transform: 'translateX(-50%)',
-					}}
-					variant='h6'
-				>
-					{process.env.REACT_APP_HOSTNAME}
-				</Typography>
-			)}
-			<Box
-				component='nav'
-				sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+const Layout = (): JSX.Element => (
+	<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
+		<CssBaseline />
+		{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
+			<Typography
+				sx={{
+					position: 'fixed',
+					top: '8px',
+					right: '200px',
+					color: '#FA6812',
+					zIndex: '10000',
+					transform: 'translateX(-50%)',
+				}}
+				variant='h6'
 			>
-				{isSmUp ? null : (
-					<Navigation
-					// open={mobileOpen}
-					// onClose={handleDrawerToggle}
-					/>
-				)}
-				<Navigation />
-			</Box>
-			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
-				<Outlet />
-			</Box>
-			<Box component='footer' sx={{ ...footerStyle }}>
-				<p>HIP {new Date().getFullYear()}</p>
-			</Box>
+				{process.env.REACT_APP_HOSTNAME}
+			</Typography>
+		)}
+		<Navigation />
+		<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
+			<Outlet />
 		</Box>
-	)
-}
+		<Box component='footer' sx={{ ...footerStyle }}>
+			<p>HIP {new Date().getFullYear()}</p>
+		</Box>
+	</Box>
+)
 
 const App = () => (
 	<Routes>
@@ -98,7 +77,7 @@ const App = () => (
 			<Route path={'private'} element={<DashboardOutlet />}>
 				<Route index element={<DashboardOutlet />} />
 				<Route path={':id'} element={<Dashboard />} />
-				<Route path={':id/sessions'} element={<Sessions />} />
+				<Route path={':id/sessions'} element={<Sessions domain={'center'} />} />
 				<Route path={':id/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
@@ -110,11 +89,12 @@ const App = () => (
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':id'} element={<ProjectDashboard />} />
-				<Route path={':id/sessions'} element={<ProjectSessions />} />
+				<Route path={':id/sessions'} element={<Sessions domain={'collab'} />} />
 				<Route path={':id/datasets'} element={<Outlet />}>
 					<Route index element={<ProjectDatasets />} />
 					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
+				<Route path={':id/data'} element={<ProjectData />} />
 			</Route>
 			<Route
 				path='*'

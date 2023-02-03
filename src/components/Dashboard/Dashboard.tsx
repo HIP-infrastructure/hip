@@ -23,7 +23,7 @@ const Dashboard = () => {
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
-		hIPCenters: [centers, setCenters],
+		centers: [centers, setCenters],
 		user: [user]
 	} = useAppStore()
 

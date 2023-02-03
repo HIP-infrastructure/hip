@@ -1,9 +1,10 @@
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Clear,
 	Pause,
 	PowerSettingsNew,
 	Replay,
-	Visibility,
+	Visibility
 } from '@mui/icons-material'
 import {
 	Alert,
@@ -20,7 +21,7 @@ import {
 	IconButton,
 	Switch,
 	Tooltip,
-	Typography,
+	Typography
 } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,13 +31,14 @@ import {
 	getContainers,
 	pauseAppsAndSession,
 	removeAppsAndSession,
-	resumeAppsAndSession,
+	resumeAppsAndSession
 } from '../api/gatewayClientAPI'
 import {
 	AppContainer,
 	Container,
 	ContainerState,
 	ContainerType,
+	Domain
 } from '../api/types'
 import { color, loading } from '../api/utils'
 import SessionImage from '../assets/session-thumbnail.png'
@@ -44,15 +46,16 @@ import { POLLING, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../store/appProvider'
 import Modal, { ModalComponentHandle } from './UI/Modal'
 import TitleBar from './UI/titleBar'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
-const Sessions = (): JSX.Element => {
+const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 	const {
 		user: [user],
-		containers: [containers, setContainers],
+		containers: [centerContainers, setCenterContainers],
 		debug: [debug, setDebug],
 	} = useAppStore()
 	const { trackEvent } = useMatomo()
+
+	const [containers, setContainers] = React.useState<{ data?: Container[]; error?: string }>()
 	const [showAdminView, setShowAdminView] = React.useState(
 		localStorage.getItem('admin-view') === 'true'
 	)
@@ -61,19 +64,29 @@ const Sessions = (): JSX.Element => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		if (domain === 'center' && centerContainers) setContainers(centerContainers)
+	}, [domain, centerContainers, setContainers])
+
+	useEffect(() => {
+		const getThemAll = () => user &&
+			getContainers(user, domain)
+				.then(data => {
+					if (domain === 'center') setCenterContainers({ data })
+					setContainers({ data })
+				})
+				.catch(error => {
+					setContainers(containers => ({
+						data: containers?.data,
+						error,
+					}))
+				})
+
+		getThemAll()
 		const interval = setInterval(() => {
-			user &&
-				getContainers(user)
-					.then(data => setContainers({ data }))
-					.catch(error => {
-						setContainers(containers => ({
-							data: containers?.data,
-							error,
-						}))
-					})
+			getThemAll()
 		}, POLLING * 1000)
 		return () => clearInterval(interval)
-	}, [setContainers, user])
+	}, [domain, setCenterContainers, setContainers, user])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
@@ -109,7 +122,7 @@ const Sessions = (): JSX.Element => {
 	}
 
 	const createNewSession = async () => {
-		createSession(user?.uid || '')
+		createSession(user?.uid || '', domain)
 			.then(data => setContainers(c => ({ data: [...(c?.data || []), data] })))
 			.catch(error =>
 				setContainers(containers => ({
@@ -135,7 +148,7 @@ const Sessions = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={'My Desktops'}
+				title={`${domain === 'center' ? 'My Desktops' : domain + ' Desktops'} `}
 				description={
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}

@@ -22,9 +22,8 @@ import {
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
 import { useNavigate, useParams } from 'react-router-dom'
-import { createApp, getContainers, stopApp } from '../api/gatewayClientAPI'
+import { createApp, getContainer, getContainers, stopApp } from '../api/gatewayClientAPI'
 import {
-	AppContainer,
 	Application,
 	Container,
 	ContainerType,
@@ -46,17 +45,21 @@ interface AppBarProps extends MuiAppBarProps {
 
 const Session = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
+	const params = useParams()
 
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
-		containers: [containers, setContainers],
+		// containers: [containers, setContainers],
 		user: [user],
 	} = useAppStore()
 
-	const params = useParams()
 	const theme = useTheme()
 	const navigate = useNavigate()
 
+	const [containers, setContainers] = React.useState<{
+		data?: Container[]
+		error?: string
+	}>({})
 	const [session, setSession] = useState<Container>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true)
@@ -78,13 +81,13 @@ const Session = (): JSX.Element => {
 	// Polling for containers state
 	useEffect(() => {
 		const interval = setInterval(() => {
-			user &&
-				getContainers(user)
+			user && session?.domain &&
+				getContainers(user, session.domain)
 					.then(data => setContainers({ data }))
 					.catch(error => setContainers({ error }))
 		}, POLLING * 1000)
 		return () => clearInterval(interval)
-	}, [setContainers, user])
+	}, [setContainers, user, session])
 
 	// Check for XPra readiness
 	useEffect(() => {
@@ -110,18 +113,29 @@ const Session = (): JSX.Element => {
 	}, [session, sessionIsAlive])
 
 	// get session and its children apps from params
+	// useEffect(() => {
+	// 	const s = containers?.data?.find(c => c.id === params.id)
+	// 	if (s) {
+	// 		s.apps = containers?.data?.filter(
+	// 			c => c.parentId === s.id
+	// 		) as AppContainer[]
+	// 		const pathId = s?.url.split('/').slice(-2, -1) || ''
+	// 		const path = encodeURIComponent(`/session/${pathId}/`)
+	// 		const url = `${s.url}?path=${path}`
+	// 		setSession({ ...s, url })
+	// 	}
+	// }, [params, session, setContainers])
+
 	useEffect(() => {
-		const s = containers?.data?.find(c => c.id === params.id)
-		if (s) {
-			s.apps = containers?.data?.filter(
-				c => c.parentId === s.id
-			) as AppContainer[]
-			const pathId = s?.url.split('/').slice(-2, -1) || ''
+		if (!params.id) return
+
+		getContainer(params.id).then(data => {
+			const pathId = data?.url.split('/').slice(-2, -1) || ''
 			const path = encodeURIComponent(`/session/${pathId}/`)
-			const url = `${s.url}?path=${path}`
-			setSession({ ...s, url })
-		}
-	}, [params, setSession, containers])
+			const url = `${data.url}?path=${path}`
+			setSession({ ...data, url })
+		})
+	}, [setSession, params])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -178,7 +192,7 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleBackLocation = () => {
-		navigate(`${ROUTE_PREFIX}/private/default/sessions/`)
+		navigate(-1)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {

@@ -62,6 +62,15 @@ export const isLoggedIn = async () =>
 		.then(checkForError)
 		.catch(catchError)
 
+export const getUsers = async (): Promise<User[]> =>
+	fetch(`${API_GATEWAY}/users`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
 export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
@@ -83,7 +92,7 @@ export const getGroupFolders = async (
 		.catch(catchError)
 
 export const getCenters = async (): Promise<HIPCenter[]> =>
-	fetch(`${process.env.REACT_APP_GATEWAY_API}/public/data/centers.json`, {})
+	fetch(`${API_GATEWAY}/public/data/centers.json`, {})
 		.then(checkForError)
 		.catch(catchError)
 
@@ -156,16 +165,17 @@ export const fileContent = async (path: string) =>
 
 // Remote App API
 
-export const getAvailableAppList = (): Promise<Application[]> =>
-	fetch(`${API_REMOTE_APP}/apps`).then(checkForError)
+export const getAvailableAppList = (domain = 'center'): Promise<Application[]> =>
+	fetch(`${API_REMOTE_APP}/apps?domain=${domain}`).then(checkForError)
 
 export const getContainers = (
-	currentUser: UserCredentials
+	currentUser: UserCredentials,
+	domain = 'center'
 ): Promise<Container[]> => {
 	const url = currentUser.isAdmin
 		? `${API_REMOTE_APP}/admin/containers`
 		: API_CONTAINERS
-	const userUrl = `${url}?userId=${currentUser.uid}`
+	const userUrl = `${url}?userId=${currentUser.uid}&domain=${domain}`
 	return fetch(userUrl, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -175,9 +185,23 @@ export const getContainers = (
 		.catch(catchError)
 }
 
-export const createSession = (userId: string): Promise<Container> => {
+export const getContainer = (
+	id: string
+): Promise<Container> => {
+
+	const userUrl = `${API_CONTAINERS}/${id}`
+	return fetch(userUrl, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const createSession = (userId: string, domain = 'center'): Promise<Container> => {
 	const sessionId = uniq('session')
-	return fetch(API_CONTAINERS, {
+	return fetch(`${API_CONTAINERS}?domain=${domain}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

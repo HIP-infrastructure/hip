@@ -1,3 +1,5 @@
+export type Domain = 'center' | 'collab'
+
 export interface APIContainersResponse {
 	data?: Container[]
 	error?: string
@@ -12,6 +14,7 @@ export interface Container {
 	type: ContainerType
 	parentId?: string
 	apps?: AppContainer[]
+	domain?: Domain
 }
 
 export interface GroupFolder {
@@ -71,6 +74,7 @@ export interface User {
 	groups?: string[]
 	enabled: boolean
 }
+
 export interface HIPCenter {
 	label: string
 	id: string
@@ -89,15 +93,12 @@ export interface HIPCenter {
 
 
 export interface HIPProject {
-	label: string
-	id: string
-	pi: string
-	email: string
-	city: string
-	country: string
-	logo?: string
+	name: string
+	title: string
 	description?: string
-	users?: User[]
+	acceptMembershipRequest?: boolean
+	admins?: string[]
+	members?: string[]
 }
 
 
