@@ -26,7 +26,7 @@ const Projects = () => {
 						<Button
 							variant='contained'
 							color='primary'
-							onClick={() => navigate(`${ROUTE_PREFIX}/collaborative-projects/create`)}
+							onClick={() => navigate(`${ROUTE_PREFIX}/collaborative/create`)}
 						>
 							Create Project
 						</Button>

@@ -85,7 +85,7 @@ const App = () => (
 				<Route path={':id/data'} element={<DataBrowser />} />
 				<Route path={'centers'} element={<Centers />} />
 			</Route>
-			<Route path={'collaborative-projects'} element={<Outlet />}>
+			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':id'} element={<ProjectDashboard />} />

@@ -133,7 +133,7 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Dashboard />
 							</ListItemIcon>
-							<ListItemText primary='Dashboard' />
+							<ListItemText primary='Private Space' />
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
@@ -174,7 +174,7 @@ const Sidebar = () => {
 			))}
 			<List>
 				<ListItemButton
-					onClick={() => handleClickNavigate('/collaborative-projects')}
+					onClick={() => handleClickNavigate('/collaborative')}
 				>
 					<ListItemIcon>
 						<Apps />
@@ -224,20 +224,20 @@ const Sidebar = () => {
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}`
+											`/collaborative/${project.name}`
 										)
 									}
 								>
 									<ListItemIcon>
 										<Dashboard />
 									</ListItemIcon>
-									<ListItemText primary='Dashboard' />
+									<ListItemText primary='Collaborative Space' />
 								</ListItemButton>
 								<ListItemButton
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/sessions`
+											`/collaborative/${project.name}/sessions`
 										)
 									}
 								>
@@ -250,7 +250,7 @@ const Sidebar = () => {
 									sx={{ pl: 8 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/datasets/`
+											`/collaborative/${project.name}/datasets/`
 										)
 									}
 								>
