@@ -112,24 +112,10 @@ const Session = (): JSX.Element => {
 		}, 1000)
 	}, [session, sessionIsAlive])
 
-	// get session and its children apps from params
-	// useEffect(() => {
-	// 	const s = containers?.data?.find(c => c.id === params.id)
-	// 	if (s) {
-	// 		s.apps = containers?.data?.filter(
-	// 			c => c.parentId === s.id
-	// 		) as AppContainer[]
-	// 		const pathId = s?.url.split('/').slice(-2, -1) || ''
-	// 		const path = encodeURIComponent(`/session/${pathId}/`)
-	// 		const url = `${s.url}?path=${path}`
-	// 		setSession({ ...s, url })
-	// 	}
-	// }, [params, session, setContainers])
-
 	useEffect(() => {
-		if (!params.id) return
+		if (!params.centerId) return
 
-		getContainer(params.id).then(data => {
+		getContainer(params.centerId).then(data => {
 			const pathId = data?.url.split('/').slice(-2, -1) || ''
 			const path = encodeURIComponent(`/session/${pathId}/`)
 			const url = `${data.url}?path=${path}`

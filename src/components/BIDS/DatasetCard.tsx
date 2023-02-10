@@ -43,7 +43,7 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 				<CardActions sx={{ p: 2 }}>
 					<NavLink
 						style={linkStyle}
-						to={`${ROUTE_PREFIX}/private/${params.id}/datasets/${dataset?.id}`}
+						to={`${ROUTE_PREFIX}/private/${params.centerId}/datasets/${dataset?.id}`}
 					>
 						View
 					</NavLink>

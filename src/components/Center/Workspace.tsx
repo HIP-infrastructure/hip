@@ -4,7 +4,9 @@ import {
 	Box,
 	Card,
 	CardContent,
-	CardMedia, Link, Typography
+	CardMedia,
+	Link,
+	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -13,79 +15,67 @@ import { ContainerType, HIPCenter } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
-import Data from './Data'
-import MainCard from './MainCard'
-import Members from './Members'
-import Tools from './Tools'
+import Data from '../Dashboard/Data'
+import MainCard from '../Dashboard/MainCard'
+import Members from '../Dashboard/Members'
+import Tools from '../Dashboard/Tools'
 import { linkStyle } from '../../constants'
 
-const Dashboard = () => {
+const Workspace = () => {
+	const params = useParams()
+	const { showNotif } = useNotification()
+	// const { trackEvent } = useMatomo()
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
 		centers: [centers, setCenters],
-		user: [user]
+		user: [user],
 	} = useAppStore()
 
-	const { showNotif } = useNotification()
-	const [id, setId] = useState<string | undefined>()
-	const [group, setGroup] = useState<HIPCenter | undefined | null>()
-
-	// const { trackEvent } = useMatomo()
-	const { id: incomingId } = useParams()
+	const [center, setCenter] = useState<HIPCenter | undefined>()
 
 	useEffect(() => {
-		if (!incomingId || incomingId === 'default' || incomingId === id) return
-		setId(incomingId)
-	}, [incomingId, id, setId])
-
-	useEffect(() => {
-		if (!id || !centers) return
+		if (!params.centerId) return
 
 		const center = centers
-			?.filter(group => group.id === id)
+			?.filter(c => c.id === params.centerId)
 			?.find((_, i) => i === 0)
 
-		if (!center) {
-			setGroup(null)
-			return
-		}
-
-		setGroup(center)
-	}, [id, centers, setGroup, showNotif])
+		setCenter(center)
+	}, [])
 
 	useEffect(() => {
-		if (!id || !centers || !group) return
-
-		const center = centers
-			?.filter(group => group.id === id)
-			?.find((_, i) => i === 0)
-
 		if (!center?.users) {
-			getUsersForGroup(group.id)
+			if (!center?.id) return
+			getUsersForGroup(center.id)
 				.then(users => {
-					setCenters(groups =>
-						(groups || []).map(g =>
-							g.id === group.id ? { ...group, users } : g
+					setCenters(centers =>
+						(centers || []).map(c =>
+							c.id === center?.id ? { ...center, users } : c
 						)
 					)
+					const center = centers
+						?.filter(c => c.id === params.centerId)
+						?.find((_, i) => i === 0)
+
+					setCenter(center)
 				})
 				.catch(err => {
 					showNotif(err.message, 'error')
 				})
 		}
-	}, [id, centers, group, setCenters, showNotif])
+	}, [center, setCenters, showNotif])
 
 	const sessions = containers?.data?.filter(
 		c => c.type === ContainerType.SESSION
 	)
-	const isMember = group && user?.groups?.includes(group?.id)
+	const isMember = center && user?.groups?.includes(center?.id)
 
 	return (
 		<>
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
-					title={`${group?.label || ''} Private Space`}
+					title={`${center?.label || ''} Private Workspace`}
 					description={''}
 				/>
 			</Box>
@@ -95,7 +85,7 @@ const Dashboard = () => {
 				</Typography>
 			)}
 
-			{centers && group === null && (
+			{centers && center === null && (
 				<Box>
 					<Card
 						sx={{
@@ -146,7 +136,7 @@ const Dashboard = () => {
 					}}
 				>
 					<Box sx={{ gridColumn: '1', gridRow: '1' }}>
-						{group && <MainCard group={group} />}
+						{center && <MainCard group={center} />}
 					</Box>
 					{isMember && (
 						<>
@@ -157,14 +147,14 @@ const Dashboard = () => {
 								<Tools />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-								{group && <Members group={group} users={group?.users} />}
+								{center && <Members group={center} users={center?.users} />}
 							</Box>
 						</>
 					)}
 					{!isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
-								{group && <Members group={group} users={group?.users} />}
+								{center && <Members group={center} users={center?.users} />}
 							</Box>
 						</>
 					)}
@@ -174,4 +164,4 @@ const Dashboard = () => {
 	)
 }
 
-export default Dashboard
+export default Workspace

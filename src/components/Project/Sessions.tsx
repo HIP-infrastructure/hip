@@ -32,46 +32,60 @@ import {
 	pauseAppsAndSession,
 	removeAppsAndSession,
 	resumeAppsAndSession
-} from '../api/gatewayClientAPI'
+} from '../../api/gatewayClientAPI'
 import {
 	AppContainer,
 	Container,
 	ContainerState,
 	ContainerType,
-	Domain
-} from '../api/types'
-import { color, loading } from '../api/utils'
-import SessionImage from '../assets/session-thumbnail.png'
-import { POLLING, ROUTE_PREFIX } from '../constants'
-import { useAppStore } from '../store/appProvider'
-import Modal, { ModalComponentHandle } from './UI/Modal'
-import TitleBar from './UI/titleBar'
+	Domain,
+	HIPProject
+} from '../../api/types'
+import { color, loading } from '../../api/utils'
+import SessionImage from '../../assets/session-thumbnail.png'
+import { POLLING, ROUTE_PREFIX } from '../../constants'
+import { useAppStore } from '../../store/appProvider'
+import Modal, { ModalComponentHandle } from '../UI/Modal'
+import TitleBar from '../UI/titleBar'
+import {
+	addUserToProject,
+	getProject,
+	getProjectDatasets,
+	getUserProjects,
+} from '../../api/projects'
 
-const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
+const Sessions = (): JSX.Element => {
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const navigate = useNavigate()
 	const params = useParams()
 	const { trackEvent } = useMatomo()
 	const {
 		user: [user],
-		containers: [centerContainers, setCenterContainers],
 		debug: [debug, setDebug],
-	} = useAppStore()
+		userProjects: [userProjects, setUserProjects],
 
+	} = useAppStore()
+	const [project, setProject] = React.useState<HIPProject>()
 	const [containers, setContainers] = React.useState<{ data?: Container[]; error?: string }>()
 	const [showAdminView, setShowAdminView] = React.useState(
 		localStorage.getItem('admin-view') === 'true'
 	)
 
 	useEffect(() => {
-		if (domain === 'center' && centerContainers) setContainers(centerContainers)
-	}, [domain, centerContainers, setContainers])
+		const p = userProjects?.find(p => p.name === params?.projectId)
+		setProject(p)
+
+		if (params.projectId)
+			getProject(params.projectId).then(project => {
+				setProject(project)
+			})
+
+	}, [params]) 
 
 	useEffect(() => {
 		const getThemAll = () => user &&
-			getContainers(user, domain)
+			getContainers(user, 'project')
 				.then(data => {
-					if (domain === 'center') setCenterContainers({ data })
 					setContainers({ data })
 				})
 				.catch(error => {
@@ -86,7 +100,7 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 			getThemAll()
 		}, POLLING * 1000)
 		return () => clearInterval(interval)
-	}, [domain, setCenterContainers, setContainers, user])
+	}, [ setContainers, user])
 
 	const handleOpenSession = (sessionId: string) => {
 		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
@@ -122,7 +136,7 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 	}
 
 	const createNewSession = async () => {
-		createSession(user?.uid || '', domain)
+		createSession(user?.uid || '', 'project')
 			.then(data => setContainers(c => ({ data: [...(c?.data || []), data] })))
 			.catch(error =>
 				setContainers(containers => ({
@@ -148,7 +162,7 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={`${domain === 'center' ? 'My Desktops' : 'Collaborative Desktops'} `}
+				title={`${project?.title} Collaborative Desktops`}
 				description={
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}

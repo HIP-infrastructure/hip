@@ -62,11 +62,11 @@ const ProjectDashboard = () => {
 	useEffect(() => {
 		getUsers().then(users => setUsers(users))
 
-		const project = projects?.find(project => project.name === params?.id)
+		const project = projects?.find(project => project.name === params?.projectId)
 		setProject(project)
 
-		if (params.id)
-			getProject(params.id).then(project => {
+		if (params.projectId)
+			getProject(params.projectId).then(project => {
 				setProject(project)
 			})
 	}, [projects, setProject, params, setUsers, getUsers])

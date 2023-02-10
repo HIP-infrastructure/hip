@@ -9,18 +9,18 @@ import Apps from './components/apps'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
-import Dashboard from './components/Dashboard/Dashboard'
-import DashboardOutlet from './components/Dashboard/index'
+import PrivateWorkspace from './components/Center/Workspace'
 import DataBrowser from './components/Data'
 import Documentation from './components/documentation'
 import CreateProject from './components/Projects/Create'
-import ProjectDashboard from './components/Project/Dashboard'
+import ProjectDashboard from './components/Project/Workspace'
 import ProjectData from './components/Project/Data'
 import ProjectDataset from './components/Project/Dataset'
 import ProjectDatasets from './components/Project/Datasets'
 import Projects from './components/Projects'
 import Session from './components/session'
 import Sessions from './components/sessions'
+import ProjectSessions from './components/Project/Sessions'
 import Navigation from './components/Sidebar'
 import { ROUTE_PREFIX } from './constants'
 
@@ -76,24 +76,24 @@ const App = () => (
 			<Route path={'admin'} element={<Admin />} />
 			<Route path={'private'} element={<Outlet />}>
 				<Route index element={<Centers />} />
-				<Route path={':id'} element={<Dashboard />} />
-				<Route path={':id/sessions'} element={<Sessions domain={'center'} />} />
-				<Route path={':id/datasets'} element={<Outlet />}>
+				<Route path={':centerId'} element={<PrivateWorkspace />} />
+				<Route path={':centerId/sessions'} element={<Sessions domain={'center'} />} />
+				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-				<Route path={':id/data'} element={<DataBrowser />} />
+				<Route path={':centerId/data'} element={<DataBrowser />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
-				<Route path={':id'} element={<ProjectDashboard />} />
-				<Route path={':id/sessions'} element={<Sessions domain={'collab'} />} />
-				<Route path={':id/datasets'} element={<Outlet />}>
+				<Route path={':projectId'} element={<ProjectDashboard />} />
+				<Route path={':projectId/sessions'} element={<ProjectSessions />} />
+				<Route path={':projectId/datasets'} element={<Outlet />}>
 					<Route index element={<ProjectDatasets />} />
 					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
-				<Route path={':id/data'} element={<ProjectData />} />
+				<Route path={':projectId/data'} element={<ProjectData />} />
 			</Route>
 			<Route
 				path='*'

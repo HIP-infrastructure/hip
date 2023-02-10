@@ -165,7 +165,9 @@ export const fileContent = async (path: string) =>
 
 // Remote App API
 
-export const getAvailableAppList = (domain = 'center'): Promise<Application[]> =>
+export const getAvailableAppList = (
+	domain = 'center'
+): Promise<Application[]> =>
 	fetch(`${API_REMOTE_APP}/apps?domain=${domain}`).then(checkForError)
 
 export const getContainers = (
@@ -185,10 +187,7 @@ export const getContainers = (
 		.catch(catchError)
 }
 
-export const getContainer = (
-	id: string
-): Promise<Container> => {
-
+export const getContainer = (id: string): Promise<Container> => {
 	const userUrl = `${API_CONTAINERS}/${id}`
 	return fetch(userUrl, {
 		headers: {
@@ -199,7 +198,10 @@ export const getContainer = (
 		.catch(catchError)
 }
 
-export const createSession = (userId: string, domain = 'center'): Promise<Container> => {
+export const createSession = (
+	userId: string,
+	domain = 'center'
+): Promise<Container> => {
 	const sessionId = uniq('session')
 	return fetch(`${API_CONTAINERS}?domain=${domain}`, {
 		method: 'POST',
