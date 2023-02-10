@@ -2,23 +2,14 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	AccountTree,
 	Assignment,
-	ChevronRight,
 	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	Folder,
 	Monitor,
 	Apps,
-	Create,
 } from '@mui/icons-material'
-import {
-	Avatar,
-	CircularProgress,
-	Divider,
-	Drawer,
-	IconButton,
-	ListItem,
-} from '@mui/material'
+import { Avatar, CircularProgress, Divider, Drawer } from '@mui/material'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -252,11 +243,10 @@ const Sidebar = () => {
 								</ListItemButton>
 							</List>
 						</Collapse>
+						<Divider />
 					</Box>
 				))}
 			</List>
-			<Divider />
-
 			<List
 				sx={{
 					marginTop: 'auto',
@@ -264,32 +254,25 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
-				<ListItemButton sx={{ pl: 4 }} onClick={() => handleClickNavigate('/')}>
+				<ListItemButton onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
 						<Dashboard />
 					</ListItemIcon>
 					<ListItemText primary='About' />
 				</ListItemButton>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/apps')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/apps')}>
 					<ListItemIcon>
 						<Dashboard />
 					</ListItemIcon>
 					<ListItemText primary='App Catalog' />
 				</ListItemButton>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/documentation')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/documentation')}>
 					<ListItemIcon>
 						<Monitor />
 					</ListItemIcon>
 					<ListItemText primary='Documentation' />
 				</ListItemButton>
 				<ListItemButton
-					sx={{ pl: 4 }}
 					onClick={() => {
 						window.location.href =
 							'https://thehip.app/apps/forms/X6fZisdX6sc5R9ZW'
@@ -301,7 +284,6 @@ const Sidebar = () => {
 					<ListItemText primary='Bug report' />
 				</ListItemButton>
 				<ListItemButton
-					sx={{ pl: 4 }}
 					onClick={() => {
 						window.location.href =
 							'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87'

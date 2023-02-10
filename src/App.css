@@ -13,7 +13,7 @@ div.select2-drop .select2-search input, select, button:not(.button-vue), .button
     border: 1px solid var(--color-border-dark);
     outline: none;
     /* border-radius: var(--border-radius); */
-    cursor: text;
+    /* cursor: text; */
 }
 
 select, button:not(.button-vue), .button, input[type='button'], input[type='submit'], input[type='reset'] {

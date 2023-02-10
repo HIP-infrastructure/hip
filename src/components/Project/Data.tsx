@@ -79,7 +79,7 @@ const Data = ({
 						Private space for your center data.
 					</Typography>
 					<>
-						<Typography sx={{ mt: 2 }} variant='body2'>
+						{/* <Typography sx={{ mt: 2 }} variant='body2'>
 							{sessions?.length} Opened desktop
 						</Typography>
 						<Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -94,12 +94,12 @@ const Data = ({
 									{bidsDatasets?.data?.length} BIDS datasets
 								</Typography>
 							</Box>
-						</Box>
+						</Box> */}
 					</>
 
 					<Box>
-						<Typography variant='h5'>Files</Typography>
-						{!files && <CircularProgress size={32} color='secondary' />}
+						<Typography variant='h5'>Files {!files && <CircularProgress size={12} />}</Typography>
+						
 						<pre>{JSON.stringify(files, null, 2)}</pre>
 					</Box>
 				</CardContent>
