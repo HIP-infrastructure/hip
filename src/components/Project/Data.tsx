@@ -7,18 +7,41 @@ import {
 	CircularProgress,
 	Typography,
 } from '@mui/material'
-import { BIDSDataset, Container } from '../../api/types'
+import { BIDSDataset, Container, HIPProject } from '../../api/types'
+import { useEffect, useState } from 'react'
+import { getProjectFiles } from '../../api/projects'
 
 const Data = ({
+	project,
 	bidsDatasets,
 	sessions,
 }: {
+	project?: HIPProject
 	bidsDatasets?: {
 		data?: BIDSDataset[] | undefined
 		error?: string | undefined
 	}
 	sessions?: Container[]
 }) => {
+	const [initialRender, setInitialRender] = useState(true)
+	const [files, setFiles] = useState<any>()
+	const [projectName, setProjectName] = useState<string | undefined>()
+
+	useEffect(() => {
+		if (projectName !== project?.name) {
+			setInitialRender(true)
+			setFiles(undefined)
+		}
+		setProjectName(project?.name)
+	}, [project, setProjectName])
+
+	useEffect(() => {
+		if (initialRender && project) {
+			setInitialRender(false)
+			getProjectFiles(project.name).then(f => setFiles(f))
+		}
+	}, [initialRender, project])
+
 	return (
 		<>
 			{!bidsDatasets && (
@@ -32,7 +55,6 @@ const Data = ({
 			<Card
 				sx={{
 					width: 320,
-					height: 440,
 				}}
 				key={`data-group`}
 			>
@@ -74,6 +96,12 @@ const Data = ({
 							</Box>
 						</Box>
 					</>
+
+					<Box>
+						<Typography variant='h5'>Files</Typography>
+						{!files && <CircularProgress size={32} color='secondary' />}
+						<pre>{JSON.stringify(files, null, 2)}</pre>
+					</Box>
 				</CardContent>
 			</Card>
 		</>

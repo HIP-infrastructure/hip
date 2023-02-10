@@ -20,6 +20,7 @@ import {
 	addUserToProject,
 	getProject,
 	getProjectDatasets,
+	getUserProjects,
 } from '../../api/projects'
 import { BIDSDataset, ContainerType, HIPProject, User } from '../../api/types'
 import { useAppStore } from '../../store/appProvider'
@@ -30,10 +31,12 @@ import { getUsers } from '../../api/gatewayClientAPI'
 import { Chat } from '@mui/icons-material'
 import MainCard from './MainCard'
 import Data from './Data'
+import { useNotification } from '../../hooks/useNotification'
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
 	const params = useParams()
+	const { showNotif } = useNotification()
 
 	const [datasets, setDatasets] = React.useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
@@ -46,6 +49,7 @@ const ProjectDashboard = () => {
 		BIDSDatasets: [bidsDatasets],
 		user: [user],
 		projects: [projects],
+		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 
 	// React.useEffect(() => {
@@ -67,9 +71,25 @@ const ProjectDashboard = () => {
 			})
 	}, [projects, setProject, params, setUsers, getUsers])
 
-	const handleAddUserToProject = () => {
-		if (!user?.uid) return
-		addUserToProject(user?.uid, 'project?.name')
+	const handleAddUserToProject = (userId: string) => {
+		if (!project?.name) return
+
+		addUserToProject(userId, project.name).then(() => {
+			showNotif('User added', 'success')
+			setIsAddingUser(false)
+
+			if (user?.uid) {
+				getProject(project.name).then(project => {
+					setProject(project)
+				})
+
+				getUserProjects(user.uid).then(projects => {
+					setUserProjects(projects)
+				})
+			}
+		}).catch(e => {
+			showNotif(`${e}`, 'error')
+		})
 	}
 
 	const sessions = containers?.data?.filter(
@@ -103,7 +123,11 @@ const ProjectDashboard = () => {
 
 					<>
 						<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-							<Data bidsDatasets={datasets} sessions={sessions} />{' '}
+							<Data
+								project={project}
+								bidsDatasets={datasets}
+								sessions={sessions}
+							/>
 						</Box>
 						<Box sx={{ gridColumn: '1', gridRow: '2' }}>{/* <Tools /> */}</Box>
 						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
@@ -178,8 +202,7 @@ const ProjectDashboard = () => {
 												</Box>
 											))}
 									</Stack>
-								</CardContent>
-								<CardActions sx={{ p: 2 }}>
+
 									{isAddingUser && <Typography>Add User</Typography>}
 									{isAddingUser && (
 										<>
@@ -188,8 +211,8 @@ const ProjectDashboard = () => {
 												<Select
 													size={'small'}
 													//defaultValue={numberOfResultsPerPage}
-													onChange={(event: SelectChangeEvent<number>) => {
-														return event.target.value
+													onChange={(event: SelectChangeEvent<string>) => {
+														handleAddUserToProject(event.target.value)
 													}}
 												>
 													{users.map(user => (
@@ -200,7 +223,6 @@ const ProjectDashboard = () => {
 												</Select>
 											</FormControl>
 											<Button
-												onClick={handleAddUserToProject}
 												variant='outlined'
 											>
 												Add Member
@@ -215,7 +237,8 @@ const ProjectDashboard = () => {
 											Add Member
 										</Button>
 									)}
-								</CardActions>
+								</CardContent>
+								<CardActions sx={{ p: 2 }}></CardActions>
 							</Card>
 						</Box>
 					</>

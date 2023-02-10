@@ -5,6 +5,7 @@ import * as Yup from 'yup'
 import { createProject, getUserProjects } from '../../api/projects'
 import { useAppStore } from '../../store/appProvider'
 import TitleBar from '../UI/titleBar'
+import { useNotification } from '../../hooks/useNotification'
 
 const validationSchema = Yup.object().shape({
 	title: Yup.string()
@@ -15,6 +16,8 @@ const validationSchema = Yup.object().shape({
 })
 
 const CreateProject = () => {
+	const { showNotif } = useNotification()
+
 	const {
 		user: [user],
 		projects: [projects, setProjects],
@@ -27,20 +30,21 @@ const CreateProject = () => {
 		},
 		onSubmit: values => {
 			if (!user || !user.uid) return
-			const userId = user.uid
+			const adminId = user.uid
 
 			const project = {
 				...values,
-				admin: userId,
+				adminId,
 			}
 			createProject(project)
 				.then(() => {
-					getUserProjects(userId).then(projects => {
+					getUserProjects(adminId).then(projects => {
 						setProjects(projects)
 					})
 				})
 				.catch(err => {
-					// console.log(err)
+					showNotif(err, 'error')
+
 				})
 		},
 		validationSchema,

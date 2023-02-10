@@ -31,6 +31,13 @@ const theme = createTheme({
 				},
 			},
 		},
+		MuiListItemIcon: {
+			styleOverrides: {
+				root: {
+					minWidth: '36px',
+				},
+			},
+		},
 	},
 })
 

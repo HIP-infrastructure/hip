@@ -41,7 +41,7 @@ const Sidebar = () => {
 	const {
 		user: [user],
 		centers: [centers],
-		projects: [projects, setProjects],
+		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -51,7 +51,7 @@ const Sidebar = () => {
 	React.useEffect(() => {
 		if (!user?.uid) return
 		getUserProjects(user?.uid).then(projects => {
-			setProjects(projects)
+			setUserProjects(projects)
 		})
 	}, [user])
 
@@ -68,8 +68,6 @@ const Sidebar = () => {
 		(user?.groups &&
 			centers?.filter(center => user?.groups?.includes(center.id))) ||
 		null
-
-	const userProjects = projects
 
 	return (
 		<Drawer
@@ -206,7 +204,6 @@ const Sidebar = () => {
 					<Box key={project.name}>
 						<ListItemButton
 							onClick={() => handleClick(project?.name)}
-							sx={{ pl: 4 }}
 						>
 							<ListItemIcon>
 								<Folder />
@@ -221,7 +218,7 @@ const Sidebar = () => {
 						>
 							<List component='div' disablePadding>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
 											`/collaborative-projects/${project.name}`
@@ -234,7 +231,7 @@ const Sidebar = () => {
 									<ListItemText primary='Dashboard' />
 								</ListItemButton>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
 											`/collaborative-projects/${project.name}/sessions`
@@ -247,7 +244,7 @@ const Sidebar = () => {
 									<ListItemText primary='Desktops' />
 								</ListItemButton>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
 											`/collaborative-projects/${project.name}/datasets/`

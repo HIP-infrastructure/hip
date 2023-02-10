@@ -1,27 +1,44 @@
 import * as React from 'react'
 import {
-	Facebook,
-	Instagram,
-	Language,
-	LinkedIn,
-	Twitter,
-	YouTube,
-} from '@mui/icons-material'
-import {
-	Box,
+	Button,
 	Card,
+	CardActions,
 	CardContent,
 	CardMedia,
 	CircularProgress,
-	IconButton,
-	Link,
 	Typography,
 } from '@mui/material'
-import { HIPCenter } from '../../api/types'
-import { linkStyle } from '../../constants'
+import { ROUTE_PREFIX } from '../../constants'
+import { useNavigate } from 'react-router-dom'
+import { deleteProject, getProjects, getUserProjects } from '../../api/projects'
+import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../store/appProvider'
 
 const MainCard = ({ group }: { group?: any }) => {
-	
+	const navigate = useNavigate()
+	const { showNotif } = useNotification()
+	const {
+		user: [user],
+		projects: [projects, setProjects],
+		userProjects: [_, setUserProjects],
+	} = useAppStore()
+
+	const handleDeleteProject = (name: string) => {
+		deleteProject(name).then(res => {
+			showNotif('Project deleted', 'success')
+
+			if (user?.uid) {
+				getUserProjects(user?.uid).then(projects => {
+					setUserProjects(projects)
+				})
+				getProjects().then(projects => {
+					setProjects(projects)
+				})
+				navigate(`${ROUTE_PREFIX}/collaborative`)
+			}
+		})
+	}
+
 	return (
 		<>
 			{!group && (
@@ -61,8 +78,15 @@ const MainCard = ({ group }: { group?: any }) => {
 						</Typography>
 
 						<Typography variant='subtitle2'>{group.admins}</Typography>
-						
 					</CardContent>
+					<CardActions sx={{ p: 2 }}>
+						<Button
+							onClick={() => handleDeleteProject(group.name)}
+							variant='outlined'
+						>
+							Delete Project
+						</Button>
+					</CardActions>
 				</Card>
 			)}
 		</>

@@ -38,6 +38,10 @@ export interface IAppState {
 		HIPProject[] | null,
 		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
+	userProjects: [
+		HIPProject[] | null,
+		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
+	]
 	availableApps: [
 		{ data?: Application[]; error?: string } | undefined,
 		React.Dispatch<
@@ -91,6 +95,7 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
+	const [userProjects, setUserProjects] = useState<HIPProject[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -161,6 +166,7 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			centers: [centers, setCenters],
 			projects: [projects, setProjects],
+			userProjects: [userProjects, setUserProjects],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
@@ -177,6 +183,8 @@ export const AppStoreProvider = ({
 			setCenters,
 			projects,
 			setProjects,
+			userProjects,
+			setUserProjects,
 			containers,
 			setContainers,
 			availableApps,
