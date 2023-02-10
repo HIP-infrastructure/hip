@@ -113,9 +113,9 @@ const Session = (): JSX.Element => {
 	}, [session, sessionIsAlive])
 
 	useEffect(() => {
-		if (!params.centerId) return
+		if (!params.id) return
 
-		getContainer(params.centerId).then(data => {
+		getContainer(params.id).then(data => {
 			const pathId = data?.url.split('/').slice(-2, -1) || ''
 			const path = encodeURIComponent(`/session/${pathId}/`)
 			const url = `${data.url}?path=${path}`
