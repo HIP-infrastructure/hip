@@ -74,8 +74,8 @@ const App = () => (
 			<Route path={'apps'} element={<Apps />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'admin'} element={<Admin />} />
-			<Route path={'private'} element={<DashboardOutlet />}>
-				<Route index element={<DashboardOutlet />} />
+			<Route path={'private'} element={<Outlet />}>
+				<Route index element={<Centers />} />
 				<Route path={':id'} element={<Dashboard />} />
 				<Route path={':id/sessions'} element={<Sessions domain={'center'} />} />
 				<Route path={':id/datasets'} element={<Outlet />}>
@@ -83,9 +83,8 @@ const App = () => (
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
 				<Route path={':id/data'} element={<DataBrowser />} />
-				<Route path={'centers'} element={<Centers />} />
 			</Route>
-			<Route path={'collaborative-projects'} element={<Outlet />}>
+			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':id'} element={<ProjectDashboard />} />

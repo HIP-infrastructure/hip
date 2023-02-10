@@ -88,7 +88,7 @@ const Sidebar = () => {
 			}}
 		>
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/private/centers')}>
+				<ListItemButton onClick={() => handleClickNavigate('/private')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -131,7 +131,7 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Dashboard />
 							</ListItemIcon>
-							<ListItemText primary='Dashboard' />
+							<ListItemText primary='Private Workspace' />
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
@@ -171,9 +171,7 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton
-					onClick={() => handleClickNavigate('/collaborative-projects')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/collaborative')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -202,9 +200,7 @@ const Sidebar = () => {
 			>
 				{userProjects?.map(project => (
 					<Box key={project.name}>
-						<ListItemButton
-							onClick={() => handleClick(project?.name)}
-						>
+						<ListItemButton onClick={() => handleClick(project?.name)}>
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
@@ -220,21 +216,19 @@ const Sidebar = () => {
 								<ListItemButton
 									sx={{ pl: 4 }}
 									onClick={() =>
-										handleClickNavigate(
-											`/collaborative-projects/${project.name}`
-										)
+										handleClickNavigate(`/collaborative/${project.name}`)
 									}
 								>
 									<ListItemIcon>
 										<Dashboard />
 									</ListItemIcon>
-									<ListItemText primary='Dashboard' />
+									<ListItemText primary='Collaborative Workspace' />
 								</ListItemButton>
 								<ListItemButton
 									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/sessions`
+											`/collaborative/${project.name}/sessions`
 										)
 									}
 								>
@@ -247,7 +241,7 @@ const Sidebar = () => {
 									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/datasets/`
+											`/collaborative/${project.name}/datasets/`
 										)
 									}
 								>
