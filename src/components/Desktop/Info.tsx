@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, Chip, Link, Typography } from '@mui/material'
 import * as React from 'react'
-import { Container } from '../api/types'
-import { color } from '../api/utils'
+import { Container } from '../../api/types'
+import { color } from '../../api/utils'
 
-import { DRAWER_WIDTH } from '../constants'
+import { DRAWER_WIDTH } from '../../constants'
 
-const SessionInfo = ({ session }: { session?: Container }) => {
+const SessionInfo = ({ desktop }: { desktop?: Container }) => {
 	return (
 		<Card
 			sx={{
@@ -14,11 +14,11 @@ const SessionInfo = ({ session }: { session?: Container }) => {
 		>
 			<CardContent>
 				<Typography sx={{ fontSize: 14 }} gutterBottom>
-					{session?.user}
+					{desktop?.userId}
 				</Typography>
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 					<Typography variant='h5' gutterBottom component='div'>
-						Desktop #{session?.name}
+						Desktop #{desktop?.name}
 					</Typography>
 					<Chip
 						label={
@@ -29,22 +29,22 @@ const SessionInfo = ({ session }: { session?: Container }) => {
 									alignItems: 'center',
 								}}
 							>
-								{session?.state}
+								{desktop?.state}
 							</Box>
 						}
-						color={color(session?.state)}
+						color={color(desktop?.state)}
 						variant='outlined'
 					/>
 				</Box>
 				<Link
-					href={session?.url || ''}
+					href={desktop?.url || ''}
 					target='_blank'
 					rel='noopener'
 					underline='hover'
 				>
 					Open in Browser
 				</Link>
-				<Typography variant='body2'>{session?.error?.message}</Typography>
+				<Typography variant='body2'>{desktop?.error?.message}</Typography>
 			</CardContent>
 		</Card>
 	)

@@ -20,7 +20,7 @@ import {
 import Checkbox from '@mui/material/Checkbox'
 import { queryBidsDatasets } from '../../../api/bids'
 import { BIDSDataset } from '../../../api/types'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 import CreateDataset from './forms/CreateDataset'
 
 const Datasets = (): JSX.Element => {

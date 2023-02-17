@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import ProjectCard from './ProjectCard'
 import { ROUTE_PREFIX } from '../../constants'

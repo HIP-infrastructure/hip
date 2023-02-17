@@ -20,8 +20,9 @@ import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
-import { useAppStore } from '../store/appProvider'
+import { useAppStore } from '../Store'
 import { getUserProjects } from '../api/projects'
+import { API_GATEWAY } from '../api/gatewayClientAPI';
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -55,6 +56,7 @@ const Sidebar = () => {
 		navigate(`${ROUTE_PREFIX}${route}`)
 	}
 
+	// FIXME: if there is no center
 	const userCenters =
 		(user?.groups &&
 			centers?.filter(center => user?.groups?.includes(center.id))) ||
@@ -105,7 +107,7 @@ const Sidebar = () => {
 								{userCenters ? (
 									<Avatar
 										alt={center.label}
-										src={`${process.env.REACT_APP_GATEWAY_API}/public/${center?.logo}`}
+										src={`${API_GATEWAY}/public/${center?.logo}`}
 										sx={{ width: 32, height: 32 }}
 									/>
 								) : (
@@ -127,7 +129,7 @@ const Sidebar = () => {
 						<ListItemButton
 							sx={{ pl: 4 }}
 							onClick={() =>
-								handleClickNavigate(`/private/${center.id}/sessions`)
+								handleClickNavigate(`/private/${center.id}/desktops`)
 							}
 						>
 							<ListItemIcon>
@@ -219,7 +221,7 @@ const Sidebar = () => {
 									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative/${project.name}/sessions`
+											`/collaborative/${project.name}/desktops`
 										)
 									}
 								>

@@ -12,7 +12,8 @@ import { ROUTE_PREFIX } from '../../constants'
 import { useNavigate } from 'react-router-dom'
 import { deleteProject, getProjects, getUserProjects } from '../../api/projects'
 import { useNotification } from '../../hooks/useNotification'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
+import { API_GATEWAY } from '../../api/gatewayClientAPI';
 
 const MainCard = ({ group }: { group?: any }) => {
 	const navigate = useNavigate()
@@ -60,7 +61,7 @@ const MainCard = ({ group }: { group?: any }) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
+						src={`${API_GATEWAY}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
 						alt={group.label}
 						title={group.label}
 					/>

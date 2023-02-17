@@ -20,6 +20,7 @@ import {
 } from '@mui/material'
 import { HIPCenter } from '../../api/types'
 import { linkStyle } from '../../constants'
+import { API_GATEWAY } from '../../api/gatewayClientAPI';
 
 const Center = ({ group }: { group?: HIPCenter }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {
@@ -83,7 +84,7 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
+						src={`${API_GATEWAY}/public/${group.logo}`}
 						alt={group.label}
 						title={group.label}
 					/>
@@ -99,7 +100,7 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 							<Typography variant='h6'>{group?.label}</Typography>
 							<Avatar
 								alt={group?.label}
-								src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
+								src={`${API_GATEWAY}/public/${group.logo}`}
 								sx={{ width: 32, height: 32 }}
 							/>
 						</Box>

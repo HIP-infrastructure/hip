@@ -19,6 +19,7 @@ import {
 } from '@mui/material'
 import { HIPCenter } from '../../api/types'
 import { linkStyle } from '../../constants'
+import { API_GATEWAY } from '../../api/gatewayClientAPI';
 
 const MainCard = ({ group }: { group?: HIPCenter }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {
@@ -82,7 +83,7 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/public/${group.logo}`}
+						src={`${API_GATEWAY}/public/${group.logo}`}
 						alt={group.label}
 						title={group.label}
 					/>

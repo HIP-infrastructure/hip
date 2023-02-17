@@ -9,7 +9,7 @@ import { Slide } from '@mui/material'
 
 import App from './App'
 import Theme from './components/theme'
-import { AppStoreProvider } from './store/appProvider'
+import { AppStoreProvider } from './Store'
 
 // import reportWebVitals from './reportWebVitals'
 

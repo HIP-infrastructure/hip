@@ -21,54 +21,52 @@ import {
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
-import { useNavigate, useParams } from 'react-router-dom'
-import { createApp, getContainer, getContainers, stopApp } from '../api/gatewayClientAPI'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import {
-	Application,
-	Container,
-	ContainerType,
-} from '../api/types'
+	getDesktop,
+	stopApp,
+	createApp,
+	getDesktopsAndApps,
+} from '../../api/remoteApp'
+import { Application, Container, ContainerType } from '../../api/types'
 import {
 	APP_MARGIN_TOP,
 	DRAWER_WIDTH,
 	POLLING,
 	ROUTE_PREFIX,
-} from '../constants'
-import { useAppStore } from '../store/appProvider'
-import AppList from './sessionAppList'
-import SessionInfo from './sessionInfo'
+} from '../../constants'
+import { useAppStore } from '../../Store'
+import AppList from './AppList'
+import Info from './Info'
 import React, { useEffect, useRef, useState } from 'react'
+import { useNotification } from '../../hooks/useNotification'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
 }
 
-const Session = (): JSX.Element => {
+const Desktop = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
 	const params = useParams()
+	const location = useLocation()
+	const theme = useTheme()
+	const navigate = useNavigate()
+	const { showNotif } = useNotification()
 
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
-		// containers: [containers, setContainers],
 		user: [user],
 	} = useAppStore()
-
-	const theme = useTheme()
-	const navigate = useNavigate()
-
-	const [containers, setContainers] = React.useState<{
-		data?: Container[]
-		error?: string
-	}>({})
-	const [session, setSession] = useState<Container>()
+	const [containers, setContainers] = React.useState<Container[]>([])
+	const [desktop, setDesktop] = useState<Container>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true)
-	const [sessionIsAlive, setSessionIsAlive] = useState(false)
+	const [desktopIsAlive, setDesktopIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
+	const [from] = useState(location.state?.from)
 
-	const sessions = containers?.data?.filter(
-		c => c.type === ContainerType.SESSION
-	)
+	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
+	const desktopApps = containers?.filter(a => a.parentId === desktop?.id)
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -81,20 +79,23 @@ const Session = (): JSX.Element => {
 	// Polling for containers state
 	useEffect(() => {
 		const interval = setInterval(() => {
-			user && session?.domain &&
-				getContainers(user, session.domain)
-					.then(data => setContainers({ data }))
-					.catch(error => setContainers({ error }))
+			const workspace = location.state?.workspace
+			const showAdminView = location.state?.showAdminView || false
+			workspace &&
+				user?.uid &&
+				getDesktopsAndApps(workspace, user.uid, [], showAdminView)
+					.then(data => setContainers(data))
+					.catch(error => showNotif(error, 'error'))
 		}, POLLING * 1000)
 		return () => clearInterval(interval)
-	}, [setContainers, user, session])
+	}, [setContainers, user, desktop])
 
 	// Check for XPra readiness
 	useEffect(() => {
-		if (intervalRef.current || !session?.url) return
-		if (sessionIsAlive) return
+		if (intervalRef.current || !desktop?.url) return
+		if (desktopIsAlive) return
 		intervalRef.current = setInterval(() => {
-			fetch(session.url, { method: 'HEAD' })
+			fetch(desktop.url, { method: 'HEAD' })
 				.then(result => {
 					if (result.status === 200) {
 						if (intervalRef.current) {
@@ -102,26 +103,21 @@ const Session = (): JSX.Element => {
 							intervalRef.current = undefined
 						}
 
-						setSessionIsAlive(true)
-						focusOnIframe(5)
+						setDesktopIsAlive(true)
+						focusOnIframe(3)
 					}
 				})
 				.catch(e => {
 					// console.log(e)
 				})
 		}, 1000)
-	}, [session, sessionIsAlive])
+	}, [desktop, desktopIsAlive])
 
 	useEffect(() => {
 		if (!params.id) return
 
-		getContainer(params.id).then(data => {
-			const pathId = data?.url.split('/').slice(-2, -1) || ''
-			const path = encodeURIComponent(`/session/${pathId}/`)
-			const url = `${data.url}?path=${path}`
-			setSession({ ...data, url })
-		})
-	}, [setSession, params])
+		getDesktop(params.id).then(data => setDesktop(data))
+	}, [setDesktop, params])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -142,9 +138,11 @@ const Session = (): JSX.Element => {
 
 	// Start an app
 	const handleToggleApp = (app: Application) => {
-		const targetApp = session?.apps?.find(a => a.app === app.name)
+		const targetApp = desktopApps?.find(a => a.name === app.name)
 		if (targetApp) {
-			stopApp(session?.id || '', user?.uid || '', targetApp.id)
+			stopApp(desktop?.id || '', user?.uid || '', targetApp.id).then(data =>
+				setContainers(data)
+			)
 
 			trackEvent({
 				category: 'app',
@@ -154,11 +152,11 @@ const Session = (): JSX.Element => {
 			return
 		}
 
-		if (!session || !user) {
+		if (!desktop?.id || !user?.uid) {
 			return
 		}
-		createApp(session, user, app.name)
 
+		createApp(desktop.id, user.uid, app.name)
 		focusOnIframe(1)
 
 		trackEvent({
@@ -178,12 +176,12 @@ const Session = (): JSX.Element => {
 	}
 
 	const handleBackLocation = () => {
-		navigate(-1)
+		if (from) navigate(from)
 	}
 
 	const handleOnChange = (event: SelectChangeEvent) => {
-		const sessionId = event.target.value as string
-		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
+		const desktopId = event.target.value as string
+		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`)
 	}
 
 	const AppBar = styled(MuiAppBar, {
@@ -235,11 +233,11 @@ const Session = (): JSX.Element => {
 						id='session-select'
 						aria-label='Select desktop'
 						IconComponent={() => <ExpandMore />}
-						value={session?.id || ''}
+						value={desktop?.id || ''}
 						onChange={handleOnChange}
 						sx={{ color: 'white' }}
 					>
-						{sessions?.map(s => (
+						{desktops?.map(s => (
 							<MenuItem
 								value={s?.id}
 								key={s?.id}
@@ -267,7 +265,7 @@ const Session = (): JSX.Element => {
 				</Toolbar>
 			</AppBar>
 			<Box>
-				{!sessionIsAlive && (
+				{/* {!desktopIsAlive && (
 					<div
 						aria-label='Loading remote desktop'
 						style={{
@@ -281,12 +279,13 @@ const Session = (): JSX.Element => {
 					>
 						<CircularProgress size={32} />
 					</div>
-				)}
-				{sessionIsAlive && session && (
+				)} */}
+				{/* {desktopIsAlive && desktop && ( */}
+				{desktop?.url && (
 					<iframe
 						ref={fullScreenRef}
 						title='Desktop'
-						src={session.url}
+						src={desktop.url}
 						allow={'autoplay; fullscreen; clipboard-write;'}
 						style={{
 							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
@@ -296,6 +295,7 @@ const Session = (): JSX.Element => {
 						}}
 					/>
 				)}
+				{/* )} */}
 			</Box>
 			<Drawer
 				sx={{
@@ -318,13 +318,17 @@ const Session = (): JSX.Element => {
 						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
 					</IconButton>
 				</DrawerHeader>
-				<SessionInfo session={session} />
+				<Info desktop={desktop} />
 				<Divider />
-				<AppList session={session} handleToggleApp={handleToggleApp} />
+				<AppList
+					desktop={desktop}
+					containers={containers}
+					handleToggleApp={handleToggleApp}
+				/>
 			</Drawer>
 		</Box>
 	)
 }
 
-Session.displayName = 'Session'
-export default Session
+Desktop.displayName = 'Desktop'
+export default Desktop

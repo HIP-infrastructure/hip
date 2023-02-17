@@ -12,7 +12,7 @@ import {
 import { queryBidsDatasets, importSubject } from '../../../api/bids'
 import { CreateSubjectDto } from '../../../api/types'
 import { useNotification } from '../../../hooks/useNotification'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 import TitleBar from '../../UI/titleBar'
 import Datasets from './datasets'
 import Files from './files'

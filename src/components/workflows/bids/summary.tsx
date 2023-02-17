@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 
 import { CreateSubjectDto } from '../../../api/types'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 
 const Summary = ({
 	response,

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { queryBidsDatasetsMockup } from '../../api/bids'
 import { getFiles2 } from '../../api/gatewayClientAPI'
 import { BIDSDataset, File2 } from '../../api/types'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 
 const MinusSquare = (props: SvgIconProps) => (
 	<SvgIcon fontSize='inherit' style={{ width: 14, height: 14 }} {...props}>

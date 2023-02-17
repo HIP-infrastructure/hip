@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import * as React from 'react'
-import TitleBar from './UI/titleBar'
-import DocCard from './UI/DocCard'
+import TitleBar from '../UI/titleBar'
+import DocCard from '../UI/DocCard'
 
 const Documentation = () => {
 	const docs = [

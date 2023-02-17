@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
-import { useAppStore } from '../store/appProvider'
-import AboutCard from './UI/AboutCard'
+import { useAppStore } from '../../Store'
+import AboutCard from '../UI/AboutCard'
 import * as React from 'react'
 
 export interface Doc {

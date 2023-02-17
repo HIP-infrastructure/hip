@@ -1,20 +1,18 @@
-export type Domain = 'center' | 'collab'
+export type Workspace = 'private' | 'collab'
 
-export interface APIContainersResponse {
-	data?: Container[]
-	error?: string
-}
 export interface Container {
+	user: string | undefined;
 	id: string
 	name: string
-	user: string
+	userId: string
+	groupIds: string[]
 	url: string
 	state: ContainerState
 	error: Error | null
 	type: ContainerType
 	parentId?: string
 	apps?: AppContainer[]
-	domain?: Domain
+	workspace?: Workspace
 }
 
 export interface GroupFolder {
@@ -41,7 +39,7 @@ export enum ContainerState {
 }
 
 export enum ContainerType {
-	SESSION = 'server',
+	DESKTOP = 'server',
 	APP = 'app',
 }
 

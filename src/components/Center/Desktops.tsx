@@ -4,7 +4,7 @@ import {
 	Pause,
 	PowerSettingsNew,
 	Replay,
-	Visibility
+	Visibility,
 } from '@mui/icons-material'
 import {
 	Alert,
@@ -21,82 +21,72 @@ import {
 	IconButton,
 	Switch,
 	Tooltip,
-	Typography
+	Typography,
 } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
-	createSession,
-	forceRemove,
-	getContainers,
-	pauseAppsAndSession,
-	removeAppsAndSession,
-	resumeAppsAndSession
-} from '../api/gatewayClientAPI'
+	createDesktop,
+	getDesktopsAndApps,
+	removeAppsAndDesktop,
+	pauseAppsAndDesktop,
+	resumeAppsAndDesktop,
+	forceRemoveAppsAndDesktop,
+} from '../../api/remoteApp'
 import {
 	AppContainer,
 	Container,
 	ContainerState,
 	ContainerType,
-	Domain
-} from '../api/types'
-import { color, loading } from '../api/utils'
-import SessionImage from '../assets/session-thumbnail.png'
-import { POLLING, ROUTE_PREFIX } from '../constants'
-import { useAppStore } from '../store/appProvider'
-import Modal, { ModalComponentHandle } from './UI/Modal'
-import TitleBar from './UI/titleBar'
+} from '../../api/types'
+import { color, loading } from '../../api/utils'
+import DesktopImage from '../../assets/session-thumbnail.png'
+import { POLLING, ROUTE_PREFIX } from '../../constants'
+import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
+import Modal, { ModalComponentHandle } from '../UI/Modal'
+import TitleBar from '../UI/titleBar'
 
-const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
-	const modalRef = useRef<ModalComponentHandle>(null)
+const Desktops = (): JSX.Element => {
 	const navigate = useNavigate()
-	const params = useParams()
+	const location = useLocation()
 	const { trackEvent } = useMatomo()
+	const { showNotif } = useNotification()
 	const {
 		user: [user],
-		containers: [centerContainers, setCenterContainers],
+		containers: [containers, setContainers],
 		debug: [debug, setDebug],
 	} = useAppStore()
 
-	const [containers, setContainers] = React.useState<{ data?: Container[]; error?: string }>()
 	const [showAdminView, setShowAdminView] = React.useState(
 		localStorage.getItem('admin-view') === 'true'
 	)
+	const modalRef = useRef<ModalComponentHandle>(null)
 
 	useEffect(() => {
-		if (domain === 'center' && centerContainers) setContainers(centerContainers)
-	}, [domain, centerContainers, setContainers])
+		const userId = user?.uid
+		if (!userId) return
 
-	useEffect(() => {
-		const getThemAll = () => user &&
-			getContainers(user, domain)
-				.then(data => {
-					if (domain === 'center') setCenterContainers({ data })
-					setContainers({ data })
-				})
-				.catch(error => {
-					setContainers(containers => ({
-						data: containers?.data,
-						error,
-					}))
-				})
-
-		getThemAll()
 		const interval = setInterval(() => {
-			getThemAll()
+			getDesktopsAndApps('private', userId, [], showAdminView || false)
+				.then(data => setContainers(data))
+				.catch(error => showNotif(error, 'error'))
 		}, POLLING * 1000)
-		return () => clearInterval(interval)
-	}, [domain, setCenterContainers, setContainers, user])
 
-	const handleOpenSession = (sessionId: string) => {
-		navigate(`${ROUTE_PREFIX}/sessions/${sessionId}`)
+		return () => clearInterval(interval)
+	}, [setContainers, user])
+
+	const handleOpenDesktop = (desktopId: string) => {
+		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
+			state: { from: location.pathname, workspace: 'private', showAdminView },
+		})
 		trackEvent({
 			category: 'server',
 			action: 'view',
 		})
 	}
 
-	const confirmRemove = async (sessionId: string) => {
+	const confirmRemove = async (desktopId: string) => {
 		if (!modalRef.current) return
 
 		const reply = await modalRef.current.open(
@@ -105,14 +95,9 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 		)
 
 		if (reply) {
-			removeAppsAndSession(sessionId, user?.uid || '')
-				.then(data => setContainers({ data }))
-				.catch(error =>
-					setContainers(containers => ({
-						data: containers?.data,
-						error,
-					}))
-				)
+			removeAppsAndDesktop(desktopId, user?.uid || '')
+				.then(data => setContainers(data))
+				.catch(error => showNotif(error, 'error'))
 
 			trackEvent({
 				category: 'server',
@@ -121,34 +106,27 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 		}
 	}
 
-	const createNewSession = async () => {
-		createSession(user?.uid || '', domain)
-			.then(data => setContainers(c => ({ data: [...(c?.data || []), data] })))
-			.catch(error =>
-				setContainers(containers => ({
-					data: containers?.data,
-					error,
-				}))
-			)
+	const createNewDesktop = async () => {
+		createDesktop('private', user?.uid || '', [])
+			.then(data => setContainers(data))
+			.catch(error => showNotif(error, 'error'))
 	}
 
-	const sessions = containers?.data
-		?.filter((container: Container) => container.type === ContainerType.SESSION)
+	const desktops = containers
+		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
 		.map((s: Container) => ({
 			...s,
-			apps: (containers?.data as AppContainer[]).filter(
-				a => a.parentId === s.id
-			),
+			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
 		?.filter((s: Container) =>
-			user && showAdminView ? true : s.user === user?.uid
+			user && showAdminView ? true : s.userId === user?.uid
 		)
 
 	return (
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={`${domain === 'center' ? 'My Desktops' : 'Collaborative Desktops'} `}
+				title={'My Desktops'}
 				description={
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
@@ -177,7 +155,7 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 							variant='contained'
 							color='primary'
 							onClick={() => {
-								createNewSession()
+								createNewDesktop()
 								trackEvent({
 									category: 'server',
 									action: 'start',
@@ -190,8 +168,6 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 				}
 			/>
 
-			{containers?.error && <Alert severity='error'>{containers?.error}</Alert>}
-
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
 					<CircularProgress
@@ -201,7 +177,7 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 					/>
 				)}
 
-				{sessions?.length === 0 && (
+				{desktops?.length === 0 && (
 					<Box
 						sx={{
 							mt: 4,
@@ -213,46 +189,46 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 						<Button
 							variant='contained'
 							color='primary'
-							onClick={createNewSession}
+							onClick={createNewDesktop}
 						>
 							Create Desktop
 						</Button>
 					</Box>
 				)}
-				{sessions?.map((session, i) => (
+				{desktops?.map((desktop, i) => (
 					<Card
 						sx={{
 							maxWidth: 320,
 							display: 'flex',
 							flexDirection: 'column',
 						}}
-						key={session.id}
+						key={desktop.id}
 					>
 						<Box sx={{ position: 'relative' }}>
 							<Tooltip
-								title={`Open Desktop #${session.name}`}
+								title={`Open Desktop #${desktop.name}`}
 								placement='bottom'
 							>
 								<CardMedia
 									sx={{
 										cursor:
-											session.state !== ContainerState.RUNNING
+											desktop.state !== ContainerState.RUNNING
 												? 'default'
 												: 'pointer',
 									}}
 									component='img'
 									height='140'
-									src={SessionImage}
-									alt={`Open ${session.name}`}
+									src={DesktopImage}
+									alt={`Open ${desktop.name}`}
 									onClick={() =>
-										session.state === ContainerState.RUNNING &&
-										handleOpenSession(session.id)
+										desktop.state === ContainerState.RUNNING &&
+										handleOpenDesktop(desktop.id)
 									}
 								/>
 							</Tooltip>
 							{[
-								loading(session.state),
-								...session.apps.map(a => loading(a.state)),
+								loading(desktop.state),
+								...desktop.apps.map(a => loading(a.state)),
 							].reduce((p, c) => p || c, false) && (
 								<CircularProgress
 									size={32}
@@ -265,20 +241,20 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 							<Box sx={{ display: 'flex' }}>
 								<Box sx={{ flex: 1 }}>
 									<Typography variant='h5'>
-										{`Desktop #${session?.name}`}
+										{`Desktop #${desktop?.name}`}
 									</Typography>
-									{user?.uid !== session.user && (
+									{user?.uid !== desktop.userId && (
 										<Typography gutterBottom variant='caption' color='#FA6812'>
-											{session?.user}
+											{desktop?.userId}
 										</Typography>
 									)}
-									{user?.uid === session.user && (
+									{user?.uid === desktop.userId && (
 										<Typography
 											gutterBottom
 											variant='caption'
 											color='text.secondary'
 										>
-											{session?.user}
+											{desktop?.userId}
 										</Typography>
 									)}
 								</Box>
@@ -292,10 +268,10 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 													alignItems: 'center',
 												}}
 											>
-												{session.state}
+												{desktop.state === ContainerState.DESTROYED ? 'Down' : desktop.state}
 											</Box>
 										}
-										color={color(session.state)}
+										color={color(desktop.state)}
 										variant='outlined'
 									/>
 								</Box>
@@ -307,8 +283,8 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 								variant='body2'
 								color='text.secondary'
 							>
-								{session.error?.message}
-								{session.apps.map(app => (
+								{desktop.error?.message}
+								{desktop.apps.map(app => (
 									<span key={app.name}>
 										<strong>{app.app}</strong>: {app.state}
 										<br />
@@ -318,14 +294,14 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 							</Typography>
 						</CardContent>
 						<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
-							{debug && (
-								<Tooltip title='Force remove' placement='top'>
+							{(desktop.state === ContainerState.DESTROYED || debug) && (
+								<Tooltip title='Remove' placement='top'>
 									<IconButton
 										edge='end'
 										color='primary'
-										aria-label='force remove'
+										aria-label='Remove'
 										onClick={() => {
-											forceRemove(session.id)
+											forceRemoveAppsAndDesktop(desktop.id)
 										}}
 									>
 										<Clear />
@@ -336,12 +312,12 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 							<Tooltip title='Shut down' placement='top'>
 								<span>
 									<IconButton
-										disabled={session.state !== ContainerState.RUNNING}
+										disabled={desktop.state !== ContainerState.RUNNING}
 										edge='end'
 										color='primary'
 										aria-label='Shut down'
 										onClick={() => {
-											confirmRemove(session.id)
+											confirmRemove(desktop.id)
 										}}
 									>
 										<PowerSettingsNew />
@@ -349,14 +325,14 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 								</span>
 							</Tooltip>
 
-							{session.state === ContainerState.PAUSED && (
-								<Tooltip title='Resume the session' placement='top'>
+							{desktop.state === ContainerState.PAUSED && (
+								<Tooltip title='Resume the desktop' placement='top'>
 									<IconButton
 										edge='end'
 										color='primary'
 										aria-label='Resume'
 										onClick={y => {
-											resumeAppsAndSession(session.id, user?.uid || '')
+											resumeAppsAndDesktop(desktop.id, user?.uid || '')
 
 											trackEvent({
 												category: 'server',
@@ -369,19 +345,19 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 								</Tooltip>
 							)}
 
-							{session.state !== ContainerState.PAUSED && (
+							{desktop.state !== ContainerState.PAUSED && (
 								<Tooltip
-									title='Pause the session. You can resume it later'
+									title='Pause the desktop. You can resume it later'
 									placement='top'
 								>
 									<span>
 										<IconButton
-											disabled={session.state !== ContainerState.RUNNING}
+											disabled={desktop.state !== ContainerState.RUNNING}
 											edge='end'
 											color='primary'
 											aria-label='pause'
 											onClick={() => {
-												pauseAppsAndSession(session.id, user?.uid || '')
+												pauseAppsAndDesktop(desktop.id, user?.uid || '')
 												trackEvent({
 													category: 'server',
 													action: 'pause',
@@ -397,13 +373,13 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 							<Tooltip title='Open' placement='top'>
 								<span>
 									<IconButton
-										disabled={session.state !== ContainerState.RUNNING}
+										disabled={desktop.state !== ContainerState.RUNNING}
 										sx={{ ml: 0.6 }}
 										edge='end'
 										color='primary'
 										aria-label='Open'
 										onClick={() => {
-											handleOpenSession(session.id)
+											handleOpenDesktop(desktop.id)
 										}}
 									>
 										<Visibility />
@@ -424,5 +400,5 @@ const Sessions = ({ domain }: { domain: Domain }): JSX.Element => {
 	)
 }
 
-Sessions.displayName = 'Sessions'
-export default Sessions
+Desktops.displayName = 'Desktops'
+export default Desktops
