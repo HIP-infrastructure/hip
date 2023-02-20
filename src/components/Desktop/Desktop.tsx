@@ -9,7 +9,6 @@ import {
 } from '@mui/icons-material'
 import {
 	Box,
-	CircularProgress,
 	Divider,
 	Drawer,
 	IconButton,
@@ -21,12 +20,13 @@ import {
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
-	getDesktop,
-	stopApp,
 	createApp,
+	getDesktop,
 	getDesktopsAndApps,
+	stopApp,
 } from '../../api/remoteApp'
 import { Application, Container, ContainerType } from '../../api/types'
 import {
@@ -35,11 +35,10 @@ import {
 	POLLING,
 	ROUTE_PREFIX,
 } from '../../constants'
+import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import AppList from './AppList'
 import Info from './Info'
-import React, { useEffect, useRef, useState } from 'react'
-import { useNotification } from '../../hooks/useNotification'
 
 interface AppBarProps extends MuiAppBarProps {
 	open?: boolean
@@ -63,7 +62,10 @@ const Desktop = (): JSX.Element => {
 	const [drawerOpen, setDrawerOpen] = useState(true)
 	const [desktopIsAlive, setDesktopIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
+
 	const [from] = useState(location.state?.from)
+	const [workspace] = useState(location.state?.workspace)
+	const [groupIds] = useState(location.state?.groupIds || [])
 
 	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const desktopApps = containers?.filter(a => a.parentId === desktop?.id)
@@ -79,11 +81,10 @@ const Desktop = (): JSX.Element => {
 	// Polling for containers state
 	useEffect(() => {
 		const interval = setInterval(() => {
-			const workspace = location.state?.workspace
 			const showAdminView = location.state?.showAdminView || false
 			workspace &&
 				user?.uid &&
-				getDesktopsAndApps(workspace, user.uid, [], showAdminView)
+				getDesktopsAndApps(workspace, user.uid, groupIds, showAdminView)
 					.then(data => setContainers(data))
 					.catch(error => showNotif(error, 'error'))
 		}, POLLING * 1000)
@@ -230,7 +231,7 @@ const Desktop = (): JSX.Element => {
 					</IconButton>
 					<Box sx={{ flexGrow: 1 }} />
 					<Select
-						id='session-select'
+						id='desktop-select'
 						aria-label='Select desktop'
 						IconComponent={() => <ExpandMore />}
 						value={desktop?.id || ''}

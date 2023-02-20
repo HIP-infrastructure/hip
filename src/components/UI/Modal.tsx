@@ -65,7 +65,7 @@ const ModalComponent = forwardRef<ModalComponentHandle, Props>(
 								<Typography variant='h5'>{title}</Typography>
 								<Typography variant='body2'>{message}</Typography>
 							</CardContent>
-							<CardActions>
+							<CardActions sx={{ ml: 1 }}>
 								<Button
 									onClick={(): void => {
 										setIsOpen(false)
