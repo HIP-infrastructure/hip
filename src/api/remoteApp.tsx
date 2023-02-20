@@ -1,6 +1,11 @@
 import { API_REMOTE_APP, catchError, checkForError } from './gatewayClientAPI'
 import { Application, Container, Workspace } from './types'
 
+const toParams = (data: Record<string, string | boolean>) =>
+				Object.keys(data)
+					.map(key => `${key}=${encodeURIComponent(String(data[key]))}`)
+					.join('&')
+					
 export const getAvailableAppList = (): Promise<Application[]> =>
 	fetch(`${API_REMOTE_APP}/apps`).then(checkForError)
 
@@ -9,9 +14,16 @@ export const getDesktopsAndApps = (
 	userId: string,
 	groupIds: string[],
 	isAdmin = false
-): Promise<Container[]> =>
-	fetch(
-		`${API_REMOTE_APP}?workspace=${workspace}&userId=${userId}&groupIds=${groupIds}&isAdmin=${isAdmin}`,
+): Promise<Container[]> =>{
+	const query = {
+		workspace,
+		userId,
+		isAdmin
+	}
+	const g = groupIds.map(g => '&groupIds=' + encodeURIComponent(g)).join('')
+
+	return fetch(
+		`${API_REMOTE_APP}?${toParams(query)}${g}`,
 		{
 			headers: {
 				requesttoken: window.OC.requestToken,
@@ -20,6 +32,7 @@ export const getDesktopsAndApps = (
 	)
 		.then(checkForError)
 		.catch(catchError)
+	}
 
 export const getDesktop = (desktopId: string): Promise<Container> =>
 	fetch(`${API_REMOTE_APP}/${desktopId}`, {
