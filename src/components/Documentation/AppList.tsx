@@ -10,8 +10,9 @@ import {
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import { useAppStore } from '../store/appProvider'
-import TitleBar from './UI/titleBar'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { useAppStore } from '../../Store'
+import TitleBar from '../UI/titleBar'
 
 const Apps = () => {
 	const {
@@ -27,10 +28,7 @@ const Apps = () => {
 				}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
-				{availableApps?.error && (
-					<Alert severity='error'>{availableApps?.error}</Alert>
-				)}
-				{availableApps?.data?.map((app, i) => (
+				{availableApps?.map((app, i) => (
 					<Card
 						sx={{ maxWidth: 288, display: 'flex', flexDirection: 'column' }}
 						key={app.name}
@@ -38,7 +36,7 @@ const Apps = () => {
 						<CardMedia
 							component='img'
 							height='140'
-							src={`${process.env.REACT_APP_GATEWAY_API}/public/media/288x140-${app.name}__logo.png`}
+							src={`${API_GATEWAY}/public/media/288x140-${app.name}__logo.png`}
 							alt={app.label}
 						/>
 						<Divider />

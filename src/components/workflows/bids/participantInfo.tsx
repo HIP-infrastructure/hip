@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { getSubject } from '../../../api/bids'
 import { BIDSSubjectFile } from '../../../api/types'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 
 type IExistingFile = {
 		modality: string

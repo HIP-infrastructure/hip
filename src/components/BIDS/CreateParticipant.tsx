@@ -13,7 +13,7 @@ import {
 	BIDSDataset, Participant
 } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 import CreateField from '../UI/createField'
 
 type IField = Record<string, string>

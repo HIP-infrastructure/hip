@@ -2,7 +2,7 @@ import { Close } from '@mui/icons-material'
 import { Box, Typography, Paper, IconButton } from '@mui/material'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import FileBrowser from './UI/FileBrowser'
+import FileBrowser from './FileBrowser'
 
 const DataBrowser = () => {
 	const [path, setPath] = useState<string>()

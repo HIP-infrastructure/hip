@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
-import FileBrowser from './UI/FileBrowser'
-import FileChooser from './UI/FileChooser'
-import TitleBar from './UI/titleBar'
+import FileBrowser from '../UI/FileBrowser'
+import FileChooser from '../UI/FileChooser'
+import TitleBar from '../UI/titleBar'
 import * as React from 'react'
 
 const AdminCard = ({

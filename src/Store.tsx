@@ -1,28 +1,21 @@
-import { getCurrentUser } from '@nextcloud/auth'
-import React, { useState } from 'react'
+import { getCurrentUser } from '@nextcloud/auth';
+import React, { useState } from 'react';
 import {
 	createBidsDatasetsIndex,
-	refreshBidsDatasetsIndex,
-	queryBidsDatasets
-} from '../api/bids'
-import { getProjects } from '../api/projects'
+	queryBidsDatasets, refreshBidsDatasetsIndex
+} from './api/bids';
 import {
-	getAvailableAppList,
 	getCenters,
-	getContainers,
 	getUser,
-	isLoggedIn,
-} from '../api/gatewayClientAPI'
+	isLoggedIn
+} from './api/gatewayClientAPI';
+import { getProjects } from './api/projects';
+import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp';
 import {
 	Application,
-	BIDSDataset,
-	Container,
-	BIDSFile,
-	HIPCenter,
-	Participant,
-	UserCredentials,
-	HIPProject,
-} from '../api/types'
+	BIDSDataset, BIDSFile, Container, HIPCenter, HIPProject, Participant,
+	UserCredentials
+} from './api/types';
 
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -38,16 +31,19 @@ export interface IAppState {
 		HIPProject[] | null,
 		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
+	userProjects: [
+		HIPProject[] | null,
+		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
+	]
 	availableApps: [
-		{ data?: Application[]; error?: string } | undefined,
+		Application[] | null,
 		React.Dispatch<
-			React.SetStateAction<{ data?: Application[]; error?: string } | undefined>
+			React.SetStateAction<Application[] | null>
 		>
 	]
-	containers: [
-		{ data?: Container[]; error?: string } | undefined,
+	containers: [Container[] | null,
 		React.Dispatch<
-			React.SetStateAction<{ data?: Container[]; error?: string } | undefined>
+			React.SetStateAction<Container[] | null>
 		>
 	]
 	BIDSDatasets: [
@@ -80,17 +76,12 @@ export const AppStoreProvider = ({
 	children: JSX.Element
 }): JSX.Element => {
 	const [debug, setDebug] = useState(false)
-	const [availableApps, setAvailableApps] = useState<{
-		data?: Application[]
-		error?: string
-	}>()
-	const [containers, setContainers] = useState<{
-		data?: Container[]
-		error?: string
-	}>()
+	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
+	const [containers, setContainers] = useState<Container[] | null>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
+	const [userProjects, setUserProjects] = useState<HIPProject[] | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -133,22 +124,20 @@ export const AppStoreProvider = ({
 		})
 
 		getAvailableAppList()
-			.then(data => setAvailableApps({ data }))
-			.catch(error => setAvailableApps({ error }))
-		
-		//Create initial elasticsearch index for datasets (if it does not exist yet)
+			.then(data => setAvailableApps(data))
+
+		// Create initial elasticsearch index for datasets (if it does not exist yet)
 		// createBidsDatasetsIndex()
 
-		// // // Perform a full index of the BIDS datasets
+		// Perform a full index of the BIDS datasets
 		// refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
 			.catch(error => setBidsDatasets({ error }))
 
-		getContainers(currentUser)
-			.then(data => setContainers({ data }))
-			.catch(error => setContainers({ error }))
+		getDesktopsAndApps('private', currentUser.uid || '', [])
+			.then(data => setContainers(data))
 
 		setInterval(() => {
 			isLoggedIn()
@@ -161,6 +150,7 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			centers: [centers, setCenters],
 			projects: [projects, setProjects],
+			userProjects: [userProjects, setUserProjects],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
@@ -177,6 +167,8 @@ export const AppStoreProvider = ({
 			setCenters,
 			projects,
 			setProjects,
+			userProjects,
+			setUserProjects,
 			containers,
 			setContainers,
 			availableApps,

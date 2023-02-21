@@ -3,24 +3,24 @@ import { Box, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
-import About from './components/About'
-import Admin from './components/Admin'
-import Apps from './components/apps'
+import About from './components/Documentation/About'
+import Admin from './components/Center/Admin'
+import AppList from './components/Documentation/AppList'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
-import Dashboard from './components/Dashboard/Dashboard'
-import DashboardOutlet from './components/Dashboard/index'
-import DataBrowser from './components/Data'
-import Documentation from './components/documentation'
+import PrivateWorkspace from './components/Center/Workspace'
+import DataBrowser from './components/UI/DataBrowser'
+import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
-import ProjectDashboard from './components/Project/Dashboard'
+import ProjectDashboard from './components/Project/Workspace'
 import ProjectData from './components/Project/Data'
 import ProjectDataset from './components/Project/Dataset'
 import ProjectDatasets from './components/Project/Datasets'
 import Projects from './components/Projects'
-import Session from './components/session'
-import Sessions from './components/sessions'
+import Desktop from './components/Desktop/Desktop'
+import CenterDesktops from './components/Center/Desktops'
+import ProjectDesktops from './components/Project/Desktops'
 import Navigation from './components/Sidebar'
 import { ROUTE_PREFIX } from './constants'
 
@@ -54,7 +54,7 @@ const Layout = (): JSX.Element => (
 				}}
 				variant='h6'
 			>
-				{process.env.REACT_APP_HOSTNAME}
+				𓂀 {process.env.REACT_APP_HOSTNAME}
 			</Typography>
 		)}
 		<Navigation />
@@ -71,30 +71,29 @@ const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
 			<Route index element={<About />} />
-			<Route path={'apps'} element={<Apps />} />
+			<Route path={'apps'} element={<AppList />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'admin'} element={<Admin />} />
-			<Route path={'private'} element={<DashboardOutlet />}>
-				<Route index element={<DashboardOutlet />} />
-				<Route path={':id'} element={<Dashboard />} />
-				<Route path={':id/sessions'} element={<Sessions domain={'center'} />} />
-				<Route path={':id/datasets'} element={<Outlet />}>
+			<Route path={'private'} element={<Outlet />}>
+				<Route index element={<Centers />} />
+				<Route path={':centerId'} element={<PrivateWorkspace />} />
+				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
+				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-				<Route path={':id/data'} element={<DataBrowser />} />
-				<Route path={'centers'} element={<Centers />} />
+				<Route path={':centerId/data'} element={<DataBrowser />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
-				<Route path={':id'} element={<ProjectDashboard />} />
-				<Route path={':id/sessions'} element={<Sessions domain={'collab'} />} />
-				<Route path={':id/datasets'} element={<Outlet />}>
+				<Route path={':projectId'} element={<ProjectDashboard />} />
+				<Route path={':projectId/desktops'} element={<ProjectDesktops />} />
+				<Route path={':projectId/datasets'} element={<Outlet />}>
 					<Route index element={<ProjectDatasets />} />
 					<Route path={':datasetId'} element={<ProjectDataset />} />
 				</Route>
-				<Route path={':id/data'} element={<ProjectData />} />
+				<Route path={':projectId/data'} element={<ProjectData />} />
 			</Route>
 			<Route
 				path='*'
@@ -105,7 +104,7 @@ const App = () => (
 				}
 			/>
 		</Route>
-		<Route path={`${ROUTE_PREFIX}/sessions/:id`} element={<Session />} />
+		<Route path={`${ROUTE_PREFIX}/desktops/:id`} element={<Desktop />} />
 	</Routes>
 )
 

@@ -18,7 +18,7 @@ import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
 import CreateField from '../UI/createField'
 import { writeParticipantsTSV } from '../../api/bids'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 
 const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])

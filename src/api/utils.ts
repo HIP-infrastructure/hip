@@ -1,13 +1,5 @@
 import { ContainerState } from './types'
 
-export const uniq = (type = 'session'): string => {
-	const uniqueId = `${type === 'session' ? 'session' : 'app'}-${Date.now()
-		.toString()
-		.slice(-3)}`
-
-	return uniqueId
-}
-
 export const loading = (state: ContainerState) =>
 	[
 		ContainerState.CREATED,

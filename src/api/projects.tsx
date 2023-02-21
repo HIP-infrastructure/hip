@@ -10,8 +10,8 @@ export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const createProject = async (project: {
-	admin: string
+export const createProject = async (createProject: {
+	adminId: string
 	title: string
 	description: string
 }): Promise<any> => {
@@ -21,7 +21,7 @@ export const createProject = async (project: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify(project),
+		body: JSON.stringify(createProject),
 	})
 		.then(checkForError)
 		.catch(catchError)
@@ -49,12 +49,38 @@ export const updateProject = async (
 		.catch(catchError)
 }
 
-export const addUserToProject = async (
-	name: string,
-	userId: string
-): Promise<any> => {
-	addUserToProject(userId, 'project?.name')
+export const deleteProject = async (name: string): Promise<any> => {
+	return fetch(`${API_GATEWAY}/projects/${name}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
+
+export const addUserToProject = async (
+	userId: string,
+	projectName: string,
+): Promise<any> => fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
+	method: 'POST',
+	headers: {
+		requesttoken: window.OC.requestToken,
+	},
+})
+	.then(checkForError)
+	.catch(catchError)
+
+export const getProjectFiles = async (projectName: string): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/files`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
 
 export const getProjectDatasets = async (
 	projectId: string
@@ -71,7 +97,7 @@ export const getProjectDatasets = async (
 export const createBIDSDataset = async (
 	projectId: string
 ): Promise<BIDSDataset> => {
-	return fetch(`${process.env.REACT_APP_GATEWAY_API}/`, {
+	return fetch(`${API_GATEWAY}/`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
@@ -86,7 +112,7 @@ export const createBIDSDataset = async (
 export const copyBIDSFilesToBIDSDataset = async (
 	projectId: string
 ): Promise<void> => {
-	return fetch(`${process.env.REACT_APP_GATEWAY_API}/`, {
+	return fetch(`${API_GATEWAY}/`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
@@ -97,12 +123,3 @@ export const copyBIDSFilesToBIDSDataset = async (
 		.then(checkForError)
 		.catch(catchError)
 }
-
-export const getProjectFiles = async (path: string): Promise<File2[]> =>
-	fetch(`${API_GATEWAY}/projects/files?path=${encodeURIComponent(path)}`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)

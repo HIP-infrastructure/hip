@@ -10,7 +10,7 @@ import {
 	TextField,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 import TitleBar from '../../UI/titleBar'
 import { queryBidsDatasets } from '../../../api/bids'
 import DatasetsSearchResults from './datasetsSearchResults'

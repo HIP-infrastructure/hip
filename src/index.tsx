@@ -9,7 +9,7 @@ import { Slide } from '@mui/material'
 
 import App from './App'
 import Theme from './components/theme'
-import { AppStoreProvider } from './store/appProvider'
+import { AppStoreProvider } from './Store'
 
 // import reportWebVitals from './reportWebVitals'
 
@@ -63,32 +63,32 @@ const container = document.getElementById('hip-root')
 const root = createRoot(container!)
 
 root.render(
-	// <React.StrictMode>
-	<AppStoreProvider>
-		<MatomoInstance>
-			<BrowserRouter>
-				<DebugRouter>
-					<Theme>
-						<SnackbarProvider
-							maxSnack={3}
-							autoHideDuration={4000}
-							TransitionComponent={Slide}
-							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-							iconVariant={{
-								success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
-								error: <Error sx={{ ...iconsStyle.icon }} />,
-								warning: <Warning sx={{ ...iconsStyle.icon }} />,
-								info: <Info sx={{ ...iconsStyle.icon }} />,
-							}}
-						>
-							<App />
-						</SnackbarProvider>
-					</Theme>
-				</DebugRouter>
-			</BrowserRouter>
-		</MatomoInstance>
-	</AppStoreProvider>
-	// </React.StrictMode>
+	<React.StrictMode>
+		<AppStoreProvider>
+			<MatomoInstance>
+				<BrowserRouter>
+					<DebugRouter>
+						<Theme>
+							<SnackbarProvider
+								maxSnack={3}
+								autoHideDuration={4000}
+								TransitionComponent={Slide}
+								anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+								iconVariant={{
+									success: <CheckCircle sx={{ ...iconsStyle.icon }} />,
+									error: <Error sx={{ ...iconsStyle.icon }} />,
+									warning: <Warning sx={{ ...iconsStyle.icon }} />,
+									info: <Info sx={{ ...iconsStyle.icon }} />,
+								}}
+							>
+								<App />
+							</SnackbarProvider>
+						</Theme>
+					</DebugRouter>
+				</BrowserRouter>
+			</MatomoInstance>
+		</AppStoreProvider>
+	</React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function
