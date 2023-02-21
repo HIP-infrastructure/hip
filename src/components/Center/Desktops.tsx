@@ -50,7 +50,7 @@ const Desktops = (): JSX.Element => {
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [setContainers, user])
+	}, [setContainers, user, showAdminView])
 
 	const handleOpenDesktop = (desktopId: string) => {
 		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {

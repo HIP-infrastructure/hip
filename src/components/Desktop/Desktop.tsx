@@ -9,6 +9,7 @@ import {
 } from '@mui/icons-material'
 import {
 	Box,
+	CircularProgress,
 	Divider,
 	Drawer,
 	IconButton,
@@ -266,7 +267,7 @@ const Desktop = (): JSX.Element => {
 				</Toolbar>
 			</AppBar>
 			<Box>
-				{/* {!desktopIsAlive && (
+				{!desktopIsAlive && (
 					<div
 						aria-label='Loading remote desktop'
 						style={{
@@ -280,9 +281,8 @@ const Desktop = (): JSX.Element => {
 					>
 						<CircularProgress size={32} />
 					</div>
-				)} */}
-				{/* {desktopIsAlive && desktop && ( */}
-				{desktop?.url && (
+				)}
+				{desktopIsAlive && desktop && desktop?.url && (
 					<iframe
 						ref={fullScreenRef}
 						title='Desktop'
@@ -296,7 +296,6 @@ const Desktop = (): JSX.Element => {
 						}}
 					/>
 				)}
-				{/* )} */}
 			</Box>
 			<Drawer
 				sx={{

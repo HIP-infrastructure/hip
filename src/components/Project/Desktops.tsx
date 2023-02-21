@@ -4,7 +4,6 @@ import {
 	Button,
 	CircularProgress,
 	FormControlLabel,
-	FormGroup,
 	Switch,
 	Typography,
 } from '@mui/material'
@@ -43,27 +42,25 @@ const Desktops = (): JSX.Element => {
 		userProjects: [userProjects],
 	} = useAppStore()
 
-	const [showAdminView, setShowAdminView] = React.useState(
-		localStorage.getItem('admin-view') === 'true'
-	)
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const [containers, setContainers] = React.useState<Container[] | null>(null)
 	const [project, setProject] = React.useState<HIPProject>()
 
 	useEffect(() => {
-		const p = userProjects?.find(p => p.name === params?.projectId)
-		setProject(p)
+		if (params.projectId === project?.name) return
+
+		setContainers(null)
 		if (params.projectId)
 			getProject(params.projectId).then(project => {
 				setProject(project)
 			})
-	}, [projects, params.projectId])
+	}, [projects, setProject, params.projectId])
 
 	useEffect(() => {
 		const userId = user?.uid
 		if (!userId) return
 
-		const projectName = project?.name
+		const projectName = params.projectId
 		if (!projectName) return
 
 		const interval = setInterval(() => {
@@ -71,22 +68,21 @@ const Desktops = (): JSX.Element => {
 				'collab',
 				userId,
 				[projectName],
-				showAdminView || false
+				false
 			)
 				.then(data => setContainers(data))
 				.catch(error => showNotif(error, 'error'))
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [setContainers, user, project])
+	}, [getDesktopsAndApps, setContainers, user, params.projectId])
 
 	const handleOpenDesktop = (desktopId: string) => {
 		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'collab',
-				groupIds: [project?.name],
-				showAdminView,
+				groupIds: [project?.name]
 			},
 		})
 		trackEvent({
@@ -128,39 +124,17 @@ const Desktops = (): JSX.Element => {
 			...s,
 			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
 		}))
-		?.filter((s: Container) =>
-			user && showAdminView ? true : s.userId === user?.uid
-		)
 
 	return (
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={'My Desktops'}
+				title={`${project?.title} Desktops`}
 				description={
 					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
 					<Box sx={{ display: 'flex' }}>
-						{user?.isAdmin && (
-							<FormGroup>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={showAdminView}
-											onChange={() => {
-												localStorage.setItem(
-													'admin-view',
-													String(!showAdminView)
-												)
-												setShowAdminView(!showAdminView)
-											}}
-										/>
-									}
-									label='Admin view'
-								/>
-							</FormGroup>
-						)}
 						<Button
 							variant='contained'
 							color='primary'
