@@ -1,13 +1,13 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	AccountTree,
+	Apps,
 	Assignment,
 	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	Folder,
 	Monitor,
-	Apps,
 } from '@mui/icons-material'
 import { Avatar, CircularProgress, Divider, Drawer } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -19,10 +19,9 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../Store'
-import { getUserProjects } from '../api/projects'
-import { API_GATEWAY } from '../api/gatewayClientAPI';
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -42,9 +41,6 @@ const Sidebar = () => {
 
 	React.useEffect(() => {
 		if (!user?.uid) return
-		getUserProjects(user?.uid).then(projects => {
-			setUserProjects(projects)
-		})
 	}, [user])
 
 	const handleClick = (projectId: string) => {

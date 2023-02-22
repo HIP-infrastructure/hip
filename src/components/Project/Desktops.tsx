@@ -9,26 +9,19 @@ import {
 } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { getProject } from '../../api/projects'
 import {
 	createDesktop,
 	getDesktopsAndApps,
 	removeAppsAndDesktop,
 } from '../../api/remoteApp'
-import {
-	AppContainer,
-	Container,
-	ContainerType,
-	HIPProject,
-} from '../../api/types'
+import { Container, ContainerType } from '../../api/types'
 import { POLLING, ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DesktopCard from '../UI/DesktopCard'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
-import TitleBar from '../UI/titleBar'
 
-const Desktops = (): JSX.Element => {
+const ProjectDesktops = (): JSX.Element => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const params = useParams()
@@ -44,17 +37,11 @@ const Desktops = (): JSX.Element => {
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const [containers, setContainers] = React.useState<Container[] | null>(null)
-	const [project, setProject] = React.useState<HIPProject>()
 
-	useEffect(() => {
-		if (params.projectId === project?.name) return
-
-		setContainers(null)
-		if (params.projectId)
-			getProject(params.projectId).then(project => {
-				setProject(project)
-			})
-	}, [projects, setProject, params.projectId])
+	const getDesktops = (userId: string, projectName: string) =>
+		getDesktopsAndApps('collab', userId, [projectName], false)
+			.then(data => setContainers(data))
+			.catch(error => showNotif(error, 'error'))
 
 	useEffect(() => {
 		const userId = user?.uid
@@ -63,26 +50,20 @@ const Desktops = (): JSX.Element => {
 		const projectName = params.projectId
 		if (!projectName) return
 
+		getDesktops(userId, projectName)
 		const interval = setInterval(() => {
-			getDesktopsAndApps(
-				'collab',
-				userId,
-				[projectName],
-				false
-			)
-				.then(data => setContainers(data))
-				.catch(error => showNotif(error, 'error'))
+			getDesktops(userId, projectName)
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [getDesktopsAndApps, setContainers, user, params.projectId])
+	}, [user, params.projectId])
 
 	const handleOpenDesktop = (desktopId: string) => {
 		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'collab',
-				groupIds: [project?.name]
+				groupIds: [project?.name],
 			},
 		})
 		trackEvent({
@@ -118,39 +99,36 @@ const Desktops = (): JSX.Element => {
 				.catch(error => showNotif(error, 'error'))
 	}
 
+	const project = userProjects?.find(
+		project => project.name === params?.projectId
+	)
+
 	const desktops = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
 		.map((s: Container) => ({
 			...s,
-			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
+			apps: containers.filter(a => a.parentId === s.id),
 		}))
 
 	return (
 		<>
 			<Modal ref={modalRef} />
-			<TitleBar
-				title={`${project?.title} Desktops`}
-				description={
-					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
-				}
-				button={
-					<Box sx={{ display: 'flex' }}>
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={() => {
-								createNewDesktop()
-								trackEvent({
-									category: 'server',
-									action: 'start',
-								})
-							}}
-						>
-							Create Desktop
-						</Button>
-					</Box>
-				}
-			/>
+
+			<Box sx={{ display: 'flex' }}>
+				<Button
+					variant='contained'
+					color='primary'
+					onClick={() => {
+						createNewDesktop()
+						trackEvent({
+							category: 'server',
+							action: 'start',
+						})
+					}}
+				>
+					Create Desktop
+				</Button>
+			</Box>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
@@ -204,5 +182,5 @@ const Desktops = (): JSX.Element => {
 	)
 }
 
-Desktops.displayName = 'Desktops'
-export default Desktops
+ProjectDesktops.displayName = 'ProjectDesktops'
+export default ProjectDesktops

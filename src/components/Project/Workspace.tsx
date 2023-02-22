@@ -1,3 +1,4 @@
+import { Chat } from '@mui/icons-material';
 import {
 	Box,
 	Button,
@@ -13,25 +14,17 @@ import {
 	Select,
 	SelectChangeEvent,
 	Stack,
-	Typography,
-} from '@mui/material'
-import React, { useEffect } from 'react'
-import {
-	addUserToProject,
-	getProject,
-	getProjectDatasets,
-	getUserProjects,
-} from '../../api/projects'
-import { BIDSDataset, ContainerType, HIPProject, User } from '../../api/types'
-import { useAppStore } from '../../Store'
-import { useNavigate, useParams } from 'react-router-dom'
-import { ROUTE_PREFIX } from '../../constants'
-import TitleBar from '../UI/titleBar'
-import { API_GATEWAY, getUsers } from '../../api/gatewayClientAPI'
-import { Chat } from '@mui/icons-material'
-import MainCard from './MainCard'
-import Data from './Data'
-import { useNotification } from '../../hooks/useNotification'
+	Typography
+} from '@mui/material';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { API_GATEWAY, getUsers } from '../../api/gatewayClientAPI';
+import { addUserToProject, getUserProjects } from '../../api/projects';
+import { BIDSDataset, ContainerType, User } from '../../api/types';
+import { useNotification } from '../../hooks/useNotification';
+import { useAppStore } from '../../Store';
+import Data from './Data';
+import ProjectCard from './ProjectCard';
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
@@ -41,14 +34,12 @@ const ProjectDashboard = () => {
 	const [datasets, setDatasets] = React.useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
-	const [project, setProject] = React.useState<HIPProject>()
 	const [isAddingUser, setIsAddingUser] = React.useState(false)
 	const [users, setUsers] = React.useState<User[]>([])
 	const {
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
 		user: [user],
-		projects: [projects],
 		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 
@@ -61,50 +52,35 @@ const ProjectDashboard = () => {
 
 	useEffect(() => {
 		getUsers().then(users => setUsers(users))
-
-		const project = projects?.find(project => project.name === params?.projectId)
-		setProject(project)
-
-		if (params.projectId)
-			getProject(params.projectId).then(project => {
-				setProject(project)
-			})
-	}, [projects, setProject, params, setUsers, getUsers])
+	}, [])
 
 	const handleAddUserToProject = (userId: string) => {
 		if (!project?.name) return
 
-		addUserToProject(userId, project.name).then(() => {
-			showNotif('User added', 'success')
-			setIsAddingUser(false)
+		addUserToProject(userId, project.name)
+			.then(() => {
+				showNotif('User added', 'success')
+				setIsAddingUser(false)
 
-			if (user?.uid) {
-				getProject(project.name).then(project => {
-					setProject(project)
-				})
-
-				getUserProjects(user.uid).then(projects => {
-					setUserProjects(projects)
-				})
-			}
-		}).catch(e => {
-			showNotif(`${e}`, 'error')
-		})
+				if (user?.uid) {
+					getUserProjects(user.uid).then(projects => {
+						setUserProjects(projects)
+					})
+				}
+			})
+			.catch(e => {
+				showNotif(`${e}`, 'error')
+			})
 	}
 
-	const sessions = containers?.filter(
-		c => c.type === ContainerType.DESKTOP
+	const servers = containers?.filter(c => c.type === ContainerType.DESKTOP)
+
+	const project = userProjects?.find(
+		project => project.name === params?.projectId
 	)
 
 	return (
 		<>
-			<Box sx={{ mb: 2 }}>
-				<TitleBar
-					title={`${project?.title || ''} Collaborative Space`}
-					description={project?.description}
-				/>
-			</Box>
-
 			<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
 				Welcome {user?.displayName}
 			</Typography>
@@ -118,19 +94,11 @@ const ProjectDashboard = () => {
 					}}
 				>
 					<Box sx={{ gridColumn: '1', gridRow: '1' }}>
-						{project && <MainCard group={project} />}
+						{project && <ProjectCard group={project} />}
 					</Box>
 
 					<>
 						<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-							<Data
-								project={project}
-								bidsDatasets={datasets}
-								sessions={sessions}
-							/>
-						</Box>
-						<Box sx={{ gridColumn: '1', gridRow: '2' }}>{/* <Tools /> */}</Box>
-						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
 							<Card
 								sx={{
 									width: 320,
@@ -222,11 +190,7 @@ const ProjectDashboard = () => {
 													))}
 												</Select>
 											</FormControl>
-											<Button
-												variant='outlined'
-											>
-												Add Member
-											</Button>
+											<Button variant='outlined'>Add Member</Button>
 										</>
 									)}
 									{!isAddingUser && (
@@ -240,6 +204,14 @@ const ProjectDashboard = () => {
 								</CardContent>
 								<CardActions sx={{ p: 2 }}></CardActions>
 							</Card>
+						</Box>
+						<Box sx={{ gridColumn: '1', gridRow: '2' }}>{/* <Tools /> */}</Box>
+						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
+							<Data
+								project={project}
+								bidsDatasets={datasets}
+								sessions={servers}
+							/>
 						</Box>
 					</>
 				</Box>

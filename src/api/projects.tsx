@@ -6,7 +6,7 @@ export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {}).then(checkForError).catch(catchError)
 
 export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects?userId=${userId}`, {})
+	fetch(`${API_GATEWAY}/projects/forUser/${userId}`, {})
 		.then(checkForError)
 		.catch(catchError)
 

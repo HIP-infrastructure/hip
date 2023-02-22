@@ -1,21 +1,19 @@
-import { getCurrentUser } from '@nextcloud/auth';
-import React, { useState } from 'react';
-import {
-	createBidsDatasetsIndex,
-	queryBidsDatasets, refreshBidsDatasetsIndex
-} from './api/bids';
-import {
-	getCenters,
-	getUser,
-	isLoggedIn
-} from './api/gatewayClientAPI';
-import { getProjects } from './api/projects';
-import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp';
+import { getCurrentUser } from '@nextcloud/auth'
+import React, { useState } from 'react'
+import { createBidsDatasetsIndex, queryBidsDatasets, refreshBidsDatasetsIndex } from './api/bids'
+import { getCenters, getUser } from './api/gatewayClientAPI'
+import { getProjects, getUserProjects } from './api/projects'
+import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
 import {
 	Application,
-	BIDSDataset, BIDSFile, Container, HIPCenter, HIPProject, Participant,
-	UserCredentials
-} from './api/types';
+	BIDSDataset,
+	BIDSFile,
+	Container,
+	HIPCenter,
+	HIPProject,
+	Participant,
+	UserCredentials,
+} from './api/types'
 
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -37,14 +35,11 @@ export interface IAppState {
 	]
 	availableApps: [
 		Application[] | null,
-		React.Dispatch<
-			React.SetStateAction<Application[] | null>
-		>
+		React.Dispatch<React.SetStateAction<Application[] | null>>
 	]
-	containers: [Container[] | null,
-		React.Dispatch<
-			React.SetStateAction<Container[] | null>
-		>
+	containers: [
+		Container[] | null,
+		React.Dispatch<React.SetStateAction<Container[] | null>>
 	]
 	BIDSDatasets: [
 		{ data?: BIDSDataset[]; error?: string } | undefined,
@@ -123,25 +118,25 @@ export const AppStoreProvider = ({
 			}
 		})
 
-		getAvailableAppList()
-			.then(data => setAvailableApps(data))
+		getUserProjects(currentUser.uid || '').then(projects => {
+			setUserProjects(projects)
+		})
+
+		getAvailableAppList().then(data => setAvailableApps(data))
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
-		// createBidsDatasetsIndex()
+		createBidsDatasetsIndex()
 
 		// Perform a full index of the BIDS datasets
-		// refreshBidsDatasetsIndex(currentUser.uid)
+		refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
 			.catch(error => setBidsDatasets({ error }))
 
-		getDesktopsAndApps('private', currentUser.uid || '', [])
-			.then(data => setContainers(data))
-
-		setInterval(() => {
-			isLoggedIn()
-		}, 30 * 1000)
+		getDesktopsAndApps('private', currentUser.uid || '', []).then(data =>
+			setContainers(data)
+		)
 	}, [])
 
 	const value: IAppState = React.useMemo(

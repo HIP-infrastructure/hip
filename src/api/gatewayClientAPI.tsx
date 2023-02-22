@@ -1,6 +1,6 @@
 import {
 	File2,
-	GroupFolder, HIPCenter,
+	HIPCenter,
 	TreeNode,
 	User
 } from './types';
@@ -75,7 +75,7 @@ export const getUser = async (userid?: string): Promise<User> =>
 
 export const getGroupFolders = async (
 	userid?: string
-): Promise<GroupFolder[]> =>
+) =>
 	fetch(`${API_GATEWAY}/groups/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

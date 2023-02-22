@@ -64,23 +64,16 @@ const Datasets = () => {
 				setDatasetCreated={setDatasetCreated}
 			/>
 
-			<TitleBar
-				title={`${project?.name} BIDS Datasets`}
-				button={
-					<Box sx={{ display: 'flex' }}>
-						<Button
-							color='primary'
-							size='small'
-							sx={{ m: 2 }}
-							startIcon={<Add />}
-							onClick={() => setIsCreateDialogOpen(true)}
-							variant={'contained'}
-						>
-							Create BIDS Dataset
-						</Button>
-					</Box>
-				}
-			/>
+			<Button
+				color='primary'
+				size='small'
+				sx={{ m: 2 }}
+				startIcon={<Add />}
+				onClick={() => setIsCreateDialogOpen(true)}
+				variant={'contained'}
+			>
+				Create BIDS Dataset
+			</Button>
 
 			<Box sx={{ mt: 2 }}>
 				{datasets?.error && <Alert severity='error'>{datasets?.error}</Alert>}
