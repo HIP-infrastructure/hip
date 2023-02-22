@@ -1,5 +1,5 @@
 import { API_REMOTE_APP, catchError, checkForError } from './gatewayClientAPI'
-import { Application, Container, Workspace } from './types'
+import { Application, Container, WorkspaceType } from './types'
 
 const toParams = (data: Record<string, string | boolean>) =>
 				Object.keys(data)
@@ -10,7 +10,7 @@ export const getAvailableAppList = (): Promise<Application[]> =>
 	fetch(`${API_REMOTE_APP}/apps`).then(checkForError)
 
 export const getDesktopsAndApps = (
-	workspace: Workspace,
+	workspace: WorkspaceType,
 	userId: string,
 	groupIds: string[],
 	isAdmin = false
@@ -44,7 +44,7 @@ export const getDesktop = (desktopId: string): Promise<Container> =>
 		.catch(catchError)
 
 export const createDesktop = (
-	workspace: Workspace,
+	workspace: WorkspaceType,
 	userId: string,
 	groupIds: string[] = []
 ): Promise<Container[]> => {

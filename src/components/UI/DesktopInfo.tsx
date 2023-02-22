@@ -19,13 +19,9 @@ const DesktopInfo = ({ desktop }: { desktop: Container }) => (
 				</Typography>
 				{desktop.workspace === 'collab' && (
 					<Typography variant='caption' gutterBottom component='div'>
-						{desktop.groupIds
-							.map(
-								g =>
-									`${g
-										.replace('group-', '')
-										.replace('HIP-dev-', '')
-										.replace('HIP-', '')}`
+						Collaborative workspace: {desktop.groupIds
+							?.map(
+								g => g.replace('group-HIP-', '')
 							)
 							.join(', ')}
 					</Typography>

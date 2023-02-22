@@ -67,9 +67,14 @@ const Desktop = (): JSX.Element => {
 	const [from] = useState(location.state?.from)
 	const [workspace] = useState(location.state?.workspace)
 	const [groupIds] = useState(location.state?.groupIds || [])
-
+	const [showAdminView] = useState(location.state?.showAdminView || false)
 	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const desktopApps = containers?.filter(a => a.parentId === desktop?.id)
+
+	const getDesktops = (userId: string) =>
+		getDesktopsAndApps(workspace, userId, groupIds, showAdminView)
+			.then(data => setContainers(data))
+			.catch(error => showNotif(error, 'error'))
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -81,16 +86,16 @@ const Desktop = (): JSX.Element => {
 
 	// Polling for containers state
 	useEffect(() => {
+		const userId = user?.uid
+		if (!userId) return
+
+		getDesktops(userId)
 		const interval = setInterval(() => {
-			const showAdminView = location.state?.showAdminView || false
-			workspace &&
-				user?.uid &&
-				getDesktopsAndApps(workspace, user.uid, groupIds, showAdminView)
-					.then(data => setContainers(data))
-					.catch(error => showNotif(error, 'error'))
+			getDesktops(userId)
 		}, POLLING * 1000)
+
 		return () => clearInterval(interval)
-	}, [setContainers, user, desktop])
+	}, [user])
 
 	// Check for XPra readiness
 	useEffect(() => {

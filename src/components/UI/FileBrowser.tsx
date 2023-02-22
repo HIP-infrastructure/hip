@@ -90,7 +90,7 @@ const FileBrowser = ({
 		if (!showGroups && groups) return
 
 		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroups(groupFolders?.map(g => g.label))
+			setGroups(groupFolders?.map((g: any) => g.label))
 		})
 	}, [showGroups, user, setGroups])
 
