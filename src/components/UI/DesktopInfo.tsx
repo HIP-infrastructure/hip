@@ -17,32 +17,19 @@ const DesktopInfo = ({ desktop }: { desktop: Container }) => (
 				<Typography variant='h5' component='div'>
 					Desktop #{desktop?.name}
 				</Typography>
-				{desktop.workspace === 'collab' && (
-					<Typography variant='caption' gutterBottom component='div'>
-						Collaborative workspace: {desktop.groupIds
-							?.map(
-								g => g.replace('group-HIP-', '')
-							)
-							.join(', ')}
-					</Typography>
-				)}
 			</Box>
 			<Chip
-				label={
-					<Box
-						sx={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						}}
-					>
-						{desktop?.state === 'destroyed' ? 'exited' : desktop?.state}
-					</Box>
-				}
+				label={desktop?.state === 'destroyed' ? 'exited' : desktop?.state}
 				color={color(desktop?.state)}
 				variant='outlined'
 			/>
 		</Box>
+		{desktop.workspace === 'collab' && (
+			<Typography variant='caption' gutterBottom component='div'>
+				Project:{' '}
+				{desktop.groupIds?.map(g => g.replace('group-HIP-', '')).join(', ')}
+			</Typography>
+		)}
 	</>
 )
 

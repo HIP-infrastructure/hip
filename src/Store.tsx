@@ -41,6 +41,10 @@ export interface IAppState {
 		Container[] | null,
 		React.Dispatch<React.SetStateAction<Container[] | null>>
 	]
+	projectContainers: [
+		Container[] | null,
+		React.Dispatch<React.SetStateAction<Container[] | null>>
+	]
 	BIDSDatasets: [
 		{ data?: BIDSDataset[]; error?: string } | undefined,
 		React.Dispatch<
@@ -73,6 +77,7 @@ export const AppStoreProvider = ({
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [containers, setContainers] = useState<Container[] | null>(null)
+	const [projectContainers, setProjectContainers] = useState<Container[] | null>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
@@ -125,10 +130,10 @@ export const AppStoreProvider = ({
 		getAvailableAppList().then(data => setAvailableApps(data))
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
+		// createBidsDatasetsIndex()
 
 		// Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
+		// refreshBidsDatasetsIndex(currentUser.uid)
 
 		queryBidsDatasets(currentUser.uid || '')
 			.then(data => setBidsDatasets({ data }))
@@ -148,6 +153,7 @@ export const AppStoreProvider = ({
 			userProjects: [userProjects, setUserProjects],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
+			projectContainers: [projectContainers, setProjectContainers],
 			BIDSDatasets: [bidsDatasets, setBidsDatasets],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
@@ -166,6 +172,8 @@ export const AppStoreProvider = ({
 			setUserProjects,
 			containers,
 			setContainers,
+			projectContainers,
+			setProjectContainers,
 			availableApps,
 			setAvailableApps,
 			bidsDatasets,

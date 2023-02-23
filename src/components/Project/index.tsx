@@ -1,9 +1,7 @@
-import { Box } from '@mui/material'
 import React, { useEffect } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { getProject } from '../../api/projects'
 import { useAppStore } from '../../Store'
-import TitleBar from '../UI/titleBar'
 
 const Project = () => {
 	const params = useParams()
@@ -11,9 +9,11 @@ const Project = () => {
 		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 
+	// Get Data for the project
 	useEffect(() => {
 		if (!params.projectId) return
 
+		// looking for the full project data, with members
 		const project = userProjects?.find(
 			project => project.name === params?.projectId && project.members
 		)
@@ -29,21 +29,7 @@ const Project = () => {
 		}
 	}, [params])
 
-	const project = userProjects?.find(
-		project => project.name === params?.projectId
-	)
-
-	return (
-		<>
-			<Box sx={{ mb: 2 }}>
-				<TitleBar
-					title={`Collaborative Workspace: ${project?.title || ''} `}
-					description={project?.description}
-				/>
-			</Box>
-			<Outlet />
-		</>
-	)
+	return <Outlet />
 }
 
 export default Project

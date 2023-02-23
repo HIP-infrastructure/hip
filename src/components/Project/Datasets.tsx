@@ -31,17 +31,16 @@ import { getProjectDatasets } from '../../api/projects'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const Datasets = () => {
-	const {
-		user: [user],
-		projects: [projects],
-	} = useAppStore()
 	const params = useParams()
+	const {
+		user: [user], 
+		userProjects: [userProjects, setUserProjects],
+	} = useAppStore()
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [datasetCreated, setDatasetCreated] = useState(false)
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
-	const [project, setProject] = useState<HIPProject>()
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
@@ -51,10 +50,9 @@ const Datasets = () => {
 		})
 	}, [user?.uid])
 
-	useEffect(() => {
-		const project = projects?.find(project => project.name === params?.id)
-		setProject(project)
-	}, [projects, setProject, params])
+	const project = userProjects?.find(
+		project => project.name === params?.projectId
+	)
 
 	return (
 		<>
@@ -64,16 +62,24 @@ const Datasets = () => {
 				setDatasetCreated={setDatasetCreated}
 			/>
 
-			<Button
-				color='primary'
-				size='small'
-				sx={{ m: 2 }}
-				startIcon={<Add />}
-				onClick={() => setIsCreateDialogOpen(true)}
-				variant={'contained'}
-			>
-				Create BIDS Dataset
-			</Button>
+			<Box sx={{ mb: 2 }}>
+				<TitleBar
+					title={`Collaborative Workspace: ${project?.title || ''} `}
+					description={project?.description}
+					button={
+						<Button
+							color='primary'
+							size='small'
+							sx={{ m: 2 }}
+							startIcon={<Add />}
+							onClick={() => setIsCreateDialogOpen(true)}
+							variant={'contained'}
+						>
+							Create BIDS Dataset
+						</Button>
+					}
+				/>
+			</Box>
 
 			<Box sx={{ mt: 2 }}>
 				{datasets?.error && <Alert severity='error'>{datasets?.error}</Alert>}
