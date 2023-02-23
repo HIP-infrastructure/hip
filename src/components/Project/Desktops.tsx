@@ -20,23 +20,21 @@ import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DesktopCard from '../UI/DesktopCard'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
+import TitleBar from '../UI/titleBar'
 
 const ProjectDesktops = (): JSX.Element => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const params = useParams()
-
 	const { trackEvent } = useMatomo()
 	const { showNotif } = useNotification()
 	const {
 		user: [user],
 		debug: [debug, setDebug],
-		projects: [projects],
 		userProjects: [userProjects],
+		projectContainers: [containers, setContainers],
 	} = useAppStore()
-
 	const modalRef = useRef<ModalComponentHandle>(null)
-	const [containers, setContainers] = React.useState<Container[] | null>(null)
 
 	const getDesktops = (userId: string, projectName: string) =>
 		getDesktopsAndApps('collab', userId, [projectName], false)
@@ -103,8 +101,14 @@ const ProjectDesktops = (): JSX.Element => {
 		project => project.name === params?.projectId
 	)
 
+	
 	const desktops = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
+		?.filter((container: Container) =>
+			container.groupIds?.some(
+				groupId => groupId.replace('group-', '') === params.projectId
+			)
+		)
 		.map((s: Container) => ({
 			...s,
 			apps: containers.filter(a => a.parentId === s.id),
@@ -114,20 +118,26 @@ const ProjectDesktops = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 
-			<Box sx={{ display: 'flex' }}>
-				<Button
-					variant='contained'
-					color='primary'
-					onClick={() => {
-						createNewDesktop()
-						trackEvent({
-							category: 'server',
-							action: 'start',
-						})
-					}}
-				>
-					Create Desktop
-				</Button>
+			<Box sx={{ mb: 2 }}>
+				<TitleBar
+					title={`Collaborative Workspace: ${project?.title || ''} `}
+					description={project?.description}
+					button={
+						<Button
+							variant='contained'
+							color='primary'
+							onClick={() => {
+								createNewDesktop()
+								trackEvent({
+									category: 'server',
+									action: 'start',
+								})
+							}}
+						>
+							Create Desktop
+						</Button>
+					}
+				/>
 			</Box>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
@@ -140,11 +150,7 @@ const ProjectDesktops = (): JSX.Element => {
 				)}
 
 				{desktops?.length === 0 && (
-					<Box
-						sx={{
-							mt: 4,
-						}}
-					>
+					<Box sx={{ mt: 4 }}>
 						<Typography variant='subtitle1' gutterBottom>
 							There is no desktop to show
 						</Typography>

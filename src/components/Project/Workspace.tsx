@@ -1,4 +1,4 @@
-import { Chat } from '@mui/icons-material';
+import { Chat } from '@mui/icons-material'
 import {
 	Box,
 	Button,
@@ -14,17 +14,18 @@ import {
 	Select,
 	SelectChangeEvent,
 	Stack,
-	Typography
-} from '@mui/material';
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { API_GATEWAY, getUsers } from '../../api/gatewayClientAPI';
-import { addUserToProject, getUserProjects } from '../../api/projects';
-import { BIDSDataset, ContainerType, User } from '../../api/types';
-import { useNotification } from '../../hooks/useNotification';
-import { useAppStore } from '../../Store';
-import Data from './Data';
-import ProjectCard from './ProjectCard';
+	Typography,
+} from '@mui/material'
+import React, { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { API_GATEWAY, getUsers } from '../../api/gatewayClientAPI'
+import { addUserToProject, getUserProjects } from '../../api/projects'
+import { BIDSDataset, ContainerType, User } from '../../api/types'
+import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
+import TitleBar from '../UI/titleBar'
+import Data from './Data'
+import ProjectCard from './ProjectCard'
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
@@ -81,10 +82,16 @@ const ProjectDashboard = () => {
 
 	return (
 		<>
-			<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
-				Welcome {user?.displayName}
-			</Typography>
+			<Box sx={{ mb: 2 }}>
+				<TitleBar
+					title={`Collaborative Workspace: ${project?.title || ''} `}
+					description={project?.description}
+				/>
 
+				<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
+					Welcome {user?.displayName}
+				</Typography>
+			</Box>
 			<Box sx={{ mt: 4 }}>
 				<Box
 					sx={{
