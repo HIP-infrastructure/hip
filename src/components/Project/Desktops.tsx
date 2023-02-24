@@ -106,7 +106,7 @@ const ProjectDesktops = (): JSX.Element => {
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
 		?.filter((container: Container) =>
 			container.groupIds?.some(
-				groupId => groupId.replace('group-', '') === params.projectId
+				groupId => groupId === params.projectId
 			)
 		)
 		.map((s: Container) => ({
