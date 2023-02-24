@@ -27,7 +27,7 @@ const DesktopInfo = ({ desktop }: { desktop: Container }) => (
 		{desktop.workspace === 'collab' && (
 			<Typography variant='caption' gutterBottom component='div'>
 				Project:{' '}
-				{desktop.groupIds?.map(g => g.replace('group-HIP-', '')).join(', ')}
+				{desktop.groupIds?.map(g => g.replace('HIP-', '')).join(', ')}
 			</Typography>
 		)}
 	</>
