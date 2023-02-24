@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import { BIDSDataset, Container, HIPProject } from '../../api/types'
 import { useEffect, useState } from 'react'
-import { getProjectFiles } from '../../api/projects'
+import { getProjectMetadataTree } from '../../api/projects'
 import { API_GATEWAY } from '../../api/gatewayClientAPI';
 
 const Data = ({
@@ -39,7 +39,7 @@ const Data = ({
 	useEffect(() => {
 		if (initialRender && project) {
 			setInitialRender(false)
-			getProjectFiles(project.name).then(f => setFiles(f))
+			getProjectMetadataTree(project.name, false).then(f => setFiles(f))
 		}
 	}, [initialRender, project])
 

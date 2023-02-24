@@ -66,6 +66,7 @@ export const addUserToProject = async (
 	projectName: string,
 ): Promise<any> => fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
 	method: 'POST',
+	
 	headers: {
 		requesttoken: window.OC.requestToken,
 	},
@@ -73,8 +74,8 @@ export const addUserToProject = async (
 	.then(checkForError)
 	.catch(catchError)
 
-export const getProjectFiles = async (projectName: string): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/${projectName}/files`, {
+export const getProjectMetadataTree = async (projectName: string, refreshApi = false): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/metadataTree?refreshApi=${refreshApi}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
@@ -93,33 +94,3 @@ export const getProjectDatasets = async (
 	)
 		.then(checkForError)
 		.catch(catchError)
-
-export const createBIDSDataset = async (
-	projectId: string
-): Promise<BIDSDataset> => {
-	return fetch(`${API_GATEWAY}/`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({}),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const copyBIDSFilesToBIDSDataset = async (
-	projectId: string
-): Promise<void> => {
-	return fetch(`${API_GATEWAY}/`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({}),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
