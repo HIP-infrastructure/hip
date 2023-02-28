@@ -200,14 +200,16 @@ const ProjectDashboard = () => {
 											<Button variant='outlined'>Add Member</Button>
 										</>
 									)}
-									{!isAddingUser && (
-										<Button
-											onClick={() => setIsAddingUser(true)}
-											variant='outlined'
-										>
-											Add Member
-										</Button>
-									)}
+									{!isAddingUser &&
+										user?.uid &&
+										project?.admins?.includes(user.uid) && (
+											<Button
+												onClick={() => setIsAddingUser(true)}
+												variant='outlined'
+											>
+												Add Member
+											</Button>
+										)}
 								</CardContent>
 								<CardActions sx={{ p: 2 }}></CardActions>
 							</Card>
