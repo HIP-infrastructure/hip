@@ -3,10 +3,16 @@ import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 import { BIDSDataset, File2, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects`, {}).then(checkForError).catch(catchError)
+	fetch(`${API_GATEWAY}/projects`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
+		.then(checkForError)
+		.catch(catchError)
 
 export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects/forUser/${userId}`, {})
+	fetch(`${API_GATEWAY}/projects/forUser/${userId}`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
 		.then(checkForError)
 		.catch(catchError)
 
@@ -28,7 +34,9 @@ export const createProject = async (createProject: {
 }
 
 export const getProject = async (name: string): Promise<HIPProject> => {
-	return fetch(`${API_GATEWAY}/projects/${name}`, {})
+	return fetch(`${API_GATEWAY}/projects/${name}`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
 		.then(checkForError)
 		.catch(catchError)
 }
@@ -53,7 +61,6 @@ export const deleteProject = async (name: string): Promise<any> => {
 	return fetch(`${API_GATEWAY}/projects/${name}`, {
 		method: 'DELETE',
 		headers: {
-			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
 	})
@@ -63,23 +70,29 @@ export const deleteProject = async (name: string): Promise<any> => {
 
 export const addUserToProject = async (
 	userId: string,
-	projectName: string,
-): Promise<any> => fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
-	method: 'POST',
-	
-	headers: {
-		requesttoken: window.OC.requestToken,
-	},
-})
-	.then(checkForError)
-	.catch(catchError)
-
-export const getProjectMetadataTree = async (projectName: string, refreshApi = false): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/${projectName}/metadataTree?refreshApi=${refreshApi}`, {
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
+		method: 'POST',
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
 	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const getProjectMetadataTree = async (
+	projectName: string,
+	refreshApi = false
+): Promise<any> =>
+	fetch(
+		`${API_GATEWAY}/projects/${projectName}/metadataTree?refreshApi=${refreshApi}`,
+		{
+			headers: {
+				requesttoken: window.OC.requestToken,
+			},
+		}
+	)
 		.then(checkForError)
 		.catch(catchError)
 

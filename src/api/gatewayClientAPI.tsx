@@ -24,7 +24,7 @@ export const checkForError = async (response: Response) => {
 
 		if (!response.ok) {
 			const error = data?.message || response.status
-			if (response.status > 400 && response.status <= 403) {
+			if (response.status == 401) {
 				window.location.href = '/login'
 			}
 
