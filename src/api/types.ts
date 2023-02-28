@@ -37,6 +37,7 @@ export interface UserCredentials {
 	isAdmin?: boolean;
 	password?: string;
 	groups?: string[];
+	hasProjectsAdminRole?: boolean
 }
 
 export interface NavigationItem {

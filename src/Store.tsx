@@ -99,11 +99,11 @@ export const AppStoreProvider = ({
 		setUser(currentUser)
 
 		getUser(currentUser.uid)
-			.then(({ groups }) => {
-				if (groups) {
+			.then((data) => {
+				if (data) {
 					setUser({
 						...currentUser,
-						groups,
+						...data,
 					})
 				}
 			})

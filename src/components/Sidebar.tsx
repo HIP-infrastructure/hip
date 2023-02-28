@@ -8,8 +8,9 @@ import {
 	ExpandMore,
 	Folder,
 	Monitor,
+	Add
 } from '@mui/icons-material'
-import { Avatar, CircularProgress, Divider, Drawer } from '@mui/material'
+import { Avatar, CircularProgress, Divider, Drawer, IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -32,7 +33,7 @@ const Sidebar = () => {
 	const {
 		user: [user],
 		centers: [centers],
-		userProjects: [userProjects, setUserProjects],
+		userProjects: [userProjects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -183,7 +184,19 @@ const Sidebar = () => {
 						<ListSubheader id='my-projects-subheader'>
 							My Projects
 						</ListSubheader>
-						{!userProjects && <CircularProgress size={18} color='secondary' />}
+						{userProjects ? (
+							user?.hasProjectsAdminRole && <IconButton
+								color='primary'
+								onClick={() => navigate(`${ROUTE_PREFIX}/collaborative/create`)}
+								aria-label={`Create new project`}
+
+							>
+								<Add />
+							</IconButton>
+						|| null
+						) : (
+							<CircularProgress size={18} color='secondary' />
+						)}
 					</Box>
 				}
 			>
