@@ -11,7 +11,7 @@ import {
     TableRow,
 	Typography,
 } from '@mui/material'
-import { BIDSDataset } from '../api/types'
+import { BIDSDataset } from '../../../api/types'
 
 type Props = {dataset: BIDSDataset}
 

@@ -2,7 +2,7 @@ import { Box, CircularProgress, Link, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getSubject } from '../../api/bids'
 import { BIDSDataset, BIDSSubjectFile } from '../../api/types'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 
 type IExistingFile = {
 	modality: string

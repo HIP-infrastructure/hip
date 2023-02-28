@@ -1,10 +1,13 @@
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, CircularProgress, Grid, Typography } from '@mui/material'
 import * as React from 'react'
 import { Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
 import { createProject, getUserProjects } from '../../api/projects'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
+import { useNotification } from '../../hooks/useNotification'
+import { useNavigate } from 'react-router-dom'
+import { ROUTE_PREFIX } from '../../constants'
 
 const validationSchema = Yup.object().shape({
 	title: Yup.string()
@@ -15,32 +18,42 @@ const validationSchema = Yup.object().shape({
 })
 
 const CreateProject = () => {
+	const { showNotif } = useNotification()
+	const navigate = useNavigate()
 	const {
 		user: [user],
 		projects: [projects, setProjects],
+		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
+
+	const [isLoading, setIsLoading] = React.useState(false)
 
 	const formik = useFormik({
 		initialValues: {
 			title: '',
 			description: '',
 		},
-		onSubmit: values => {
+		onSubmit: (values, { resetForm }) => {
 			if (!user || !user.uid) return
-			const userId = user.uid
+			setIsLoading(true)
 
+			const adminId = user.uid
 			const project = {
 				...values,
-				admin: userId,
+				adminId,
 			}
 			createProject(project)
 				.then(() => {
-					getUserProjects(userId).then(projects => {
-						setProjects(projects)
+					resetForm()
+					setIsLoading(false)
+					getUserProjects(adminId).then(projects => {
+						setUserProjects(projects)
 					})
+					showNotif('Project created', 'success')
+					navigate(`${ROUTE_PREFIX}/collaborative`)
 				})
 				.catch(err => {
-					// console.log(err)
+					showNotif(err, 'error')
 				})
 		},
 		validationSchema,
@@ -87,6 +100,13 @@ const CreateProject = () => {
 							<button type='submit'>Submit</button>
 						</form>
 					</Grid>
+					{isLoading && (
+						<CircularProgress
+							size={16}
+							color='secondary'
+							sx={{ top: 10, left: 10 }}
+						/>
+					)}
 				</Box>
 			</Box>
 		</>

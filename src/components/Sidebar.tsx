@@ -2,23 +2,14 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	AccountTree,
 	Assignment,
-	ChevronRight,
 	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	Folder,
 	Monitor,
 	Apps,
-	Create,
 } from '@mui/icons-material'
-import {
-	Avatar,
-	CircularProgress,
-	Divider,
-	Drawer,
-	IconButton,
-	ListItem,
-} from '@mui/material'
+import { Avatar, CircularProgress, Divider, Drawer } from '@mui/material'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -29,8 +20,9 @@ import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
-import { useAppStore } from '../store/appProvider'
+import { useAppStore } from '../Store'
 import { getUserProjects } from '../api/projects'
+import { API_GATEWAY } from '../api/gatewayClientAPI';
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -41,7 +33,7 @@ const Sidebar = () => {
 	const {
 		user: [user],
 		centers: [centers],
-		projects: [projects, setProjects],
+		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -51,7 +43,7 @@ const Sidebar = () => {
 	React.useEffect(() => {
 		if (!user?.uid) return
 		getUserProjects(user?.uid).then(projects => {
-			setProjects(projects)
+			setUserProjects(projects)
 		})
 	}, [user])
 
@@ -64,12 +56,11 @@ const Sidebar = () => {
 		navigate(`${ROUTE_PREFIX}${route}`)
 	}
 
+	// FIXME: if there is no center
 	const userCenters =
 		(user?.groups &&
 			centers?.filter(center => user?.groups?.includes(center.id))) ||
 		null
-
-	const userProjects = projects
 
 	return (
 		<Drawer
@@ -90,7 +81,7 @@ const Sidebar = () => {
 			}}
 		>
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/private/centers')}>
+				<ListItemButton onClick={() => handleClickNavigate('/private')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -116,7 +107,7 @@ const Sidebar = () => {
 								{userCenters ? (
 									<Avatar
 										alt={center.label}
-										src={`${process.env.REACT_APP_GATEWAY_API}/public/${center?.logo}`}
+										src={`${API_GATEWAY}/public/${center?.logo}`}
 										sx={{ width: 32, height: 32 }}
 									/>
 								) : (
@@ -133,12 +124,12 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Dashboard />
 							</ListItemIcon>
-							<ListItemText primary='Dashboard' />
+							<ListItemText primary='Private Workspace' />
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
 							onClick={() =>
-								handleClickNavigate(`/private/${center.id}/sessions`)
+								handleClickNavigate(`/private/${center.id}/desktops`)
 							}
 						>
 							<ListItemIcon>
@@ -173,9 +164,7 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton
-					onClick={() => handleClickNavigate('/collaborative-projects')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/collaborative')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -204,10 +193,7 @@ const Sidebar = () => {
 			>
 				{userProjects?.map(project => (
 					<Box key={project.name}>
-						<ListItemButton
-							onClick={() => handleClick(project?.name)}
-							sx={{ pl: 4 }}
-						>
+						<ListItemButton onClick={() => handleClick(project?.name)}>
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
@@ -221,23 +207,21 @@ const Sidebar = () => {
 						>
 							<List component='div' disablePadding>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
-										handleClickNavigate(
-											`/collaborative-projects/${project.name}`
-										)
+										handleClickNavigate(`/collaborative/${project.name}`)
 									}
 								>
 									<ListItemIcon>
 										<Dashboard />
 									</ListItemIcon>
-									<ListItemText primary='Dashboard' />
+									<ListItemText primary='Collaborative Workspace' />
 								</ListItemButton>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/sessions`
+											`/collaborative/${project.name}/desktops`
 										)
 									}
 								>
@@ -247,10 +231,10 @@ const Sidebar = () => {
 									<ListItemText primary='Desktops' />
 								</ListItemButton>
 								<ListItemButton
-									sx={{ pl: 8 }}
+									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
-											`/collaborative-projects/${project.name}/datasets/`
+											`/collaborative/${project.name}/datasets/`
 										)
 									}
 								>
@@ -261,11 +245,10 @@ const Sidebar = () => {
 								</ListItemButton>
 							</List>
 						</Collapse>
+						<Divider />
 					</Box>
 				))}
 			</List>
-			<Divider />
-
 			<List
 				sx={{
 					marginTop: 'auto',
@@ -273,32 +256,25 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
-				<ListItemButton sx={{ pl: 4 }} onClick={() => handleClickNavigate('/')}>
+				<ListItemButton onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
 						<Dashboard />
 					</ListItemIcon>
 					<ListItemText primary='About' />
 				</ListItemButton>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/apps')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/apps')}>
 					<ListItemIcon>
 						<Dashboard />
 					</ListItemIcon>
 					<ListItemText primary='App Catalog' />
 				</ListItemButton>
-				<ListItemButton
-					sx={{ pl: 4 }}
-					onClick={() => handleClickNavigate('/documentation')}
-				>
+				<ListItemButton onClick={() => handleClickNavigate('/documentation')}>
 					<ListItemIcon>
 						<Monitor />
 					</ListItemIcon>
 					<ListItemText primary='Documentation' />
 				</ListItemButton>
 				<ListItemButton
-					sx={{ pl: 4 }}
 					onClick={() => {
 						window.location.href =
 							'https://thehip.app/apps/forms/X6fZisdX6sc5R9ZW'
@@ -310,7 +286,6 @@ const Sidebar = () => {
 					<ListItemText primary='Bug report' />
 				</ListItemButton>
 				<ListItemButton
-					sx={{ pl: 4 }}
 					onClick={() => {
 						window.location.href =
 							'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87'

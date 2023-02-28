@@ -1,21 +1,14 @@
 import {
-	Application,
-	Container,
-	HIPCenter,
-	TreeNode,
-	User,
-	UserCredentials,
 	File2,
-	APIContainersResponse,
-	GroupFolder,
-} from './types'
-import { uniq } from './utils'
+	GroupFolder, HIPCenter,
+	TreeNode,
+	User
+} from './types';
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
 	: `${window.location.protocol}//${window.location.host}/api/v1`
 export const API_REMOTE_APP = `${API_GATEWAY}/remote-app`
-export const API_CONTAINERS = `${API_REMOTE_APP}/containers`
 
 /* Checking the response from the server.
  * server response can have two types of errors:
@@ -162,137 +155,3 @@ export const fileContent = async (path: string) =>
 	})
 		.then(checkForError)
 		.catch(catchError)
-
-// Remote App API
-
-export const getAvailableAppList = (domain = 'center'): Promise<Application[]> =>
-	fetch(`${API_REMOTE_APP}/apps?domain=${domain}`).then(checkForError)
-
-export const getContainers = (
-	currentUser: UserCredentials,
-	domain = 'center'
-): Promise<Container[]> => {
-	const url = currentUser.isAdmin
-		? `${API_REMOTE_APP}/admin/containers`
-		: API_CONTAINERS
-	const userUrl = `${url}?userId=${currentUser.uid}&domain=${domain}`
-	return fetch(userUrl, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const getContainer = (
-	id: string
-): Promise<Container> => {
-
-	const userUrl = `${API_CONTAINERS}/${id}`
-	return fetch(userUrl, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const createSession = (userId: string, domain = 'center'): Promise<Container> => {
-	const sessionId = uniq('session')
-	return fetch(`${API_CONTAINERS}?domain=${domain}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ userId, sessionId }),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const createApp = (
-	session: Container,
-	user: UserCredentials,
-	appName: string
-): Promise<Container> => {
-	const appId = uniq('app')
-	const url = `${API_CONTAINERS}/${session.id}/apps`
-	return fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({
-			appName,
-			userId: user.uid,
-			appId,
-		}),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const removeAppsAndSession = (sessionId: string, userId: string) =>
-	fetch(`${API_CONTAINERS}/${sessionId}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ userId }),
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-export const pauseAppsAndSession = (sessionId: string, userId: string) =>
-	fetch(`${API_CONTAINERS}/${sessionId}`, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ userId, cmd: 'pause' }),
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-export const resumeAppsAndSession = (sessionId: string, userId: string) =>
-	fetch(`${API_CONTAINERS}/${sessionId}`, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ userId, cmd: 'resume' }),
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-export const stopApp = (sessionId: string, userId: string, appId: string) =>
-	fetch(`${API_CONTAINERS}/${sessionId}/apps/${appId}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({ userId }),
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-// Debug function
-export const forceRemove = (id: string): Promise<APIContainersResponse> => {
-	const url = `${API_CONTAINERS}/force/${id}`
-	return fetch(url, {
-		method: 'DELETE',
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-}

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
-import { useAppStore } from '../../store/appProvider'
+import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import CenterCard from './CenterCard'
 

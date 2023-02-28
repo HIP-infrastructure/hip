@@ -15,7 +15,7 @@ import {
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Participant } from '../../../api/types'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 import CreateParticipant from './forms/CreateParticipant'
 import ParticipantInfo from './participantInfo'
 

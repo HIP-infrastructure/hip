@@ -21,7 +21,7 @@ import { getFiles } from '../../../api/gatewayClientAPI'
 import { BIDSFile, IEntity, TreeNode } from '../../../api/types'
 import { ENTITIES, MODALITIES } from '../../../constants'
 import { useNotification } from '../../../hooks/useNotification'
-import { useAppStore } from '../../../store/appProvider'
+import { useAppStore } from '../../../Store'
 import EntityOptions from './entityOptions'
 import ParticipantInfo from './participantInfo'
 
