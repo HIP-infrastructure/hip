@@ -1,12 +1,5 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
-import {
-	Box,
-	Button,
-	CircularProgress,
-	FormControlLabel,
-	Switch,
-	Typography,
-} from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
@@ -30,7 +23,7 @@ const ProjectDesktops = (): JSX.Element => {
 	const { showNotif } = useNotification()
 	const {
 		user: [user],
-		debug: [debug, setDebug],
+		debug: [debug],
 		userProjects: [userProjects],
 		projectContainers: [containers, setContainers],
 	} = useAppStore()
@@ -101,13 +94,10 @@ const ProjectDesktops = (): JSX.Element => {
 		project => project.name === params?.projectId
 	)
 
-	
 	const desktops = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
 		?.filter((container: Container) =>
-			container.groupIds?.some(
-				groupId => groupId === params.projectId
-			)
+			container.groupIds?.some(groupId => groupId === params.projectId)
 		)
 		.map((s: Container) => ({
 			...s,
@@ -177,12 +167,6 @@ const ProjectDesktops = (): JSX.Element => {
 							/>
 						)
 				)}
-			</Box>
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
 			</Box>
 		</>
 	)

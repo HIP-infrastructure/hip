@@ -31,7 +31,7 @@ const CenterDesktops = (): JSX.Element => {
 	const {
 		user: [user],
 		containers: [containers, setContainers],
-		debug: [debug, setDebug],
+		debug: [debug],
 	} = useAppStore()
 
 	const [showAdminView, setShowAdminView] = React.useState(
@@ -189,12 +189,6 @@ const CenterDesktops = (): JSX.Element => {
 							/>
 						)
 				)}
-			</Box>
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
 			</Box>
 		</>
 	)
