@@ -8,9 +8,18 @@ import {
 	ExpandMore,
 	Folder,
 	Monitor,
-	Add
+	Add,
+	Adb,
+	CreateNewFolder,
 } from '@mui/icons-material'
-import { Avatar, CircularProgress, Divider, Drawer, IconButton } from '@mui/material'
+import {
+	Avatar,
+	CircularProgress,
+	Divider,
+	Drawer,
+	IconButton,
+	Switch,
+} from '@mui/material'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -32,6 +41,7 @@ const Sidebar = () => {
 
 	const {
 		user: [user],
+		debug: [debug, setDebug],
 		centers: [centers],
 		userProjects: [userProjects],
 	} = useAppStore()
@@ -177,7 +187,7 @@ const Sidebar = () => {
 						sx={{
 							display: 'flex',
 							alignItems: 'center',
-							mr: 2,
+							mr: 1,
 							justifyContent: 'space-between',
 						}}
 					>
@@ -185,15 +195,18 @@ const Sidebar = () => {
 							My Projects
 						</ListSubheader>
 						{userProjects ? (
-							user?.hasProjectsAdminRole && <IconButton
-								color='primary'
-								onClick={() => navigate(`${ROUTE_PREFIX}/collaborative/create`)}
-								aria-label={`Create new project`}
-
-							>
-								<Add />
-							</IconButton>
-						|| null
+							(user?.hasProjectsAdminRole && (
+								<IconButton
+									color='primary'
+									onClick={() =>
+										navigate(`${ROUTE_PREFIX}/collaborative/create`)
+									}
+									aria-label={`Create new project`}
+								>
+									<CreateNewFolder />
+								</IconButton>
+							)) ||
+							null
 						) : (
 							<CircularProgress size={18} color='secondary' />
 						)}
@@ -265,6 +278,13 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
+				<ListItemButton onClick={() => setDebug(!debug)}>
+					<ListItemIcon>
+						<Adb />
+					</ListItemIcon>
+					<ListItemText primary='Debug' />
+					<Switch checked={debug} />
+				</ListItemButton>
 				<ListItemButton onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
 						<Dashboard />
@@ -305,6 +325,7 @@ const Sidebar = () => {
 					</ListItemIcon>
 					<ListItemText primary='Feedback' />
 				</ListItemButton>
+
 				<Box height={`${APP_MARGIN_TOP}px}`} />
 			</List>
 		</Drawer>
