@@ -82,17 +82,51 @@ export const addUserToProject = async (
 		.catch(catchError)
 
 export const getProjectMetadataTree = async (
-	projectName: string,
-	refreshApi = false
+	projectName: string
 ): Promise<any> =>
-	fetch(
-		`${API_GATEWAY}/projects/${projectName}/metadataTree?refreshApi=${refreshApi}`,
-		{
-			headers: {
-				requesttoken: window.OC.requestToken,
-			},
-		}
-	)
+	fetch(`${API_GATEWAY}/projects/${projectName}/metadataTree`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const createProjectFSAPI = async (): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/api`, {
+		method: 'POST',
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const importBIDSSubject = async (
+	userId: string,
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/subject`, {
+		method: 'POST',
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(''),
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const importDocument = async (
+	userId: string,
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/bids`, {
+		method: 'POST',
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(''),
+	})
 		.then(checkForError)
 		.catch(catchError)
 

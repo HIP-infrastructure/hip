@@ -10,9 +10,10 @@ import {
 } from '@mui/material'
 import { BIDSDataset, Container, HIPProject } from '../../api/types'
 import { useEffect, useState } from 'react'
-import { getProjectMetadataTree } from '../../api/projects'
+import { getProjectMetadataTree, createProjectFSAPI } from '../../api/projects'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { Refresh } from '@mui/icons-material'
+import { useNotification } from '../../hooks/useNotification'
 
 const Data = ({
 	project,
@@ -26,6 +27,8 @@ const Data = ({
 	}
 	sessions?: Container[]
 }) => {
+	const { showNotif } = useNotification()
+
 	const [initialRender, setInitialRender] = useState(true)
 	const [files, setFiles] = useState<any>()
 	const [projectName, setProjectName] = useState<string | undefined>()
@@ -41,7 +44,7 @@ const Data = ({
 	useEffect(() => {
 		if (initialRender && project) {
 			setInitialRender(false)
-			getProjectMetadataTree(project.name, false).then(f => setFiles(f))
+			getProjectMetadataTree(project.name).then(f => setFiles(f))
 		}
 	}, [initialRender, project])
 
@@ -101,24 +104,49 @@ const Data = ({
 					</>
 
 					{project?.name && (
-						<Button
-							color='primary'
-							size='small'
-							sx={{ m: 2 }}
-							startIcon={<Refresh />}
-							onClick={() => {
-								setFiles(undefined)
-								getProjectMetadataTree(project.name, true)
-								setTimeout(() => {
-									getProjectMetadataTree(project.name, false).then(f =>
-										setFiles(f)
-									)
-								}, 20 * 1000)
-							}}
-							variant={'contained'}
-						>
-							Restart File API
-						</Button>
+						<>
+							{/* <Button
+								color='primary'
+								size='small'
+								sx={{ m: 2 }}
+								startIcon={<Refresh />}
+								onClick={() => {
+									setFiles(undefined)
+									getProjectMetadataTree(project.name, true)
+									setTimeout(() => {
+										getProjectMetadataTree(project.name, false).then(f =>
+											setFiles(f)
+										)
+									}, 20 * 1000)
+								}}
+								variant={'contained'}
+							>
+								Restart File API
+							</Button> */}
+							<Button
+								color='primary'
+								size='small'
+								sx={{ m: 2 }}
+								startIcon={<Refresh />}
+								onClick={() => {
+									setFiles(undefined)
+									createProjectFSAPI().then(data => {
+										showNotif(
+											`API created ${JSON.stringify(data, null, 2)}`,
+											'success'
+										)
+										setTimeout(() => {
+											getProjectMetadataTree(project.name).then(f => {
+												setFiles(f)
+											})
+										}, 5 * 1000)
+									})
+								}}
+								variant={'contained'}
+							>
+								Create FS API
+							</Button>
+						</>
 					)}
 
 					<Box>
