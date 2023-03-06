@@ -8,6 +8,7 @@ import TitleBar from '../UI/titleBar'
 import { useNotification } from '../../hooks/useNotification'
 import { useNavigate } from 'react-router-dom'
 import { ROUTE_PREFIX } from '../../constants'
+import CreateDataset from '../BIDS/CreateDataset'
 
 const validationSchema = Yup.object().shape({
 	title: Yup.string()
@@ -99,6 +100,9 @@ const CreateProject = () => {
 							</Grid>
 							<button type='submit'>Submit</button>
 						</form>
+						<CreateDataset setDatasetCreated={function (value: React.SetStateAction<boolean>): void {
+							throw new Error('Function not implemented.')
+						} } />
 					</Grid>
 					{isLoading && (
 						<CircularProgress

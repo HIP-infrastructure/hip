@@ -16,7 +16,6 @@ import CreateProject from './components/Projects/Create'
 import ProjectDashboard from './components/Project/Workspace'
 import ProjectData from './components/Project/Data'
 import ProjectDataset from './components/Project/Dataset'
-import ProjectDatasets from './components/Project/Datasets'
 import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
 import CenterDesktops from './components/Center/Desktops'
@@ -111,7 +110,7 @@ const App = () => (
 					<Route index element={<ProjectDashboard />} />
 					<Route path={'desktops'} element={<ProjectDesktops />} />
 					<Route path={'datasets'} element={<Outlet />}>
-						<Route index element={<ProjectDatasets />} />
+						<Route index element={<ProjectDataset />} />
 						<Route path={':datasetId'} element={<ProjectDataset />} />
 					</Route>
 					<Route path={'data'} element={<ProjectData />} />

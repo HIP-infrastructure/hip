@@ -1,14 +1,20 @@
-import { Add } from '@mui/icons-material'
+import { Add, Close, Save } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import {
 	Alert,
 	Box,
 	Button,
 	Checkbox,
 	CircularProgress,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
 	FormControl,
 	FormControlLabel,
 	FormGroup,
 	FormLabel,
+	IconButton,
 	InputLabel,
 	MenuItem,
 	Pagination,
@@ -72,8 +78,7 @@ const Datasets = () => {
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
-	const [selectedDatatypes, setSelectedDatatypes] =
-		useState<string[]>([])
+	const [selectedDatatypes, setSelectedDatatypes] = useState<string[]>([])
 
 	const [loading, setLoading] = useState(false)
 
@@ -128,11 +133,25 @@ const Datasets = () => {
 
 	return (
 		<>
-			<CreateDataset
-				open={isCreateDialogOpen}
-				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
-				setDatasetCreated={setDatasetCreated}
-			/>
+			<Dialog open={isCreateDialogOpen} sx={{ minWidth: '360' }}>
+				<DialogTitle
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					Create BIDS Dataset
+					<IconButton
+						onClick={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
+					>
+						<Close />
+					</IconButton>
+				</DialogTitle>
+				<DialogContent dividers>
+					<CreateDataset setDatasetCreated={setDatasetCreated} />
+				</DialogContent>
+			</Dialog>
 
 			<TitleBar
 				title='BIDS Datasets'
