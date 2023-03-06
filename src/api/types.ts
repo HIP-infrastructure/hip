@@ -142,9 +142,6 @@ export interface Participant {
 export type BIDSDatasetResponse = { data?: BIDSDataset[]; error?: Error }
 
 export interface BIDSDatasetDescription {
-	id: string
-	User?: string
-	Path?: string
 	Name: string
 	BIDSVersion?: string
 	License?: string
@@ -157,6 +154,9 @@ export interface BIDSDatasetDescription {
 }
 
 export interface BIDSDataset extends BIDSDatasetDescription {
+	id: string
+	User?: string
+	Path?: string
 	CreationDate: string
 	ParticipantsCount: number
 	ParticipantsGroups: string[]

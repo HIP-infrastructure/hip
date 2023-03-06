@@ -1,6 +1,6 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, File2, HIPProject } from './types'
+import { BIDSDataset, BIDSDatasetDescription, File2, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {
@@ -16,11 +16,13 @@ export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const createProject = async (createProject: {
-	adminId: string
-	title: string
-	description: string
-}): Promise<any> => {
+export const createProject = async (
+	createProject: {
+		adminId: string
+		title: string
+		description: string
+	} & BIDSDatasetDescription
+): Promise<any> => {
 	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'POST',
 		headers: {
