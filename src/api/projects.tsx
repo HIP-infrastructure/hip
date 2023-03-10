@@ -16,13 +16,12 @@ export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const createProject = async (
-	createProject: {
-		adminId: string
-		title: string
-		description: string
-	} & BIDSDatasetDescription
-): Promise<any> => {
+export const createProject = async (createProject: {
+	adminId: string
+	title: string
+	description: string
+	datasetDescription: BIDSDatasetDescription
+}): Promise<any> => {
 	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'POST',
 		headers: {

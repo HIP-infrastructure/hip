@@ -17,8 +17,6 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTE_PREFIX } from '../../constants'
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { createBidsDataset } from '../../api/bids'
-import { CreateBidsDatasetDto, IError } from '../../api/types'
 
 const validationSchema = Yup.object().shape({
 	title: Yup.string()
@@ -74,33 +72,22 @@ const CreateProject = () => {
 							validationSchema={validationSchema}
 							onSubmit={async (values, { resetForm }) => {
 								if (!user || !user.uid) return
-								
-								setSubmitted(true)
-								const createBidsDatasetDto: CreateBidsDatasetDto = {
-									owner: user.uid,
-									parent_path: '',
-									DatasetDescJSON: {
-										Name: values.Name,
-										BIDSVersion: values.BIDSVersion,
-										License: values.License,
-										Authors: values.Authors.split(','),
-										Acknowledgements: values.Acknowledgements,
-										HowToAcknowledge: values.HowToAcknowledge,
-										Funding: values.Funding?.split(','),
-										ReferencesAndLinks: values.ReferencesAndLinks?.split(','),
-										DatasetDOI: values.DatasetDOI,
-									},
-								}
 
+								setSubmitted(true)
 								setIsLoading(true)
 
 								const adminId = user.uid
+								const { title, description, ...datasetDescription } = values
 								const project = {
-									...values,
-									Authors: values.Authors.split(','),
-									Funding: values.Funding.split(','),
-									ReferencesAndLinks: values.ReferencesAndLinks.split(','),
 									adminId,
+									title,
+									description,
+									datasetDescription: {
+										...datasetDescription,
+										Authors: datasetDescription.Authors.split(','),
+										Funding: datasetDescription.Funding.split(','),
+										ReferencesAndLinks: datasetDescription.ReferencesAndLinks.split(','),
+									},
 								}
 
 								createProject(project)
