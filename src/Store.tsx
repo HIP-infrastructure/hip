@@ -1,6 +1,10 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { createBidsDatasetsIndex, queryBidsDatasets, refreshBidsDatasetsIndex } from './api/bids'
+import {
+	createBidsDatasetsIndex,
+	queryBidsDatasets,
+	refreshBidsDatasetsIndex,
+} from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
 import { getProjects, getUserProjects } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
@@ -51,7 +55,6 @@ export interface IAppState {
 			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
 		>
 	]
-
 	selectedBidsDataset: [
 		BIDSDataset | undefined,
 		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
@@ -77,7 +80,9 @@ export const AppStoreProvider = ({
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [containers, setContainers] = useState<Container[] | null>(null)
-	const [projectContainers, setProjectContainers] = useState<Container[] | null>(null)
+	const [projectContainers, setProjectContainers] = useState<
+		Container[] | null
+	>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
@@ -99,7 +104,7 @@ export const AppStoreProvider = ({
 		setUser(currentUser)
 
 		getUser(currentUser.uid)
-			.then((data) => {
+			.then(data => {
 				if (data) {
 					setUser({
 						...currentUser,
@@ -130,13 +135,28 @@ export const AppStoreProvider = ({
 		getAvailableAppList().then(data => setAvailableApps(data))
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
-		// createBidsDatasetsIndex()
+		createBidsDatasetsIndex()
 
 		// Perform a full index of the BIDS datasets
-		// refreshBidsDatasetsIndex(currentUser.uid)
+		refreshBidsDatasetsIndex(currentUser.uid)
 
-		queryBidsDatasets(currentUser.uid || '')
-			.then(data => setBidsDatasets({ data }))
+		queryBidsDatasets(
+			currentUser.uid || '',
+			'*',
+			1,
+			200,
+			[0, 100],
+			[0, 200],
+			['anat', 'dwi', 'func', 'ieeg', 'eeg']
+		)
+			.then(data => {
+				// eslint-disable-next-line no-console
+				console.error('FIXME: remove duplicates at indexation time')
+				const uniqueArray = data.filter((obj, index, arr) => {
+					return arr.findIndex(t => t.Path === obj.Path) === index
+				})
+				setBidsDatasets({ data: uniqueArray })
+			})
 			.catch(error => setBidsDatasets({ error }))
 
 		getDesktopsAndApps('private', currentUser.uid || '', []).then(data =>
