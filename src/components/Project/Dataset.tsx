@@ -21,7 +21,7 @@ import TitleBar from '../UI/titleBar'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
 import Participants from '../BIDS/Participants'
-import DatasetBrowser from '../UI/DatasetBrowser'
+import DatasetSubjectsChooser from '../UI/DatasetSubjectsChooser'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
@@ -69,13 +69,6 @@ const Dataset = () => {
 			<TitleBar title={`${project?.name} BIDS Dataset`} />
 
 			<Box sx={{ mt: 2 }}>
-				<Box>
-					<Breadcrumbs aria-label='breadcrumb'>
-						<Link onClick={() => navigate(-1)}>Datasets</Link>
-						<Typography color='text.primary'>{dataset?.Name}</Typography>
-					</Breadcrumbs>
-				</Box>
-
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
 					<DatasetInfo dataset={dataset} />
@@ -161,7 +154,7 @@ const Dataset = () => {
 									<Typography gutterBottom variant='h6' component='div'>
 										My Datasets
 									</Typography>
-									<DatasetBrowser />
+									<DatasetSubjectsChooser />
 								</Box>
 								<Button
 									sx={{ my: 0.5 }}

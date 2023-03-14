@@ -1,6 +1,6 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, BIDSDatasetDescription, File2, HIPProject } from './types'
+import { BIDSDataset, BIDSDatasetDescription, Node, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {

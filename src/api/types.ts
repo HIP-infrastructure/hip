@@ -113,11 +113,11 @@ export interface TreeNode {
 	children?: boolean
 }
 
-export interface File2 {
+export interface Node {
 	name: string
 	isDirectory: boolean
 	path: string
-	parentPath?: string
+	parentPath: string
 }
 
 export interface Document {

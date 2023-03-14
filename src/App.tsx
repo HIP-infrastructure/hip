@@ -10,7 +10,6 @@ import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
 import PrivateWorkspace from './components/Center/Workspace'
-import DataBrowser from './components/UI/DataBrowser'
 import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
 import ProjectDashboard from './components/Project/Workspace'
@@ -101,7 +100,6 @@ const App = () => (
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-				<Route path={':centerId/data'} element={<DataBrowser />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />

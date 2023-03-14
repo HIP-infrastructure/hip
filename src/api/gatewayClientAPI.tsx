@@ -1,5 +1,5 @@
 import {
-	File2,
+	Node,
 	HIPCenter,
 	TreeNode,
 	User
@@ -129,7 +129,7 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	return node
 }
 
-export const getFiles2 = async (path: string): Promise<File2[]> =>
+export const getFiles2 = async (path: string): Promise<Node[]> =>
 	fetch(`${API_GATEWAY}/files?path=${encodeURIComponent(path)}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
