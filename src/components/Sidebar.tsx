@@ -156,16 +156,6 @@ const Sidebar = () => {
 							</ListItemIcon>
 							<ListItemText primary='BIDS Datasets' />
 						</ListItemButton>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							disabled={!userCenters}
-							onClick={() => handleClickNavigate(`/private/${center.id}/data`)}
-						>
-							<ListItemIcon>
-								<AccountTree />
-							</ListItemIcon>
-							<ListItemText primary='Data' />
-						</ListItemButton>
 					</List>
 					<Divider />
 				</Box>
@@ -263,7 +253,7 @@ const Sidebar = () => {
 									<ListItemIcon>
 										<Assignment />
 									</ListItemIcon>
-									<ListItemText primary='BIDS Datasets' />
+									<ListItemText primary='BIDS Dataset' />
 								</ListItemButton>
 							</List>
 						</Collapse>
