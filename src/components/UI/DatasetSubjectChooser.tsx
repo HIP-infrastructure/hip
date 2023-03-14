@@ -13,7 +13,6 @@ interface Node {
 	isDirectory: boolean
 	path: string
 	parentPath: string
-	parentNodeId?: string
 }
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
@@ -34,7 +33,7 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 const DatasetSubjectChooser = ({
 	selected,
 }: {
-	selected?: (datasetId: string, subjectId: string) => void
+	selected?: (datasetPath: string, subjectId: string) => void
 }) => {
 	const {
 		BIDSDatasets: [datasets],
@@ -58,7 +57,6 @@ const DatasetSubjectChooser = ({
 				d.Participants?.forEach((p: Participant) => {
 					nextNodes.push({
 						id: p.participant_id,
-						parentNodeId: d.id,
 						name: `${p.participant_id} (${p.age}/${p.sex})`,
 						isDirectory: false,
 						path: `${d.Path}/${p.participant_id}`,
@@ -71,8 +69,8 @@ const DatasetSubjectChooser = ({
 	}, [datasets])
 
 	useEffect(() => {
-		if (selected && selectedNode && selectedNode?.parentNodeId)
-			selected(selectedNode.parentNodeId, selectedNode.id)
+		if (selected && selectedNode)
+			selected(selectedNode.parentPath, selectedNode.id)
 	}, [selectedNode])
 
 	const renderNode = (node: Node) => (

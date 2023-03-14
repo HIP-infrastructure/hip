@@ -86,6 +86,11 @@ export interface HIPProject {
 	members?: string[]
 }
 
+export interface ImportSubjectDto {
+	datasetPath: string
+	subjectId: string
+}
+
 export interface Application {
 	name: string
 	description: string

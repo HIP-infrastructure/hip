@@ -1,6 +1,6 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, BIDSDatasetDescription, Node, HIPProject } from './types'
+import { BIDSDataset, BIDSDatasetDescription, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {
@@ -104,16 +104,19 @@ export const createProjectFSAPI = async (): Promise<any> =>
 		.catch(catchError)
 
 export const importBIDSSubject = async (
-	datasetId: string,
-	subjectId: string,
+	importSubjectDto: {
+		datasetPath: string,
+		subjectId: string,
+	},
 	projectName: string
 ): Promise<any> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/subject`, {
 		method: 'POST',
 		headers: {
+			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify({ datasetId, subjectId }),
+		body: JSON.stringify(importSubjectDto),
 	})
 		.then(checkForError)
 		.catch(catchError)

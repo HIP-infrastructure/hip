@@ -59,8 +59,8 @@ const Dataset = () => {
 	}, [dataset])
 
 	const importSubject = () => {
-		const [datasetId, subjectId] = selectedSubject || []
-		importBIDSSubject(datasetId, subjectId, project?.name || '')
+		const [datasetPath, subjectId] = selectedSubject || []
+		importBIDSSubject({ datasetPath, subjectId }, project?.name || '')
 	}
 
 	const project = userProjects?.find(
@@ -107,12 +107,7 @@ const Dataset = () => {
 										component={Paper}
 										sx={{ p: 1, flex: '1 0' }}
 									>
-										{path && (
-											<FileBrowser
-												path={path}
-												showSearch={true}
-											/>
-										)}
+										{path && <FileBrowser path={path} showSearch={true} />}
 									</Box>
 									<Box
 										elevation={2}
@@ -158,8 +153,8 @@ const Dataset = () => {
 										My Datasets
 									</Typography>
 									<DatasetSubjectChooser
-										selected={(datasetId, subjectId) => {
-											setSelectedSubject([datasetId, subjectId])
+										selected={(datasetPath, subjectId) => {
+											setSelectedSubject([datasetPath, subjectId])
 										}}
 									/>
 								</Box>
