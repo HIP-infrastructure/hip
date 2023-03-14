@@ -14,33 +14,27 @@ import {
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { BIDSDataset, HIPProject } from '../../api/types'
+import { BIDSDataset } from '../../api/types'
 import { useAppStore } from '../../Store'
 import FileBrowser from '../UI/FileBrowser'
 import TitleBar from '../UI/titleBar'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
 import Participants from '../BIDS/Participants'
-import DatasetSubjectsChooser from '../UI/DatasetSubjectsChooser'
+import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
+import { importBIDSSubject } from '../../api/projects'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
-	const [project, setProject] = useState<HIPProject>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
-	const [selectedFile, setSelectedFile] = useState<string>()
 	const [path, setPath] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
+	const [selectedSubject, setSelectedSubject] = useState<string[]>()
 	const params = useParams()
-	const navigate = useNavigate()
 	const {
 		BIDSDatasets: [datasets],
-		projects: [projects],
+		userProjects: [userProjects],
 	} = useAppStore()
-
-	useEffect(() => {
-		const project = projects?.find(project => project.name === params?.id)
-		setProject(project)
-	}, [projects, setProject, params])
 
 	useEffect(() => {
 		if (dataset) return
@@ -64,9 +58,18 @@ const Dataset = () => {
 		}
 	}, [dataset])
 
+	const importSubject = () => {
+		const [datasetId, subjectId] = selectedSubject || []
+		importBIDSSubject(datasetId, subjectId, project?.name || '')
+	}
+
+	const project = userProjects?.find(
+		project => project.name === params?.projectId
+	)
+
 	return (
 		<>
-			<TitleBar title={`${project?.name} BIDS Dataset`} />
+			<TitleBar title={`${project?.title} BIDS Dataset`} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
@@ -107,7 +110,6 @@ const Dataset = () => {
 										{path && (
 											<FileBrowser
 												path={path}
-												selectedFile={setSelectedFile}
 												showSearch={true}
 											/>
 										)}
@@ -147,6 +149,7 @@ const Dataset = () => {
 									display: 'flex',
 									flexWrap: 'wrap',
 									gap: '16px 16px',
+									alignItems: 'center',
 									mt: 2,
 								}}
 							>
@@ -154,13 +157,18 @@ const Dataset = () => {
 									<Typography gutterBottom variant='h6' component='div'>
 										My Datasets
 									</Typography>
-									<DatasetSubjectsChooser />
+									<DatasetSubjectChooser
+										selected={(datasetId, subjectId) => {
+											setSelectedSubject([datasetId, subjectId])
+										}}
+									/>
 								</Box>
 								<Button
 									sx={{ my: 0.5 }}
 									variant='outlined'
 									size='small'
 									aria-label='move selected right'
+									onClick={importSubject}
 								>
 									&gt;
 								</Button>
@@ -177,7 +185,7 @@ const Dataset = () => {
 										<Typography gutterBottom variant='h6' component='div'>
 											{dataset?.Name}
 										</Typography>
-										<FileBrowser path={dataset?.Path} />
+										<Box>Dataset Files</Box>
 									</Box>
 								</Box>
 							</Box>

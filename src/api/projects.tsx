@@ -104,7 +104,8 @@ export const createProjectFSAPI = async (): Promise<any> =>
 		.catch(catchError)
 
 export const importBIDSSubject = async (
-	userId: string,
+	datasetId: string,
+	subjectId: string,
 	projectName: string
 ): Promise<any> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/subject`, {
@@ -112,7 +113,7 @@ export const importBIDSSubject = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify(''),
+		body: JSON.stringify({ datasetId, subjectId }),
 	})
 		.then(checkForError)
 		.catch(catchError)

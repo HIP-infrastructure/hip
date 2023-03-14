@@ -3,9 +3,18 @@ import { Box, Checkbox, CircularProgress } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { BIDSDataset, Node, Participant } from '../../api/types'
+import { BIDSDataset, Participant } from '../../api/types'
 import { useAppStore } from '../../Store'
 import { MinusSquare, PlusSquare } from './Icons'
+
+interface Node {
+	id: string
+	name: string
+	isDirectory: boolean
+	path: string
+	parentPath: string
+	parentNodeId?: string
+}
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -22,17 +31,17 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 	},
 }))
 
-const DatasetSubjectsChooser = ({
-	selectedSubject,
+const DatasetSubjectChooser = ({
+	selected,
 }: {
-	selectedSubject?: (path: string) => void
+	selected?: (datasetId: string, subjectId: string) => void
 }) => {
 	const {
 		BIDSDatasets: [datasets],
 	} = useAppStore()
 
 	const [nodes, setNodes] = useState<Node[]>([])
-	const [selected, setSelected] = useState<string>()
+	const [selectedNode, setSelectedNode] = useState<Node>()
 	const [expanded, setExpanded] = useState<string[]>([])
 
 	useEffect(() => {
@@ -40,6 +49,7 @@ const DatasetSubjectsChooser = ({
 			const nextNodes: Node[] = []
 			datasets.data.forEach((d: BIDSDataset) => {
 				nextNodes.push({
+					id: d.id,
 					name: d.Name,
 					isDirectory: true,
 					path: d.Path || '/',
@@ -47,6 +57,8 @@ const DatasetSubjectsChooser = ({
 				})
 				d.Participants?.forEach((p: Participant) => {
 					nextNodes.push({
+						id: p.participant_id,
+						parentNodeId: d.id,
 						name: `${p.participant_id} (${p.age}/${p.sex})`,
 						isDirectory: false,
 						path: `${d.Path}/${p.participant_id}`,
@@ -59,8 +71,9 @@ const DatasetSubjectsChooser = ({
 	}, [datasets])
 
 	useEffect(() => {
-		if (selectedSubject && selected) selectedSubject(selected)
-	}, [selected])
+		if (selected && selectedNode && selectedNode?.parentNodeId)
+			selected(selectedNode.parentNodeId, selectedNode.id)
+	}, [selectedNode])
 
 	const renderNode = (node: Node) => (
 		<Box
@@ -72,12 +85,15 @@ const DatasetSubjectsChooser = ({
 			onClick={event => {
 				event.stopPropagation()
 				event.preventDefault()
-				setSelected(node.path)
+				setSelectedNode(node)
 			}}
 		>
 			<Box>{node.name}</Box>
 			{!node.isDirectory && (
-				<Checkbox checked={node.path === selected} sx={{ p: 0, m: 0 }} />
+				<Checkbox
+					checked={node.path === selectedNode?.path}
+					sx={{ p: 0, m: 0 }}
+				/>
 			)}
 		</Box>
 	)
@@ -139,4 +155,4 @@ const DatasetSubjectsChooser = ({
 	)
 }
 
-export default DatasetSubjectsChooser
+export default DatasetSubjectChooser
