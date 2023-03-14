@@ -40,7 +40,7 @@ const CenterDesktops = (): JSX.Element => {
 	const modalRef = useRef<ModalComponentHandle>(null)
 
 	const getDesktops = (userId: string, showAdmin = false) =>
-		getDesktopsAndApps('private', userId, [], false)
+		getDesktopsAndApps('private', userId, [], showAdmin)
 			.then(data => setContainers(data))
 			.catch(error => showNotif(error, 'error'))
 
