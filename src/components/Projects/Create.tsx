@@ -86,7 +86,8 @@ const CreateProject = () => {
 										...datasetDescription,
 										Authors: datasetDescription.Authors.split(','),
 										Funding: datasetDescription.Funding.split(','),
-										ReferencesAndLinks: datasetDescription.ReferencesAndLinks.split(','),
+										ReferencesAndLinks:
+											datasetDescription.ReferencesAndLinks.split(','),
 									},
 								}
 
@@ -129,21 +130,26 @@ const CreateProject = () => {
 															: 'Title is required'
 													}
 												/>
-											</Grid>
-											<Grid item xs={6}>
 												<TextField
 													disabled={submitted}
 													size='small'
 													multiline
 													id='description'
+													fullWidth
 													name='description'
 													label='Project Description'
 													type='text'
-													minRows={5}
+													minRows={3}
 													value={values.description}
 													onChange={handleChange}
 													onBlur={handleBlur}
 												/>
+											</Grid>
+
+											<Grid item xs={12}>
+												<Typography variant='h6' sx={{ mt: 4, mb: 2 }}>
+													Dataset
+												</Typography>
 											</Grid>
 
 											<Grid item xs={6}>
@@ -334,16 +340,18 @@ const CreateProject = () => {
 											</Grid>
 										</Grid>
 
-										<LoadingButton
-											color='primary'
-											type='submit'
-											loading={submitted}
-											loadingPosition='start'
-											startIcon={<Save />}
-											variant='contained'
-										>
-											Create
-										</LoadingButton>
+										<Grid item xs={12}>
+											<LoadingButton
+												color='primary'
+												type='submit'
+												loading={submitted}
+												loadingPosition='start'
+												startIcon={<Save />}
+												variant='contained'
+											>
+												Create
+											</LoadingButton>
+										</Grid>
 									</Form>
 								)
 							}}
