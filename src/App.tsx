@@ -13,7 +13,6 @@ import PrivateWorkspace from './components/Center/Workspace'
 import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
 import ProjectDashboard from './components/Project/Workspace'
-import ProjectData from './components/Project/Data'
 import ProjectDataset from './components/Project/Dataset'
 import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
@@ -45,13 +44,12 @@ const Layout = (): JSX.Element => {
 
 	React.useEffect(() => {
 		const interval = setInterval(() => {
-			isLoggedIn()
-				.catch(error => {
-					showNotif(
-						'You have been logged out, please refresh your browser',
-						'error'
-					)
-				})
+			isLoggedIn().catch(error => {
+				showNotif(
+					'You have been logged out, please refresh your browser',
+					'error'
+				)
+			})
 		}, 30 * 1000)
 		return () => clearInterval(interval)
 	}, [])
@@ -111,7 +109,6 @@ const App = () => (
 						<Route index element={<ProjectDataset />} />
 						<Route path={':datasetId'} element={<ProjectDataset />} />
 					</Route>
-					<Route path={'data'} element={<ProjectData />} />
 				</Route>
 			</Route>
 			<Route

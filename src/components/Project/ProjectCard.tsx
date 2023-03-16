@@ -6,43 +6,28 @@ import {
 	CardContent,
 	CardMedia,
 	CircularProgress,
+	Stack,
 	Typography,
 } from '@mui/material'
-import { ROUTE_PREFIX } from '../../constants'
-import { useNavigate } from 'react-router-dom'
-import { deleteProject, getProjects, getUserProjects } from '../../api/projects'
-import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { HIPProject, User } from '../../api/types'
+import UserInfo from '../UI/UserInfo'
 
-const MainCard = ({ group }: { group?: any }) => {
-	const navigate = useNavigate()
-	const { showNotif } = useNotification()
+interface Props {
+	project: HIPProject
+	confirmRemove: (id: string) => void
+	users: User[]
+}
+
+const MainCard = ({ project, users, confirmRemove }: Props) => {
 	const {
 		user: [user],
-		projects: [projects, setProjects],
-		userProjects: [_, setUserProjects],
 	} = useAppStore()
-
-	const handleDeleteProject = (name: string) => {
-		deleteProject(name).then(res => {
-			showNotif('Project deleted', 'success')
-
-			if (user?.uid) {
-				getUserProjects(user?.uid).then(projects => {
-					setUserProjects(projects)
-				})
-				getProjects().then(projects => {
-					setProjects(projects)
-				})
-				navigate(`${ROUTE_PREFIX}/collaborative`)
-			}
-		})
-	}
 
 	return (
 		<>
-			{!group && (
+			{!project && (
 				<CircularProgress
 					size={32}
 					color='secondary'
@@ -50,24 +35,24 @@ const MainCard = ({ group }: { group?: any }) => {
 				/>
 			)}
 
-			{group && (
+			{project && (
 				<Card
 					sx={{
 						width: 320,
 						height: 440,
 					}}
-					key={`center-${group.label}`}
+					key={`center-${project.title}`}
 				>
 					<CardMedia
 						component='img'
 						height='160'
 						src={`${API_GATEWAY}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
-						alt={group.label}
-						title={group.label}
+						alt={project.title}
+						title={project.title}
 					/>
 
 					<CardContent>
-						<Typography variant='h5'>{group?.title}</Typography>
+						<Typography variant='h5'>{project?.title}</Typography>
 
 						<Typography
 							sx={{ mt: 2 }}
@@ -75,15 +60,29 @@ const MainCard = ({ group }: { group?: any }) => {
 							variant='body2'
 							color='text.secondary'
 						>
-							{group.description}
+							{project.description}
 						</Typography>
 
-						<Typography variant='subtitle2'>{group.admins}</Typography>
+						<Typography gutterBottom variant='subtitle2'>
+							Admin
+						</Typography>
+						<Stack spacing={1}>
+							{project?.admins?.length === 0 && (
+								<Typography variant='subtitle2'>No admin yet</Typography>
+							)}
+							{users
+								?.filter(u => [...(project?.admins || [])].includes(u.id))
+								.map(user => (
+									<UserInfo key={user.id} user={user} />
+								))}
+						</Stack>
 					</CardContent>
 					<CardActions sx={{ p: 2 }}>
-						{group?.admins?.includes(user?.uid) && (
+						{user?.uid && project?.admins?.includes(user?.uid) && (
 							<Button
-								onClick={() => handleDeleteProject(group.name)}
+								onClick={() => {
+									confirmRemove(project.name)
+								}}
 								variant='outlined'
 							>
 								Delete Project

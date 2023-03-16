@@ -66,9 +66,7 @@ const Workspace = () => {
 		}
 	}, [center, setCenters, showNotif])
 
-	const sessions = containers?.filter(
-		c => c.type === ContainerType.DESKTOP
-	)
+	const sessions = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const isMember = center && user?.groups?.includes(center?.id)
 
 	return (
@@ -141,13 +139,13 @@ const Workspace = () => {
 					{isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-								<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+								{center && <Members group={center} users={center?.users} />}
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
 								<Tools />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-								{center && <Members group={center} users={center?.users} />}
+								<Data bidsDatasets={bidsDatasets} sessions={sessions} />
 							</Box>
 						</>
 					)}

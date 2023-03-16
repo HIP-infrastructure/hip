@@ -11,7 +11,8 @@ import {
 	Typography,
 } from '@mui/material'
 import { HIPCenter, User } from '../../api/types'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import UserInfo from '../UI/UserInfo'
 
 const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {
 	return (
@@ -54,33 +55,7 @@ const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {
 								<Typography variant='subtitle2'>No members yet</Typography>
 							)}
 							{users?.map(user => (
-								<Box
-									key={user.id}
-									sx={{
-										display: 'flex ',
-										gap: 2,
-										justifyContent: 'space-between',
-									}}
-								>
-									<Stack>
-										<Typography variant='subtitle2'>
-											{user.displayName}
-										</Typography>
-										<Typography color='text.secondary' variant='body2'>
-											{user.email}
-										</Typography>
-									</Stack>
-
-									<IconButton
-										color='primary'
-										onClick={() => {
-											window.open(`/u/${user.id}`, '_blank')
-										}}
-										aria-label={`Chat with ${user.displayName}`}
-									>
-										<Chat />
-									</IconButton>
-								</Box>
+								<UserInfo key={user.id} user={user} />
 							))}
 						</Stack>
 					</CardContent>
