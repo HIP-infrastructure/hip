@@ -10,9 +10,8 @@ import {
 } from '@mui/material'
 import { BIDSDataset, Container, HIPProject } from '../../api/types'
 import { useEffect, useState } from 'react'
-import { getProjectMetadataTree, createProjectFSAPI } from '../../api/projects'
+import { getProjectMetadataTree } from '../../api/projects'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
-import { Refresh } from '@mui/icons-material'
 import { useNotification } from '../../hooks/useNotification'
 
 const Data = ({
@@ -123,29 +122,6 @@ const Data = ({
 							>
 								Restart File API
 							</Button> */}
-							<Button
-								color='primary'
-								size='small'
-								sx={{ m: 2 }}
-								startIcon={<Refresh />}
-								onClick={() => {
-									setFiles(undefined)
-									createProjectFSAPI().then(data => {
-										showNotif(
-											`API created ${JSON.stringify(data, null, 2)}`,
-											'success'
-										)
-										setTimeout(() => {
-											getProjectMetadataTree(project.name).then(f => {
-												setFiles(f)
-											})
-										}, 5 * 1000)
-									})
-								}}
-								variant={'contained'}
-							>
-								Create FS API
-							</Button>
 						</>
 					)}
 

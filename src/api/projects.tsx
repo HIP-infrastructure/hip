@@ -93,15 +93,15 @@ export const getProjectMetadataTree = async (
 		.then(checkForError)
 		.catch(catchError)
 
-export const createProjectFSAPI = async (): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/api`, {
-		method: 'POST',
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
+// export const createProjectFSAPI = async (): Promise<any> =>
+// 	fetch(`${API_GATEWAY}/projects/api`, {
+// 		method: 'POST',
+// 		headers: {
+// 			requesttoken: window.OC.requestToken,
+// 		},
+// 	})
+// 		.then(checkForError)
+// 		.catch(catchError)
 
 export const importBIDSSubject = async (
 	importSubjectDto: {
