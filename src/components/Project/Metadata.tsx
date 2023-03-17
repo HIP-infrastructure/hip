@@ -6,7 +6,7 @@ import {
 	Paper,
 	Typography
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { getProjectMetadataTree } from '../../api/projects'
 import {
@@ -14,20 +14,32 @@ import {
 	InspectResult
 } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
 import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Data = ({
 	project,
 }: {
 	project?: HIPProject
 }) => {
+	const params = useParams()
 	const { showNotif } = useNotification()
+	const {
+		containers: [containers],
+		BIDSDatasets: [bidsDatasets],
+		user: [user],
+		userProjects: [userProjects, setUserProjects],
+		projects: [projects, setProjects],
+	} = useAppStore()
 	const [initialRender, setInitialRender] = useState(true)
 	const [files, setFiles] = useState<InspectResult>()
 	const [projectName, setProjectName] = useState<string | undefined>()
 
 	useEffect(() => {
+		const project = userProjects?.find(
+			project => project.name === params?.projectId
+		)
 		if (projectName !== project?.name) {
 			setInitialRender(true)
 			setFiles(undefined)
@@ -36,6 +48,9 @@ const Data = ({
 	}, [project, setProjectName])
 
 	useEffect(() => {
+		const project = userProjects?.find(
+			project => project.name === params?.projectId
+		)
 		if (initialRender && project) {
 			setInitialRender(false)
 			getProjectMetadataTree(project.name).then(f => setFiles(f))
@@ -43,12 +58,7 @@ const Data = ({
 	}, [initialRender, project])
 
 	return (
-			<Card
-				sx={{
-					width: 320,
-				}}
-				key={`data-group`}
-			>
+			<Card>
 				<CardMedia
 					component='img'
 					height='160'
@@ -60,32 +70,13 @@ const Data = ({
 
 				<CardContent>
 					<Typography variant='h5'>
-						Files Metadata {!files && <CircularProgress size={12} />}
+						Project Files Metadata {!files && <CircularProgress size={12} />}
 					</Typography>
 
-					<Typography
-						sx={{ mt: 2 }}
-						gutterBottom
-						variant='body2'
-						color='text.secondary'
-					>
-						Private space for your center data.
-					</Typography>
-					<Box>
-						<Box
-							sx={{
-								display: 'flex',
-								flexWrap: 'wrap',
-								gap: '16px 16px',
-								mt: 2,
-							}}
-						>
-							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-									<ProjectMetadataBrowser
-										files={files}
-									/>
-							</Box>
-						</Box>
+					<Box component={Paper} sx={{ p: 1 }}>
+						<ProjectMetadataBrowser
+							files={files}
+						/>
 					</Box>
 				</CardContent>
 			</Card>

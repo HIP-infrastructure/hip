@@ -84,6 +84,7 @@ export interface HIPProject {
 	acceptMembershipRequest?: boolean
 	admins?: string[]
 	members?: string[]
+	dataset?: BIDSDataset
 }
 
 export interface ImportSubjectDto {

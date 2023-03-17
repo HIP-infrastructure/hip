@@ -16,7 +16,6 @@ import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
-import DataCard from './DataCard'
 import MemberCard from './MemberCard'
 import ProjectCard from './ProjectCard'
 
@@ -168,9 +167,7 @@ const ProjectDashboard = () => {
 						</Box>
 						<Box sx={{ gridColumn: '1', gridRow: '2' }}>{/* <Tools /> */}</Box>
 						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-							<DataCard
-								project={project}
-							/>
+							
 						</Box>
 					</>
 				</Box>
