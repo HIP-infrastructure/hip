@@ -125,6 +125,14 @@ export interface Node {
 	parentPath: string
 }
 
+export interface InspectResult {
+	name: string
+	type: 'file' | 'dir' | 'symlink'
+	size: number
+	relativePath: string
+	children: InspectResult[]
+}
+
 export interface Document {
 	type: string
 	size: number
@@ -316,5 +324,5 @@ export interface BIDSFile {
 }
 
 export interface CreateBidsDatasetParticipantsTsvDto {
-	readonly Participants: Participant[];
+	readonly Participants: Participant[]
 }
