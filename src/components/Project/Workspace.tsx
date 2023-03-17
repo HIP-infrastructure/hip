@@ -1,40 +1,24 @@
-import { Chat } from '@mui/icons-material'
 import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	CircularProgress,
-	FormControl,
-	IconButton,
-	InputLabel,
-	MenuItem,
-	Select,
-	SelectChangeEvent,
-	Stack,
-	Typography,
+	Box, Typography
 } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { API_GATEWAY, getUsers } from '../../api/gatewayClientAPI'
+import { getUsers } from '../../api/gatewayClientAPI'
+import {
+	addUserToProject,
+	deleteProject,
+	getProjects,
+	getUserProjects
+} from '../../api/projects'
 import { BIDSDataset, ContainerType, User } from '../../api/types'
+import { ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
 import DataCard from './DataCard'
-import ProjectCard from './ProjectCard'
-import {
-	addUserToProject,
-	deleteProject,
-	getProjects,
-	getUserProjects,
-} from '../../api/projects'
-import { ROUTE_PREFIX } from '../../constants'
-import UserInfo from '../UI/UserInfo'
 import MemberCard from './MemberCard'
+import ProjectCard from './ProjectCard'
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
@@ -186,8 +170,6 @@ const ProjectDashboard = () => {
 						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
 							<DataCard
 								project={project}
-								bidsDatasets={datasets}
-								sessions={servers}
 							/>
 						</Box>
 					</>
