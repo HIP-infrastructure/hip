@@ -1,62 +1,67 @@
 import { Close } from '@mui/icons-material'
 import {
-	Box,
-	Breadcrumbs,
-	Button,
-	IconButton,
-	Link,
-	Paper,
+	Box, Button,
+	IconButton, Paper,
 	Tab,
 	Tabs,
-	Typography,
+	Typography
 } from '@mui/material'
 // import marked from 'marked'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { BIDSDataset } from '../../api/types'
+import { useParams } from 'react-router-dom'
+import { getProjectMetadataTree, importBIDSSubject } from '../../api/projects'
+import { BIDSDataset, InspectResult } from '../../api/types'
+import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
-import FileBrowser from '../UI/FileBrowser'
-import TitleBar from '../UI/titleBar'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
 import Participants from '../BIDS/Participants'
 import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
-import { importBIDSSubject } from '../../api/projects'
+import FileBrowser from '../UI/FileBrowser'
+import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
+import TitleBar from '../UI/titleBar'
 
 const Dataset = () => {
+	const params = useParams()
+	const { showNotif } = useNotification()
+	const [files, setFiles] = useState<InspectResult>()
+	const [initialRender, setInitialRender] = useState(true)
+	const [projectName, setProjectName] = useState<string | undefined>()
+
 	const [dataset, setDataset] = useState<BIDSDataset>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
 	const [path, setPath] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
 	const [selectedSubject, setSelectedSubject] = useState<string[]>()
-	const params = useParams()
 	const {
 		BIDSDatasets: [datasets],
 		userProjects: [userProjects],
 	} = useAppStore()
 
+
 	useEffect(() => {
-		if (dataset) return
-
-		const ds = datasets?.data?.find(dataset => dataset.id === params.datasetId)
-		setDataset(ds)
-	}, [dataset, datasets, params])
-
-	// FIXME: This is a temporary solution to get datasets path
-	useEffect(() => {
-		if (dataset) {
-			const nextPath = dataset.Path?.replace(
-				/mnt\/nextcloud-dp\/nextcloud\/data\/.*?\/files\//,
-				''
-			).replace(
-				/\/mnt\/nextcloud-dp\/nextcloud\/data\/__groupfolders\/.*?\//,
-				'/groupfolder/'
-			)
-
-			if (nextPath) setPath(nextPath)
+		const project = userProjects?.find(
+			project => project.name === params?.projectId
+		)
+	
+		if (projectName !== project?.name) {
+			setInitialRender(true)
+			setFiles(undefined)
 		}
-	}, [dataset])
+		setProjectName(project?.name)
+	}, [setProjectName])
+
+	useEffect(() => {
+		const project = userProjects?.find(
+			project => project.name === params?.projectId
+		)
+	
+		if (initialRender && project) {
+			setInitialRender(false)
+			getProjectMetadataTree(project.name).then(f => setFiles(f))
+		}
+	}, [initialRender])
 
 	const importSubject = () => {
 		const [datasetPath, subjectId] = selectedSubject || []
@@ -144,7 +149,7 @@ const Dataset = () => {
 									display: 'flex',
 									flexWrap: 'wrap',
 									gap: '16px 16px',
-									alignItems: 'center',
+									alignItems: 'start',
 									mt: 2,
 								}}
 							>
@@ -167,22 +172,14 @@ const Dataset = () => {
 								>
 									&gt;
 								</Button>
-								<Box
-									elevation={2}
-									component={Paper}
-									sx={{
-										overflow: 'auto',
-										p: 2,
-										flex: '1 1',
-									}}
-								>
-									<Box>
-										<Typography gutterBottom variant='h6' component='div'>
-											{dataset?.Name}
-										</Typography>
-										<Box>Dataset Files</Box>
+								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+								<Typography gutterBottom variant='h6' component='div'>
+										BIDS dataset {dataset?.Name} Files
+									</Typography>
+										<ProjectMetadataBrowser
+											files={files?.children.find((f: InspectResult) => f.name === 'inputs')}
+									/>
 									</Box>
-								</Box>
 							</Box>
 						</Box>
 					)}

@@ -1,46 +1,30 @@
-import * as React from 'react'
 import {
-	Box,
-	Button,
-	Card,
+	Box, Card,
 	CardContent,
 	CardMedia,
 	CircularProgress,
 	Paper,
-	Typography,
+	Typography
 } from '@mui/material'
-import {
-	BIDSDataset,
-	Container,
-	HIPProject,
-	InspectResult,
-} from '../../api/types'
 import { useEffect, useState } from 'react'
-import { getProjectMetadataTree } from '../../api/projects'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { getProjectMetadataTree } from '../../api/projects'
+import {
+	HIPProject,
+	InspectResult
+} from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
-import path from 'path'
-import FileBrowser from '../UI/FileBrowser'
 import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
+import * as React from 'react'
 
 const Data = ({
 	project,
-	bidsDatasets,
-	sessions,
 }: {
 	project?: HIPProject
-	bidsDatasets?: {
-		data?: BIDSDataset[] | undefined
-		error?: string | undefined
-	}
-	sessions?: Container[]
 }) => {
 	const { showNotif } = useNotification()
-
 	const [initialRender, setInitialRender] = useState(true)
 	const [files, setFiles] = useState<InspectResult>()
-	const [path, setPath] = useState<string>('/')
-	const [selectedFile, setSelectedFile] = useState<string>()
 	const [projectName, setProjectName] = useState<string | undefined>()
 
 	useEffect(() => {
@@ -59,15 +43,6 @@ const Data = ({
 	}, [initialRender, project])
 
 	return (
-		<>
-			{!bidsDatasets && (
-				<CircularProgress
-					size={32}
-					color='secondary'
-					sx={{ position: 'absolute', top: 10, left: 10 }}
-				/>
-			)}
-
 			<Card
 				sx={{
 					width: 320,
@@ -106,18 +81,14 @@ const Data = ({
 							}}
 						>
 							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-								{path && (
 									<ProjectMetadataBrowser
 										files={files}
-										selectedFile={setSelectedFile}
 									/>
-								)}
 							</Box>
 						</Box>
 					</Box>
 				</CardContent>
 			</Card>
-		</>
 	)
 }
 
