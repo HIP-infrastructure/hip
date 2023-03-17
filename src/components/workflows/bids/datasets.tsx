@@ -21,7 +21,7 @@ import Checkbox from '@mui/material/Checkbox'
 import { queryBidsDatasets } from '../../../api/bids'
 import { BIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../Store'
-import CreateDataset from './forms/CreateDataset'
+import CreateBIDSDataset from '../../BIDS/CreateDataset'
 
 const Datasets = (): JSX.Element => {
 	const [rows, setRows] = useState<BIDSDataset[]>([])
@@ -63,9 +63,7 @@ const Datasets = (): JSX.Element => {
 
 	return (
 		<>
-			<CreateDataset
-				open={isCreateDialogOpen}
-				handleClose={() => setIsCreateDialogOpen(!isCreateDialogOpen)}
+			<CreateBIDSDataset
 				setDatasetCreated={setDatasetCreated}
 			/>
 			<Box

@@ -1,12 +1,18 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, File2, HIPProject } from './types'
+import { BIDSDataset, BIDSDatasetDescription, HIPProject } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects`, {}).then(checkForError).catch(catchError)
+	fetch(`${API_GATEWAY}/projects`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
+		.then(checkForError)
+		.catch(catchError)
 
 export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects?userId=${userId}`, {})
+	fetch(`${API_GATEWAY}/projects/forUser/${userId}`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
 		.then(checkForError)
 		.catch(catchError)
 
@@ -14,6 +20,7 @@ export const createProject = async (createProject: {
 	adminId: string
 	title: string
 	description: string
+	datasetDescription: BIDSDatasetDescription
 }): Promise<any> => {
 	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'POST',
@@ -28,7 +35,9 @@ export const createProject = async (createProject: {
 }
 
 export const getProject = async (name: string): Promise<HIPProject> => {
-	return fetch(`${API_GATEWAY}/projects/${name}`, {})
+	return fetch(`${API_GATEWAY}/projects/${name}`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
 		.then(checkForError)
 		.catch(catchError)
 }
@@ -53,7 +62,6 @@ export const deleteProject = async (name: string): Promise<any> => {
 	return fetch(`${API_GATEWAY}/projects/${name}`, {
 		method: 'DELETE',
 		headers: {
-			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
 	})
@@ -63,21 +71,66 @@ export const deleteProject = async (name: string): Promise<any> => {
 
 export const addUserToProject = async (
 	userId: string,
-	projectName: string,
-): Promise<any> => fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
-	method: 'POST',
-	headers: {
-		requesttoken: window.OC.requestToken,
-	},
-})
-	.then(checkForError)
-	.catch(catchError)
-
-export const getProjectFiles = async (projectName: string): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/${projectName}/files`, {
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
+		method: 'POST',
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const getProjectMetadataTree = async (
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/metadataTree`, {
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+// export const createProjectFSAPI = async (): Promise<any> =>
+// 	fetch(`${API_GATEWAY}/projects/api`, {
+// 		method: 'POST',
+// 		headers: {
+// 			requesttoken: window.OC.requestToken,
+// 		},
+// 	})
+// 		.then(checkForError)
+// 		.catch(catchError)
+
+export const importBIDSSubject = async (
+	importSubjectDto: {
+		datasetPath: string,
+		subjectId: string,
+	},
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/subject`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(importSubjectDto),
+	})
+		.then(checkForError)
+		.catch(catchError)
+
+export const importDocument = async (
+	userId: string,
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/bids`, {
+		method: 'POST',
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(''),
 	})
 		.then(checkForError)
 		.catch(catchError)
@@ -93,33 +146,3 @@ export const getProjectDatasets = async (
 	)
 		.then(checkForError)
 		.catch(catchError)
-
-export const createBIDSDataset = async (
-	projectId: string
-): Promise<BIDSDataset> => {
-	return fetch(`${API_GATEWAY}/`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({}),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
-export const copyBIDSFilesToBIDSDataset = async (
-	projectId: string
-): Promise<void> => {
-	return fetch(`${API_GATEWAY}/`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-		body: JSON.stringify({}),
-	})
-		.then(checkForError)
-		.catch(catchError)
-}

@@ -29,15 +29,7 @@ const Projects = () => {
 				}
 				button={
 					<Box sx={{ display: 'flex' }}>
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={() =>
-								navigate(`${ROUTE_PREFIX}/collaborative/create`)
-							}
-						>
-							Create Project
-						</Button>
+						
 					</Box>
 				}
 			/>

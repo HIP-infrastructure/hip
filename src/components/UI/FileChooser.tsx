@@ -2,27 +2,27 @@ import { Article, Folder } from '@mui/icons-material'
 import { Box, Divider, TextField, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { getFiles2 } from '../../api/gatewayClientAPI'
-import { File2 } from '../../api/types'
+import { Node } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 
-const root: File2 = {
+const root: Node = {
 	name: '/',
 	isDirectory: true,
 	path: '/',
 	parentPath: 'root',
 }
 
-const sortFile = (data: File2[]) =>
-	data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
+const sortFile = (data: Node[]) =>
+	data.sort((a: Node, b: Node) => -b.name.localeCompare(a.name))
 
 const FileChooser = ({
 	handleSelectedFile,
 }: {
 	handleSelectedFile?: (path: string) => void
 }): JSX.Element => {
-	const [files, setFiles] = useState<File2[]>([root])
+	const [files, setFiles] = useState<Node[]>([root])
 	const [fileListVisible, setFileListVisible] = useState(false)
-	const [selectedFile, setSelectedFile] = useState<File2>(root)
+	const [selectedFile, setSelectedFile] = useState<Node>(root)
 	const [loading, setLoading] = useState(false)
 	const { showNotif } = useNotification()
 
@@ -52,7 +52,7 @@ const FileChooser = ({
 	}, [loading, selectedFile, files, showNotif])
 
 	const parent = files?.find(f => f.path === selectedFile.parentPath)
-	const currentFolder: File2[] = [
+	const currentFolder: Node[] = [
 		...(files
 			?.filter(f => new RegExp(selectedFile.path).test(f.parentPath || ''))
 			?.filter(f => {

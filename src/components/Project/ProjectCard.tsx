@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { deleteProject, getProjects, getUserProjects } from '../../api/projects'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 const MainCard = ({ group }: { group?: any }) => {
 	const navigate = useNavigate()
@@ -81,12 +81,14 @@ const MainCard = ({ group }: { group?: any }) => {
 						<Typography variant='subtitle2'>{group.admins}</Typography>
 					</CardContent>
 					<CardActions sx={{ p: 2 }}>
-						<Button
-							onClick={() => handleDeleteProject(group.name)}
-							variant='outlined'
-						>
-							Delete Project
-						</Button>
+						{group?.admins?.includes(user?.uid) && (
+							<Button
+								onClick={() => handleDeleteProject(group.name)}
+								variant='outlined'
+							>
+								Delete Project
+							</Button>
+						)}
 					</CardActions>
 				</Card>
 			)}

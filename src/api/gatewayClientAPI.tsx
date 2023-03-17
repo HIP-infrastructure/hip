@@ -1,6 +1,6 @@
 import {
-	File2,
-	GroupFolder, HIPCenter,
+	Node,
+	HIPCenter,
 	TreeNode,
 	User
 } from './types';
@@ -24,7 +24,7 @@ export const checkForError = async (response: Response) => {
 
 		if (!response.ok) {
 			const error = data?.message || response.status
-			if (response.status > 400 && response.status <= 403) {
+			if (response.status == 401) {
 				window.location.href = '/login'
 			}
 
@@ -75,7 +75,7 @@ export const getUser = async (userid?: string): Promise<User> =>
 
 export const getGroupFolders = async (
 	userid?: string
-): Promise<GroupFolder[]> =>
+) =>
 	fetch(`${API_GATEWAY}/groups/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -129,7 +129,7 @@ export const getFiles = async (path: string): Promise<TreeNode[]> => {
 	return node
 }
 
-export const getFiles2 = async (path: string): Promise<File2[]> =>
+export const getFiles2 = async (path: string): Promise<Node[]> =>
 	fetch(`${API_GATEWAY}/files?path=${encodeURIComponent(path)}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

@@ -10,19 +10,20 @@ import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
 import PrivateWorkspace from './components/Center/Workspace'
-import DataBrowser from './components/UI/DataBrowser'
 import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
 import ProjectDashboard from './components/Project/Workspace'
 import ProjectData from './components/Project/Data'
 import ProjectDataset from './components/Project/Dataset'
-import ProjectDatasets from './components/Project/Datasets'
 import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
 import CenterDesktops from './components/Center/Desktops'
 import ProjectDesktops from './components/Project/Desktops'
 import Navigation from './components/Sidebar'
 import { ROUTE_PREFIX } from './constants'
+import { isLoggedIn } from './api/gatewayClientAPI'
+import { useNotification } from './hooks/useNotification'
+import Project from './components/Project/index'
 
 export interface Space {
 	label: string
@@ -39,33 +40,50 @@ const footerStyle = {
 	margin: 0,
 }
 
-const Layout = (): JSX.Element => (
-	<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
-		<CssBaseline />
-		{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-			<Typography
-				sx={{
-					position: 'fixed',
-					top: '8px',
-					right: '200px',
-					color: '#FA6812',
-					zIndex: '10000',
-					transform: 'translateX(-50%)',
-				}}
-				variant='h6'
-			>
-				𓂀 {process.env.REACT_APP_HOSTNAME}
-			</Typography>
-		)}
-		<Navigation />
-		<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
-			<Outlet />
+const Layout = (): JSX.Element => {
+	const { showNotif } = useNotification()
+
+	React.useEffect(() => {
+		const interval = setInterval(() => {
+			isLoggedIn()
+				.catch(error => {
+					showNotif(
+						'You have been logged out, please refresh your browser',
+						'error'
+					)
+				})
+		}, 30 * 1000)
+		return () => clearInterval(interval)
+	}, [])
+
+	return (
+		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
+			<CssBaseline />
+			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
+				<Typography
+					sx={{
+						position: 'fixed',
+						top: '8px',
+						right: '200px',
+						color: '#FA6812',
+						zIndex: '10000',
+						transform: 'translateX(-50%)',
+					}}
+					variant='h6'
+				>
+					𓂀 {process.env.REACT_APP_HOSTNAME}
+				</Typography>
+			)}
+			<Navigation />
+			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
+				<Outlet />
+			</Box>
+			<Box component='footer' sx={{ ...footerStyle }}>
+				<p>HIP {new Date().getFullYear()}</p>
+			</Box>
 		</Box>
-		<Box component='footer' sx={{ ...footerStyle }}>
-			<p>HIP {new Date().getFullYear()}</p>
-		</Box>
-	</Box>
-)
+	)
+}
 
 const App = () => (
 	<Routes>
@@ -82,18 +100,19 @@ const App = () => (
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
-				<Route path={':centerId/data'} element={<DataBrowser />} />
 			</Route>
 			<Route path={'collaborative'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
-				<Route path={':projectId'} element={<ProjectDashboard />} />
-				<Route path={':projectId/desktops'} element={<ProjectDesktops />} />
-				<Route path={':projectId/datasets'} element={<Outlet />}>
-					<Route index element={<ProjectDatasets />} />
-					<Route path={':datasetId'} element={<ProjectDataset />} />
+				<Route path={':projectId'} element={<Project />}>
+					<Route index element={<ProjectDashboard />} />
+					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'datasets'} element={<Outlet />}>
+						<Route index element={<ProjectDataset />} />
+						<Route path={':datasetId'} element={<ProjectDataset />} />
+					</Route>
+					<Route path={'data'} element={<ProjectData />} />
 				</Route>
-				<Route path={':projectId/data'} element={<ProjectData />} />
 			</Route>
 			<Route
 				path='*'

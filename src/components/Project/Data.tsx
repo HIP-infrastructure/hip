@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {
 	Box,
+	Button,
 	Card,
 	CardContent,
 	CardMedia,
@@ -9,8 +10,9 @@ import {
 } from '@mui/material'
 import { BIDSDataset, Container, HIPProject } from '../../api/types'
 import { useEffect, useState } from 'react'
-import { getProjectFiles } from '../../api/projects'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { getProjectMetadataTree } from '../../api/projects'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { useNotification } from '../../hooks/useNotification'
 
 const Data = ({
 	project,
@@ -24,6 +26,8 @@ const Data = ({
 	}
 	sessions?: Container[]
 }) => {
+	const { showNotif } = useNotification()
+
 	const [initialRender, setInitialRender] = useState(true)
 	const [files, setFiles] = useState<any>()
 	const [projectName, setProjectName] = useState<string | undefined>()
@@ -39,7 +43,7 @@ const Data = ({
 	useEffect(() => {
 		if (initialRender && project) {
 			setInitialRender(false)
-			getProjectFiles(project.name).then(f => setFiles(f))
+			getProjectMetadataTree(project.name).then(f => setFiles(f))
 		}
 	}, [initialRender, project])
 
@@ -98,9 +102,34 @@ const Data = ({
 						</Box> */}
 					</>
 
+					{project?.name && (
+						<>
+							{/* <Button
+								color='primary'
+								size='small'
+								sx={{ m: 2 }}
+								startIcon={<Refresh />}
+								onClick={() => {
+									setFiles(undefined)
+									getProjectMetadataTree(project.name, true)
+									setTimeout(() => {
+										getProjectMetadataTree(project.name, false).then(f =>
+											setFiles(f)
+										)
+									}, 20 * 1000)
+								}}
+								variant={'contained'}
+							>
+								Restart File API
+							</Button> */}
+						</>
+					)}
+
 					<Box>
-						<Typography variant='h5'>Files {!files && <CircularProgress size={12} />}</Typography>
-						
+						<Typography variant='h5'>
+							Files {!files && <CircularProgress size={12} />}
+						</Typography>
+
 						<pre>{JSON.stringify(files, null, 2)}</pre>
 					</Box>
 				</CardContent>

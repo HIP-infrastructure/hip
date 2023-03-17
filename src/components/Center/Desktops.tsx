@@ -15,7 +15,7 @@ import {
 	getDesktopsAndApps,
 	removeAppsAndDesktop,
 } from '../../api/remoteApp'
-import { AppContainer, Container, ContainerType } from '../../api/types'
+import { Container, ContainerType } from '../../api/types'
 import { POLLING, ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
@@ -23,7 +23,7 @@ import DesktopCard from '../UI/DesktopCard'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
 
-const Desktops = (): JSX.Element => {
+const CenterDesktops = (): JSX.Element => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { trackEvent } = useMatomo()
@@ -31,7 +31,7 @@ const Desktops = (): JSX.Element => {
 	const {
 		user: [user],
 		containers: [containers, setContainers],
-		debug: [debug, setDebug],
+		debug: [debug],
 	} = useAppStore()
 
 	const [showAdminView, setShowAdminView] = React.useState(
@@ -39,14 +39,18 @@ const Desktops = (): JSX.Element => {
 	)
 	const modalRef = useRef<ModalComponentHandle>(null)
 
+	const getDesktops = (userId: string, showAdmin = false) =>
+		getDesktopsAndApps('private', userId, [], showAdmin)
+			.then(data => setContainers(data))
+			.catch(error => showNotif(error, 'error'))
+
 	useEffect(() => {
 		const userId = user?.uid
 		if (!userId) return
 
+		getDesktops(userId, showAdminView)
 		const interval = setInterval(() => {
-			getDesktopsAndApps('private', userId, [], showAdminView || false)
-				.then(data => setContainers(data))
-				.catch(error => showNotif(error, 'error'))
+			getDesktops(userId, showAdminView)
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
@@ -92,7 +96,7 @@ const Desktops = (): JSX.Element => {
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
 		.map((s: Container) => ({
 			...s,
-			apps: (containers as AppContainer[]).filter(a => a.parentId === s.id),
+			apps: containers.filter(a => a.parentId === s.id),
 		}))
 		?.filter((s: Container) =>
 			user && showAdminView ? true : s.userId === user?.uid
@@ -186,15 +190,9 @@ const Desktops = (): JSX.Element => {
 						)
 				)}
 			</Box>
-			<Box sx={{ ml: 2, mt: 8 }}>
-				<FormControlLabel
-					control={<Switch checked={debug} onChange={() => setDebug(!debug)} />}
-					label='Debug'
-				/>
-			</Box>
 		</>
 	)
 }
 
-Desktops.displayName = 'Desktops'
-export default Desktops
+CenterDesktops.displayName = 'CenterDesktops'
+export default CenterDesktops

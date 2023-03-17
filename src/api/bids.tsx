@@ -90,18 +90,6 @@ export const queryBidsDatasets = async (
 		.catch(catchError)
 }
 
-export const queryBidsDatasetsMockup = async (userId?: string): Promise<BIDSDataset[]> => {
-	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=*&ageRange=0,100&participantsCountRange=0,200&datatypes=anat,dwi,func,ieeg,eeg&owner=${userId}&page=1&nbOfResults=200`
-	return fetch(url, {
-		headers: {
-			'Content-Type': 'application/json',
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-}
-
 export const createBidsDataset = async (
 	CreateBidsDatasetDto: CreateBidsDatasetDto
 ): Promise<BIDSDatasetResponse | IError> => {

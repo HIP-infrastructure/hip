@@ -71,7 +71,7 @@ const DesktopCard = ({
 			</Tooltip>
 			{[
 				loading(desktop.state),
-				...(desktop.apps?.map(a => loading(a.state)) || []),
+				...(desktop.apps?.map((app: Container) => loading(app.state)) || []),
 			].reduce((p, c) => p || c, false) && (
 				<CircularProgress
 					size={32}
@@ -90,9 +90,9 @@ const DesktopCard = ({
 				color='text.secondary'
 			>
 				{desktop.error?.message}
-				{desktop.apps?.map(app => (
+				{desktop.apps?.map((app: Container) => (
 					<span key={app.name}>
-						<strong>{app.app}</strong>: {app.state}
+						<strong>{app.name}</strong>: {app.state}
 						<br />
 						{app.error?.message}
 					</span>
@@ -102,16 +102,18 @@ const DesktopCard = ({
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
 			{(desktop.state === ContainerState.DESTROYED || debug) && (
 				<Tooltip title='Remove' placement='top'>
-					<IconButton
-						edge='end'
-						color='primary'
-						aria-label='Remove'
-						onClick={() => {
-							forceRemoveAppsAndDesktop(desktop.id)
-						}}
-					>
-						<Clear />
-					</IconButton>
+					<span>
+						<IconButton
+							edge='end'
+							color='primary'
+							aria-label='Remove'
+							onClick={() => {
+								forceRemoveAppsAndDesktop(desktop.id)
+							}}
+						>
+							<Clear />
+						</IconButton>
+					</span>
 				</Tooltip>
 			)}
 

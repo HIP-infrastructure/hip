@@ -1,30 +1,17 @@
-export type Workspace = 'private' | 'collab'
+export type WorkspaceType = 'private' | 'collab'
 
 export interface Container {
-	user: string | undefined;
 	id: string
 	name: string
 	userId: string
-	groupIds: string[]
 	url: string
 	state: ContainerState
 	error: Error | null
 	type: ContainerType
 	parentId?: string
-	apps?: AppContainer[]
-	workspace?: Workspace
-}
-
-export interface GroupFolder {
-	id: number
-	label: string
-	path: string
-}
-
-export type AppContainer = Container & ContainerOptions
-
-export interface ContainerOptions {
-	app: string
+	groupIds?: string[]
+	workspace: WorkspaceType
+	apps?: any
 }
 
 export enum ContainerState {
@@ -49,6 +36,7 @@ export interface UserCredentials {
 	isAdmin?: boolean
 	password?: string
 	groups?: string[]
+	hasProjectsAdminRole?: boolean
 }
 
 export interface NavigationItem {
@@ -89,7 +77,6 @@ export interface HIPCenter {
 	users?: User[]
 }
 
-
 export interface HIPProject {
 	name: string
 	title: string
@@ -99,6 +86,10 @@ export interface HIPProject {
 	members?: string[]
 }
 
+export interface ImportSubjectDto {
+	datasetPath: string
+	subjectId: string
+}
 
 export interface Application {
 	name: string
@@ -127,11 +118,11 @@ export interface TreeNode {
 	children?: boolean
 }
 
-export interface File2 {
+export interface Node {
 	name: string
 	isDirectory: boolean
 	path: string
-	parentPath?: string
+	parentPath: string
 }
 
 export interface Document {
@@ -155,25 +146,7 @@ export interface Participant {
 
 export type BIDSDatasetResponse = { data?: BIDSDataset[]; error?: Error }
 
-// export interface BIDSDataset {
-// 	id: string
-// 	path?: string
-// 	participants?: Participant[]
-// 	Name: string
-// 	BIDSVersion?: string
-// 	License?: string
-// 	Authors?: string[]
-// 	Acknowledgements?: string
-// 	HowToAcknowledge?: string
-// 	Funding?: string[]
-// 	ReferencesAndLinks?: string[]
-// 	DatasetDOI?: string
-// }
-
-export interface BIDSDataset {
-	id: string
-	User?: string
-	Path?: string
+export interface BIDSDatasetDescription {
 	Name: string
 	BIDSVersion?: string
 	License?: string
@@ -183,6 +156,12 @@ export interface BIDSDataset {
 	Funding?: string[]
 	ReferencesAndLinks?: string[]
 	DatasetDOI?: string
+}
+
+export interface BIDSDataset extends BIDSDatasetDescription {
+	id: string
+	User?: string
+	Path?: string
 	CreationDate: string
 	ParticipantsCount: number
 	ParticipantsGroups: string[]
@@ -336,49 +315,6 @@ export interface BIDSFile {
 	}
 }
 
-export interface GetBidsDatasetDto {
-	readonly owner: string
-	readonly dataset: string
-	readonly path: string // relative path for user or group eg: data/file.md
-	BIDS_definitions: string[]
-}
-
-export class BidsDatasetDefinitionDto {
-	'BIDS_definitions': {
-		Anat: {
-			keylist: string[]
-			required_keys: string[]
-			allowed_modalities: string[]
-			allowed_file_formats: string[]
-			readable_file_formats: string[]
-			required_protocol_keys: []
-		}
-		AnatJSON: {
-			keylist: string[]
-		}
-		Ieeg: {
-			keylist: string[]
-			required_keys: string[]
-			allowed_modalities: string[]
-			allowed_file_formats: string[]
-			readable_file_formats: string[]
-			channel_type: string[]
-			mod_channel_type: string[]
-			required_protocol_keys: []
-		}
-		IeegJSON: {
-			keylist: string[]
-			required_keys: string[]
-		}
-		DatasetDescJSON: {
-			keylist: string[]
-			required_keys: string[]
-			filename: string
-			bids_version: string
-		}
-	}
-}
-
 export interface CreateBidsDatasetParticipantsTsvDto {
-	readonly Participants: Participant[]
+	readonly Participants: Participant[];
 }

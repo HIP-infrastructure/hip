@@ -1,15 +1,25 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	AccountTree,
+	Apps,
 	Assignment,
 	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	Folder,
 	Monitor,
-	Apps,
+	Add,
+	Adb,
+	CreateNewFolder,
 } from '@mui/icons-material'
-import { Avatar, CircularProgress, Divider, Drawer } from '@mui/material'
+import {
+	Avatar,
+	CircularProgress,
+	Divider,
+	Drawer,
+	IconButton,
+	Switch,
+} from '@mui/material'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -19,10 +29,9 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../Store'
-import { getUserProjects } from '../api/projects'
-import { API_GATEWAY } from '../api/gatewayClientAPI';
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
@@ -32,8 +41,9 @@ const Sidebar = () => {
 
 	const {
 		user: [user],
+		debug: [debug, setDebug],
 		centers: [centers],
-		userProjects: [userProjects, setUserProjects],
+		userProjects: [userProjects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -42,9 +52,6 @@ const Sidebar = () => {
 
 	React.useEffect(() => {
 		if (!user?.uid) return
-		getUserProjects(user?.uid).then(projects => {
-			setUserProjects(projects)
-		})
 	}, [user])
 
 	const handleClick = (projectId: string) => {
@@ -149,16 +156,6 @@ const Sidebar = () => {
 							</ListItemIcon>
 							<ListItemText primary='BIDS Datasets' />
 						</ListItemButton>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							disabled={!userCenters}
-							onClick={() => handleClickNavigate(`/private/${center.id}/data`)}
-						>
-							<ListItemIcon>
-								<AccountTree />
-							</ListItemIcon>
-							<ListItemText primary='Data' />
-						</ListItemButton>
 					</List>
 					<Divider />
 				</Box>
@@ -180,14 +177,29 @@ const Sidebar = () => {
 						sx={{
 							display: 'flex',
 							alignItems: 'center',
-							mr: 2,
+							mr: 1,
 							justifyContent: 'space-between',
 						}}
 					>
 						<ListSubheader id='my-projects-subheader'>
 							My Projects
 						</ListSubheader>
-						{!userProjects && <CircularProgress size={18} color='secondary' />}
+						{userProjects ? (
+							(user?.hasProjectsAdminRole && (
+								<IconButton
+									color='primary'
+									onClick={() =>
+										navigate(`${ROUTE_PREFIX}/collaborative/create`)
+									}
+									aria-label={`Create new project`}
+								>
+									<CreateNewFolder />
+								</IconButton>
+							)) ||
+							null
+						) : (
+							<CircularProgress size={18} color='secondary' />
+						)}
 					</Box>
 				}
 			>
@@ -241,7 +253,7 @@ const Sidebar = () => {
 									<ListItemIcon>
 										<Assignment />
 									</ListItemIcon>
-									<ListItemText primary='BIDS Datasets' />
+									<ListItemText primary='BIDS Dataset' />
 								</ListItemButton>
 							</List>
 						</Collapse>
@@ -256,6 +268,13 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
+				<ListItemButton onClick={() => setDebug(!debug)}>
+					<ListItemIcon>
+						<Adb />
+					</ListItemIcon>
+					<ListItemText primary='Debug' />
+					<Switch checked={debug} />
+				</ListItemButton>
 				<ListItemButton onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
 						<Dashboard />
@@ -296,6 +315,7 @@ const Sidebar = () => {
 					</ListItemIcon>
 					<ListItemText primary='Feedback' />
 				</ListItemButton>
+
 				<Box height={`${APP_MARGIN_TOP}px}`} />
 			</List>
 		</Drawer>
