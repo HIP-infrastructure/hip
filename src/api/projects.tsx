@@ -1,6 +1,6 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, BIDSDatasetDescription, HIPProject } from './types'
+import { BIDSDataset, BIDSDatasetDescription, HIPProject, InspectResult } from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {
@@ -84,7 +84,7 @@ export const addUserToProject = async (
 
 export const getProjectMetadataTree = async (
 	projectName: string
-): Promise<any> =>
+): Promise<InspectResult> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/metadataTree`, {
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -92,16 +92,6 @@ export const getProjectMetadataTree = async (
 	})
 		.then(checkForError)
 		.catch(catchError)
-
-// export const createProjectFSAPI = async (): Promise<any> =>
-// 	fetch(`${API_GATEWAY}/projects/api`, {
-// 		method: 'POST',
-// 		headers: {
-// 			requesttoken: window.OC.requestToken,
-// 		},
-// 	})
-// 		.then(checkForError)
-// 		.catch(catchError)
 
 export const importBIDSSubject = async (
 	importSubjectDto: {

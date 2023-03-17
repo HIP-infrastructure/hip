@@ -46,7 +46,7 @@ const MainCard = ({ project, users, confirmRemove }: Props) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${API_GATEWAY}/public/media/1375898092_synapses__data___database__information__network__neural_path__futuristic_and_medical__realistic__8k__pic_of_the_day.png`}
+						src={`${API_GATEWAY}/public/media/3537726782_synapses__technology__meta___database__information__network__neural_path__futuristic_and_medical__re.png`}
 						alt={project.title}
 						title={project.title}
 					/>
