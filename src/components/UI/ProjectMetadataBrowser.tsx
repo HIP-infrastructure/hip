@@ -50,9 +50,7 @@ const FileBrowser = ({
 	}
 
 	const subFiles = (file: InspectResult) => {
-		const items = file.children
-			?.filter(f => f.type === 'dir')
-			.map(f => (
+		const items = file?.children && file.children.map(f => (
 				<StyledTreeItem
 					key={f.relativePath}
 					label={renderLabel(f)}

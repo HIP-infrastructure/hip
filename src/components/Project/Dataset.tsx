@@ -18,7 +18,6 @@ import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
 import Participants from '../BIDS/Participants'
 import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
-import FileBrowser from '../UI/FileBrowser'
 import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
 import TitleBar from '../UI/titleBar'
 
@@ -112,7 +111,9 @@ const Dataset = () => {
 										component={Paper}
 										sx={{ p: 1, flex: '1 0' }}
 									>
-										{path && <FileBrowser path={path} showSearch={true} />}
+										<ProjectMetadataBrowser
+											files={files?.children.find((f: InspectResult) => f.name === 'inputs')?.children?.find((f: InspectResult) => f.name === 'bids-dataset')}
+									/>
 									</Box>
 									<Box
 										elevation={2}
@@ -123,7 +124,7 @@ const Dataset = () => {
 											flex: '1 1',
 										}}
 									>
-										{!fileContent && <DatasetDescription dataset={dataset} />}
+										{!fileContent && <DatasetDescription dataset={project?.dataset} />}
 										{fileContent && (
 											<Box>
 												<Box sx={{ float: 'right' }}>
@@ -140,7 +141,7 @@ const Dataset = () => {
 						</>
 					)}
 
-					{tabIndex === 1 && <Participants dataset={dataset} />}
+					{tabIndex === 1 && <Participants dataset={project?.dataset} />}
 					{tabIndex === 2 && (
 						<Box sx={{ mt: 2 }}>
 							<Typography variant='h6'>Copy Files</Typography>
@@ -177,8 +178,8 @@ const Dataset = () => {
 										BIDS dataset {dataset?.Name} Files
 									</Typography>
 										<ProjectMetadataBrowser
-											files={files?.children.find((f: InspectResult) => f.name === 'inputs')}
-									/>
+											files={files?.children.find((f: InspectResult) => f.name === 'inputs')?.children?.find((f: InspectResult) => f.name === 'bids-dataset')}
+											/>
 									</Box>
 							</Box>
 						</Box>

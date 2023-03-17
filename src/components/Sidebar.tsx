@@ -246,6 +246,19 @@ const Sidebar = () => {
 									sx={{ pl: 4 }}
 									onClick={() =>
 										handleClickNavigate(
+											`/collaborative/${project.name}/metadata/`
+										)
+									}
+								>
+									<ListItemIcon>
+										<Assignment />
+									</ListItemIcon>
+									<ListItemText primary='Metadata' />
+								</ListItemButton>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									onClick={() =>
+										handleClickNavigate(
 											`/collaborative/${project.name}/datasets/`
 										)
 									}
