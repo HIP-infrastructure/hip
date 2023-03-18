@@ -113,7 +113,7 @@ const ProjectDashboard = () => {
 						/>
 					)}
 				</Box>
-				<Box sx={{ mt: 4 }}>
+				<Box sx={{ mt: 2 }}>
 					<Box
 						sx={{
 							display: 'grid',

@@ -17,7 +17,7 @@ interface Props {
 const DesktopCardButton = ({ createNewDesktop }: Props) => (
 	<Card
 		sx={{
-			maxWidth: 320,
+			width: 320,
 			display: 'flex',
 			flexDirection: 'column',
 		}}

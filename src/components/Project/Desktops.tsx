@@ -91,9 +91,7 @@ const ProjectDesktops = (): JSX.Element => {
 				.catch(error => showNotif(error, 'error'))
 	}
 
-	const project = projects?.find(
-		project => project.name === params?.projectId
-	)
+	const project = projects?.find(project => project.name === params?.projectId)
 
 	const desktops = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
@@ -108,11 +106,12 @@ const ProjectDesktops = (): JSX.Element => {
 	return (
 		<>
 			<Modal ref={modalRef} />
-
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
 					title={`Desktops: ${project?.title || ''} `}
-					description={'Desktops are shared accross members and can be used to run applications on projects data.'}
+					description={
+						'Desktops are shared accross members and can be used to run applications on projects data.'
+					}
 					button={
 						<Button
 							variant='contained'
@@ -139,24 +138,25 @@ const ProjectDesktops = (): JSX.Element => {
 						sx={{ top: 10, left: 10 }}
 					/>
 				)}
-
-				{desktops?.length === 0 && (
-					<DesktopCardButton createNewDesktop={createNewDesktop}/>
-				)}
-				{desktops?.map(
-					(desktop, i) =>
-						desktop && (
-							<DesktopCard
-								key={desktop.id}
-								userId={user?.uid || ''}
-								desktop={desktop}
-								handleOpenDesktop={handleOpenDesktop}
-								confirmRemove={confirmRemove}
-								debug={debug}
-								trackEvent={trackEvent}
-							/>
-						)
-				)}
+				<Box sx={{ mt: 2 }}>
+					{desktops?.length === 0 && (
+						<DesktopCardButton createNewDesktop={createNewDesktop} />
+					)}
+					{desktops?.map(
+						(desktop, i) =>
+							desktop && (
+								<DesktopCard
+									key={desktop.id}
+									userId={user?.uid || ''}
+									desktop={desktop}
+									handleOpenDesktop={handleOpenDesktop}
+									confirmRemove={confirmRemove}
+									debug={debug}
+									trackEvent={trackEvent}
+								/>
+							)
+					)}
+				</Box>
 			</Box>
 		</>
 	)
