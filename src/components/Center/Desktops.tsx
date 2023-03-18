@@ -20,6 +20,7 @@ import { POLLING, ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DesktopCard from '../UI/DesktopCard'
+import DesktopCardButton from '../UI/DesktopCardButton'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
 
@@ -158,22 +159,7 @@ const CenterDesktops = (): JSX.Element => {
 				)}
 
 				{desktops?.length === 0 && (
-					<Box
-						sx={{
-							mt: 4,
-						}}
-					>
-						<Typography variant='subtitle1' gutterBottom>
-							There is no desktop to show
-						</Typography>
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={createNewDesktop}
-						>
-							Create Desktop
-						</Button>
-					</Box>
+					<DesktopCardButton createNewDesktop={createNewDesktop}/>
 				)}
 				{desktops?.map(
 					(desktop, i) =>

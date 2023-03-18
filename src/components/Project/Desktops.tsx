@@ -12,6 +12,7 @@ import { POLLING, ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DesktopCard from '../UI/DesktopCard'
+import DesktopCardButton from '../UI/DesktopCardButton'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
 
@@ -110,8 +111,8 @@ const ProjectDesktops = (): JSX.Element => {
 
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
-					title={`Collaborative Workspace: ${project?.title || ''} `}
-					description={project?.description}
+					title={`Desktops: ${project?.title || ''} `}
+					description={'Desktops are shared accross members and can be used to run applications on projects data.'}
 					button={
 						<Button
 							variant='contained'
@@ -140,18 +141,7 @@ const ProjectDesktops = (): JSX.Element => {
 				)}
 
 				{desktops?.length === 0 && (
-					<Box sx={{ mt: 4 }}>
-						<Typography variant='subtitle1' gutterBottom>
-							There is no desktop to show
-						</Typography>
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={createNewDesktop}
-						>
-							Create Desktop
-						</Button>
-					</Box>
+					<DesktopCardButton createNewDesktop={createNewDesktop}/>
 				)}
 				{desktops?.map(
 					(desktop, i) =>
