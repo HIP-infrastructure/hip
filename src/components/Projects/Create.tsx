@@ -9,7 +9,7 @@ import {
 import * as React from 'react'
 import { Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
-import { createProject, getUserProjects } from '../../api/projects'
+import { createProject, getProjects } from '../../api/projects'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import { useNotification } from '../../hooks/useNotification'
@@ -55,7 +55,6 @@ const CreateProject = () => {
 	const {
 		user: [user],
 		projects: [projects, setProjects],
-		userProjects: [userProjects, setUserProjects],
 	} = useAppStore()
 	const [submitted, setSubmitted] = React.useState(false)
 	const [isLoading, setIsLoading] = React.useState(false)
@@ -96,8 +95,8 @@ const CreateProject = () => {
 										setSubmitted(false)
 										resetForm()
 										setIsLoading(false)
-										getUserProjects(adminId).then(projects => {
-											setUserProjects(projects)
+										getProjects().then(projects => {
+											setProjects(projects)
 										})
 										showNotif('Project created', 'success')
 										navigate(`${ROUTE_PREFIX}/collaborative`)
@@ -344,7 +343,7 @@ const CreateProject = () => {
 											<LoadingButton
 												color='primary'
 												type='submit'
-												loading={submitted}
+												loading={isLoading}
 												loadingPosition='start'
 												startIcon={<Save />}
 												variant='contained'
@@ -357,13 +356,6 @@ const CreateProject = () => {
 							}}
 						</Formik>
 					</Grid>
-					{isLoading && (
-						<CircularProgress
-							size={16}
-							color='secondary'
-							sx={{ top: 10, left: 10 }}
-						/>
-					)}
 				</Box>
 			</Box>
 		</>

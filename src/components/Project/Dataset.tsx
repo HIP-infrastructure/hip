@@ -35,12 +35,12 @@ const Dataset = () => {
 	const [selectedSubject, setSelectedSubject] = useState<string[]>()
 	const {
 		BIDSDatasets: [datasets],
-		userProjects: [userProjects],
+		projects: [projects],
 	} = useAppStore()
 
 
 	useEffect(() => {
-		const project = userProjects?.find(
+		const project = projects?.find(
 			project => project.name === params?.projectId
 		)
 	
@@ -52,7 +52,7 @@ const Dataset = () => {
 	}, [setProjectName])
 
 	useEffect(() => {
-		const project = userProjects?.find(
+		const project = projects?.find(
 			project => project.name === params?.projectId
 		)
 	
@@ -67,7 +67,7 @@ const Dataset = () => {
 		importBIDSSubject({ datasetPath, subjectId }, project?.name || '')
 	}
 
-	const project = userProjects?.find(
+	const project = projects?.find(
 		project => project.name === params?.projectId
 	)
 

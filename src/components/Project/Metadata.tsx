@@ -29,7 +29,6 @@ const Data = ({
 		containers: [containers],
 		BIDSDatasets: [bidsDatasets],
 		user: [user],
-		userProjects: [userProjects, setUserProjects],
 		projects: [projects, setProjects],
 	} = useAppStore()
 	const [initialRender, setInitialRender] = useState(true)
@@ -37,7 +36,7 @@ const Data = ({
 	const [projectName, setProjectName] = useState<string | undefined>()
 
 	useEffect(() => {
-		const project = userProjects?.find(
+		const project = projects?.find(
 			project => project.name === params?.projectId
 		)
 		if (projectName !== project?.name) {
@@ -48,7 +47,7 @@ const Data = ({
 	}, [project, setProjectName])
 
 	useEffect(() => {
-		const project = userProjects?.find(
+		const project = projects?.find(
 			project => project.name === params?.projectId
 		)
 		if (initialRender && project) {

@@ -12,7 +12,7 @@ import Centers from './components/Centers'
 import PrivateWorkspace from './components/Center/Workspace'
 import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
-import ProjectDashboard from './components/Project/Workspace'
+import ProjectWorkspace from './components/Project/Workspace'
 import ProjectDataset from './components/Project/Dataset'
 import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
@@ -104,7 +104,7 @@ const App = () => (
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
-					<Route index element={<ProjectDashboard />} />
+					<Route index element={<ProjectWorkspace />} />
 					<Route path={'desktops'} element={<ProjectDesktops />} />
 					<Route path={'metadata'} element={<Metadata />} />
 					<Route path={'datasets'} element={<Outlet />}>

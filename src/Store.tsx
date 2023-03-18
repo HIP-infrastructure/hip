@@ -6,7 +6,7 @@ import {
 	refreshBidsDatasetsIndex,
 } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
-import { getProjects, getUserProjects } from './api/projects'
+import { getProjects } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
 import {
 	Application,
@@ -33,9 +33,9 @@ export interface IAppState {
 		HIPProject[] | null,
 		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
-	userProjects: [
-		HIPProject[] | null,
-		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
+	selectedProject: [
+		HIPProject | null,
+		React.Dispatch<React.SetStateAction<HIPProject | null>>
 	]
 	availableApps: [
 		Application[] | null,
@@ -86,7 +86,7 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
-	const [userProjects, setUserProjects] = useState<HIPProject[] | null>(null)
+	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(null)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -128,10 +128,6 @@ export const AppStoreProvider = ({
 			}
 		})
 
-		getUserProjects(currentUser.uid || '').then(projects => {
-			setUserProjects(projects)
-		})
-
 		getAvailableAppList().then(data => setAvailableApps(data))
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
@@ -170,7 +166,7 @@ export const AppStoreProvider = ({
 			user: [user, setUser],
 			centers: [centers, setCenters],
 			projects: [projects, setProjects],
-			userProjects: [userProjects, setUserProjects],
+			selectedProject: [selectedProject, setSelectedProject],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			projectContainers: [projectContainers, setProjectContainers],
@@ -188,8 +184,8 @@ export const AppStoreProvider = ({
 			setCenters,
 			projects,
 			setProjects,
-			userProjects,
-			setUserProjects,
+			selectedProject,
+			setSelectedProject,
 			containers,
 			setContainers,
 			projectContainers,

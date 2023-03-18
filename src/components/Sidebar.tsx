@@ -20,6 +20,7 @@ import {
 	IconButton,
 	Switch,
 } from '@mui/material'
+
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -43,7 +44,7 @@ const Sidebar = () => {
 		user: [user],
 		debug: [debug, setDebug],
 		centers: [centers],
-		userProjects: [userProjects],
+		projects: [projects],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -184,8 +185,8 @@ const Sidebar = () => {
 						<ListSubheader id='my-projects-subheader'>
 							My Projects
 						</ListSubheader>
-						{userProjects ? (
-							(user?.hasProjectsAdminRole && (
+						{user?.hasProjectsAdminRole ? (
+							(
 								<IconButton
 									color='primary'
 									onClick={() =>
@@ -195,15 +196,14 @@ const Sidebar = () => {
 								>
 									<CreateNewFolder />
 								</IconButton>
-							)) ||
-							null
+							) || null
 						) : (
 							<CircularProgress size={18} color='secondary' />
 						)}
 					</Box>
 				}
 			>
-				{userProjects?.map(project => (
+				{projects?.filter(p => p.isMember).map(project => (
 					<Box key={project.name}>
 						<ListItemButton onClick={() => handleClick(project?.name)}>
 							<ListItemIcon>
