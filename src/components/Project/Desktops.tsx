@@ -24,7 +24,7 @@ const ProjectDesktops = (): JSX.Element => {
 	const {
 		user: [user],
 		debug: [debug],
-		userProjects: [userProjects],
+		projects: [projects],
 		projectContainers: [containers, setContainers],
 	} = useAppStore()
 	const modalRef = useRef<ModalComponentHandle>(null)
@@ -90,7 +90,7 @@ const ProjectDesktops = (): JSX.Element => {
 				.catch(error => showNotif(error, 'error'))
 	}
 
-	const project = userProjects?.find(
+	const project = projects?.find(
 		project => project.name === params?.projectId
 	)
 

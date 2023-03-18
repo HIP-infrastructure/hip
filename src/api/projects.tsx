@@ -9,13 +9,6 @@ export const getProjects = async (): Promise<HIPProject[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const getUserProjects = async (userId: string): Promise<HIPProject[]> =>
-	fetch(`${API_GATEWAY}/projects/forUser/${userId}`, {
-		headers: { requesttoken: window.OC.requestToken },
-	})
-		.then(checkForError)
-		.catch(catchError)
-
 export const createProject = async (createProject: {
 	adminId: string
 	title: string
@@ -73,7 +66,7 @@ export const addUserToProject = async (
 	userId: string,
 	projectName: string
 ): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/${projectName}/addUser/${userId}`, {
+	fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
 		method: 'POST',
 		headers: {
 			requesttoken: window.OC.requestToken,
@@ -81,6 +74,19 @@ export const addUserToProject = async (
 	})
 		.then(checkForError)
 		.catch(catchError)
+
+		export const removeUserFromProject = async (
+			userId: string,
+			projectName: string
+		): Promise<any> =>
+			fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
+				method: 'DELETE',
+				headers: {
+					requesttoken: window.OC.requestToken,
+				},
+			})
+				.then(checkForError)
+				.catch(catchError)
 
 export const getProjectMetadataTree = async (
 	projectName: string

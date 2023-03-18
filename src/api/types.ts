@@ -82,6 +82,7 @@ export interface HIPProject {
 	title: string
 	description?: string
 	acceptMembershipRequest?: boolean
+	isMember?: boolean
 	admins?: string[]
 	members?: string[]
 	dataset?: BIDSDataset

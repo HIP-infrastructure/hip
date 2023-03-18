@@ -1,11 +1,10 @@
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getProjects } from '../../api/projects'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import ProjectCard from './ProjectCard'
-import { ROUTE_PREFIX } from '../../constants'
-import { useNavigate } from 'react-router-dom'
-import { getProjects } from '../../api/projects'
 
 const Projects = () => {
 	const navigate = useNavigate()
@@ -51,13 +50,6 @@ const Projects = () => {
 						<Typography variant='subtitle1' gutterBottom>
 							There is no project to show
 						</Typography>
-						{/* <Button
-							variant='contained'
-							color='primary'
-							onClick={createNewSession}
-						>
-							Create Desktop
-						</Button> */}
 					</Box>
 				)}
 				{projects?.map(project => (

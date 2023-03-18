@@ -1,16 +1,15 @@
-import {
-	Box, Typography
-} from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getUsers } from '../../api/gatewayClientAPI'
 import {
 	addUserToProject,
 	deleteProject,
+	getProject,
 	getProjects,
-	getUserProjects
+	removeUserFromProject,
 } from '../../api/projects'
-import { BIDSDataset, ContainerType, User } from '../../api/types'
+import { ContainerType, User } from '../../api/types'
 import { ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
@@ -21,29 +20,17 @@ import ProjectCard from './ProjectCard'
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
-	const params = useParams()
 	const { showNotif } = useNotification()
 
 	const modalRef = useRef<ModalComponentHandle>(null)
-	const [datasets, setDatasets] = React.useState<
-		{ data?: BIDSDataset[]; error?: string } | undefined
-	>()
 	const [isAddingUser, setIsAddingUser] = React.useState(false)
 	const [users, setUsers] = React.useState<User[]>([])
 	const {
 		containers: [containers],
-		BIDSDatasets: [bidsDatasets],
 		user: [user],
-		userProjects: [userProjects, setUserProjects],
 		projects: [projects, setProjects],
+		selectedProject: [project, setProject],
 	} = useAppStore()
-
-	// React.useEffect(() => {
-	// 	if (!user?.uid) return
-	// 	getProjectDatasets(user?.uid).then(datasets => {
-	// 		setDatasets({ data: datasets })
-	// 	})
-	// }, [user?.uid])
 
 	useEffect(() => {
 		getUsers().then(users => setUsers(users))
@@ -53,15 +40,10 @@ const ProjectDashboard = () => {
 		if (!project?.name) return
 
 		addUserToProject(userId, project.name)
-			.then(() => {
+			.then(project => {
 				showNotif('User added', 'success')
 				setIsAddingUser(false)
-
-				if (user?.uid) {
-					getUserProjects(user.uid).then(projects => {
-						setUserProjects(projects)
-					})
-				}
+				setProject(project)
 			})
 			.catch(e => {
 				showNotif(`${e}`, 'error')
@@ -70,6 +52,7 @@ const ProjectDashboard = () => {
 
 	const confirmRemoveUserFromProject = async (userId: string) => {
 		if (!modalRef.current) return
+		if (!project?.name) return
 
 		const reply = await modalRef.current.open(
 			'Remove user ?',
@@ -77,16 +60,10 @@ const ProjectDashboard = () => {
 		)
 
 		if (reply) {
-			confirmRemoveUserFromProject(userId)
+			removeUserFromProject(userId, project.name)
 				.then(res => {
 					showNotif('User removed', 'success')
-
-					// TODO: update the project
-					// if (user?.uid) {
-					// 	getUserProjects(user?.uid).then(projects => {
-					// 		setUserProjects(projects)
-					// 	})
-					// }
+					setProject(project)
 				})
 				.catch(error => showNotif(error, 'error'))
 		}
@@ -105,25 +82,14 @@ const ProjectDashboard = () => {
 				.then(res => {
 					showNotif('Project deleted', 'success')
 
-					if (user?.uid) {
-						getUserProjects(user?.uid).then(projects => {
-							setUserProjects(projects)
-						})
-						getProjects().then(projects => {
-							setProjects(projects)
-						})
-						navigate(`${ROUTE_PREFIX}/collaborative`)
-					}
+					getProjects().then(projects => {
+						setProjects(projects)
+					})
+					navigate(`${ROUTE_PREFIX}/collaborative`)
 				})
 				.catch(error => showNotif(error, 'error'))
 		}
 	}
-
-	const servers = containers?.filter(c => c.type === ContainerType.DESKTOP)
-
-	const project = userProjects?.find(
-		project => project.name === params?.projectId
-	)
 
 	return (
 		<>
@@ -131,45 +97,62 @@ const ProjectDashboard = () => {
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
 					title={`Collaborative Workspace: ${project?.title || ''} `}
-					description={project?.description}
 				/>
 
-				<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
-					Welcome {user?.displayName}
-				</Typography>
-			</Box>
-			<Box sx={{ mt: 4 }}>
 				<Box
-					sx={{
-						display: 'grid',
-						gridTemplateColumns: '320px 320px 320px',
-						gap: 4,
-					}}
+					sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}
 				>
-					<Box sx={{ gridColumn: '1', gridRow: '1' }}>
-						{project && (
-							<ProjectCard
-								project={project}
-								confirmRemove={confirmRemoveProject}
-								users={users}
-							/>
-						)}
-					</Box>
+					
 
-					<>
-						<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-							<MemberCard
-								project={project}
-								users={users}
-								handleAddUserToProject={handleAddUserToProject}
-								confirmRemove={confirmRemoveUserFromProject}
-							/>
+					<Typography
+						sx={{ color: 'secondary.light' }}
+						gutterBottom
+						variant='h6'
+					>
+						Welcome {user?.displayName}
+					</Typography>
+
+					{!project && (
+						<CircularProgress
+							size={32}
+							color='secondary'
+							sx={{ top: 10, left: 10 }}
+						/>
+					)}
+				</Box>
+				<Box sx={{ mt: 4 }}>
+					<Box
+						sx={{
+							display: 'grid',
+							gridTemplateColumns: '320px 320px 320px',
+							gap: 4,
+						}}
+					>
+						<Box sx={{ gridColumn: '1', gridRow: '1' }}>
+							{project && (
+								<ProjectCard
+									project={project}
+									confirmRemove={confirmRemoveProject}
+									users={users}
+								/>
+							)}
 						</Box>
-						<Box sx={{ gridColumn: '1', gridRow: '2' }}>{/* <Tools /> */}</Box>
-						<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-							
-						</Box>
-					</>
+
+						<>
+							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
+								<MemberCard
+									project={project}
+									users={users}
+									handleAddUserToProject={handleAddUserToProject}
+									confirmRemove={confirmRemoveUserFromProject}
+								/>
+							</Box>
+							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
+								{/* <Tools /> */}
+							</Box>
+							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}></Box>
+						</>
+					</Box>
 				</Box>
 			</Box>
 		</>
