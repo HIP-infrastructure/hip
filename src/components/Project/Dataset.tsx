@@ -1,84 +1,54 @@
 import { Close } from '@mui/icons-material'
 import {
-	Box, Button,
-	IconButton, Paper,
+	Box,
+	Button,
+	IconButton,
+	Paper,
 	Tab,
 	Tabs,
-	Typography
+	Typography,
 } from '@mui/material'
 // import marked from 'marked'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { getProjectMetadataTree, importBIDSSubject } from '../../api/projects'
-import { BIDSDataset, InspectResult } from '../../api/types'
-import { useNotification } from '../../hooks/useNotification'
+import { InspectResult } from '../../api/types'
 import { useAppStore } from '../../Store'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
 import Participants from '../BIDS/Participants'
 import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
-import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
+import MetadataBrowser from '../UI/MetadataBrowser'
 import TitleBar from '../UI/titleBar'
 
 const Dataset = () => {
-	const params = useParams()
-	const { showNotif } = useNotification()
 	const [files, setFiles] = useState<InspectResult>()
-	const [initialRender, setInitialRender] = useState(true)
-	const [projectName, setProjectName] = useState<string | undefined>()
-
-	const [dataset, setDataset] = useState<BIDSDataset>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
-	const [path, setPath] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
 	const [selectedSubject, setSelectedSubject] = useState<string[]>()
 	const {
-		BIDSDatasets: [datasets],
-		projects: [projects],
+		selectedProject: [selectedProject],
 	} = useAppStore()
 
-
 	useEffect(() => {
-		const project = projects?.find(
-			project => project.name === params?.projectId
-		)
-	
-		if (projectName !== project?.name) {
-			setInitialRender(true)
-			setFiles(undefined)
+		if (selectedProject) {
+			getProjectMetadataTree(selectedProject.name).then(f => setFiles(f))
 		}
-		setProjectName(project?.name)
-	}, [setProjectName])
-
-	useEffect(() => {
-		const project = projects?.find(
-			project => project.name === params?.projectId
-		)
-	
-		if (initialRender && project) {
-			setInitialRender(false)
-			getProjectMetadataTree(project.name).then(f => setFiles(f))
-		}
-	}, [initialRender])
+	}, [selectedProject])
 
 	const importSubject = () => {
 		const [datasetPath, subjectId] = selectedSubject || []
-		importBIDSSubject({ datasetPath, subjectId }, project?.name || '')
+		importBIDSSubject({ datasetPath, subjectId }, selectedProject?.name || '')
 	}
-
-	const project = projects?.find(
-		project => project.name === params?.projectId
-	)
 
 	return (
 		<>
-			<TitleBar title={`BIDS Dataset: ${project?.title || ''} `} />
+			<TitleBar title={`BIDS Dataset: ${selectedProject?.title || ''} `} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
-					<Typography variant='h6'>{dataset?.Name}</Typography>
-					<DatasetInfo dataset={dataset} />
+					<Typography variant='h6'>{selectedProject?.dataset?.Name}</Typography>
+					<DatasetInfo dataset={selectedProject?.dataset} />
 				</Box>
 
 				<Box>
@@ -91,7 +61,7 @@ const Dataset = () => {
 					>
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
-						<Tab label='Copy files' id={'tab-3'} />
+						<Tab label='Transfer Participant' id={'tab-3'} />
 					</Tabs>
 
 					{tabIndex === 0 && (
@@ -111,9 +81,13 @@ const Dataset = () => {
 										component={Paper}
 										sx={{ p: 1, flex: '1 0' }}
 									>
-										<ProjectMetadataBrowser
-											files={files?.children.find((f: InspectResult) => f.name === 'inputs')?.children?.find((f: InspectResult) => f.name === 'bids-dataset')}
-									/>
+										<MetadataBrowser
+											files={files?.children
+												.find((f: InspectResult) => f.name === 'inputs')
+												?.children?.find(
+													(f: InspectResult) => f.name === 'bids-dataset'
+												)}
+										/>
 									</Box>
 									<Box
 										elevation={2}
@@ -124,7 +98,9 @@ const Dataset = () => {
 											flex: '1 1',
 										}}
 									>
-										{!fileContent && <DatasetDescription dataset={project?.dataset} />}
+										{!fileContent && (
+											<DatasetDescription dataset={selectedProject?.dataset} />
+										)}
 										{fileContent && (
 											<Box>
 												<Box sx={{ float: 'right' }}>
@@ -141,7 +117,9 @@ const Dataset = () => {
 						</>
 					)}
 
-					{tabIndex === 1 && <Participants dataset={project?.dataset} />}
+					{tabIndex === 1 && (
+						<Participants dataset={selectedProject?.dataset} />
+					)}
 					{tabIndex === 2 && (
 						<Box sx={{ mt: 2 }}>
 							<Typography variant='h6'>Copy Files</Typography>
@@ -174,13 +152,17 @@ const Dataset = () => {
 									&gt;
 								</Button>
 								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-								<Typography gutterBottom variant='h6' component='div'>
-										BIDS dataset {dataset?.Name} Files
+									<Typography gutterBottom variant='h6' component='div'>
+										BIDS dataset {selectedProject?.dataset?.Name} Files
 									</Typography>
-										<ProjectMetadataBrowser
-											files={files?.children.find((f: InspectResult) => f.name === 'inputs')?.children?.find((f: InspectResult) => f.name === 'bids-dataset')}
-											/>
-									</Box>
+									<MetadataBrowser
+										files={files?.children
+											.find((f: InspectResult) => f.name === 'inputs')
+											?.children?.find(
+												(f: InspectResult) => f.name === 'bids-dataset'
+											)}
+									/>
+								</Box>
 							</Box>
 						</Box>
 					)}

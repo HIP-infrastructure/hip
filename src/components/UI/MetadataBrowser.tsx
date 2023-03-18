@@ -21,20 +21,36 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 	},
 }))
 
-const FileBrowser = ({
+const MetadataBrowser = ({
 	files,
 	selectedFile,
 }: {
 	files?: InspectResult
 	selectedFile?: (path: string) => void
 }) => {
+	const [expanded, setExpanded] = useState(['/'])
+
+	const expand = (file: InspectResult): string[] => {
+		if (file.type === 'dir') {
+			file.children?.map(expand)
+			return [file.relativePath]
+		}
+
+		return []
+	}
+
+	React.useEffect(() => {
+		if (files) {
+			setExpanded(expand(files))
+		}
+	}, [files])
+
 	const rootFile = {
 		name: files?.name || 'root',
 		type: 'dir',
 		relativePath: files?.relativePath || '/',
 	}
 
-	const [expanded, setExpanded] = useState(['/'])
 	const renderLabel = (file: InspectResult) => {
 		return (
 			<span
@@ -50,7 +66,9 @@ const FileBrowser = ({
 	}
 
 	const subFiles = (file: InspectResult) => {
-		const items = file?.children && file.children.map(f => (
+		const items =
+			file?.children &&
+			file.children.map(f => (
 				<StyledTreeItem
 					key={f.relativePath}
 					label={renderLabel(f)}
@@ -104,4 +122,4 @@ const FileBrowser = ({
 	)
 }
 
-export default FileBrowser
+export default MetadataBrowser

@@ -23,7 +23,7 @@ import { ROUTE_PREFIX } from './constants'
 import { isLoggedIn } from './api/gatewayClientAPI'
 import { useNotification } from './hooks/useNotification'
 import Project from './components/Project/index'
-import Metadata from './components/Project/Metadata'
+import Files from './components/Project/Files'
 
 export interface Space {
 	label: string
@@ -106,7 +106,7 @@ const App = () => (
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
 					<Route path={'desktops'} element={<ProjectDesktops />} />
-					<Route path={'metadata'} element={<Metadata />} />
+					<Route path={'metadata'} element={<Files />} />
 					<Route path={'datasets'} element={<Outlet />}>
 						<Route index element={<ProjectDataset />} />
 						<Route path={':datasetId'} element={<ProjectDataset />} />

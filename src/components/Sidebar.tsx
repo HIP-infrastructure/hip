@@ -11,6 +11,11 @@ import {
 	Add,
 	Adb,
 	CreateNewFolder,
+	ContentCopy,
+	BugReport,
+	HelpCenter,
+	Info,
+	Support,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -203,76 +208,78 @@ const Sidebar = () => {
 					</Box>
 				}
 			>
-				{projects?.filter(p => p.isMember).map(project => (
-					<Box key={project.name}>
-						<ListItemButton onClick={() => handleClick(project?.name)}>
-							<ListItemIcon>
-								<Folder />
-							</ListItemIcon>
-							<ListItemText primary={`${project.title}`} />
-							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
-						</ListItemButton>
-						<Collapse
-							in={openProjects[project.name]}
-							timeout='auto'
-							unmountOnExit
-						>
-							<List component='div' disablePadding>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									onClick={() =>
-										handleClickNavigate(`/collaborative/${project.name}`)
-									}
-								>
-									<ListItemIcon>
-										<Dashboard />
-									</ListItemIcon>
-									<ListItemText primary='Collaborative Workspace' />
-								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									onClick={() =>
-										handleClickNavigate(
-											`/collaborative/${project.name}/desktops`
-										)
-									}
-								>
-									<ListItemIcon>
-										<Monitor />
-									</ListItemIcon>
-									<ListItemText primary='Desktops' />
-								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									onClick={() =>
-										handleClickNavigate(
-											`/collaborative/${project.name}/metadata/`
-										)
-									}
-								>
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='Metadata' />
-								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									onClick={() =>
-										handleClickNavigate(
-											`/collaborative/${project.name}/datasets/`
-										)
-									}
-								>
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
-							</List>
-						</Collapse>
-						<Divider />
-					</Box>
-				))}
+				{projects
+					?.filter(p => p.isMember)
+					.map(project => (
+						<Box key={project.name}>
+							<ListItemButton onClick={() => handleClick(project?.name)}>
+								<ListItemIcon>
+									<Folder />
+								</ListItemIcon>
+								<ListItemText primary={`${project.title}`} />
+								{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
+							</ListItemButton>
+							<Collapse
+								in={openProjects[project.name]}
+								timeout='auto'
+								unmountOnExit
+							>
+								<List component='div' disablePadding>
+									<ListItemButton
+										sx={{ pl: 4 }}
+										onClick={() =>
+											handleClickNavigate(`/collaborative/${project.name}`)
+										}
+									>
+										<ListItemIcon>
+											<Dashboard />
+										</ListItemIcon>
+										<ListItemText primary='Collaborative Workspace' />
+									</ListItemButton>
+									<ListItemButton
+										sx={{ pl: 4 }}
+										onClick={() =>
+											handleClickNavigate(
+												`/collaborative/${project.name}/desktops`
+											)
+										}
+									>
+										<ListItemIcon>
+											<Monitor />
+										</ListItemIcon>
+										<ListItemText primary='Desktops' />
+									</ListItemButton>
+									<ListItemButton
+										sx={{ pl: 4 }}
+										onClick={() =>
+											handleClickNavigate(
+												`/collaborative/${project.name}/metadata/`
+											)
+										}
+									>
+										<ListItemIcon>
+											<ContentCopy />
+										</ListItemIcon>
+										<ListItemText primary='Files' />
+									</ListItemButton>
+									<ListItemButton
+										sx={{ pl: 4 }}
+										onClick={() =>
+											handleClickNavigate(
+												`/collaborative/${project.name}/datasets/`
+											)
+										}
+									>
+										<ListItemIcon>
+											<Assignment />
+										</ListItemIcon>
+										<ListItemText primary='BIDS Dataset' />
+									</ListItemButton>
+								</List>
+							</Collapse>
+							<Divider />
+						</Box>
+					))}
 			</List>
 			<List
 				sx={{
@@ -290,19 +297,19 @@ const Sidebar = () => {
 				</ListItemButton>
 				<ListItemButton onClick={() => handleClickNavigate('/')}>
 					<ListItemIcon>
-						<Dashboard />
+						<Info />
 					</ListItemIcon>
 					<ListItemText primary='About' />
 				</ListItemButton>
 				<ListItemButton onClick={() => handleClickNavigate('/apps')}>
 					<ListItemIcon>
-						<Dashboard />
+						<Apps />
 					</ListItemIcon>
 					<ListItemText primary='App Catalog' />
 				</ListItemButton>
 				<ListItemButton onClick={() => handleClickNavigate('/documentation')}>
 					<ListItemIcon>
-						<Monitor />
+						<HelpCenter />
 					</ListItemIcon>
 					<ListItemText primary='Documentation' />
 				</ListItemButton>
@@ -313,7 +320,7 @@ const Sidebar = () => {
 					}}
 				>
 					<ListItemIcon>
-						<Assignment />
+						<BugReport />
 					</ListItemIcon>
 					<ListItemText primary='Bug report' />
 				</ListItemButton>
@@ -324,7 +331,7 @@ const Sidebar = () => {
 					}}
 				>
 					<ListItemIcon>
-						<Assignment />
+						<Support />
 					</ListItemIcon>
 					<ListItemText primary='Feedback' />
 				</ListItemButton>
