@@ -1,28 +1,23 @@
 import {
-	Box, Card,
+	Box,
+	Card,
 	CardContent,
 	CardMedia,
 	CircularProgress,
 	Paper,
-	Typography
+	Typography,
 } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { getProjectMetadataTree } from '../../api/projects'
-import {
-	HIPProject,
-	InspectResult
-} from '../../api/types'
+import { HIPProject, InspectResult } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import ProjectMetadataBrowser from '../UI/ProjectMetadataBrowser'
 import React, { useEffect, useState } from 'react'
+import TitleBar from '../UI/titleBar'
 
-const Data = ({
-	project,
-}: {
-	project?: HIPProject
-}) => {
+const Data = ({ project }: { project?: HIPProject }) => {
 	const params = useParams()
 	const { showNotif } = useNotification()
 	const {
@@ -57,6 +52,22 @@ const Data = ({
 	}, [initialRender, project])
 
 	return (
+		<Box sx={{ mb: 2 }}>
+			<TitleBar title={`Metadata: ${project?.title || ''} `} />
+
+			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
+				<Typography sx={{ color: 'secondary.light' }} gutterBottom variant='h6'>
+					Welcome {user?.displayName}
+				</Typography>
+
+				{!project && (
+					<CircularProgress
+						size={32}
+						color='secondary'
+						sx={{ top: 10, left: 10 }}
+					/>
+				)}
+			</Box>
 			<Card>
 				<CardMedia
 					component='img'
@@ -73,12 +84,11 @@ const Data = ({
 					</Typography>
 
 					<Box component={Paper} sx={{ p: 1 }}>
-						<ProjectMetadataBrowser
-							files={files}
-						/>
+						<ProjectMetadataBrowser files={files} />
 					</Box>
 				</CardContent>
 			</Card>
+		</Box>
 	)
 }
 

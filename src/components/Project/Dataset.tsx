@@ -73,7 +73,7 @@ const Dataset = () => {
 
 	return (
 		<>
-			<TitleBar title={`${project?.title} BIDS Dataset`} />
+			<TitleBar title={`BIDS Dataset: ${project?.title || ''} `} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>

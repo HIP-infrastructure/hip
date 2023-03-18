@@ -9,7 +9,7 @@ import {
 	getProjects,
 	removeUserFromProject,
 } from '../../api/projects'
-import { ContainerType, User } from '../../api/types'
+import { User } from '../../api/types'
 import { ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
@@ -23,12 +23,10 @@ const ProjectDashboard = () => {
 	const { showNotif } = useNotification()
 
 	const modalRef = useRef<ModalComponentHandle>(null)
-	const [isAddingUser, setIsAddingUser] = React.useState(false)
 	const [users, setUsers] = React.useState<User[]>([])
 	const {
-		containers: [containers],
 		user: [user],
-		projects: [projects, setProjects],
+		projects: [_, setProjects],
 		selectedProject: [project, setProject],
 	} = useAppStore()
 
@@ -42,7 +40,6 @@ const ProjectDashboard = () => {
 		addUserToProject(userId, project.name)
 			.then(project => {
 				showNotif('User added', 'success')
-				setIsAddingUser(false)
 				setProject(project)
 			})
 			.catch(e => {
@@ -95,15 +92,11 @@ const ProjectDashboard = () => {
 		<>
 			<Modal ref={modalRef} />
 			<Box sx={{ mb: 2 }}>
-				<TitleBar
-					title={`Collaborative Workspace: ${project?.title || ''} `}
-				/>
+				<TitleBar title={`Collaborative Workspace: ${project?.title || ''} `} />
 
 				<Box
 					sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}
 				>
-					
-
 					<Typography
 						sx={{ color: 'secondary.light' }}
 						gutterBottom
