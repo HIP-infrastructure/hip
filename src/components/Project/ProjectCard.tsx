@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {
+	Box,
 	Button,
 	Card,
 	CardActions,
@@ -52,20 +53,18 @@ const MainCard = ({ project, users, confirmRemove }: Props) => {
 					/>
 
 					<CardContent>
-						<Typography variant='h5'>{project?.title}</Typography>
-
-						<Typography
-							sx={{ mt: 2 }}
-							gutterBottom
-							variant='body2'
-							color='text.secondary'
-						>
-							{project.description}
-						</Typography>
-
-						<Typography gutterBottom variant='subtitle2'>
-							Admin
-						</Typography>
+						<Box sx={{ mb: 2 }}>
+							<Typography variant='h5'>{project?.title}</Typography>
+							<Typography
+								sx={{ mt: 2 }}
+								gutterBottom
+								variant='body2'
+								color='text.secondary'
+							>
+								{project.description}
+							</Typography>
+						</Box>
+						
 						<Stack spacing={1}>
 							{project?.admins?.length === 0 && (
 								<Typography variant='subtitle2'>No admin yet</Typography>

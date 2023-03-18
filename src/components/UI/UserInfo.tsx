@@ -14,6 +14,7 @@ const UserInfo = ({ user }: Props) => (
 			display: 'flex ',
 			gap: 2,
 			justifyContent: 'space-between',
+			width: '100%',
 		}}
 	>
 		<Stack>

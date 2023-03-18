@@ -24,7 +24,7 @@ import UserInfo from '../UI/UserInfo'
 import { useAppStore } from '../../Store'
 
 interface Props {
-	project?: HIPProject
+	project?: HIPProject | null
 	users?: User[]
 	handleAddUserToProject: (userId: string) => void
 	confirmRemove: (userId: string) => void
@@ -105,8 +105,10 @@ const Members = ({
 					</CardContent>
 					<CardActions sx={{ p: 2 }}>
 						{user?.uid && project?.admins?.includes(user.uid) && (
-							<>
-								<FormControl sx={{ m: 1, minWidth: 180, maxWidth: 180 }}>
+							<Box display='flex'
+							justifyContent='space-between'
+							alignItems='center'>
+								<FormControl sx={{ m: 1, minWidth: 180  }}>
 									<InputLabel variant='outlined'>Select</InputLabel>
 									<Select
 										size={'small'}
@@ -127,9 +129,9 @@ const Members = ({
 									onClick={() => handleAddUserToProject(userToAdd)}
 									variant='outlined'
 								>
-									Add Member
+									Add
 								</Button>
-							</>
+							</Box>
 						)}
 					</CardActions>
 				</Card>
