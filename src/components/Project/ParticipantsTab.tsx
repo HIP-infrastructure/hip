@@ -1,8 +1,6 @@
 import * as React from 'react'
-import { Add, Edit } from '@mui/icons-material'
 import {
 	Box,
-	Button, IconButton,
 	Paper,
 	Table,
 	TableBody,
@@ -10,17 +8,18 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography
+	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { BIDSDataset, Participant } from '../../api/types'
 import { useAppStore } from '../../Store'
 
-const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
+const ParticipantsTab = ({
+	dataset,
+}: {
+	dataset?: BIDSDataset
+}): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])
-	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-	const [participantEditId, setParticipantEditId] = useState<string>()
-	const [selectedSubject, setSelectedSubject] = useState<string>()
 	const [fields, setFields] = useState<string[]>([
 		'participant_id',
 		'age',
@@ -41,6 +40,19 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 		}
 	}, [dataset])
 
+	useEffect(() => {
+		if (dataset?.Participants) {
+			dataset.Participants.forEach((_part, index, items) => {
+				const item_keys = Object.keys(items[index])
+				fields.forEach((_field, field_id, fields) => {
+					if (!item_keys.includes(fields[field_id])) {
+						items[index][fields[field_id]] = 'n/a'
+					}
+				})
+			})
+			setRows(dataset.Participants)
+		}
+	}, [dataset, fields])
 
 	const columns = [
 		...(dataset?.Participants?.reduce(
@@ -55,7 +67,13 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	return (
 		<>
 			<Box sx={{ mt: 2 }}>
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'start',
+					}}
+				>
 					<Typography variant='h6'>Participants</Typography>
 				</Box>
 				<Box
@@ -82,7 +100,6 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 										<TableRow
 											hover
 											role='checkbox'
-											onClick={() => setSelectedSubject(row.participant_id)}
 											key={row.participant_id}
 										>
 											{Object.keys(row).map(key => (
@@ -100,6 +117,6 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	)
 }
 
-Participants.displayName = 'Participants'
+ParticipantsTab.displayName = 'ParticipantsTab'
 
-export default Participants
+export default ParticipantsTab
