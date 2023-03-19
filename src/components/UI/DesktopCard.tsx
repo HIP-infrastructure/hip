@@ -100,22 +100,21 @@ const DesktopCard = ({
 			</Typography>
 		</CardContent>
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
-			{(desktop.state === ContainerState.DESTROYED || debug) && (
-				<Tooltip title='Remove' placement='top'>
-					<span>
-						<IconButton
-							edge='end'
-							color='primary'
-							aria-label='Remove'
-							onClick={() => {
-								forceRemoveAppsAndDesktop(desktop.id)
-							}}
-						>
-							<Clear />
-						</IconButton>
-					</span>
-				</Tooltip>
-			)}
+			<Tooltip title='Remove' placement='top'>
+				<span>
+					<IconButton
+						disabled={debug || desktop.state !== ContainerState.DESTROYED}
+						edge='end'
+						color='primary'
+						aria-label='Remove'
+						onClick={() => {
+							forceRemoveAppsAndDesktop(desktop.id)
+						}}
+					>
+						<Clear />
+					</IconButton>
+				</span>
+			</Tooltip>
 
 			<Tooltip title='Shut down' placement='top'>
 				<span>
