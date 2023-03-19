@@ -83,6 +83,9 @@ const FileBrowser = ({
 	}, [showGroups, user, setGroups])
 
 	useEffect(() => {
+		const hasGroup = groups && files.some(f => groups.includes(f.name))
+		if (hasGroup) return
+
 		setFiles(files =>
 			sortFile([
 				...files,
@@ -136,8 +139,6 @@ const FileBrowser = ({
 			setFiles(filesCache)
 		}
 	}, [term, filesCache, setFiles])
-
-
 
 	const sortFile = (data: Node[]) =>
 		data.sort((a: Node, b: Node) => -b.name.localeCompare(a.name))

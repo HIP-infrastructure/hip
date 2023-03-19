@@ -1,4 +1,3 @@
-import { ArrowDropDown, ArrowRight } from '@mui/icons-material'
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
 import { Box, CircularProgress } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
@@ -63,7 +62,7 @@ const MetadataBrowser = ({
 					selectedFile && selectedFile(file.relativePath)
 				}}
 			>
-				{file.name} {filesize(file.size, { base: 2, standard: 'jedec' }) as string}
+				{file.name} ({filesize(file.size, { base: 2, standard: 'jedec' }) as string})
 			</span>
 		)
 	}
