@@ -79,12 +79,15 @@ const Members = ({
 							{project?.members?.length === 0 && (
 								<Typography variant='subtitle2'>No members yet</Typography>
 							)}
-							{users
-								?.filter(u =>
-									[
-										...(project?.members || []),
-										...(project?.admins || []),
-									].includes(u.id)
+
+							{[...(project?.members || [])]
+								.map(
+									u =>
+										users?.find(user => user.id === u) || {
+											id: u,
+											name: u,
+											displayName: u,
+										}
 								)
 								.map(u => (
 									<Box
@@ -105,10 +108,12 @@ const Members = ({
 					</CardContent>
 					<CardActions sx={{ p: 2 }}>
 						{user?.uid && project?.admins?.includes(user.uid) && (
-							<Box display='flex'
-							justifyContent='space-between'
-							alignItems='center'>
-								<FormControl sx={{ m: 1, minWidth: 180  }}>
+							<Box
+								display='flex'
+								justifyContent='space-between'
+								alignItems='center'
+							>
+								<FormControl sx={{ m: 1, minWidth: 180 }}>
 									<InputLabel variant='outlined'>Select</InputLabel>
 									<Select
 										size={'small'}
