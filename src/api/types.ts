@@ -56,9 +56,9 @@ export interface User {
 	id: string
 	displayName?: string | null
 	email?: string | null
-	lastLogin: number
+	lastLogin?: number
 	groups?: string[]
-	enabled: boolean
+	enabled?: boolean
 }
 
 export interface HIPCenter {

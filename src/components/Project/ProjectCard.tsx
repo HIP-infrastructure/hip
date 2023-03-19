@@ -64,15 +64,29 @@ const MainCard = ({ project, users, confirmRemove }: Props) => {
 								{project.description}
 							</Typography>
 						</Box>
-						
+
 						<Stack spacing={1}>
 							{project?.admins?.length === 0 && (
 								<Typography variant='subtitle2'>No admin yet</Typography>
 							)}
-							{users
-								?.filter(u => [...(project?.admins || [])].includes(u.id))
-								.map(user => (
-									<UserInfo key={user.id} user={user} />
+							{[...(project?.admins || [])]
+								.map(
+									u =>
+										users.find(user => user.id === u) || {
+											id: u,
+											name: u,
+											displayName: u,
+										}
+								)
+								.map(u => (
+									<Box
+										key={u.id}
+										display='flex'
+										justifyContent='space-between'
+										alignItems='center'
+									>
+										<UserInfo key={u.id} user={u} />
+									</Box>
 								))}
 						</Stack>
 					</CardContent>

@@ -1,13 +1,17 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getUsers } from '../../api/gatewayClientAPI'
 import { getProjects } from '../../api/projects'
+import { User } from '../../api/types'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import ProjectCard from './ProjectCard'
 
 const Projects = () => {
 	const navigate = useNavigate()
+	const [users, setUsers] = React.useState<User[]>([])
+
 	const {
 		user: [user],
 		projects: [projects, setProjects],
@@ -19,18 +23,18 @@ const Projects = () => {
 		})
 	}, [])
 
+	React.useEffect(() => {
+		getUsers().then(users => setUsers(users))
+	}, [])
+
 	return (
 		<>
 			<TitleBar
-				title={'Projects Collaborative Workspaces'}
+				title={'Collaborative Workspaces Projects'}
 				description={
 					'Collaborate on projects with ease in our secure workspace. Sensitive data remains protected and accessible only to authorized members.'
 				}
-				button={
-					<Box sx={{ display: 'flex' }}>
-						
-					</Box>
-				}
+				button={<Box sx={{ display: 'flex' }}></Box>}
 			/>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
@@ -53,7 +57,7 @@ const Projects = () => {
 					</Box>
 				)}
 				{projects?.map(project => (
-					<ProjectCard key={project.name} project={project} />
+					<ProjectCard key={project.name} project={project} users={users} />
 				))}
 			</Box>
 		</>

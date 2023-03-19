@@ -1,40 +1,112 @@
 import {
-	Card, CardContent,
+	Box,
+	Card,
+	CardContent,
 	CardMedia,
+	IconButton,
 	Paper,
-	Typography
+	Stack,
+	Typography,
 } from '@mui/material'
-import { HIPProject } from '../../api/types'
+import { HIPProject, User } from '../../api/types'
 import { nameToColor } from '../theme'
 import * as React from 'react'
+import UserInfo from '../UI/UserInfo'
+import { NavLink } from 'react-router-dom'
+import { linkStyle, ROUTE_PREFIX } from '../../constants'
 
-const ProjectCard = ({ project }: { project: HIPProject }) => (
-	<Card elevation={3} component={Paper} sx={{ width: 320 }}>
-		<CardMedia
-			sx={{
-				background: `linear-gradient(to top, ${nameToColor(
-					project.title,
-					'33'
-				)}), url(/api/v1/public/media/2109057773_human__neural_pathway__consciousness__autistic_thinking__futuristic__neurons_and_dendrites__photo_realistic__picture_of_the_day.png) no-repeat top center`,
-			}}
-			component='img'
-			height='96'
-			alt=''
-		/>
-		<CardContent>
-			<Typography variant='h6'>{project?.title}</Typography>
+interface Props {
+	project: HIPProject
+	users: User[]
+}
 
-			<Typography
-				sx={{ mb: 2 }}
-				variant='body2'
-				gutterBottom
-				color='text.secondary'
-			>
-				{project?.description}
-			</Typography>
-			{/* <Typography variant='body2'>{project?.owner}</Typography> */}
-		</CardContent>
-	</Card>
-)
+const ProjectCard = ({ project, users }: Props) => {
+	return (
+		<Card elevation={3} component={Paper} sx={{ width: 320, height: 440 }}>
+			<CardMedia
+				sx={{
+					background: `linear-gradient(to top, ${nameToColor(
+						project.title,
+						'33'
+					)}), url(/api/v1/public/media/3537726782_synapses__technology__meta___database__information__network__neural_path__futuristic_and_medical__re.png) no-repeat top center`,
+				}}
+				component='img'
+				height='160'
+				alt=''
+			/>
+			<CardContent>
+				{!project.isMember && (
+					<Typography variant='h5'>{project?.title}</Typography>
+				)}
+				{project.isMember && (
+					<NavLink
+						style={linkStyle}
+						to={`${ROUTE_PREFIX}/collaborative/${project.name}`}
+					>
+						<Typography variant='h5'>{project?.title}</Typography>
+					</NavLink>
+				)}
+				<Typography
+					sx={{ mb: 2 }}
+					variant='body2'
+					gutterBottom
+					color='text.secondary'
+				>
+					{project?.description}
+				</Typography>
+				<Stack spacing={1}>
+					<Typography variant='h6'>Admin</Typography>
+					{project?.admins?.length === 0 && (
+						<Typography variant='subtitle2'>No admin yet</Typography>
+					)}
+					{[...(project?.admins || [])]
+						.map(
+							u =>
+								users.find(user => user.id === u) || {
+									id: u,
+									name: u,
+									displayName: u,
+								}
+						)
+						.map(u => (
+							<Box
+								key={u.id}
+								display='flex'
+								justifyContent='space-between'
+								alignItems='center'
+							>
+								<UserInfo key={u.id} user={u} />
+							</Box>
+						))}
+				</Stack>
+				<Stack spacing={1}>
+					<Typography variant='h6'>Members</Typography>
+					{project?.members?.length === 0 && (
+						<Typography variant='subtitle2'>No members yet</Typography>
+					)}
+					{[...(project?.members || [])]
+						.map(
+							u =>
+								users.find(user => user.id === u) || {
+									id: u,
+									name: u,
+									displayName: u,
+								}
+						)
+						.map(u => (
+							<Box
+								key={u.id}
+								display='flex'
+								justifyContent='space-between'
+								alignItems='center'
+							>
+								<UserInfo key={u.id} user={u} />
+							</Box>
+						))}
+				</Stack>
+			</CardContent>
+		</Card>
+	)
+}
 
 export default ProjectCard
