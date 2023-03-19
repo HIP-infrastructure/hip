@@ -133,6 +133,10 @@ export interface InspectResult {
 	size: number
 	relativePath: string
 	children: InspectResult[]
+	modifyTime: string
+	changeTime: string
+	birthTime: string
+	accessTime: string
 }
 
 export interface Document {

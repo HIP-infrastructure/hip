@@ -1,13 +1,10 @@
-import { ArrowDropDown, ArrowRight } from '@mui/icons-material'
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, Checkbox, CircularProgress } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import { useState } from 'react'
-import { InspectResult } from '../../api/types'
-import * as React from 'react'
-import { MinusSquare, PlusSquare, DocumentSquare } from './Icons'
-import { filesize } from 'filesize'
-import * as dayjs from 'dayjs'
+import { InspectResult } from '../../../api/types'
+import React, { useEffect } from 'react'
+import { MinusSquare, PlusSquare, DocumentSquare } from '../../UI/Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -26,27 +23,28 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 
 const MetadataBrowser = ({
 	files,
-	selectedFile,
+	setSelected,
+	unselect,
 }: {
 	files?: InspectResult
-	selectedFile?: (path: string) => void
+	setSelected?: (path: string | undefined) => void
+	unselect: boolean
 }) => {
-	const [expanded, setExpanded] = useState(['/'])
-
-	const expand = (file: InspectResult): string[] => {
-		if (file.type === 'dir') {
-			file.children?.map(expand)
-			return [file.relativePath]
-		}
-
-		return []
-	}
+	const [expanded, setExpanded] = useState<string[] | undefined>()
+	const [selectedNode, setSelectedNode] = useState<InspectResult>()
 
 	React.useEffect(() => {
-		if (files) {
-			setExpanded(expand(files))
-		}
-	}, [files])
+		if (setSelected && selectedNode) setSelected(selectedNode.relativePath)
+	}, [setSelected, selectedNode])
+
+	useEffect(() => {
+		if (!unselect) return
+		// select last uploaded file's folder
+		selectedNode?.relativePath && setExpanded([selectedNode?.relativePath])
+		
+		setSelectedNode(undefined)
+		setSelected && setSelected(undefined)
+	}, [unselect])
 
 	const rootFile = {
 		name: files?.name || 'root',
@@ -56,15 +54,26 @@ const MetadataBrowser = ({
 
 	const renderLabel = (file: InspectResult) => {
 		return (
-			<span
+			<Box
+				sx={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+				}}
 				onClick={event => {
 					event.stopPropagation()
 					event.preventDefault()
-					selectedFile && selectedFile(file.relativePath)
+					if (file.type === 'dir') setSelectedNode(file)
 				}}
 			>
-				{file.name} {filesize(file.size, { base: 2, standard: 'jedec' }) as string}
-			</span>
+				<Box>{file.name}</Box>
+				{file.type === 'dir' && (
+					<Checkbox
+						checked={file.relativePath === selectedNode?.relativePath}
+						sx={{ p: 0, m: 0 }}
+					/>
+				)}
+			</Box>
 		)
 	}
 

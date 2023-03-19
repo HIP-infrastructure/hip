@@ -1,6 +1,11 @@
 import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
 
-import { BIDSDataset, BIDSDatasetDescription, HIPProject, InspectResult } from './types'
+import {
+	BIDSDataset,
+	BIDSDatasetDescription,
+	HIPProject,
+	InspectResult,
+} from './types'
 
 export const getProjects = async (): Promise<HIPProject[]> =>
 	fetch(`${API_GATEWAY}/projects`, {
@@ -35,7 +40,6 @@ export const getProject = async (name: string): Promise<HIPProject> => {
 		.catch(catchError)
 }
 
-// removeUserFromProject
 export const updateProject = async (
 	project: HIPProject
 ): Promise<HIPProject> => {
@@ -75,18 +79,18 @@ export const addUserToProject = async (
 		.then(checkForError)
 		.catch(catchError)
 
-		export const removeUserFromProject = async (
-			userId: string,
-			projectName: string
-		): Promise<any> =>
-			fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
-				method: 'DELETE',
-				headers: {
-					requesttoken: window.OC.requestToken,
-				},
-			})
-				.then(checkForError)
-				.catch(catchError)
+export const removeUserFromProject = async (
+	userId: string,
+	projectName: string
+): Promise<any> =>
+	fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
+		method: 'DELETE',
+		headers: {
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
 
 export const getProjectMetadataTree = async (
 	projectName: string
@@ -101,8 +105,8 @@ export const getProjectMetadataTree = async (
 
 export const importBIDSSubject = async (
 	importSubjectDto: {
-		datasetPath: string,
-		subjectId: string,
+		datasetPath: string
+		subjectId: string
 	},
 	projectName: string
 ): Promise<any> =>
@@ -118,15 +122,19 @@ export const importBIDSSubject = async (
 		.catch(catchError)
 
 export const importDocument = async (
-	userId: string,
+	importDocumentDto: {
+		sourceFilePath: string,
+		targetDirPath: string
+	},
 	projectName: string
 ): Promise<any> =>
-	fetch(`${API_GATEWAY}/projects/${projectName}/bids`, {
+	fetch(`${API_GATEWAY}/projects/${projectName}/document`, {
 		method: 'POST',
 		headers: {
+			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-		body: JSON.stringify(''),
+		body: JSON.stringify(importDocumentDto),
 	})
 		.then(checkForError)
 		.catch(catchError)
