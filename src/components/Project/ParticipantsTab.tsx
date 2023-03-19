@@ -97,16 +97,17 @@ const ParticipantsTab = ({
 								</TableHead>
 								<TableBody>
 									{rows.map(row => (
-										<TableRow
-											hover
-											role='checkbox'
-											key={row.participant_id}
-										>
+										<TableRow hover role='checkbox' key={row.participant_id}>
 											{Object.keys(row).map(key => (
 												<TableCell key={key}>{row[key]}</TableCell>
 											))}
 										</TableRow>
 									))}
+									{!rows.length && (
+										<TableRow hover role='checkbox' key={'empty'}>
+											<TableCell>No Participants</TableCell>
+										</TableRow>
+									)}
 								</TableBody>
 							</Table>
 						</TableContainer>
