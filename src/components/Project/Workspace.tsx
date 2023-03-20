@@ -40,14 +40,18 @@ const ProjectDashboard = () => {
 		addUserToProject(userId, project.name)
 			.then(project => {
 				showNotif('User added', 'success')
-				setProject(project)
+				// FIXME: doesn't seems to be reflected at once
+				// setProject(project)
+				getProject(project.name).then(project => {
+					setProject(project)
+				})
 			})
 			.catch(e => {
 				showNotif(`${e}`, 'error')
 			})
 	}
 
-	const confirmRemoveUserFromProject = async (userId: string) => {
+	const handleRemoveUserFromProject = async (userId: string) => {
 		if (!modalRef.current) return
 		if (!project?.name) return
 
@@ -60,13 +64,17 @@ const ProjectDashboard = () => {
 			removeUserFromProject(userId, project.name)
 				.then(res => {
 					showNotif('User removed', 'success')
-					setProject(project)
+					// FIXME: doesn't seems to be reflected at once
+					// setProject(project)
+					getProject(project.name).then(project => {
+						setProject(project)
+					})
 				})
 				.catch(error => showNotif(error, 'error'))
 		}
 	}
 
-	const confirmRemoveProject = async (projectName: string) => {
+	const handleRemoveProject = async (projectName: string) => {
 		if (!modalRef.current) return
 
 		const reply = await modalRef.current.open(
@@ -125,7 +133,7 @@ const ProjectDashboard = () => {
 							{project && (
 								<ProjectCard
 									project={project}
-									confirmRemove={confirmRemoveProject}
+									handleRemoveProject={handleRemoveProject}
 									users={users}
 								/>
 							)}
@@ -137,7 +145,7 @@ const ProjectDashboard = () => {
 									project={project}
 									users={users}
 									handleAddUserToProject={handleAddUserToProject}
-									confirmRemove={confirmRemoveUserFromProject}
+									handleRemoveUserFromProject={handleRemoveUserFromProject}
 								/>
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>

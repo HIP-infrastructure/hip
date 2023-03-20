@@ -17,11 +17,11 @@ import UserInfo from '../UI/UserInfo'
 
 interface Props {
 	project: HIPProject
-	confirmRemove: (id: string) => void
+	handleRemoveProject: (id: string) => void
 	users: User[]
 }
 
-const MainCard = ({ project, users, confirmRemove }: Props) => {
+const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 	const {
 		user: [user],
 	} = useAppStore()
@@ -94,7 +94,7 @@ const MainCard = ({ project, users, confirmRemove }: Props) => {
 						{user?.uid && project?.admins?.includes(user?.uid) && (
 							<Button
 								onClick={() => {
-									confirmRemove(project.name)
+									handleRemoveProject(project.name)
 								}}
 								variant='outlined'
 							>
