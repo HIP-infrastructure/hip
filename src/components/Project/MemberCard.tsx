@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Chat } from '@mui/icons-material'
 import {
 	Box,
 	Button,
@@ -18,7 +17,7 @@ import {
 	Typography,
 } from '@mui/material'
 import { Clear } from '@mui/icons-material'
-import { HIPCenter as project, HIPProject, User } from '../../api/types'
+import { HIPProject, User } from '../../api/types'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import UserInfo from '../UI/UserInfo'
 import { useAppStore } from '../../Store'
@@ -27,14 +26,14 @@ interface Props {
 	project?: HIPProject | null
 	users?: User[]
 	handleAddUserToProject: (userId: string) => void
-	confirmRemove: (userId: string) => void
+	handleRemoveUserFromProject: (userId: string) => void
 }
 
-const Members = ({
+const MemberCard = ({
 	project,
 	users,
 	handleAddUserToProject,
-	confirmRemove,
+	handleRemoveUserFromProject,
 }: Props) => {
 	const [userToAdd, setUserToAdd] = React.useState('')
 	const {
@@ -98,7 +97,7 @@ const Members = ({
 									>
 										<UserInfo key={u.id} user={u} />
 										{user?.uid && project?.admins?.includes(user.uid) && (
-											<IconButton onClick={() => confirmRemove(u.id)}>
+											<IconButton onClick={() => handleRemoveUserFromProject(u.id)}>
 												<Clear />
 											</IconButton>
 										)}
@@ -145,4 +144,4 @@ const Members = ({
 	)
 }
 
-export default Members
+export default MemberCard
