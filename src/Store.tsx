@@ -146,12 +146,15 @@ export const AppStoreProvider = ({
 			['anat', 'dwi', 'func', 'ieeg', 'eeg']
 		)
 			.then(data => {
+				const { datasets } = data
 				// eslint-disable-next-line no-console
 				console.error('FIXME: remove duplicates at indexation time')
-				const uniqueArray = data.filter((obj, index, arr) => {
-					return arr.findIndex(t => t.Path === obj.Path) === index
-				})
-				setBidsDatasets({ data: uniqueArray })
+				if (datasets) {
+					const uniqueArray = datasets.filter((obj, index, arr) => {
+						return arr.findIndex(t => t.Path === obj.Path) === index
+					})
+					setBidsDatasets({ data: uniqueArray })
+				}
 			})
 			.catch(error => setBidsDatasets({ error }))
 

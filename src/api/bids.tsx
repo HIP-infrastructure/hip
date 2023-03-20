@@ -10,6 +10,7 @@ import {
 	CreateBidsDatasetParticipantsTsvDto,
 	IError,
 	Participant,
+	BIDSDatasetsQueryResponse
 } from './types'
 
 export const createBidsDatasetsIndex = async (): Promise<void> => {
@@ -76,8 +77,8 @@ export const queryBidsDatasets = async (
 	ageRange = [0, 100],
 	participantsCountRange = [0, 200],
 	datatypes: string[]  = ['*']
-): Promise<BIDSDataset[]> => {
-	if (!userId) return []
+): Promise<BIDSDatasetsQueryResponse> => {
+	if (!userId) return { datasets: [], total: 0 }
 
 	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&ageRange=${ageRange}&participantsCountRange=${participantsCountRange}&datatypes=${datatypes}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
 	return fetch(url, {
