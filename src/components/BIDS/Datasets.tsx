@@ -73,7 +73,7 @@ const Datasets = () => {
 	] = useDebounce<number[]>([0, 200])
 	const [numberOfResultsPerPage, setNumberOfResultsPerPage] =
 		useState<number>(20)
-	const [totalNumberOfDatasets] = useState<number>(0)
+	const [totalNumberOfDatasets, setTotalNumberOfDatasets] = useState<number>(0)
 	const [page, setPage] = useState<number>(1)
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
@@ -94,11 +94,14 @@ const Datasets = () => {
 			selectedDatatypes
 		)
 			.then(data => {
-				setDatasets({ data })
+				const { total, datasets } = data
+				setDatasets({ data: datasets })
+				if (total) setTotalNumberOfDatasets(total)
 				setLoading(false)
 			})
 			.catch(error => {
 				setDatasets({ error })
+				setTotalNumberOfDatasets(0)
 				setLoading(false)
 			})
 	}, [
@@ -206,7 +209,7 @@ const Datasets = () => {
 				<Box display='flex' justifyContent='center' alignItems='center'>
 					<Pagination
 						count={Math.ceil(
-							totalNumberOfDatasets || 1 / numberOfResultsPerPage
+							totalNumberOfDatasets / numberOfResultsPerPage
 						)}
 						page={page}
 						onChange={(_, value) => setPage(value)}
@@ -294,7 +297,7 @@ const Datasets = () => {
 				<Box display='flex' justifyContent='center' alignItems='center'>
 					<Pagination
 						count={Math.ceil(
-							totalNumberOfDatasets || 1 / numberOfResultsPerPage
+							totalNumberOfDatasets  / numberOfResultsPerPage
 						)}
 						page={page}
 						onChange={(_, value) => setPage(value)}

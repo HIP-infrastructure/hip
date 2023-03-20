@@ -208,6 +208,11 @@ export interface BIDSDataset extends BIDSDatasetDescription {
 	BIDSValid?: boolean
 }
 
+export interface BIDSDatasetsQueryResponse {
+	datasets?: BIDSDataset[]
+	total?: number
+}
+
 export type IOption = { label: string; inputValue?: string }
 
 export interface IEntity {

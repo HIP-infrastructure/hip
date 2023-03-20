@@ -61,9 +61,9 @@ const BidsBrowser = () => {
 		if (searchTerm) {
 			queryBidsDatasets(user?.uid || '', searchTerm, page, numberOfResultsPerPage)
 				.then(data => {
-					if (data) {
-						setBidsDatasetsResults(data)
-					}
+					const {datasets, total} = data
+					if (datasets) setBidsDatasetsResults(datasets)
+					if (total) setTotalNumberOfDatasets(total)
 				})
 				.catch(error => {
 					// setBidsDatasetsResults({ error })
@@ -71,9 +71,10 @@ const BidsBrowser = () => {
 		} else {
 			queryBidsDatasets(user?.uid || '', '*', page, numberOfResultsPerPage)
 				.then(data => {
-					if (data) {
-						setBidsDatasetsResults(data)
-					}
+					const {datasets, total} = data
+					if (datasets) setBidsDatasetsResults(datasets)
+					if (total) setTotalNumberOfDatasets(total)
+
 				})
 				.catch(error => {
 					// setBidsDatasetsResults({ error })

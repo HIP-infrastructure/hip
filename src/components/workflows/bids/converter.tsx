@@ -99,9 +99,8 @@ const BidsConverter = () => {
 				// reload datasets
 				queryBidsDatasets(user?.uid || '')
 					.then(data => {
-						if (data) {
-							setBidsDatasets({ data })
-						}
+						const { datasets } = data
+						if (datasets) setBidsDatasets({ data: datasets })
 					})
 					.catch(error => {
 						setBidsDatasets({ error })
@@ -116,9 +115,8 @@ const BidsConverter = () => {
 				// reload datasets anyway
 				queryBidsDatasets(user?.uid || '')
 					.then(data => {
-						if (data) {
-							setBidsDatasets({ data })
-						}
+						const { datasets } = data
+						if (datasets) setBidsDatasets({ data: datasets })
 					})
 					.catch(error => {
 						setBidsDatasets({ error })
