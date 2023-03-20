@@ -1,6 +1,5 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
-	AccountTree,
 	Apps,
 	Assignment,
 	Dashboard,
@@ -8,7 +7,6 @@ import {
 	ExpandMore,
 	Folder,
 	Monitor,
-	Add,
 	Adb,
 	CreateNewFolder,
 	ContentCopy,
@@ -16,6 +14,7 @@ import {
 	HelpCenter,
 	Info,
 	Support,
+	SyncProblem,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -190,24 +189,31 @@ const Sidebar = () => {
 						<ListSubheader id='my-projects-subheader'>
 							My Projects
 						</ListSubheader>
-						{user?.hasProjectsAdminRole ? (
-							(
-								<IconButton
-									color='primary'
-									onClick={() =>
-										navigate(`${ROUTE_PREFIX}/collaborative/create`)
-									}
-									aria-label={`Create new project`}
-								>
-									<CreateNewFolder />
-								</IconButton>
-							) || null
-						) : (
+						{(!projects || !user) && (
 							<CircularProgress size={18} color='secondary' />
+						)}
+						{user?.hasProjectsAdminRole && (
+							<IconButton
+								color='primary'
+								onClick={() => navigate(`${ROUTE_PREFIX}/collaborative/create`)}
+								aria-label={`Create new project`}
+							>
+								<CreateNewFolder />
+							</IconButton>
 						)}
 					</Box>
 				}
 			>
+				{projects?.filter(p => p.isMember).length === 0 && (
+					<List component='div' disablePadding>
+						<ListItemButton>
+							<ListItemIcon>
+								<SyncProblem />
+							</ListItemIcon>
+							<ListItemText primary={`You are not part of any project`} />
+						</ListItemButton>
+					</List>
+				)}
 				{projects
 					?.filter(p => p.isMember)
 					.map(project => (
