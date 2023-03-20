@@ -50,9 +50,8 @@ const Datasets = (): JSX.Element => {
 		if (datasetCreated) {
 			queryBidsDatasets(user?.uid || '')
 				.then(data => {
-					if (data) {
-						setBidsDatasets({ data })
-					}
+					const {datasets} = data
+					if (datasets) setBidsDatasets({ data: datasets })
 				})
 				.catch(error => {
 					setBidsDatasets({ error })
