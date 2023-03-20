@@ -68,7 +68,6 @@ const Sidebar = () => {
 		navigate(`${ROUTE_PREFIX}${route}`)
 	}
 
-	// FIXME: if there is no center
 	const userCenters =
 		(user?.groups &&
 			centers?.filter(center => user?.groups?.includes(center.id))) ||
@@ -101,6 +100,19 @@ const Sidebar = () => {
 				</ListItemButton>
 			</List>
 			<Divider />
+			{userCenters?.length === 0 && (
+				<List component='div' disablePadding>
+					<ListSubheader id='center-subheader'>My Center</ListSubheader>
+					<ListItemButton
+						onClick={() => handleClickNavigate(`/private/default`)}
+					>
+						<ListItemIcon>
+							<SyncProblem />
+						</ListItemIcon>
+						<ListItemText primary={`You are not part of any center`} />
+					</ListItemButton>
+				</List>
+			)}
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List

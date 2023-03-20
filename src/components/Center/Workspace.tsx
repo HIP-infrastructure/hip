@@ -83,7 +83,7 @@ const Workspace = () => {
 				</Typography>
 			)}
 
-			{centers && center === null && (
+			{!center && (
 				<Box>
 					<Card
 						sx={{
