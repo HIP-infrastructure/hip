@@ -145,9 +145,13 @@ const Desktop = (): JSX.Element => {
 
 	// Start an app
 	const handleToggleApp = (app: Application) => {
+		if (!desktop?.id || !user?.uid) {
+			return
+		}
+
 		const targetApp = desktopApps?.find(a => a.name === app.name)
 		if (targetApp) {
-			stopApp(desktop?.id || '', user?.uid || '', targetApp.id).then(data =>
+			stopApp(desktop?.id, desktop?.userId, targetApp.id).then(data =>
 				setContainers(data)
 			)
 
@@ -159,11 +163,7 @@ const Desktop = (): JSX.Element => {
 			return
 		}
 
-		if (!desktop?.id || !user?.uid) {
-			return
-		}
-
-		createApp(desktop.id, user.uid, app.name)
+		createApp(desktop.id, desktop.userId, app.name)
 		focusOnIframe(1)
 
 		trackEvent({
