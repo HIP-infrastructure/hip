@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { getUsers } from '../../api/gatewayClientAPI'
 import { getProjects } from '../../api/projects'
 import { User } from '../../api/types'
+import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
 import ProjectCard from './ProjectCard'
 
 const Projects = () => {
-	const navigate = useNavigate()
+	const { showNotif } = useNotification()
 	const [users, setUsers] = React.useState<User[]>([])
 
 	const {
@@ -18,13 +19,21 @@ const Projects = () => {
 	} = useAppStore()
 
 	React.useEffect(() => {
-		getProjects().then(projects => {
-			setProjects(projects)
-		})
+		getProjects()
+			.then(projects => {
+				setProjects(projects)
+			})
+			.catch(e => {
+				showNotif(`${e}`, 'error')
+			})
 	}, [])
 
 	React.useEffect(() => {
-		getUsers().then(users => setUsers(users))
+		getUsers()
+			.then(users => setUsers(users))
+			.catch(e => {
+				showNotif(`${e}`, 'error')
+			})
 	}, [])
 
 	return (
