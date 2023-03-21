@@ -42,7 +42,7 @@ const DATATYPES = [
 	'eeg',
 	//'fmap',
 	//'pet',
-	//'ct',
+	'ct',
 ]
 
 const participantsCountRangeMarks = [
