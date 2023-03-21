@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@nextcloud/auth'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
 	createBidsDatasetsIndex,
 	queryBidsDatasets,
@@ -77,6 +77,9 @@ export const AppStoreProvider = ({
 }: {
 	children: JSX.Element
 }): JSX.Element => {
+	const [timesRun, setTimesRun] = useState(0)
+	const counter = useRef<number>(0)
+	const effectCalled = useRef<boolean>(false)
 	const [debug, setDebug] = useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [containers, setContainers] = useState<Container[] | null>(null)
@@ -134,7 +137,12 @@ export const AppStoreProvider = ({
 		createBidsDatasetsIndex()
 
 		// Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
+		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+			if (!effectCalled.current) refreshBidsDatasetsIndex(currentUser.uid)
+		}
+		else {
+			refreshBidsDatasetsIndex(currentUser.uid)
+		}
 
 		queryBidsDatasets(
 			currentUser.uid || '',
@@ -161,6 +169,11 @@ export const AppStoreProvider = ({
 		getDesktopsAndApps('private', currentUser.uid || '', []).then(data =>
 			setContainers(data)
 		)
+
+		// udpade timesRun to track if the component is re-mounted in development mode
+		counter.current += 1;
+		setTimesRun(counter.current);
+		effectCalled.current = true;
 	}, [])
 
 	const value: IAppState = React.useMemo(
