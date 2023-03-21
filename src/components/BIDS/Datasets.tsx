@@ -120,9 +120,9 @@ const Datasets = () => {
 
 	useEffect(() => {
 		if (datasetCreated) {
-			refreshBidsDatasetsIndex(user?.uid).then(() => {
-				queryDatasets()
-			})
+			// refreshBidsDatasetsIndex(user?.uid).then(() => {
+			// 	queryDatasets()
+			// })
 
 			setDatasetCreated(false)
 		}
