@@ -78,7 +78,7 @@ const Datasets = () => {
 	const [datasets, setDatasets] = useState<
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
-	const [selectedDatatypes, setSelectedDatatypes] = useState<string[]>(DATATYPES)
+	const [selectedDatatypes, setSelectedDatatypes] = useState<string[]>([])
 
 	const [loading, setLoading] = useState(false)
 
