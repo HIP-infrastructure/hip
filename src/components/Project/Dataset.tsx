@@ -108,7 +108,7 @@ const Dataset = () => {
 									>
 										<MetadataBrowser
 											files={files?.children
-												.find((f: InspectResult) => f.name === 'inputs')
+												?.find((f: InspectResult) => f.name === 'inputs')
 												?.children?.find(
 													(f: InspectResult) => f.name === 'bids-dataset'
 												)}
@@ -189,7 +189,7 @@ const Dataset = () => {
 									</Typography>
 									<MetadataBrowser
 										files={files?.children
-											.find((f: InspectResult) => f.name === 'inputs')
+											?.find((f: InspectResult) => f.name === 'inputs')
 											?.children?.find(
 												(f: InspectResult) => f.name === 'bids-dataset'
 											)}
