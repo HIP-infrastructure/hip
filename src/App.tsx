@@ -70,7 +70,7 @@ const Layout = (): JSX.Element => {
 					}}
 					variant='h6'
 				>
-					𓂀 {process.env.REACT_APP_HOSTNAME}
+					{process.env.REACT_APP_HOSTNAME}
 				</Typography>
 			)}
 			<Navigation />
