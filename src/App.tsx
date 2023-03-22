@@ -9,7 +9,7 @@ import AppList from './components/Documentation/AppList'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
-import PrivateWorkspace from './components/Center/Workspace'
+import CenterWorkspace from './components/Center/Workspace'
 import Documentation from './components/Documentation/Documentation'
 import CreateProject from './components/Projects/Create'
 import ProjectWorkspace from './components/Project/Workspace'
@@ -91,16 +91,16 @@ const App = () => (
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'admin'} element={<Admin />} />
-			<Route path={'private'} element={<Outlet />}>
+			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
-				<Route path={':centerId'} element={<PrivateWorkspace />} />
+				<Route path={':centerId'} element={<CenterWorkspace />} />
 				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
 			</Route>
-			<Route path={'collaborative'} element={<Outlet />}>
+			<Route path={'projects'} element={<Outlet />}>
 				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>

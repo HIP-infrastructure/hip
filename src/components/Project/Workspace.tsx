@@ -90,7 +90,7 @@ const ProjectDashboard = () => {
 					getProjects().then(projects => {
 						setProjects(projects)
 					})
-					navigate(`${ROUTE_PREFIX}/collaborative`)
+					navigate(`${ROUTE_PREFIX}/projects`)
 				})
 				.catch(error => showNotif(error, 'error'))
 		}
