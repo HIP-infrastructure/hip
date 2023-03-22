@@ -99,7 +99,7 @@ const CreateProject = () => {
 											setProjects(projects)
 										})
 										showNotif('Project created', 'success')
-										navigate(`${ROUTE_PREFIX}/collaborative`)
+										navigate(`${ROUTE_PREFIX}/projects`)
 									})
 									.catch(err => {
 										showNotif(err, 'error')

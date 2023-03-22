@@ -92,7 +92,7 @@ const Sidebar = () => {
 			}}
 		>
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/private')}>
+				<ListItemButton onClick={() => handleClickNavigate('/centers')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -104,7 +104,7 @@ const Sidebar = () => {
 				<List component='div' disablePadding>
 					<ListSubheader id='center-subheader'>My Center</ListSubheader>
 					<ListItemButton
-						onClick={() => handleClickNavigate(`/private/default`)}
+						onClick={() => handleClickNavigate(`/centers/default`)}
 					>
 						<ListItemIcon>
 							<SyncProblem />
@@ -143,7 +143,7 @@ const Sidebar = () => {
 						<ListItemButton
 							sx={{ pl: 4 }}
 							disabled={!userCenters}
-							onClick={() => handleClickNavigate(`/private/${center?.id}`)}
+							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
 						>
 							<ListItemIcon>
 								<Dashboard />
@@ -153,7 +153,7 @@ const Sidebar = () => {
 						<ListItemButton
 							sx={{ pl: 4 }}
 							onClick={() =>
-								handleClickNavigate(`/private/${center.id}/desktops`)
+								handleClickNavigate(`/centers/${center.id}/desktops`)
 							}
 						>
 							<ListItemIcon>
@@ -165,7 +165,7 @@ const Sidebar = () => {
 							sx={{ pl: 4 }}
 							disabled={!userCenters}
 							onClick={() =>
-								handleClickNavigate(`/private/${center.id}/datasets`)
+								handleClickNavigate(`/centers/${center.id}/datasets`)
 							}
 						>
 							<ListItemIcon>
@@ -178,7 +178,7 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/collaborative')}>
+				<ListItemButton onClick={() => handleClickNavigate('/projects')}>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -207,7 +207,7 @@ const Sidebar = () => {
 						{user?.hasProjectsAdminRole && (
 							<IconButton
 								color='primary'
-								onClick={() => navigate(`${ROUTE_PREFIX}/collaborative/create`)}
+								onClick={() => navigate(`${ROUTE_PREFIX}/projects/create`)}
 								aria-label={`Create new project`}
 							>
 								<CreateNewFolder />
@@ -246,7 +246,7 @@ const Sidebar = () => {
 									<ListItemButton
 										sx={{ pl: 4 }}
 										onClick={() =>
-											handleClickNavigate(`/collaborative/${project.name}`)
+											handleClickNavigate(`/projects/${project.name}`)
 										}
 									>
 										<ListItemIcon>
@@ -258,7 +258,7 @@ const Sidebar = () => {
 										sx={{ pl: 4 }}
 										onClick={() =>
 											handleClickNavigate(
-												`/collaborative/${project.name}/desktops`
+												`/projects/${project.name}/desktops`
 											)
 										}
 									>
@@ -271,7 +271,7 @@ const Sidebar = () => {
 										sx={{ pl: 4 }}
 										onClick={() =>
 											handleClickNavigate(
-												`/collaborative/${project.name}/metadata/`
+												`/projects/${project.name}/metadata/`
 											)
 										}
 									>
@@ -284,7 +284,7 @@ const Sidebar = () => {
 										sx={{ pl: 4 }}
 										onClick={() =>
 											handleClickNavigate(
-												`/collaborative/${project.name}/datasets/`
+												`/projects/${project.name}/datasets/`
 											)
 										}
 									>

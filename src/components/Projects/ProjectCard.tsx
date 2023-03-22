@@ -3,7 +3,6 @@ import {
 	Card,
 	CardContent,
 	CardMedia,
-	IconButton,
 	Paper,
 	Stack,
 	Typography,
@@ -41,7 +40,7 @@ const ProjectCard = ({ project, users }: Props) => {
 				{project.isMember && (
 					<NavLink
 						style={linkStyle}
-						to={`${ROUTE_PREFIX}/collaborative/${project.name}`}
+						to={`${ROUTE_PREFIX}/projects/${project.name}`}
 					>
 						<Typography variant='h5'>{project?.title}</Typography>
 					</NavLink>
