@@ -35,8 +35,9 @@ const CenterDesktops = (): JSX.Element => {
 		debug: [debug],
 	} = useAppStore()
 
+	const keyStorage = `show-admin-view${user?.uid}`
 	const [showAdminView, setShowAdminView] = React.useState(
-		localStorage.getItem('admin-view') === 'true'
+		localStorage.getItem(keyStorage) === 'true'
 	)
 	const modalRef = useRef<ModalComponentHandle>(null)
 
@@ -77,7 +78,7 @@ const CenterDesktops = (): JSX.Element => {
 
 		if (reply) {
 			removeAppsAndDesktop(desktopId, user?.uid || '')
-				.then(data => setContainers(data))
+				.then(data => !showAdminView && setContainers(data))
 				.catch(error => showNotif(error, 'error'))
 
 			trackEvent({
@@ -121,7 +122,7 @@ const CenterDesktops = (): JSX.Element => {
 											checked={showAdminView}
 											onChange={() => {
 												localStorage.setItem(
-													'admin-view',
+													keyStorage,
 													String(!showAdminView)
 												)
 												setShowAdminView(!showAdminView)
