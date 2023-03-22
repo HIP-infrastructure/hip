@@ -38,7 +38,7 @@ const FileChooser = ({
 				})
 				.finally(() => setLoading(false))
 		},
-		[setFiles]
+		[setFiles, showNotif]
 	)
 
 	useEffect(() => {

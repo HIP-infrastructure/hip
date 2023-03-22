@@ -1,11 +1,12 @@
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack';
+import { useCallback } from 'react';
 
 export const useNotification = () => {
-	const { enqueueSnackbar } = useSnackbar()
+	const { enqueueSnackbar } = useSnackbar();
 
-	const showNotif = (message, variant) => {
-		enqueueSnackbar(message, { variant })
-	}
+	const showNotif = useCallback((message, variant) => {
+		enqueueSnackbar(message, { variant });
+	}, [enqueueSnackbar]);
 
-	return { showNotif }
-}
+	return { showNotif };
+};
