@@ -53,7 +53,7 @@ const Layout = (): JSX.Element => {
 			})
 		}, 30 * 1000)
 		return () => clearInterval(interval)
-	}, [])
+	}, [showNotif])
 
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>

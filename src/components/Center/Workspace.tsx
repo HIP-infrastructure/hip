@@ -44,6 +44,7 @@ const Workspace = () => {
 		setCenter(center)
 	}, [centers, params.centerId])
 
+	// FIXME: looks like a code smell
 	useEffect(() => {
 		if (!center?.users) {
 			if (!center?.id) return

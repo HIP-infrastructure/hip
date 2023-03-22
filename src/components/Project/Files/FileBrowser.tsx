@@ -3,7 +3,11 @@ import { Box, Checkbox, CircularProgress, TextField } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { getFiles2, getGroupFolders, search } from '../../../api/gatewayClientAPI'
+import {
+	getFiles2,
+	getGroupFolders,
+	search,
+} from '../../../api/gatewayClientAPI'
 import { ISearch, Node } from '../../../api/types'
 import { useAppStore } from '../../../Store'
 import { DocumentSquare, MinusSquare, PlusSquare } from '../../UI/Icons'
@@ -77,7 +81,7 @@ const FileBrowser = ({
 		if (!showGroups && groups) return
 
 		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroups(groupFolders?.map((g: any) => g.label))
+			setGroups(groupFolders?.map(g => g.label))
 		})
 	}, [showGroups, user, setGroups, groups])
 
@@ -96,7 +100,7 @@ const FileBrowser = ({
 				})) || []),
 			])
 		)
-	}, [groups])
+	}, [groups, files, setFiles])
 
 	useEffect(() => {
 		if (term.length > 1) {
