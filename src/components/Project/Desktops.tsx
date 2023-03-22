@@ -121,16 +121,17 @@ const ProjectDesktops = (): JSX.Element => {
 	}
 
 	const createNewDesktop = async () => {
-		if (project?.name)
+		if (project?.name) {
 			createDesktop('collab', user?.uid || '', [project.name])
 				.then(data => setContainers(data))
 				.catch(error => showNotif(error, 'error'))
 
-		trackEvent({
-			category: 'Desktop',
-			action: 'Create a desktop',
-			name: `project/${project?.name}`,
-		})
+			trackEvent({
+				category: 'Desktop',
+				action: 'Create a desktop',
+				name: `project/${project?.name}`,
+			})
+		}
 	}
 
 	const project = projects?.find(project => project.name === params?.projectId)
