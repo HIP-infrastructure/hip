@@ -132,13 +132,13 @@ const CenterDesktops = (): JSX.Element => {
 		createDesktop('private', user?.uid || '', [])
 			.then(data => setContainers(data))
 			.catch(error => showNotif(error, 'error'))
-	}
 
-	trackEvent({
-		category: 'Desktop',
-		action: 'Create a desktop',
-		name: `center/${params.centerId}`,
-	})
+		trackEvent({
+			category: 'Desktop',
+			action: 'Create a desktop',
+			name: `center/${params.centerId}`,
+		})
+	}
 
 	const desktops: Container[] | undefined = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
