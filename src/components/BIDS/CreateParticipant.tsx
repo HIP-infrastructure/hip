@@ -6,15 +6,13 @@ import {
 	DialogContent, DialogTitle, Grid, IconButton, TextField, Typography
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import {
 	BIDSDataset, Participant
 } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
-import CreateField from '../UI/createField'
 
 type IField = Record<string, string>
 

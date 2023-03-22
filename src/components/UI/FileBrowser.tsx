@@ -1,13 +1,12 @@
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
 import { Box, CircularProgress, TextField } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { getFiles2, getGroupFolders, search } from '../../api/gatewayClientAPI'
-import { Node, ISearch } from '../../api/types'
+import { ISearch, Node } from '../../api/types'
 import { useAppStore } from '../../Store'
-import { MinusSquare, PlusSquare, DocumentSquare } from './Icons'
+import { DocumentSquare, MinusSquare, PlusSquare } from './Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -61,10 +60,10 @@ const FileBrowser = ({
 	}, [path])
 
 	useEffect(() => {
-		if (!showGroups && groups) return
+		if (!showGroups) return
 
 		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroups(groupFolders?.map((g: any) => g.label))
+			setGroups(groupFolders?.map(g => g.label))
 		})
 	}, [showGroups, user, setGroups])
 

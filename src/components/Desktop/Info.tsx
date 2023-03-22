@@ -1,7 +1,6 @@
-import { Box, Card, CardContent, Chip, Link, Typography } from '@mui/material'
-import * as React from 'react'
+import { Card, CardContent, Link, Typography } from '@mui/material'
 import { Container } from '../../api/types'
-import { color } from '../../api/utils'
+import * as React from 'react'
 
 import { DRAWER_WIDTH } from '../../constants'
 import DesktopInfo from '../UI/DesktopInfo'

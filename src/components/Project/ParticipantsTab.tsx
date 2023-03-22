@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { BIDSDataset, Participant } from '../../api/types'
-import { useAppStore } from '../../Store'
 
 const ParticipantsTab = ({
 	dataset,
@@ -25,10 +24,6 @@ const ParticipantsTab = ({
 		'age',
 		'sex',
 	])
-
-	const {
-		user: [user],
-	} = useAppStore()
 
 	useEffect(() => {
 		if (dataset?.Participants) {

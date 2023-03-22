@@ -6,7 +6,6 @@ import CenterCard from './CenterCard'
 
 const Centers = (): JSX.Element => {
 	const {
-		user: [user],
 		centers: [centers],
 	} = useAppStore()
 

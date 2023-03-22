@@ -1,13 +1,12 @@
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
 import { Box, Checkbox, CircularProgress, TextField } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { getFiles2, getGroupFolders, search } from '../../../api/gatewayClientAPI'
-import { Node, ISearch } from '../../../api/types'
+import { ISearch, Node } from '../../../api/types'
 import { useAppStore } from '../../../Store'
-import { MinusSquare, PlusSquare, DocumentSquare } from '../../UI/Icons'
+import { DocumentSquare, MinusSquare, PlusSquare } from '../../UI/Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -57,14 +56,14 @@ const FileBrowser = ({
 
 	useEffect(() => {
 		if (setSelected && selectedNode) setSelected(selectedNode.path)
-	}, [selectedNode])
+	}, [selectedNode, setSelected])
 
 	useEffect(() => {
 		if (!unselect) return
 
 		setSelectedNode(undefined)
 		setSelected && setSelected(undefined)
-	}, [unselect])
+	}, [unselect, setSelected])
 
 	useEffect(() => {
 		getFiles2(path || '/').then(data => {
@@ -72,7 +71,7 @@ const FileBrowser = ({
 			setFiles(r)
 			setFilesCache(r)
 		})
-	}, [path])
+	}, [path, setFiles, setFilesCache])
 
 	useEffect(() => {
 		if (!showGroups && groups) return
@@ -80,7 +79,7 @@ const FileBrowser = ({
 		getGroupFolders(user?.uid).then(groupFolders => {
 			setGroups(groupFolders?.map((g: any) => g.label))
 		})
-	}, [showGroups, user, setGroups])
+	}, [showGroups, user, setGroups, groups])
 
 	useEffect(() => {
 		const hasGroup = groups && files.some(f => groups.includes(f.name))

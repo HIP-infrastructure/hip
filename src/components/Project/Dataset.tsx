@@ -1,27 +1,24 @@
 import { Close, Upload } from '@mui/icons-material'
 import {
-	Box,
-	Button,
-	IconButton,
+	Box, IconButton,
 	Paper,
 	Tab,
 	Tabs,
-	Typography,
+	Typography
 } from '@mui/material'
 // import marked from 'marked'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { LoadingButton } from '@mui/lab'
+import React, { useEffect, useState } from 'react'
 import { getProject, getProjectMetadataTree, importBIDSSubject } from '../../api/projects'
 import { InspectResult } from '../../api/types'
+import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
-import ParticipantsTab from './ParticipantsTab'
 import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
 import MetadataBrowser from '../UI/MetadataBrowser'
 import TitleBar from '../UI/titleBar'
-import { useNotification } from '../../hooks/useNotification'
-import { LoadingButton } from '@mui/lab'
+import ParticipantsTab from './ParticipantsTab'
 
 const Dataset = () => {
 	const { showNotif } = useNotification()
@@ -165,7 +162,7 @@ const Dataset = () => {
 										My Datasets
 									</Typography>
 									<DatasetSubjectChooser
-										selected={(datasetPath, subjectId) => {
+										setSelected={(datasetPath, subjectId) => {
 											setSelectedSubject([datasetPath, subjectId])
 										}}
 									/>

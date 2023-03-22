@@ -1,17 +1,14 @@
 import * as React from 'react'
-import { Chat } from '@mui/icons-material'
 import {
 	Box,
 	Card,
 	CardContent,
 	CardMedia,
-	CircularProgress,
-	IconButton,
-	Stack,
-	Typography,
+	CircularProgress, Stack,
+	Typography
 } from '@mui/material'
-import { HIPCenter, User } from '../../api/types'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { HIPCenter, User } from '../../api/types'
 import UserInfo from '../UI/UserInfo'
 
 const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {

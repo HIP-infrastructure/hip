@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import FileBrowser from './FileBrowser'
 
 const DataBrowser = () => {
-	const [path, setPath] = useState<string>()
 	const [selectedFile, setSelectedFile] = useState<string>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
 
@@ -39,7 +38,6 @@ const DataBrowser = () => {
 			>
 				<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
 					<FileBrowser
-						path={path}
 						selectedFile={setSelectedFile}
 						showSearch={true}
 					/>

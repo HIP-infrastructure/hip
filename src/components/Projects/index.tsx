@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
-import { useNavigate } from 'react-router-dom'
 import { getUsers } from '../../api/gatewayClientAPI'
 import { getProjects } from '../../api/projects'
 import { User } from '../../api/types'
@@ -14,7 +13,6 @@ const Projects = () => {
 	const [users, setUsers] = React.useState<User[]>([])
 
 	const {
-		user: [user],
 		projects: [projects, setProjects],
 	} = useAppStore()
 
@@ -26,7 +24,7 @@ const Projects = () => {
 			.catch(e => {
 				showNotif(`${e}`, 'error')
 			})
-	}, [])
+	}, [setProjects])
 
 	React.useEffect(() => {
 		getUsers()
@@ -34,7 +32,7 @@ const Projects = () => {
 			.catch(e => {
 				showNotif(`${e}`, 'error')
 			})
-	}, [])
+	}, [setUsers])
 
 	return (
 		<>

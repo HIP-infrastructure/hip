@@ -44,7 +44,7 @@ const MetadataBrowser = ({
 		
 		setSelectedNode(undefined)
 		setSelected && setSelected(undefined)
-	}, [unselect])
+	}, [unselect, selectedNode, setSelected])
 
 	const rootFile = {
 		name: files?.name || 'root',

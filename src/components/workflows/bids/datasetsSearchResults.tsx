@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import * as React from 'react'
+import { Box, CircularProgress, Paper, Typography } from '@mui/material'
 
-import { Alert, Box, CircularProgress, Paper, Typography } from '@mui/material'
-
-import DatasetCard from './datasetCard'
-import { useAppStore } from '../../../Store'
 import { BIDSDataset } from '../../../api/types'
+import DatasetCard from './datasetCard'
 
 type Props = {
 	page: number

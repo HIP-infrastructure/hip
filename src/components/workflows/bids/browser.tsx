@@ -92,7 +92,7 @@ const BidsBrowser = () => {
 				setNumberOfPages(1)
 			}
 		}
-	}, [totalNumberOfDatasets, numberOfResultsPerPage])
+	}, [totalNumberOfDatasets, numberOfResultsPerPage, bidsDatasetsResults])
 
 	function handleDatasetsSearch(event: React.FormEvent<SearchTermFormElement>) {
 		event.preventDefault()

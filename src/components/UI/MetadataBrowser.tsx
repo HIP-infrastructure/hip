@@ -6,7 +6,6 @@ import { InspectResult } from '../../api/types'
 import * as React from 'react'
 import { MinusSquare, PlusSquare, DocumentSquare } from './Icons'
 import { filesize } from 'filesize'
-import * as dayjs from 'dayjs'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -45,7 +44,7 @@ const MetadataBrowser = ({
 		if (files) {
 			setExpanded(expand(files))
 		}
-	}, [files])
+	}, [files, expand])
 
 	const rootFile = {
 		name: files?.name || 'root',

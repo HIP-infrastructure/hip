@@ -1,22 +1,18 @@
-import {
-	Box,
-	CircularProgress,
-	Grid,
-	TextareaAutosize,
-	TextField,
-	Typography,
-} from '@mui/material'
-import * as React from 'react'
-import { Form, Formik, useFormik } from 'formik'
-import * as Yup from 'yup'
-import { createProject, getProjects } from '../../api/projects'
-import { useAppStore } from '../../Store'
-import TitleBar from '../UI/titleBar'
-import { useNotification } from '../../hooks/useNotification'
-import { useNavigate } from 'react-router-dom'
-import { ROUTE_PREFIX } from '../../constants'
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
+import {
+	Box, Grid, TextField,
+	Typography
+} from '@mui/material'
+import { Form, Formik } from 'formik'
+import * as React from 'react'
+import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
+import { createProject, getProjects } from '../../api/projects'
+import { ROUTE_PREFIX } from '../../constants'
+import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
+import TitleBar from '../UI/titleBar'
 
 const validationSchema = Yup.object().shape({
 	title: Yup.string()
@@ -45,16 +41,12 @@ const initialValues = {
 	DatasetDOI: '',
 }
 
-interface ICreateDataset {
-	setDatasetCreated: React.Dispatch<React.SetStateAction<boolean>>
-}
-
 const CreateProject = () => {
 	const { showNotif } = useNotification()
 	const navigate = useNavigate()
 	const {
 		user: [user],
-		projects: [projects, setProjects],
+		projects: [projects, setProjects], // eslint-disable-line @typescript-eslint/no-unused-vars
 	} = useAppStore()
 	const [submitted, setSubmitted] = React.useState(false)
 	const [isLoading, setIsLoading] = React.useState(false)

@@ -26,7 +26,7 @@ const ProjectDashboard = () => {
 	const [users, setUsers] = React.useState<User[]>([])
 	const {
 		user: [user],
-		projects: [_, setProjects],
+		projects: [_, setProjects], // eslint-disable-line @typescript-eslint/no-unused-vars
 		selectedProject: [project, setProject],
 	} = useAppStore()
 

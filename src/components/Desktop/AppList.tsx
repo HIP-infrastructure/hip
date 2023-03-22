@@ -1,6 +1,5 @@
 import { PlayCircleOutlined, StopCircleOutlined } from '@mui/icons-material'
 import {
-	Alert,
 	Avatar,
 	CircularProgress,
 	List,
@@ -8,14 +7,13 @@ import {
 	ListItemAvatar,
 	ListItemButton,
 	ListItemSecondaryAction,
-	ListItemText,
+	ListItemText
 } from '@mui/material'
 import {
 	Application,
 	Container,
-	ContainerState,
+	ContainerState
 } from '../../api/types'
-import { color, loading } from '../../api/utils'
 import { useAppStore } from '../../Store'
 import SmallToolTip from '../UI/smallToolTip'
 import React from 'react'

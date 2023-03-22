@@ -38,7 +38,7 @@ const FileChooser = ({
 				})
 				.finally(() => setLoading(false))
 		},
-		[setFiles, showNotif]
+		[setFiles]
 	)
 
 	useEffect(() => {
@@ -49,7 +49,7 @@ const FileChooser = ({
 			getFiles(selectedFile.path)
 		}
 		handleSelectedFile && handleSelectedFile(selectedFile.path)
-	}, [loading, selectedFile, files, showNotif])
+	}, [loading, selectedFile, files, getFiles, handleSelectedFile])
 
 	const parent = files?.find(f => f.path === selectedFile.parentPath)
 	const currentFolder: Node[] = [
