@@ -6,7 +6,6 @@ import { getUsers } from '../../api/gatewayClientAPI'
 import {
 	addUserToProject,
 	deleteProject,
-	getProject,
 	getProjects,
 	removeUserFromProject,
 } from '../../api/projects'
