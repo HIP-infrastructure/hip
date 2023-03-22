@@ -122,6 +122,7 @@ const Desktop = (): JSX.Element => {
 					// console.log(e)
 				})
 		}, 1000)
+		return () => intervalRef.current && clearInterval(intervalRef.current)
 	}, [desktop, desktopIsAlive])
 
 	useEffect(() => {
