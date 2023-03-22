@@ -89,7 +89,9 @@ export const AppStoreProvider = ({
 	const [user, setUser] = useState<UserCredentials | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
 	const [projects, setProjects] = useState<HIPProject[] | null>(null)
-	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(null)
+	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(
+		null
+	)
 	const [bidsDatasets, setBidsDatasets] = useState<{
 		data?: BIDSDataset[]
 		error?: string
@@ -116,22 +118,34 @@ export const AppStoreProvider = ({
 				}
 			})
 			.catch(error => {
-				// console.log(error)
+				console.error(error) // eslint-disable-line no-console
 			})
 
-		getCenters().then(centers => {
-			if (centers) {
-				setCenters(centers)
-			}
-		})
+		getCenters()
+			.then(centers => {
+				if (centers) {
+					setCenters(centers)
+				}
+			})
+			.catch(error => {
+				console.error(error) // eslint-disable-line no-console
+			})
 
-		getProjects().then(projects => {
-			if (projects) {
-				setProjects(projects)
-			}
-		})
+		getProjects()
+			.then(projects => {
+				if (projects) {
+					setProjects(projects)
+				}
+			})
+			.catch(error => {
+				console.error(error) // eslint-disable-line no-console
+			})
 
-		getAvailableAppList().then(data => setAvailableApps(data))
+		getAvailableAppList()
+			.then(data => setAvailableApps(data))
+			.catch(error => {
+				console.error(error) // eslint-disable-line no-console
+			})
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
 		createBidsDatasetsIndex()
@@ -139,8 +153,7 @@ export const AppStoreProvider = ({
 		// Perform a full index of the BIDS datasets
 		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 			if (!effectCalled.current) refreshBidsDatasetsIndex(currentUser.uid)
-		}
-		else {
+		} else {
 			refreshBidsDatasetsIndex(currentUser.uid)
 		}
 
@@ -155,8 +168,6 @@ export const AppStoreProvider = ({
 		)
 			.then(data => {
 				const { datasets } = data
-				// eslint-disable-next-line no-console
-				console.error('FIXME: remove duplicates at indexation time')
 				if (datasets) {
 					const uniqueArray = datasets.filter((obj, index, arr) => {
 						return arr.findIndex(t => t.Path === obj.Path) === index
@@ -166,14 +177,16 @@ export const AppStoreProvider = ({
 			})
 			.catch(error => setBidsDatasets({ error }))
 
-		getDesktopsAndApps('private', currentUser.uid || '', []).then(data =>
-			setContainers(data)
-		)
+		getDesktopsAndApps('private', currentUser.uid || '', [])
+			.then(data => setContainers(data))
+			.catch(error => {
+				console.error(error) // eslint-disable-line no-console
+			})
 
 		// udpade timesRun to track if the component is re-mounted in development mode
-		counter.current += 1;
-		setTimesRun(counter.current);
-		effectCalled.current = true;
+		counter.current += 1
+		setTimesRun(counter.current)
+		effectCalled.current = true
 	}, [])
 
 	const value: IAppState = React.useMemo(
