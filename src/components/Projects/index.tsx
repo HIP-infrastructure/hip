@@ -24,7 +24,7 @@ const Projects = () => {
 			.catch(e => {
 				showNotif(`${e}`, 'error')
 			})
-	}, [setProjects])
+	}, [setProjects, showNotif])
 
 	React.useEffect(() => {
 		getUsers()
@@ -32,7 +32,7 @@ const Projects = () => {
 			.catch(e => {
 				showNotif(`${e}`, 'error')
 			})
-	}, [setUsers])
+	}, [setUsers, showNotif])
 
 	return (
 		<>
