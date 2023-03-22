@@ -19,7 +19,7 @@ export const createProject = async (createProject: {
 	title: string
 	description: string
 	datasetDescription: BIDSDatasetDescription
-}): Promise<any> => {
+}): Promise<HIPProject[]> => {
 	return fetch(`${API_GATEWAY}/projects`, {
 		method: 'POST',
 		headers: {
@@ -55,7 +55,7 @@ export const updateProject = async (
 		.catch(catchError)
 }
 
-export const deleteProject = async (name: string): Promise<any> => {
+export const deleteProject = async (name: string): Promise<HIPProject[]> => {
 	return fetch(`${API_GATEWAY}/projects/${name}`, {
 		method: 'DELETE',
 		headers: {
@@ -69,7 +69,7 @@ export const deleteProject = async (name: string): Promise<any> => {
 export const addUserToProject = async (
 	userId: string,
 	projectName: string
-): Promise<any> =>
+): Promise<HIPProject> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
 		method: 'POST',
 		headers: {
@@ -82,7 +82,7 @@ export const addUserToProject = async (
 export const removeUserFromProject = async (
 	userId: string,
 	projectName: string
-): Promise<any> =>
+): Promise<HIPProject> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/users/${userId}`, {
 		method: 'DELETE',
 		headers: {
@@ -109,7 +109,7 @@ export const importBIDSSubject = async (
 		subjectId: string
 	},
 	projectName: string
-): Promise<any> =>
+): Promise<string> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/subject`, {
 		method: 'POST',
 		headers: {
@@ -127,7 +127,7 @@ export const importDocument = async (
 		targetDirPath: string
 	},
 	projectName: string
-): Promise<any> =>
+): Promise<string> =>
 	fetch(`${API_GATEWAY}/projects/${projectName}/document`, {
 		method: 'POST',
 		headers: {
