@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import { Add } from '@mui/icons-material'
 import {
 	Alert,
@@ -15,9 +14,10 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
+	Typography
 } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
+import React, { useEffect, useState } from 'react'
 import { queryBidsDatasets } from '../../../api/bids'
 import { BIDSDataset } from '../../../api/types'
 import { useAppStore } from '../../../Store'
@@ -58,7 +58,7 @@ const Datasets = (): JSX.Element => {
 				})
 			setDatasetCreated(false)
 		}
-	}, [datasetCreated, user?.uid])
+	}, [datasetCreated, user?.uid, setBidsDatasets])
 
 	return (
 		<>

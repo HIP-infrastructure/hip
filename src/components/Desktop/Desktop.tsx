@@ -96,7 +96,7 @@ const Desktop = (): JSX.Element => {
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [user])
+	}, [user, getDesktops])
 
 	// Check for XPra readiness
 	useEffect(() => {

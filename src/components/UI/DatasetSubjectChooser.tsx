@@ -31,9 +31,9 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 }))
 
 const DatasetSubjectChooser = ({
-	selected,
+	setSelected,
 }: {
-	selected?: (datasetPath: string, subjectId: string) => void
+	setSelected?: (datasetPath: string, subjectId: string) => void
 }) => {
 	const {
 		BIDSDatasets: [datasets],
@@ -69,9 +69,9 @@ const DatasetSubjectChooser = ({
 	}, [datasets])
 
 	useEffect(() => {
-		if (selected && selectedNode)
-			selected(selectedNode.parentPath, selectedNode.id)
-	}, [selectedNode])
+		if (setSelected && selectedNode)
+			setSelected(selectedNode.parentPath, selectedNode.id)
+	}, [selectedNode, setSelected])
 
 	const renderNode = (node: Node) => (
 		<Box

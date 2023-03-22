@@ -1,14 +1,11 @@
-import { Add, Close, Save } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
+import { Add, Close } from '@mui/icons-material'
 import {
 	Alert,
 	Box,
 	Button,
 	Checkbox,
 	CircularProgress,
-	Dialog,
-	DialogActions,
-	DialogContent,
+	Dialog, DialogContent,
 	DialogTitle,
 	FormControl,
 	FormControlLabel,
@@ -23,10 +20,10 @@ import {
 	SelectChangeEvent,
 	Slider,
 	TextField,
-	Typography,
+	Typography
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { queryBidsDatasets, refreshBidsDatasetsIndex } from '../../api/bids'
+import { queryBidsDatasets } from '../../api/bids'
 import { BIDSDataset } from '../../api/types'
 import useDebounce from '../../hooks/useDebounce'
 import { useAppStore } from '../../Store'

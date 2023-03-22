@@ -1,18 +1,17 @@
 import {
-	Alert,
 	Box,
 	Card,
 	CardContent,
 	CardMedia,
 	Chip,
 	Divider,
-	Link,
+	Link
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import * as React from 'react'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
+import React from 'react'
 
 const Apps = () => {
 	const {

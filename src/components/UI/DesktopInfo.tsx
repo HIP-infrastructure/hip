@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import * as React from 'react'
 import { Typography, Box, Chip } from '@mui/material'
 import { Container } from '../../api/types'
 import { color } from '../../api/utils'
@@ -26,8 +26,7 @@ const DesktopInfo = ({ desktop }: { desktop: Container }) => (
 		</Box>
 		{desktop.workspace === 'collab' && (
 			<Typography variant='caption' gutterBottom component='div'>
-				Project:{' '}
-				{desktop.groupIds?.map(g => g.replace('HIP-', '')).join(', ')}
+				Project: {desktop.groupIds?.map(g => g.replace('HIP-', '')).join(', ')}
 			</Typography>
 		)}
 	</>

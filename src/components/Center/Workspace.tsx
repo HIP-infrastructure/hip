@@ -42,7 +42,7 @@ const Workspace = () => {
 			?.find((_, i) => i === 0)
 
 		setCenter(center)
-	}, [])
+	}, [centers, params.centerId])
 
 	useEffect(() => {
 		if (!center?.users) {
@@ -64,7 +64,7 @@ const Workspace = () => {
 					showNotif(err.message, 'error')
 				})
 		}
-	}, [center, setCenters, showNotif])
+	}, [center, setCenters, showNotif, params.centerId])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const isMember = center && user?.groups?.includes(center?.id)

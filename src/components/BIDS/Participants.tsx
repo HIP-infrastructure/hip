@@ -13,12 +13,12 @@ import {
 	Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { writeParticipantsTSV } from '../../api/bids'
 import { BIDSDataset, Participant } from '../../api/types'
+import { useAppStore } from '../../Store'
+import CreateField from '../UI/createField'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
-import CreateField from '../UI/createField'
-import { writeParticipantsTSV } from '../../api/bids'
-import { useAppStore } from '../../Store'
 
 const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 	const [rows, setRows] = useState<Participant[]>([])
@@ -64,7 +64,7 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 				writeParticipantsTSV(user?.uid, dataset.Path, {Participants: dataset.Participants})
 			}
 		}
-	}, [dataset, fields])
+	}, [dataset, fields, user?.uid])
 
 	useEffect(() => {
 		console.log('Update rows...') // eslint-disable-line

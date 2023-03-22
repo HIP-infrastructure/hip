@@ -19,7 +19,7 @@ const Project = () => {
 				setProject(project)
 			})
 		}
-	}, [params])
+	}, [params, project?.name, setProject])
 
 	return <Outlet />
 }

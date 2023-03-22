@@ -1,40 +1,33 @@
 import { Upload } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
-	Box,
-	Button,
-	Card,
-	CardMedia,
+	Box, CardMedia,
 	Paper,
 	Tab,
 	Tabs,
-	Typography,
+	Typography
 } from '@mui/material'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import {
-	getProjectMetadataTree,
-	importBIDSSubject,
-	importDocument,
+	getProjectMetadataTree, importDocument
 } from '../../api/projects'
 import { InspectResult } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
-import FileBrowser from './Files/FileBrowser'
-import TransferMetadataBrowser from './Files/MetadataBrowser'
 import MetadataBrowser from '../UI/MetadataBrowser'
 import TitleBar from '../UI/titleBar'
+import FileBrowser from './Files/FileBrowser'
+import TransferMetadataBrowser from './Files/MetadataBrowser'
 
 const Data = () => {
 	const { showNotif } = useNotification()
 	const {
-		user: [user],
 		selectedProject: [selectedProject],
 	} = useAppStore()
 	const [files, setFiles] = useState<InspectResult>()
 	const [tabIndex, setTabIndex] = useState(0)
-	const [path, setPath] = useState<string>('/')
+	const [path] = useState<string>('/')
 	const [sourceSelected, setSourceSelected] = useState<string>()
 	const [targetSelected, setTargetSelected] = useState<string>()
 	const [loading, setLoading] = useState(false)
