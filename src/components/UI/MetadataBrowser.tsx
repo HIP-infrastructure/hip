@@ -3,7 +3,7 @@ import { Box, CircularProgress } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import { useState } from 'react'
 import { InspectResult } from '../../api/types'
-import * as React from 'react'
+import React, { useCallback } from 'react'
 import { MinusSquare, PlusSquare, DocumentSquare } from './Icons'
 import { filesize } from 'filesize'
 
@@ -31,14 +31,14 @@ const MetadataBrowser = ({
 }) => {
 	const [expanded, setExpanded] = useState(['/'])
 
-	const expand = (file: InspectResult): string[] => {
+	const expand = useCallback((file: InspectResult): string[] => {
 		if (file.type === 'dir') {
 			file.children?.map(expand)
 			return [file.relativePath]
 		}
 
 		return []
-	}
+	}, [])
 
 	React.useEffect(() => {
 		if (files) {
@@ -61,7 +61,8 @@ const MetadataBrowser = ({
 					selectedFile && selectedFile(file.relativePath)
 				}}
 			>
-				{file.name} ({filesize(file.size, { base: 2, standard: 'jedec' }) as string})
+				{file.name} (
+				{filesize(file.size, { base: 2, standard: 'jedec' }) as string})
 			</span>
 		)
 	}
