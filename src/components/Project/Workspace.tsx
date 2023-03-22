@@ -1,3 +1,4 @@
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -21,6 +22,7 @@ import ProjectCard from './ProjectCard'
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
 	const { showNotif } = useNotification()
+	const { trackEvent } = useMatomo()
 
 	const modalRef = useRef<ModalComponentHandle>(null)
 	const [users, setUsers] = React.useState<User[]>([])
@@ -41,9 +43,14 @@ const ProjectDashboard = () => {
 			.then(project => {
 				showNotif('User added', 'success')
 				// FIXME: doesn't seems to be reflected at once
-				// setProject(project)
-				getProject(project.name).then(project => {
+				// getProject(project.name).then(project => {
 					setProject(project)
+				// })
+
+				trackEvent({
+					category: 'Project',
+					action: 'Add user to project',
+					name: `project/${project.name}`,
 				})
 			})
 			.catch(e => {
@@ -65,9 +72,14 @@ const ProjectDashboard = () => {
 				.then(res => {
 					showNotif('User removed', 'success')
 					// FIXME: doesn't seems to be reflected at once
-					// setProject(project)
-					getProject(project.name).then(project => {
+					// getProject(project.name).then(project => {
 						setProject(project)
+					// })
+
+					trackEvent({
+						category: 'Project',
+						action: 'Remove user from project',
+						name: `project/${project.name}`,
 					})
 				})
 				.catch(error => showNotif(error, 'error'))

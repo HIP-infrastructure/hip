@@ -84,17 +84,18 @@ const BidsConverter = () => {
 			subjects,
 		}
 
-		handleNext()
-		trackEvent({
-			category: 'bids',
-			action: 'import',
-		})
-
 		setResponse(undefined)
 		importSubject(createSubjectDto as CreateSubjectDto)
 			.then(data => {
 				showNotif('Subject imported', 'success')
 				setResponse({ data })
+
+				trackEvent({
+					category: 'BIDS',
+					action: 'Import subject',
+					name: `${selectedBidsDataset?.Path}`,
+					value: 1,
+				})
 
 				// reload datasets
 				queryBidsDatasets(user?.uid || '')
@@ -109,6 +110,14 @@ const BidsConverter = () => {
 			.catch(error => {
 				showNotif('Subject importation failed', 'error')
 				setResponse({ error })
+
+				handleNext()
+				trackEvent({
+					category: 'BIDS',
+					action: 'Import subject',
+					name: `${selectedBidsDataset?.Path}`,
+					value: 0
+				})
 
 				// FIXME:
 				// Actually, from the API, it's not clear if it failed, so

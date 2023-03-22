@@ -14,6 +14,7 @@ import { useAppStore } from '../../Store'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { HIPProject, User } from '../../api/types'
 import UserInfo from '../UI/UserInfo'
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 
 interface Props {
 	project: HIPProject
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const MainCard = ({ project, users, handleRemoveProject }: Props) => {
+	const { trackEvent } = useMatomo()
 	const {
 		user: [user],
 	} = useAppStore()
@@ -95,6 +97,11 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 							<Button
 								onClick={() => {
 									handleRemoveProject(project.name)
+									trackEvent({
+										category: 'Project',
+										action: 'Remove project',
+										name: `project/${project.name}`,
+									})
 								}}
 								variant='outlined'
 							>

@@ -1,9 +1,7 @@
+import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import {
-	Box, Grid, TextField,
-	Typography
-} from '@mui/material'
+import { Box, Grid, TextField, Typography } from '@mui/material'
 import { Form, Formik } from 'formik'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -44,11 +42,12 @@ const initialValues = {
 const CreateProject = () => {
 	const { showNotif } = useNotification()
 	const navigate = useNavigate()
+	const { trackEvent } = useMatomo()
 	const {
 		user: [user],
 		projects: [projects, setProjects], // eslint-disable-line @typescript-eslint/no-unused-vars
 	} = useAppStore()
-	const [submitted, setSubmitted] = React.useState(false)
+	const [submitting, setSubmitting] = React.useState(false)
 	const [isLoading, setIsLoading] = React.useState(false)
 
 	return (
@@ -64,7 +63,7 @@ const CreateProject = () => {
 							onSubmit={async (values, { resetForm }) => {
 								if (!user || !user.uid) return
 
-								setSubmitted(true)
+								setSubmitting(true)
 								setIsLoading(true)
 
 								const adminId = user.uid
@@ -82,14 +81,23 @@ const CreateProject = () => {
 									},
 								}
 
+								trackEvent({
+									category: 'Project',
+									action: 'Create a project',
+									name: `project/HIP-${title
+										.replace(/[^a-zA-Z0-9]+/g, '-')
+										.toLowerCase()}`,
+								})
+
 								createProject(project)
-									.then(() => {
-										setSubmitted(false)
+									.then(projects => {
+										setSubmitting(false)
 										resetForm()
 										setIsLoading(false)
-										getProjects().then(projects => {
-											setProjects(projects)
-										})
+										// TODO: check if IAM is fixed
+										// getProjects().then(projects => {
+										setProjects(projects)
+										// })
 										showNotif('Project created', 'success')
 										navigate(`${ROUTE_PREFIX}/projects`)
 									})
@@ -104,7 +112,7 @@ const CreateProject = () => {
 										<Grid container columnSpacing={2} rowSpacing={2}>
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													id='title'
 													fullWidth
@@ -122,7 +130,7 @@ const CreateProject = () => {
 													}
 												/>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													multiline
 													id='description'
@@ -145,7 +153,7 @@ const CreateProject = () => {
 
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='Name'
@@ -185,7 +193,7 @@ const CreateProject = () => {
 
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='License'
@@ -204,7 +212,7 @@ const CreateProject = () => {
 											</Grid>
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='Authors'
@@ -224,7 +232,7 @@ const CreateProject = () => {
 
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='Acknowledgements'
@@ -245,7 +253,7 @@ const CreateProject = () => {
 											</Grid>
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='HowToAcknowledge'
@@ -267,7 +275,7 @@ const CreateProject = () => {
 
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='Funding'
@@ -286,7 +294,7 @@ const CreateProject = () => {
 											</Grid>
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='ReferencesAndLinks'
@@ -310,7 +318,7 @@ const CreateProject = () => {
 
 											<Grid item xs={6}>
 												<TextField
-													disabled={submitted}
+													disabled={submitting}
 													size='small'
 													fullWidth
 													name='DatasetDOI'
@@ -331,7 +339,7 @@ const CreateProject = () => {
 											</Grid>
 										</Grid>
 
-										<Grid item xs={12}>
+										<Grid item xs={12} sx={{ mt: 2 }}>
 											<LoadingButton
 												color='primary'
 												type='submit'

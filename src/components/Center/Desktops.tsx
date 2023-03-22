@@ -85,7 +85,7 @@ const CenterDesktops = (): JSX.Element => {
 			forceRemoveAppsAndDesktop(desktopId)
 			trackEvent({
 				category: 'Desktop',
-				action: 'Stop a desktop',
+				action: 'Remove a desktop',
 				name: `center/${params.centerId}`,
 			})
 
@@ -105,7 +105,7 @@ const CenterDesktops = (): JSX.Element => {
 
 			trackEvent({
 				category: 'Desktop',
-				action: 'Stop a desktop',
+				action: 'Remove a desktop',
 				name: `center/${params.centerId}`,
 			})
 		}
