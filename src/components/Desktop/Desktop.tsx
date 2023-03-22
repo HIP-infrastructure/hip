@@ -66,6 +66,7 @@ const Desktop = (): JSX.Element => {
 
 	const [from] = useState(location.state?.from)
 	const [workspace] = useState(location.state?.workspace)
+	const [trackingName] = useState(location.state?.trackingName)
 	const [groupIds] = useState(location.state?.groupIds || [])
 	const [showAdminView] = useState(location.state?.showAdminView || false)
 	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
@@ -156,8 +157,9 @@ const Desktop = (): JSX.Element => {
 			)
 
 			trackEvent({
-				category: 'app',
-				action: 'stop',
+				category: 'Desktop',
+				action: 'Stop an application',
+				name: `${trackingName} ${app.name}`,
 			})
 
 			return
@@ -167,8 +169,9 @@ const Desktop = (): JSX.Element => {
 		focusOnIframe(1)
 
 		trackEvent({
-			category: 'app',
-			action: 'start',
+			category: 'Desktop',
+			action: 'Start an application',
+			name: `${trackingName} ${app.name}`,
 		})
 	}
 

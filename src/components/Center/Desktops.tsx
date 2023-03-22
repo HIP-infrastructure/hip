@@ -58,7 +58,12 @@ const CenterDesktops = (): JSX.Element => {
 
 	const handleOpenDesktop = (desktopId: string) => {
 		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
-			state: { from: location.pathname, workspace: 'private', showAdminView },
+			state: { 
+				from: location.pathname, 
+				workspace: 
+				'private', 
+				trackingName: `center/${params.centerId}`,
+				showAdminView },
 		})
 		trackEvent({
 			category: 'Desktop',
@@ -170,7 +175,7 @@ const CenterDesktops = (): JSX.Element => {
 								createNewDesktop()
 								trackEvent({
 									category: 'Desktop',
-									action: 'Start a new desktop',
+									action: 'Start a desktop',
 									name: `center/${params.centerId}`,
 								})
 							}}

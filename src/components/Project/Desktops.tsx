@@ -53,6 +53,7 @@ const ProjectDesktops = (): JSX.Element => {
 			state: {
 				from: location.pathname,
 				workspace: 'collab',
+				trackingName: `project/${project?.name}`,
 				groupIds: [project?.name],
 			},
 		})
@@ -153,7 +154,7 @@ const ProjectDesktops = (): JSX.Element => {
 								createNewDesktop()
 								trackEvent({
 									category: 'Desktop',
-									action: 'Start a new desktop',
+									action: 'Start a desktop',
 									name: `project/${project?.name}`,
 								})
 							}}
