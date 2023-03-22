@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { TrackEventParams } from '@jonkoops/matomo-tracker-react/lib/types'
 import {
 	Clear,
 	Pause,
@@ -18,11 +17,6 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material'
-import {
-	forceRemoveAppsAndDesktop,
-	pauseAppsAndDesktop,
-	resumeAppsAndDesktop,
-} from '../../api/remoteApp'
 import { Container, ContainerState } from '../../api/types'
 import { loading } from '../../api/utils'
 import DesktopImage from '../../assets/session-thumbnail.png'
@@ -30,20 +24,20 @@ import DesktopInfo from './DesktopInfo'
 
 interface Props {
 	desktop: Container
-	userId: string
 	handleOpenDesktop: (id: string) => void
-	confirmRemove: (id: string) => void
-	trackEvent: (params: TrackEventParams) => void
+	handleRemoveDesktop: (id: string, force?: boolean) => void
+	handlePauseDesktop: (id: string) => void
+	handleResumeDesktop: (id: string) => void
 	debug: boolean
 }
 
 const DesktopCard = ({
 	desktop,
-	userId,
 	handleOpenDesktop,
-	confirmRemove,
+	handleRemoveDesktop,
+	handlePauseDesktop,
+	handleResumeDesktop,
 	debug,
-	trackEvent,
 }: Props) => (
 	<Card
 		sx={{
@@ -108,7 +102,7 @@ const DesktopCard = ({
 						color='primary'
 						aria-label='Remove'
 						onClick={() => {
-							forceRemoveAppsAndDesktop(desktop.id)
+							handleRemoveDesktop(desktop.id, true)
 						}}
 					>
 						<Clear />
@@ -124,7 +118,7 @@ const DesktopCard = ({
 						color='primary'
 						aria-label='Shut down'
 						onClick={() => {
-							confirmRemove(desktop.id)
+							handleRemoveDesktop(desktop.id)
 						}}
 					>
 						<PowerSettingsNew />
@@ -138,13 +132,8 @@ const DesktopCard = ({
 						edge='end'
 						color='primary'
 						aria-label='Resume'
-						onClick={y => {
-							resumeAppsAndDesktop(desktop.id, userId || '')
-
-							trackEvent({
-								category: 'server',
-								action: 'resume',
-							})
+						onClick={() => {
+							handleResumeDesktop(desktop.id)
 						}}
 					>
 						<Replay />
@@ -164,11 +153,7 @@ const DesktopCard = ({
 							color='primary'
 							aria-label='pause'
 							onClick={() => {
-								pauseAppsAndDesktop(desktop.id, userId || '')
-								trackEvent({
-									category: 'server',
-									action: 'pause',
-								})
+								handlePauseDesktop(desktop.id)
 							}}
 						>
 							<Pause />

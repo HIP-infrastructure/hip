@@ -5,15 +5,12 @@ import {
 	CircularProgress,
 	FormControlLabel,
 	FormGroup,
-	Switch,
-	Typography,
+	Switch
 } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
-	createDesktop,
-	getDesktopsAndApps,
-	removeAppsAndDesktop,
+	createDesktop, forceRemoveAppsAndDesktop, getDesktopsAndApps, pauseAppsAndDesktop, removeAppsAndDesktop, resumeAppsAndDesktop
 } from '../../api/remoteApp'
 import { Container, ContainerType } from '../../api/types'
 import { POLLING, ROUTE_PREFIX } from '../../constants'
@@ -25,6 +22,7 @@ import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
 
 const CenterDesktops = (): JSX.Element => {
+	const params = useParams()
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { trackEvent } = useMatomo()
@@ -63,14 +61,25 @@ const CenterDesktops = (): JSX.Element => {
 			state: { from: location.pathname, workspace: 'private', showAdminView },
 		})
 		trackEvent({
-			category: 'server',
-			action: 'view',
+			category: 'Desktop',
+			action: 'Use a desktop',
+			name: `center/${params.centerId}`,
 		})
 	}
 
-	const confirmRemove = async (desktopId: string) => {
-		if (!modalRef.current) return
+	const handleRemoveDesktop = async (desktopId: string, force = false) => {
+		if (force) {
+			forceRemoveAppsAndDesktop(desktopId)
+			trackEvent({
+				category: 'Desktop',
+				action: 'Stop a desktop',
+				name: `center/${params.centerId}`,
+			})
 
+			return
+		}
+
+		if (!modalRef.current) return
 		const reply = await modalRef.current.open(
 			'Remove desktop ?',
 			'Permanently remove this desktop and all its applications?'
@@ -82,10 +91,28 @@ const CenterDesktops = (): JSX.Element => {
 				.catch(error => showNotif(error, 'error'))
 
 			trackEvent({
-				category: 'server',
-				action: 'stop',
+				category: 'Desktop',
+				action: 'Stop a desktop',
+				name: `center/${params.centerId}`,
 			})
 		}
+	}
+
+	const handlePauseDesktop = async (desktopId: string) => {
+		pauseAppsAndDesktop(desktopId, user?.uid || '')
+		trackEvent({
+			category: 'Desktop',
+			action: 'Pause a desktop',
+			name: `center/${params.centerId}`,
+		})
+	}
+	const handleResumeDesktop = async (desktopId: string) => {
+		resumeAppsAndDesktop(desktopId, user?.uid || '')
+		trackEvent({
+			category: 'Desktop',
+			action: 'Resume a desktop',
+			name: `center/${params.centerId}`,
+		})
 	}
 
 	const createNewDesktop = async () => {
@@ -93,6 +120,12 @@ const CenterDesktops = (): JSX.Element => {
 			.then(data => setContainers(data))
 			.catch(error => showNotif(error, 'error'))
 	}
+
+	trackEvent({
+		category: 'Desktop',
+		action: 'Create a desktop',
+		name: `center/${params.centerId}`,
+	})
 
 	const desktops: Container[] | undefined = containers
 		?.filter((container: Container) => container.type === ContainerType.DESKTOP)
@@ -121,10 +154,7 @@ const CenterDesktops = (): JSX.Element => {
 										<Switch
 											checked={showAdminView}
 											onChange={() => {
-												localStorage.setItem(
-													keyStorage,
-													String(!showAdminView)
-												)
+												localStorage.setItem(keyStorage, String(!showAdminView))
 												setShowAdminView(!showAdminView)
 											}}
 										/>
@@ -139,8 +169,9 @@ const CenterDesktops = (): JSX.Element => {
 							onClick={() => {
 								createNewDesktop()
 								trackEvent({
-									category: 'server',
-									action: 'start',
+									category: 'Desktop',
+									action: 'Start a new desktop',
+									name: `center/${params.centerId}`,
 								})
 							}}
 						>
@@ -160,19 +191,19 @@ const CenterDesktops = (): JSX.Element => {
 				)}
 
 				{desktops?.length === 0 && (
-					<DesktopCardButton createNewDesktop={createNewDesktop}/>
+					<DesktopCardButton createNewDesktop={createNewDesktop} />
 				)}
 				{desktops?.map(
 					(desktop, i) =>
 						desktop && (
 							<DesktopCard
 								key={desktop.id}
-								userId={user?.uid || ''}
 								desktop={desktop}
 								handleOpenDesktop={handleOpenDesktop}
-								confirmRemove={confirmRemove}
+								handleRemoveDesktop={handleRemoveDesktop}
+								handlePauseDesktop={handlePauseDesktop}
+								handleResumeDesktop={handleResumeDesktop}
 								debug={debug}
-								trackEvent={trackEvent}
 							/>
 						)
 				)}
