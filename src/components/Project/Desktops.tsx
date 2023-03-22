@@ -1,11 +1,9 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
-	createDesktop,
-	getDesktopsAndApps,
-	removeAppsAndDesktop,
+	createDesktop, forceRemoveAppsAndDesktop, getDesktopsAndApps, pauseAppsAndDesktop, removeAppsAndDesktop, resumeAppsAndDesktop
 } from '../../api/remoteApp'
 import { Container, ContainerType } from '../../api/types'
 import { POLLING, ROUTE_PREFIX } from '../../constants'
@@ -59,14 +57,25 @@ const ProjectDesktops = (): JSX.Element => {
 			},
 		})
 		trackEvent({
-			category: 'server',
-			action: 'view',
+			category: 'Desktop',
+			action: 'Use a desktop',
+			name: `project/${project?.name}`,
 		})
 	}
 
-	const confirmRemove = async (desktopId: string) => {
-		if (!modalRef.current) return
+	const handleRemoveDesktop = async (desktopId: string, force = false) => {
+		if (force) {
+			forceRemoveAppsAndDesktop(desktopId)
+			trackEvent({
+				category: 'Desktop',
+				action: 'Stop a desktop',
+				name: `project/${project?.name}`,
+			})
 
+			return
+		}
+
+		if (!modalRef.current) return
 		const reply = await modalRef.current.open(
 			'Remove desktop ?',
 			'Permanently remove this desktop and all its applications?'
@@ -78,10 +87,28 @@ const ProjectDesktops = (): JSX.Element => {
 				.catch(error => showNotif(error, 'error'))
 
 			trackEvent({
-				category: 'server',
-				action: 'stop',
+				category: 'Desktop',
+				action: 'Stop a desktop',
+				name: `project/${project?.name}`,
 			})
 		}
+	}
+
+	const handlePauseDesktop = async (desktopId: string) => {
+		pauseAppsAndDesktop(desktopId, user?.uid || '')
+		trackEvent({
+			category: 'Desktop',
+			action: 'Pause a desktop',
+			name: `project/${project?.name}`,
+		})
+	}
+	const handleResumeDesktop = async (desktopId: string) => {
+		resumeAppsAndDesktop(desktopId, user?.uid || '')
+		trackEvent({
+			category: 'Desktop',
+			action: 'Resume a desktop',
+			name: `project/${project?.name}`,
+		})
 	}
 
 	const createNewDesktop = async () => {
@@ -89,6 +116,12 @@ const ProjectDesktops = (): JSX.Element => {
 			createDesktop('collab', user?.uid || '', [project.name])
 				.then(data => setContainers(data))
 				.catch(error => showNotif(error, 'error'))
+
+		trackEvent({
+			category: 'Desktop',
+			action: 'Create a desktop',
+			name: `project/${project?.name}`,
+		})
 	}
 
 	const project = projects?.find(project => project.name === params?.projectId)
@@ -119,8 +152,9 @@ const ProjectDesktops = (): JSX.Element => {
 							onClick={() => {
 								createNewDesktop()
 								trackEvent({
-									category: 'server',
-									action: 'start',
+									category: 'Desktop',
+									action: 'Start a new desktop',
+									name: `project/${project?.name}`,
 								})
 							}}
 						>
@@ -147,12 +181,12 @@ const ProjectDesktops = (): JSX.Element => {
 							desktop && (
 								<DesktopCard
 									key={desktop.id}
-									userId={user?.uid || ''}
 									desktop={desktop}
 									handleOpenDesktop={handleOpenDesktop}
-									confirmRemove={confirmRemove}
+									handleRemoveDesktop={handleRemoveDesktop}
+									handlePauseDesktop={handlePauseDesktop}
+									handleResumeDesktop={handleResumeDesktop}
 									debug={debug}
-									trackEvent={trackEvent}
 								/>
 							)
 					)}
