@@ -2,7 +2,8 @@ import {
 	Node,
 	HIPCenter,
 	TreeNode,
-	User
+	User,
+	GroupFolder
 } from './types';
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
@@ -24,7 +25,7 @@ export const checkForError = async (response: Response) => {
 
 		if (!response.ok) {
 			const error = data?.message || response.status
-			if (response.status == 401) {
+			if (response.status === 401) {
 				window.location.href = '/login'
 			}
 
@@ -75,7 +76,7 @@ export const getUser = async (userid?: string): Promise<User> =>
 
 export const getGroupFolders = async (
 	userid?: string
-) =>
+): Promise<GroupFolder[]> =>
 	fetch(`${API_GATEWAY}/groups/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

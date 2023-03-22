@@ -61,6 +61,12 @@ export interface User {
 	enabled?: boolean
 }
 
+export interface GroupFolder {
+	id: number
+	label: string
+	path: string
+}
+
 export interface HIPCenter {
 	label: string
 	id: string
