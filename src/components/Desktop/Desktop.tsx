@@ -21,7 +21,7 @@ import {
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme } from '@mui/material/styles'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
 	createApp,
@@ -72,10 +72,13 @@ const Desktop = (): JSX.Element => {
 	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const desktopApps = containers?.filter(a => a.parentId === desktop?.id)
 
-	const getDesktops = (userId: string) =>
-		getDesktopsAndApps(workspace, userId, groupIds, showAdminView)
-			.then(data => setContainers(data))
-			.catch(error => showNotif(error, 'error'))
+	const getDesktops = useCallback(
+		(userId: string) =>
+			getDesktopsAndApps(workspace, userId, groupIds, showAdminView)
+				.then(data => setContainers(data))
+				.catch(error => showNotif(error, 'error')),
+		[workspace, groupIds, showAdminView, showNotif]
+	)
 
 	// Remove scroll for entire window
 	useEffect(() => {

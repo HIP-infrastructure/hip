@@ -1,9 +1,14 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Box, Button, CircularProgress } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
-	createDesktop, forceRemoveAppsAndDesktop, getDesktopsAndApps, pauseAppsAndDesktop, removeAppsAndDesktop, resumeAppsAndDesktop
+	createDesktop,
+	forceRemoveAppsAndDesktop,
+	getDesktopsAndApps,
+	pauseAppsAndDesktop,
+	removeAppsAndDesktop,
+	resumeAppsAndDesktop,
 } from '../../api/remoteApp'
 import { Container, ContainerType } from '../../api/types'
 import { POLLING, ROUTE_PREFIX } from '../../constants'
@@ -28,10 +33,13 @@ const ProjectDesktops = (): JSX.Element => {
 	} = useAppStore()
 	const modalRef = useRef<ModalComponentHandle>(null)
 
-	const getDesktops = (userId: string, projectName: string) =>
-		getDesktopsAndApps('collab', userId, [projectName], false)
-			.then(data => setContainers(data))
-			.catch(error => showNotif(error, 'error'))
+	const getDesktops = useCallback(
+		(userId: string, projectName: string) =>
+			getDesktopsAndApps('collab', userId, [projectName], false)
+				.then(data => setContainers(data))
+				.catch(error => showNotif(error, 'error')),
+		[setContainers, showNotif]
+	)
 
 	useEffect(() => {
 		const userId = user?.uid
@@ -46,7 +54,7 @@ const ProjectDesktops = (): JSX.Element => {
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [user, params.projectId])
+	}, [user, params.projectId, getDesktops])
 
 	const handleOpenDesktop = (desktopId: string) => {
 		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
