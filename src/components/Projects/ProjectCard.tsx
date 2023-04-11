@@ -1,8 +1,12 @@
 import {
+	Avatar,
 	Box,
 	Card,
+	CardActions,
 	CardContent,
+	CardHeader,
 	CardMedia,
+	IconButton,
 	Paper,
 	Stack,
 	Typography,
@@ -11,8 +15,16 @@ import { HIPProject, User } from '../../api/types'
 import { nameToColor } from '../theme'
 import * as React from 'react'
 import UserInfo from '../UI/UserInfo'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { linkStyle, ROUTE_PREFIX } from '../../constants'
+import { red } from '@mui/material/colors'
+import {
+	ExpandMore,
+	Favorite,
+	Link,
+	MoreVert,
+	Share,
+} from '@mui/icons-material'
 
 interface Props {
 	project: HIPProject
@@ -20,8 +32,33 @@ interface Props {
 }
 
 const ProjectCard = ({ project, users }: Props) => {
+	const navigate = useNavigate()
+
+	const projectAdmins = [...(project?.admins || [])].map(
+		u =>
+			users?.find(user => user.id === u) || {
+				id: u,
+				name: u,
+				displayName: u,
+			}
+	)
+
 	return (
-		<Card elevation={3} component={Paper} sx={{ width: 320, height: 440 }}>
+		<Card elevation={3} component={Paper} sx={{ width: 320 }}>
+			<CardHeader
+				avatar={
+					<Avatar sx={{ bgcolor: '#174040' }} aria-label='recipe'>
+						{project?.title[0]}
+					</Avatar>
+				}
+				// action={
+				// 	<IconButton aria-label='settings'>
+				// 		<MoreVert />
+				// 	</IconButton>
+				// }
+				title={project?.title}
+				subheader={projectAdmins?.map(u => u.displayName).join(', ')}
+			/>
 			<CardMedia
 				sx={{
 					background: `linear-gradient(to top, ${nameToColor(
@@ -34,17 +71,6 @@ const ProjectCard = ({ project, users }: Props) => {
 				alt=''
 			/>
 			<CardContent>
-				{!project.isMember && (
-					<Typography variant='h5'>{project?.title}</Typography>
-				)}
-				{project.isMember && (
-					<NavLink
-						style={linkStyle}
-						to={`${ROUTE_PREFIX}/projects/${project.name}`}
-					>
-						<Typography variant='h5'>{project?.title}</Typography>
-					</NavLink>
-				)}
 				<Typography
 					sx={{ mb: 2 }}
 					variant='body2'
@@ -53,35 +79,26 @@ const ProjectCard = ({ project, users }: Props) => {
 				>
 					{project?.description}
 				</Typography>
-				<Stack spacing={1}>
-					<Typography variant='h6'>Admin</Typography>
+				{/* <Stack sx={{ mb: 2 }}>
+					<Typography variant='subtitle1'>Admin</Typography>
 					{project?.admins?.length === 0 && (
-						<Typography variant='subtitle2'>No admin yet</Typography>
+						<Typography variant='subtitle1'>No admin yet</Typography>
 					)}
-					{[...(project?.admins || [])]
-						.map(
-							u =>
-								users.find(user => user.id === u) || {
-									id: u,
-									name: u,
-									displayName: u,
-								}
-						)
-						.map(u => (
-							<Box
-								key={u.id}
-								display='flex'
-								justifyContent='space-between'
-								alignItems='center'
-							>
-								<UserInfo key={u.id} user={u} />
-							</Box>
-						))}
-				</Stack>
-				<Stack spacing={1}>
-					<Typography variant='h6'>Members</Typography>
+					{projectAdmins?.map(u => (
+						<Box
+							key={u.id}
+							display='flex'
+							justifyContent='space-between'
+							alignItems='center'
+						>
+							<UserInfo key={u.id} user={u} />
+						</Box>
+					))}
+				</Stack> */}
+				<Stack>
+					<Typography variant='subtitle1'>Members</Typography>
 					{project?.members?.length === 0 && (
-						<Typography variant='subtitle2'>No members yet</Typography>
+						<Typography variant='subtitle1'>No members yet</Typography>
 					)}
 					{[...(project?.members || [])]
 						.map(
@@ -104,6 +121,15 @@ const ProjectCard = ({ project, users }: Props) => {
 						))}
 				</Stack>
 			</CardContent>
+			<Box sx={{ flexGrow: 1 }}></Box>
+			<CardActions disableSpacing>
+				<IconButton
+					aria-label='go to project'
+					onClick={() => navigate(`${ROUTE_PREFIX}/projects/${project.name}`)}
+				>
+					<Link />
+				</IconButton>
+			</CardActions>
 		</Card>
 	)
 }

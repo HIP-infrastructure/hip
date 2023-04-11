@@ -20,49 +20,48 @@ import {
 } from '@mui/material'
 import { HIPCenter } from '../../api/types'
 import { linkStyle } from '../../constants'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
-const Center = ({ group }: { group?: HIPCenter }) => {
-	const SocialButton = ({ network, url }: { network: string; url: string }) => {
-		let component
-		switch (network) {
-			case 'facebook':
-				component = <Facebook />
-				break
+const SocialButton = ({ network, url }: { network: string; url: string }) => {
+	let component
+	switch (network) {
+		case 'facebook':
+			component = <Facebook />
+			break
 
-			case 'twitter':
-				component = <Twitter />
-				break
+		case 'twitter':
+			component = <Twitter />
+			break
 
-			case 'instagram':
-				component = <Instagram />
-				break
+		case 'instagram':
+			component = <Instagram />
+			break
 
-			case 'linkedin':
-				component = <LinkedIn />
-				break
+		case 'linkedin':
+			component = <LinkedIn />
+			break
 
-			case 'youtube':
-				component = <YouTube />
-				break
+		case 'youtube':
+			component = <YouTube />
+			break
 
-			default:
-				component = <Language />
-				break
-		}
-		return (
-			<IconButton
-				aria-label={network}
-				size='small'
-				onClick={() => {
-					window.open(`${url}`, '_blank')
-				}}
-			>
-				{component}
-			</IconButton>
-		)
+		default:
+			component = <Language />
+			break
 	}
-
+	return (
+		<IconButton
+			aria-label={network}
+			size='small'
+			onClick={() => {
+				window.open(`${url}`, '_blank')
+			}}
+		>
+			{component}
+		</IconButton>
+	)
+}
+const Center = ({ group }: { group?: HIPCenter }) => {
 	return (
 		<>
 			{!group && (
@@ -77,18 +76,9 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 				<Card
 					sx={{
 						width: 280,
-						height: 440,
 					}}
 					key={`center-${group.label}`}
 				>
-					<CardMedia
-						component='img'
-						height='160'
-						src={`${API_GATEWAY}/public/${group.logo}`}
-						alt={group.label}
-						title={group.label}
-					/>
-
 					<CardContent>
 						<Box
 							sx={{
@@ -130,28 +120,29 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 								</Link>
 							</Typography>
 						)}
-
-						<Box
-							sx={{
-								mt: 2,
-								display: 'flex',
-								justifyContent: 'start',
-								flexWrap: 'wrap',
-							}}
-						>
-							{group.socialnetwork &&
-								Object.keys(group.socialnetwork).map(
-									key =>
-										key && (
-											<SocialButton
-												key={key}
-												network={key}
-												url={group.socialnetwork[key]}
-											></SocialButton>
-										)
-								)}
-						</Box>
 					</CardContent>
+					<Box sx={{ flexGrow: 1 }}></Box>
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'start',
+							flexWrap: 'wrap',
+							p: 2,
+						}}
+					>
+						{group.socialnetwork &&
+							Object.keys(group.socialnetwork).map(
+								key =>
+									key && (
+										<SocialButton
+											key={key}
+											network={key}
+											url={group.socialnetwork[key]}
+											aria-label={key}
+										></SocialButton>
+									)
+							)}
+					</Box>
 				</Card>
 			)}
 		</>
