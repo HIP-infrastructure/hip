@@ -15,6 +15,8 @@ import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { HIPProject, User } from '../../api/types'
 import UserInfo from '../UI/UserInfo'
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { LoadingButton } from '@mui/lab'
+import { useEffect } from 'react'
 
 interface Props {
 	project: HIPProject
@@ -27,6 +29,11 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 	const {
 		user: [user],
 	} = useAppStore()
+	const [loading, setLoading] = React.useState(false)
+
+	useEffect(() => {
+		setLoading(false)
+	}, [project])
 
 	return (
 		<>
@@ -94,8 +101,11 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 					</CardContent>
 					<CardActions sx={{ p: 2 }}>
 						{user?.uid && project?.admins?.includes(user?.uid) && (
-							<Button
+							<LoadingButton
+							disabled={loading}
+							loading={loading}
 								onClick={() => {
+									setLoading(true)
 									handleRemoveProject(project.name)
 									trackEvent({
 										category: 'Project',
@@ -106,7 +116,7 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 								variant='outlined'
 							>
 								Delete Project
-							</Button>
+							</LoadingButton>
 						)}
 					</CardActions>
 				</Card>

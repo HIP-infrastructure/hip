@@ -21,6 +21,8 @@ import { HIPProject, User } from '../../api/types'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import UserInfo from '../UI/UserInfo'
 import { useAppStore } from '../../Store'
+import { LoadingButton } from '@mui/lab'
+import { useEffect } from 'react'
 
 interface Props {
 	project?: HIPProject | null
@@ -36,9 +38,17 @@ const MemberCard = ({
 	handleRemoveUserFromProject,
 }: Props) => {
 	const [userToAdd, setUserToAdd] = React.useState('')
+	const [loading, setLoading] = React.useState(false)
+	const [removeLoading, setRemoveLoading] = React.useState(false)
 	const {
 		user: [user],
 	} = useAppStore()
+
+	useEffect(() => {
+		setLoading(false)
+		setRemoveLoading(false)
+	}, [project])
+
 	return (
 		<>
 			{project && (
@@ -96,11 +106,20 @@ const MemberCard = ({
 										alignItems='center'
 									>
 										<UserInfo key={u.id} user={u} />
-										{user?.uid && project?.admins?.includes(user.uid) && (
-											<IconButton onClick={() => handleRemoveUserFromProject(u.id)}>
-												<Clear />
-											</IconButton>
-										)}
+										{user?.uid &&
+											project?.admins?.includes(user.uid) &&
+											user?.uid !== u.id && (
+												<LoadingButton
+													loading={removeLoading}
+													disabled={removeLoading}
+													onClick={() => {
+														setRemoveLoading(true)
+														handleRemoveUserFromProject(u.id)
+													}}
+												>
+													<Clear />
+												</LoadingButton>
+											)}
 									</Box>
 								))}
 						</Stack>
@@ -121,20 +140,27 @@ const MemberCard = ({
 											setUserToAdd(event.target.value)
 										}}
 									>
-										{users?.map(user => (
-											<MenuItem key={user.id} value={user.id}>
-												{user.displayName}
-											</MenuItem>
-										))}
+										{users
+											?.filter(user => !project?.members?.includes(user.id))
+											.map(user => (
+												<MenuItem key={user.id} value={user.id}>
+													{user.displayName}
+												</MenuItem>
+											))}
 									</Select>
 								</FormControl>
 
-								<Button
-									onClick={() => handleAddUserToProject(userToAdd)}
+								<LoadingButton
+									disabled={loading}
+									onClick={() => {
+										setLoading(true)
+										handleAddUserToProject(userToAdd)
+									}}
 									variant='outlined'
+									loading={loading}
 								>
 									Add
-								</Button>
+								</LoadingButton>
 							</Box>
 						)}
 					</CardActions>
