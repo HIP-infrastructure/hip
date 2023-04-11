@@ -34,7 +34,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../Store'
@@ -44,7 +44,7 @@ const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 const Sidebar = () => {
 	const navigate = useNavigate()
 	const { trackPageView } = useMatomo()
-
+	const { pathname } = useLocation()
 	const {
 		user: [user],
 		debug: [debug, setDebug],
@@ -101,7 +101,10 @@ const Sidebar = () => {
 			}}
 		>
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/centers')}>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/centers` === pathname}
+					onClick={() => handleClickNavigate('/centers')}
+				>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -152,6 +155,7 @@ const Sidebar = () => {
 						<ListItemButton
 							sx={{ pl: 4 }}
 							disabled={!userCenters}
+							selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
 							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
 						>
 							<ListItemIcon>
@@ -161,6 +165,9 @@ const Sidebar = () => {
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
+							selected={
+								`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
+							}
 							onClick={() =>
 								handleClickNavigate(`/centers/${center.id}/desktops`)
 							}
@@ -172,6 +179,9 @@ const Sidebar = () => {
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
+							selected={
+								`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
+							}
 							disabled={!userCenters}
 							onClick={() =>
 								handleClickNavigate(`/centers/${center.id}/datasets`)
@@ -187,7 +197,10 @@ const Sidebar = () => {
 				</Box>
 			))}
 			<List>
-				<ListItemButton onClick={() => handleClickNavigate('/projects')}>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/projects` === pathname}
+					onClick={() => handleClickNavigate('/projects')}
+				>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
@@ -241,9 +254,11 @@ const Sidebar = () => {
 						<Box
 							key={project.name}
 							sx={{
-								backgroundColor: openProjects[project.name]
-									? '#f2f2f2'
-									: 'white',
+								backgroundColor:
+									openProjects[project.name] &&
+									pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
+										? '#f2f2f2'
+										: 'white',
 							}}
 						>
 							<ListItemButton
@@ -266,6 +281,9 @@ const Sidebar = () => {
 								<List component='div' disablePadding>
 									<ListItemButton
 										sx={{ pl: 4 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}` === pathname
+										}
 										onClick={() =>
 											handleClickNavigate(`/projects/${project.name}`)
 										}
@@ -277,6 +295,10 @@ const Sidebar = () => {
 									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}/desktops` ===
+											pathname
+										}
 										onClick={() =>
 											handleClickNavigate(`/projects/${project.name}/desktops`)
 										}
@@ -288,6 +310,10 @@ const Sidebar = () => {
 									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}/metadata` ===
+											pathname
+										}
 										onClick={() =>
 											handleClickNavigate(`/projects/${project.name}/metadata/`)
 										}
@@ -299,6 +325,10 @@ const Sidebar = () => {
 									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
+											pathname
+										}
 										onClick={() =>
 											handleClickNavigate(`/projects/${project.name}/datasets/`)
 										}
@@ -328,19 +358,28 @@ const Sidebar = () => {
 					<ListItemText primary='Debug' />
 					<Switch checked={debug} />
 				</ListItemButton>
-				<ListItemButton onClick={() => handleClickNavigate('/')}>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/` === pathname}
+					onClick={() => handleClickNavigate('/')}
+				>
 					<ListItemIcon>
 						<Info />
 					</ListItemIcon>
 					<ListItemText primary='About' />
 				</ListItemButton>
-				<ListItemButton onClick={() => handleClickNavigate('/apps')}>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/apps` === pathname}
+					onClick={() => handleClickNavigate('/apps')}
+				>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
 					<ListItemText primary='App Catalog' />
 				</ListItemButton>
-				<ListItemButton onClick={() => handleClickNavigate('/documentation')}>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/documentation` === pathname}
+					onClick={() => handleClickNavigate('/documentation')}
+				>
 					<ListItemIcon>
 						<HelpCenter />
 					</ListItemIcon>
