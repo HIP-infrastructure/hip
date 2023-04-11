@@ -41,10 +41,7 @@ const ProjectDashboard = () => {
 		addUserToProject(userId, project.name)
 			.then(project => {
 				showNotif('User added', 'success')
-				// FIXME: doesn't seems to be reflected at once
-				// getProject(project.name).then(project => {
-					setProject(project)
-				// })
+				setProject(project)
 
 				trackEvent({
 					category: 'Project',
@@ -68,12 +65,9 @@ const ProjectDashboard = () => {
 
 		if (reply) {
 			removeUserFromProject(userId, project.name)
-				.then(res => {
+				.then(project => {
 					showNotif('User removed', 'success')
-					// FIXME: doesn't seems to be reflected at once
-					// getProject(project.name).then(project => {
-						setProject(project)
-					// })
+					setProject(project)
 
 					trackEvent({
 						category: 'Project',
@@ -82,6 +76,8 @@ const ProjectDashboard = () => {
 					})
 				})
 				.catch(error => showNotif(error, 'error'))
+		} else {
+			setProject(project)
 		}
 	}
 
@@ -104,6 +100,8 @@ const ProjectDashboard = () => {
 					navigate(`${ROUTE_PREFIX}/projects`)
 				})
 				.catch(error => showNotif(error, 'error'))
+		} else {
+			setProject(project)
 		}
 	}
 
