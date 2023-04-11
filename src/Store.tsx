@@ -164,7 +164,7 @@ export const AppStoreProvider = ({
 			200,
 			[0, 100],
 			[0, 200],
-			['anat', 'dwi', 'func', 'ieeg', 'eeg']
+			[]
 		)
 			.then(data => {
 				const { datasets } = data

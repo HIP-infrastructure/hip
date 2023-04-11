@@ -76,9 +76,7 @@ const Datasets = () => {
 		{ data?: BIDSDataset[]; error?: string } | undefined
 	>()
 	const [selectedDatatypes, setSelectedDatatypes] = useState<string[]>([])
-
 	const [loading, setLoading] = useState(false)
-
 	const queryDatasets = useCallback(async () => {
 		setLoading(true)
 		queryBidsDatasets(
