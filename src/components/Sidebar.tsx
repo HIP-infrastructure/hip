@@ -33,6 +33,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import * as React from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
@@ -49,17 +50,25 @@ const Sidebar = () => {
 		debug: [debug, setDebug],
 		centers: [centers],
 		projects: [projects],
+		selectedProject: [selectedProject],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!user?.uid) return
 	}, [user])
 
-	const handleClick = (projectId: string) => {
+	useEffect(() => {
+		const projectId = selectedProject?.name
+		if (!projectId) return
+
+		setOpenProjects({ [projectId]: true })
+	}, [selectedProject])
+
+	const handleProjectClick = (projectId: string) => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
 	}
 
@@ -229,8 +238,20 @@ const Sidebar = () => {
 				{projects
 					?.filter(p => p.isMember)
 					.map(project => (
-						<Box key={project.name}>
-							<ListItemButton onClick={() => handleClick(project?.name)}>
+						<Box
+							key={project.name}
+							sx={{
+								backgroundColor: openProjects[project.name]
+									? '#f2f2f2'
+									: 'white',
+							}}
+						>
+							<ListItemButton
+								onClick={() => {
+									handleClickNavigate(`/projects/${project.name}`)
+									handleProjectClick(project?.name)
+								}}
+							>
 								<ListItemIcon>
 									<Folder />
 								</ListItemIcon>
@@ -257,9 +278,7 @@ const Sidebar = () => {
 									<ListItemButton
 										sx={{ pl: 4 }}
 										onClick={() =>
-											handleClickNavigate(
-												`/projects/${project.name}/desktops`
-											)
+											handleClickNavigate(`/projects/${project.name}/desktops`)
 										}
 									>
 										<ListItemIcon>
@@ -270,9 +289,7 @@ const Sidebar = () => {
 									<ListItemButton
 										sx={{ pl: 4 }}
 										onClick={() =>
-											handleClickNavigate(
-												`/projects/${project.name}/metadata/`
-											)
+											handleClickNavigate(`/projects/${project.name}/metadata/`)
 										}
 									>
 										<ListItemIcon>
@@ -283,9 +300,7 @@ const Sidebar = () => {
 									<ListItemButton
 										sx={{ pl: 4 }}
 										onClick={() =>
-											handleClickNavigate(
-												`/projects/${project.name}/datasets/`
-											)
+											handleClickNavigate(`/projects/${project.name}/datasets/`)
 										}
 									>
 										<ListItemIcon>

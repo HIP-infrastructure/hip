@@ -18,7 +18,7 @@ const Project = () => {
 			getProject(params.projectId).then(project => {
 				setProject(project)
 			})
-		}
+		} else setProject(project)
 	}, [params, project?.name, setProject])
 
 	return <Outlet />
