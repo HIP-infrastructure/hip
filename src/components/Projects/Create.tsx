@@ -52,7 +52,12 @@ const CreateProject = () => {
 
 	return (
 		<>
-			<TitleBar title={`Create Project`} description={''} />
+			<TitleBar
+				title={`Create Project`}
+				description={
+					'A project is a collaborative workspace where your data is privately stored and cannot be downloaded by other users. Users can run Desktop apps on the data and share the results with other users.'
+				}
+			/>
 
 			<Box sx={{ width: 0.75, mt: 4 }}>
 				<Box sx={{ ml: 4 }}>
@@ -81,12 +86,14 @@ const CreateProject = () => {
 									},
 								}
 
+								const futureName = title
+									.replace(/[^a-zA-Z0-9]+/g, '-')
+									.toLowerCase()
+
 								trackEvent({
 									category: 'Project',
 									action: 'Create a project',
-									name: `project/HIP-${title
-										.replace(/[^a-zA-Z0-9]+/g, '-')
-										.toLowerCase()}`,
+									name: `project/HIP-${futureName}`,
 								})
 
 								createProject(project)
@@ -94,12 +101,9 @@ const CreateProject = () => {
 										setSubmitting(false)
 										resetForm()
 										setIsLoading(false)
-										// TODO: check if IAM is fixed
-										// getProjects().then(projects => {
 										setProjects(projects)
-										// })
 										showNotif('Project created', 'success')
-										navigate(`${ROUTE_PREFIX}/projects`)
+										navigate(`${ROUTE_PREFIX}/projects/${futureName}`)
 									})
 									.catch(err => {
 										showNotif(err, 'error')
