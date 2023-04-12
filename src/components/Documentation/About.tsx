@@ -99,7 +99,7 @@ const About = () => {
 				</Typography>
 				<Typography gutterBottom variant='h5' sx={{ color: 'secondary.main' }}>
 					The HIP - a platform for state-of-the-art processing and international
-					sharing of HUMAN intracerebral EEG data
+					sharing of Human intracerebral EEG data
 				</Typography>
 				<Typography sx={{ mt: 2, color: 'secondary.light' }} variant='h6'>
 					Welcome {user?.displayName}
