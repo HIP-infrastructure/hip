@@ -47,7 +47,7 @@ const LandingPage = (): JSX.Element => {
 								<Box sx={{ ml: 2 }}>
 									<ol>
 										<li>Use Desktops to process data</li>
-										<li>Create BIDS Datasets, import data to BIDS</li>
+										<li>Create BIDS Datasets, import data to Brain Imaging Data Structure (BIDS) </li>
 									</ol>
 								</Box>
 							}
