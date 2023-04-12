@@ -74,7 +74,8 @@ const ProjectDesktops = (): JSX.Element => {
 
 	const handleRemoveDesktop = async (desktopId: string, force = false) => {
 		if (force) {
-			forceRemoveAppsAndDesktop(desktopId)
+			const containers = await forceRemoveAppsAndDesktop(desktopId)
+			setContainers(containers)
 			trackEvent({
 				category: 'Desktop',
 				action: 'Stop a desktop',
