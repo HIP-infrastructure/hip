@@ -2,7 +2,7 @@
 
 ## Overview
 
-The HIP is a platform for processing and sharing HUMAN intracerebral EEG data  
+The HIP is a platform for processing and sharing Human intracerebral EEG data  
 [More...](https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/)
 
 This component is part of the [HIP infrastructure frontend](https://github.com/HIP-infrastructure/frontend) and runs as a Nextcloud App. It also communicate directly with the [Gateway API](https://github.com/HIP-infrastructure/gateway) to the backend service for remote apps is the [App in Browser](https://github.com/HIP-infrastructure/app-in-browser)
