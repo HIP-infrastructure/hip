@@ -3,11 +3,11 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
-import { Button, CardActions } from '@mui/material'
+import { Box, Button, CardActions } from '@mui/material'
 
 export default function LandingCard({ title, description }: any) {
 	return (
-		<Card sx={{ width: 345 }}>
+		<Card sx={{ width: 345, height: 360 }}>
 			<CardMedia
 				component='img'
 				height='140'
@@ -22,6 +22,7 @@ export default function LandingCard({ title, description }: any) {
 					{description}
 				</Typography>
 			</CardContent>
+			<Box sx={{ flexGrow: 1 }}></Box>
 			<CardActions>
 				<Button size='small' color='primary'>
 					Visit
