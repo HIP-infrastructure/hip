@@ -15,7 +15,7 @@ import {
 	Info,
 	Support,
 	SyncProblem,
-	Storage
+	Storage,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -128,19 +128,14 @@ const Sidebar = () => {
 			)}
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
-					<List
-						subheader={
-							<Box
-								sx={{
-									display: 'flex',
-									alignItems: 'center',
-									mr: 2,
-									justifyContent: 'space-between',
-								}}
-							>
-								<ListSubheader id='center-subheader'>
-									My Center: {center.label}
-								</ListSubheader>
+					<List>
+						<ListItemButton
+							sx={{ pl: 4 }}
+							disabled={!userCenters}
+							selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
+							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
+						>
+							<ListItemIcon>
 								{userCenters ? (
 									<Avatar
 										alt={center.label}
@@ -150,19 +145,8 @@ const Sidebar = () => {
 								) : (
 									<CircularProgress size={18} color='secondary' />
 								)}
-							</Box>
-						}
-					>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							disabled={!userCenters}
-							selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
-							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
-						>
-							<ListItemIcon>
-								<Dashboard />
 							</ListItemIcon>
-							<ListItemText primary='Private Workspace' />
+							<ListItemText primary={center.label} />
 						</ListItemButton>
 						<ListItemButton
 							sx={{ pl: 4 }}
@@ -280,20 +264,6 @@ const Sidebar = () => {
 								unmountOnExit
 							>
 								<List component='div' disablePadding>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}` === pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}`)
-										}
-									>
-										<ListItemIcon>
-											<Dashboard />
-										</ListItemIcon>
-										<ListItemText primary='Collaborative Workspace' />
-									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}
 										selected={
