@@ -69,7 +69,7 @@ const DesktopCard = ({
 			].reduce((p, c) => p || c, false) && (
 				<CircularProgress
 					size={32}
-					color='secondary'
+					color='info'
 					sx={{ position: 'absolute', top: 10, left: 10 }}
 				/>
 			)}
@@ -97,7 +97,7 @@ const DesktopCard = ({
 			<Tooltip title='Remove' placement='top'>
 				<span>
 					<IconButton
-						disabled={debug || desktop.state !== ContainerState.DESTROYED}
+						disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
 						edge='end'
 						color='primary'
 						aria-label='Remove'
