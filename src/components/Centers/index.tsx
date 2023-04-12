@@ -11,7 +11,7 @@ const Centers = (): JSX.Element => {
 
 	return (
 		<>
-			<TitleBar title={'Centers Private Workspaces'} description={'Our center workspace provides a secure platform for medical centers to store and process sensitive patient data with privacy at the forefront.'} />
+			<TitleBar title={'HIP Participating centers'} description={'Our center workspaces provide a secure facility for medical centers to store and process sensitive patient data with privacy at the forefront.'} />
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!centers && (

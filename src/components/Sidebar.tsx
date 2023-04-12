@@ -15,6 +15,7 @@ import {
 	Info,
 	Support,
 	SyncProblem,
+	Storage
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -204,7 +205,7 @@ const Sidebar = () => {
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
-					<ListItemText primary='PROJECTS' />
+					<ListItemText primary='COLLABORATIVE PROJECTS' />
 				</ListItemButton>
 			</List>
 			<Divider />
@@ -311,6 +312,21 @@ const Sidebar = () => {
 									<ListItemButton
 										sx={{ pl: 4 }}
 										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}/transfer` ===
+											pathname
+										}
+										onClick={() =>
+											handleClickNavigate(`/projects/${project.name}/transfer/`)
+										}
+									>
+										<ListItemIcon>
+											<ContentCopy />
+										</ListItemIcon>
+										<ListItemText primary='Transfer' />
+									</ListItemButton>
+									<ListItemButton
+										sx={{ pl: 4 }}
+										selected={
 											`${ROUTE_PREFIX}/projects/${project.name}/metadata` ===
 											pathname
 										}
@@ -319,7 +335,7 @@ const Sidebar = () => {
 										}
 									>
 										<ListItemIcon>
-											<ContentCopy />
+											<Storage />
 										</ListItemIcon>
 										<ListItemText primary='Files' />
 									</ListItemButton>
@@ -359,8 +375,8 @@ const Sidebar = () => {
 					<Switch checked={debug} />
 				</ListItemButton>
 				<ListItemButton
-					selected={`${ROUTE_PREFIX}/` === pathname}
-					onClick={() => handleClickNavigate('/')}
+					selected={`${ROUTE_PREFIX}/about` === pathname}
+					onClick={() => handleClickNavigate('/about')}
 				>
 					<ListItemIcon>
 						<Info />

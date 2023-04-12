@@ -72,7 +72,7 @@ const spaces: Doc[] = [
 		state: 'beta',
 	},
 	{
-		label: "Users' Feedback ",
+		label: "Give your Feedback ",
 		// subtitle: 'Bug reports, feature requests, and general feedback',
 		buttonLabel: 'Feedback',
 		url: 'https://thehip.app/apps/forms/QdcG7wcKEGDHHH87',

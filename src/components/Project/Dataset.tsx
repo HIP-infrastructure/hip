@@ -1,35 +1,22 @@
-import { Close, Upload } from '@mui/icons-material'
-import {
-	Box, IconButton,
-	Paper,
-	Tab,
-	Tabs,
-	Typography
-} from '@mui/material'
-// import marked from 'marked'
-import { LoadingButton } from '@mui/lab'
+import { Close } from '@mui/icons-material'
+import { Box, IconButton, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { getProject, getProjectMetadataTree, importBIDSSubject } from '../../api/projects'
+import { getProjectMetadataTree } from '../../api/projects'
 import { InspectResult } from '../../api/types'
-import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import DatasetDescription from '../BIDS/DatasetDescription'
 import DatasetInfo from '../BIDS/DatasetInfo'
-import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
 import MetadataBrowser from '../UI/MetadataBrowser'
 import TitleBar from '../UI/titleBar'
 import ParticipantsTab from './ParticipantsTab'
 
 const Dataset = () => {
-	const { showNotif } = useNotification()
 	const [files, setFiles] = useState<InspectResult>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
 	const [tabIndex, setTabIndex] = useState(0)
-	const [selectedSubject, setSelectedSubject] = useState<string[]>()
-	const [loading, setLoading] = useState(false)
 
 	const {
-		selectedProject: [selectedProject, setSelectedProject],
+		selectedProject: [selectedProject],
 	} = useAppStore()
 
 	useEffect(() => {
@@ -37,31 +24,6 @@ const Dataset = () => {
 			getProjectMetadataTree(selectedProject.name).then(f => setFiles(f))
 		}
 	}, [selectedProject])
-
-	const handleImportSubject = () => {
-		if (!selectedProject?.name) return
-
-		if (selectedSubject?.length === 0) {
-			showNotif('You need to select a subject', 'warning')
-			return
-		}
-
-		setLoading(true)
-		const [datasetPath, subjectId] = selectedSubject || []
-		importBIDSSubject({ datasetPath, subjectId }, selectedProject?.name).then(() => {
-				showNotif('Subject imported', 'success')
-				getProjectMetadataTree(selectedProject.name).then(f => setFiles(f))
-				setSelectedSubject([])
-				getProject(selectedProject.name).then(project => {
-					setSelectedProject(project)
-				})
-				setLoading(false)
-			})
-			.catch(e => {
-				showNotif(`${e}`, 'error')
-				setLoading(false)
-			})
-	}
 
 	return (
 		<>
@@ -83,7 +45,6 @@ const Dataset = () => {
 					>
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
-						<Tab label='Transfer Participant' id={'tab-3'} />
 					</Tabs>
 
 					{tabIndex === 0 && (
@@ -141,59 +102,6 @@ const Dataset = () => {
 
 					{tabIndex === 1 && (
 						<ParticipantsTab dataset={selectedProject?.dataset} />
-					)}
-					{tabIndex === 2 && (
-						<Box sx={{ mt: 2 }}>
-							<Typography variant='h6'>Copy Files</Typography>
-							<Typography sx={{ mb: 2 }}>
-								Select a subject on the left, then click import
-							</Typography>
-							<Box
-								sx={{
-									display: 'flex',
-									flexWrap: 'wrap',
-									gap: '16px 16px',
-									alignItems: 'start',
-									mt: 2,
-								}}
-							>
-								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-									<Typography gutterBottom variant='h6' component='div'>
-										My Datasets
-									</Typography>
-									<DatasetSubjectChooser
-										setSelected={(datasetPath, subjectId) => {
-											setSelectedSubject([datasetPath, subjectId])
-										}}
-									/>
-								</Box>
-								<LoadingButton
-									color='primary'
-									size='small'
-									sx={{ my: 0.5 }}
-									disabled={selectedSubject?.length === 0}
-									onClick={handleImportSubject}
-									loading={loading}
-									loadingPosition='start'
-									startIcon={<Upload />}
-									variant='outlined'
-								>
-									Import
-								</LoadingButton>
-								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-									<Typography gutterBottom variant='h6' component='div'>
-										BIDS dataset {selectedProject?.dataset?.Name} Files
-									</Typography>
-									<MetadataBrowser
-										files={files?.children
-											?.find((f: InspectResult) => f.name === 'inputs')
-											?.children?.find(
-												(f: InspectResult) => f.name === 'bids-dataset'
-											)}
-									/>
-								</Box>
-							</Box>
-						</Box>
 					)}
 				</Box>
 			</Box>

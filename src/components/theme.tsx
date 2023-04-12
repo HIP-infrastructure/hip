@@ -4,8 +4,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 // See https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=37474f&secondary.color=0277BD
 
 const colors = {
-	primary: '#0277bd',
-	secondary: '#37474f',
+	primary: '#1eb7e6',
+	secondary: '#174040',
+	background: '#f2f2f2',
 }
 
 const theme = createTheme({
