@@ -40,11 +40,11 @@ const MetadataBrowser = ({
 		return []
 	}, [])
 
-	React.useEffect(() => {
-		if (files) {
-			setExpanded(expand(files))
-		}
-	}, [files, expand])
+	// React.useEffect(() => {
+	// 	if (files) {
+	// 		setExpanded(expand(files))
+	// 	}
+	// }, [files, expand])
 
 	const rootFile = {
 		name: files?.name || 'root',

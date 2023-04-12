@@ -24,6 +24,8 @@ import { isLoggedIn } from './api/gatewayClientAPI'
 import { useNotification } from './hooks/useNotification'
 import Project from './components/Project/index'
 import Files from './components/Project/Files'
+import LandingPage from './components/Documentation/LandingPage'
+import TransferData from './components/Project/TransferData'
 
 export interface Space {
 	label: string
@@ -64,7 +66,7 @@ const Layout = (): JSX.Element => {
 						position: 'fixed',
 						top: '8px',
 						right: '200px',
-						color: '#FA6812',
+						color: '#F5B800',
 						zIndex: '10000',
 						transform: 'translateX(-50%)',
 					}}
@@ -87,9 +89,10 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<About />} />
+			<Route index element={<LandingPage />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'documentation'} element={<Documentation />} />
+			<Route path={'about'} element={<About />} />
 			<Route path={'admin'} element={<Admin />} />
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
@@ -106,6 +109,7 @@ const App = () => (
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
 					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'transfer'} element={<TransferData />} />
 					<Route path={'metadata'} element={<Files />} />
 					<Route path={'datasets'} element={<Outlet />}>
 						<Route index element={<ProjectDataset />} />
