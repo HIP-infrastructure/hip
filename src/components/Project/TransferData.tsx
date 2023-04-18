@@ -1,7 +1,13 @@
-import { Upload } from '@mui/icons-material'
+import { CloudUpload } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Tabs, Tab, Typography, Paper, CardMedia } from '@mui/material'
-import * as React from 'react'
+import {
+	Box,
+	Tabs,
+	Tab,
+	Typography,
+	Paper,
+} from '@mui/material'
+import React, { useEffect } from 'react'
 import {
 	getProject,
 	getProjectMetadataTree,
@@ -15,14 +21,15 @@ import FileBrowser from './Files/FileBrowser'
 import TitleBar from '../UI/titleBar'
 import TransferMetadataBrowser from './Files/MetadataBrowser'
 import DatasetSubjectChooser from '../UI/DatasetSubjectChooser'
-import MetadataBrowser from '../UI/MetadataBrowser'
-import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 export default function TransferData() {
 	const { showNotif } = useNotification()
 	const {
 		selectedProject: [selectedProject, setSelectedProject],
+		user: [user],
+		centers: [centers],
 	} = useAppStore()
+
 	const [files, setFiles] = React.useState<InspectResult>()
 	const [tabIndex, setTabIndex] = React.useState(0)
 	const [path] = React.useState<string>('/')
@@ -32,7 +39,7 @@ export default function TransferData() {
 	const [transfered, setTransfered] = React.useState(false)
 	const [selectedSubject, setSelectedSubject] = React.useState<string[]>()
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (selectedProject) {
 			getProjectMetadataTree(selectedProject.name).then(f => setFiles(f))
 		}
@@ -95,12 +102,22 @@ export default function TransferData() {
 			})
 	}
 
+	const userCenters =
+		(
+			user?.groups &&
+			centers?.filter(center => user?.groups?.includes(center.id))
+		)
+			?.map(center => center.label)
+			.join(', ') || null
+
+	const projectTitle = selectedProject?.title || ''
+
 	return (
 		<Box sx={{ mb: 2 }}>
 			<TitleBar title={`Transfer data to ${selectedProject?.title || ''} `} />
 
-			<Box sx={{ mt: 2 }}>
-				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2 }}>
+			<Box sx={{ mt: 2, mb: 2 }}>
+				{/* <Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2 }}>
 					<CardMedia
 						component='img'
 						height='160'
@@ -109,7 +126,7 @@ export default function TransferData() {
 						}
 						src={`${API_GATEWAY}/public/media/3281435885_dendrites__technology__meta___database__information__network__neural_path__futuristic_and_medical__r.png`}
 					/>
-				</Box>
+				</Box> */}
 
 				<Tabs
 					value={tabIndex}
@@ -118,18 +135,42 @@ export default function TransferData() {
 					}
 					aria-label='Metadata tabs'
 				>
-					<Tab label='Transfer BIDS Subject' id={'tab-1'} />
-					<Tab label='Transfer Files' id={'tab-2'} />
+					<Tab label='Transfer a document' id={'tab-1'} />
+					<Tab label='Transfer a BIDS Subject' id={'tab-2'} />
 				</Tabs>
 
 				{tabIndex === 0 && (
 					<Box sx={{ mt: 2 }}>
-						<Typography variant='h6'>
-							Transfer BIDS Subject from your Center
+						<Typography variant='h6' sx={{ mb: 2 }}>
+							Transfer a document to {projectTitle}
 						</Typography>
+
+						{/* <Box sx={{ mb: 2 }} display={'flex'} justifyContent={'center'}>
+							<Stack width={320} >
+								<Laptop fontSize='large'/>
+								{userCenters}
+							</Stack>
+							<Box width={320}>
+								----------->
+							</Box>
+							<Stack width={320}>
+								<Storage fontSize='large'/>
+								{projectTitle}
+							</Stack>
+						</Box> */}
+
 						<Typography sx={{ mb: 2 }}>
-							Select a subject on the left, then click import
+							<Box sx={{ ml: 4 }}>
+								<ol>
+									<li>Select a document in &quot;{userCenters}&quot;</li>
+									<li>
+										Select a destination folder in &quot;{projectTitle}&quot;
+									</li>
+									<li>Click on transfer</li>
+								</ol>
+							</Box>
 						</Typography>
+
 						<Box
 							sx={{
 								display: 'flex',
@@ -139,75 +180,28 @@ export default function TransferData() {
 								mt: 2,
 							}}
 						>
-							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+							<Box sx={{ mt: 2 }} width={320}>
 								<Typography gutterBottom variant='h6' component='div'>
-									My Datasets
-								</Typography>
-								<DatasetSubjectChooser
-									setSelected={(datasetPath, subjectId) => {
-										setSelectedSubject([datasetPath, subjectId])
-									}}
-								/>
-							</Box>
-							<LoadingButton
-								color='primary'
-								size='small'
-								sx={{ my: 0.5 }}
-								disabled={selectedSubject?.length === 0}
-								onClick={handleImportSubject}
-								loading={loading}
-								loadingPosition='start'
-								startIcon={<Upload />}
-								variant='outlined'
-							>
-								Import
-							</LoadingButton>
-							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-								<Typography gutterBottom variant='h6' component='div'>
-									BIDS dataset
-								</Typography>
-								<MetadataBrowser
-									files={files?.children
-										?.find((f: InspectResult) => f.name === 'inputs')
-										?.children?.find(
-											(f: InspectResult) => f.name === 'bids-dataset'
-										)}
-								/>
-							</Box>
-						</Box>
-					</Box>
-				)}
-				{tabIndex === 1 && (
-					<Box sx={{ mt: 2 }}>
-						<Typography variant='h6'>Transfer Files</Typography>
-						<Typography sx={{ mb: 2 }}>
-							Select a source document on the left and a target directory on the
-							right then click import
-						</Typography>
-						<Box
-							sx={{
-								display: 'flex',
-								flexWrap: 'wrap',
-								gap: '16px 16px',
-								alignItems: 'start',
-								mt: 2,
-							}}
-						>
-							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-								<Typography gutterBottom variant='h6' component='div'>
-									My Files
+									Files in {userCenters}
 								</Typography>
 
-								{path && (
-									<FileBrowser
-										path={path}
-										setSelected={setSourceSelected}
-										showSearch={true}
-										unselect={transfered}
-									/>
-								)}
+								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+									{path && (
+										<FileBrowser
+											path={path}
+											setSelected={setSourceSelected}
+											showSearch={true}
+											unselect={transfered}
+										/>
+									)}
+								</Box>
 							</Box>
-							<Box>
+
+							<Box
+								sx={{ mt: 8 }}
+								display={'flex'}
+								justifyContent={'center'}
+							>
 								<LoadingButton
 									color='primary'
 									size='small'
@@ -216,24 +210,84 @@ export default function TransferData() {
 									onClick={handleImportDocument}
 									loading={loading}
 									loadingPosition='start'
-									startIcon={<Upload />}
+									startIcon={<CloudUpload />}
 									variant='outlined'
 								>
-									Import
+									Transfer
 								</LoadingButton>
 							</Box>
-							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-								<Typography gutterBottom variant='h6' component='div'>
-									Project Files
-								</Typography>
 
-								<TransferMetadataBrowser
-									files={files}
-									setSelected={setTargetSelected}
-									unselect={transfered}
+							<Box sx={{ mt: 2 }} width={320}>
+								<Typography gutterBottom variant='h6' component='div'>
+									Files in {projectTitle}
+								</Typography>
+								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+									<TransferMetadataBrowser
+										files={files}
+										setSelected={setTargetSelected}
+										unselect={transfered}
+									/>
+								</Box>
+							</Box>
+						</Box>
+					</Box>
+				)}
+
+				{tabIndex === 1 && (
+					<Box sx={{ mt: 2 }}>
+						<Typography variant='h6' sx={{ mb: 2 }}>
+							Transfer BIDS Subject to {projectTitle}
+						</Typography>
+						<Typography sx={{ mb: 2 }}>
+							<Box sx={{ ml: 4 }}>
+								<ol>
+									<li>Select a subject in &quot;{userCenters}&apos;s Datasets&quot;</li>
+									<li>Click transfer to push the subject to &quot;{projectTitle}&quot;</li>
+								</ol>
+							</Box>
+						</Typography>
+
+						<Box sx={{ mt: 2 }}>
+							<Typography gutterBottom variant='h6' component='div'>
+								{userCenters}&apos;s Datasets
+							</Typography>
+							<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }} width={320}>
+								<DatasetSubjectChooser
+									setSelected={(datasetPath, subjectId) => {
+										setSelectedSubject([datasetPath, subjectId])
+									}}
 								/>
 							</Box>
 						</Box>
+						<Box sx={{ mt: 2 }}>
+							<LoadingButton
+								color='primary'
+								size='small'
+								sx={{ my: 0.5 }}
+								disabled={selectedSubject?.length === 0}
+								onClick={handleImportSubject}
+								loading={loading}
+								loadingPosition='start'
+								startIcon={<CloudUpload />}
+								variant='outlined'
+							>
+								Transfer
+							</LoadingButton>
+						</Box>
+						{/* <Box sx={{ mt: 2 }}>
+								<Typography gutterBottom variant='h6' component='div'>
+									BIDS dataset
+								</Typography>
+								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
+									<MetadataBrowser
+										files={files?.children
+											?.find((f: InspectResult) => f.name === 'inputs')
+											?.children?.find(
+												(f: InspectResult) => f.name === 'bids-dataset'
+											)}
+									/>
+								</Box>
+							</Box> */}
 					</Box>
 				)}
 			</Box>
