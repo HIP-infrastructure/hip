@@ -24,6 +24,7 @@ import { isLoggedIn } from './api/gatewayClientAPI'
 import { useNotification } from './hooks/useNotification'
 import Project from './components/Project/index'
 import Files from './components/Project/Files'
+import MyFiles from './components/Center/Files'
 import LandingPage from './components/Documentation/LandingPage'
 import TransferData from './components/Project/TransferData'
 
@@ -98,6 +99,7 @@ const App = () => (
 				<Route index element={<Centers />} />
 				<Route path={':centerId'} element={<CenterWorkspace />} />
 				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
+				<Route path={':centerId/files'} element={<MyFiles />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<Datasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
