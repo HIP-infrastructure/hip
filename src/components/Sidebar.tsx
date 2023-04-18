@@ -101,18 +101,6 @@ const Sidebar = () => {
 				width: DRAWER_WIDTH,
 			}}
 		>
-			<List>
-				<ListItemButton
-					selected={`${ROUTE_PREFIX}/centers` === pathname}
-					onClick={() => handleClickNavigate('/centers')}
-				>
-					<ListItemIcon>
-						<Apps />
-					</ListItemIcon>
-					<ListItemText primary='CENTERS' />
-				</ListItemButton>
-			</List>
-			<Divider />
 			{userCenters?.length === 0 && (
 				<List component='div' disablePadding>
 					<ListSubheader id='center-subheader'>My Center</ListSubheader>
@@ -126,6 +114,7 @@ const Sidebar = () => {
 					</ListItemButton>
 				</List>
 			)}
+			<Divider />
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
@@ -165,6 +154,18 @@ const Sidebar = () => {
 						<ListItemButton
 							sx={{ pl: 4 }}
 							selected={
+								`${ROUTE_PREFIX}/centers/${center?.id}/files` === pathname
+							}
+							onClick={() => handleClickNavigate(`/centers/${center.id}/files`)}
+						>
+							<ListItemIcon>
+								<Storage />
+							</ListItemIcon>
+							<ListItemText primary='Files' />
+						</ListItemButton>
+						<ListItemButton
+							sx={{ pl: 4 }}
+							selected={
 								`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
 							}
 							disabled={!userCenters}
@@ -183,13 +184,13 @@ const Sidebar = () => {
 			))}
 			<List>
 				<ListItemButton
-					selected={`${ROUTE_PREFIX}/projects` === pathname}
-					onClick={() => handleClickNavigate('/projects')}
+					selected={`${ROUTE_PREFIX}/centers` === pathname}
+					onClick={() => handleClickNavigate('/centers')}
 				>
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
-					<ListItemText primary='COLLABORATIVE PROJECTS' />
+					<ListItemText primary='Participating centers' />
 				</ListItemButton>
 			</List>
 			<Divider />
@@ -330,6 +331,18 @@ const Sidebar = () => {
 						</Box>
 					))}
 			</List>
+			<List>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/projects` === pathname}
+					onClick={() => handleClickNavigate('/projects')}
+				>
+					<ListItemIcon>
+						<Apps />
+					</ListItemIcon>
+					<ListItemText primary='Collaborative projects list' />
+				</ListItemButton>
+			</List>
+			<Divider />
 			<List
 				sx={{
 					marginTop: 'auto',
