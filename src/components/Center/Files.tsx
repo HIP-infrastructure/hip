@@ -30,7 +30,7 @@ export default function Files() {
 				src={'/apps/files'}
 				allow={'autoplay; clipboard-write;'}
 				style={{
-					width: 'calc(50vw)',
+					width: '50vw',
 					height: 'calc(100vh - 100px)',
 					backgroundColor: '#333',
 				}}
