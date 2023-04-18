@@ -264,7 +264,7 @@ export default function TransferData() {
 								color='primary'
 								size='small'
 								sx={{ my: 0.5 }}
-								disabled={selectedSubject?.length === 0}
+								disabled={!selectedSubject || selectedSubject?.length === 0}
 								onClick={handleImportSubject}
 								loading={loading}
 								loadingPosition='start'

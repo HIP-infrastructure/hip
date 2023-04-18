@@ -37,7 +37,7 @@ const LandingPage = (): JSX.Element => {
 					</Typography>
 					<Box
 						display='flex'
-						gap='16px 16px'
+						gap='32px 32px'
 						justifyContent='center'
 						alignItems='center'
 					>

@@ -150,30 +150,28 @@ const ProjectDesktops = (): JSX.Element => {
 	return (
 		<>
 			<Modal ref={modalRef} />
-			<Box sx={{ mb: 2 }}>
-				<TitleBar
-					title={`Desktops: ${project?.title || ''} `}
-					description={
-						'Desktops are shared accross members and can be used to run applications on projects data.'
-					}
-					button={
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={() => {
-								createNewDesktop()
-								trackEvent({
-									category: 'Desktop',
-									action: 'Start a desktop',
-									name: `project/${project?.name}`,
-								})
-							}}
-						>
-							Create Desktop
-						</Button>
-					}
-				/>
-			</Box>
+			<TitleBar
+				title={`Desktops: ${project?.title || ''} `}
+				description={
+					'Desktops are shared accross members and can be used to run applications on projects data.'
+				}
+				button={
+					<Button
+						variant='contained'
+						color='primary'
+						onClick={() => {
+							createNewDesktop()
+							trackEvent({
+								category: 'Desktop',
+								action: 'Start a desktop',
+								name: `project/${project?.name}`,
+							})
+						}}
+					>
+						Create Desktop
+					</Button>
+				}
+			/>
 
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{!containers && (
@@ -183,7 +181,9 @@ const ProjectDesktops = (): JSX.Element => {
 						sx={{ top: 10, left: 10 }}
 					/>
 				)}
-				<Box sx={{ mt: 2 }}>
+				<Box
+					sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}
+				>
 					{desktops?.length === 0 && (
 						<DesktopCardButton createNewDesktop={createNewDesktop} />
 					)}

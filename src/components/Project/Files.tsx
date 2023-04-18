@@ -37,7 +37,7 @@ const Data = () => {
 
 				<Box sx={{ mt: 2 }}>
 					<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-						<Typography variant='h6'>Files</Typography>
+						<Typography variant='h6'>{selectedProject?.title || ''} Files</Typography>
 						<Typography sx={{ mb: 2 }}>
 							You are currently viewing the metadata of the project file tree
 							hierarchy because the content within the files is private in

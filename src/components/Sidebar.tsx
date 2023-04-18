@@ -2,7 +2,6 @@ import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	Apps,
 	Assignment,
-	Dashboard,
 	ExpandLess,
 	ExpandMore,
 	Folder,
@@ -105,6 +104,7 @@ const Sidebar = () => {
 				<List component='div' disablePadding>
 					<ListSubheader id='center-subheader'>My Center</ListSubheader>
 					<ListItemButton
+						sx={{ pl: 2 }}
 						onClick={() => handleClickNavigate(`/centers/default`)}
 					>
 						<ListItemIcon>
@@ -119,7 +119,7 @@ const Sidebar = () => {
 				<Box key={center.id}>
 					<List>
 						<ListItemButton
-							sx={{ pl: 4 }}
+							sx={{ pl: 2 }}
 							disabled={!userCenters}
 							selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
 							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
@@ -207,7 +207,7 @@ const Sidebar = () => {
 						}}
 					>
 						<ListSubheader id='my-projects-subheader'>
-							My Projects
+							Projects
 						</ListSubheader>
 						{(!projects || !user) && (
 							<CircularProgress size={18} color='secondary' />

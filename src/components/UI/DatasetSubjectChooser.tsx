@@ -1,5 +1,5 @@
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
-import { Box, Checkbox, CircularProgress } from '@mui/material'
+import { Box, Checkbox, CircularProgress, Typography } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -122,6 +122,9 @@ const DatasetSubjectChooser = ({
 					color='secondary'
 					sx={{ top: 10, left: 10 }}
 				/>
+			)}
+			{nodes?.length === 0 && (
+				<Typography gutterBottom>There is no datasets to show</Typography>
 			)}
 			<TreeView
 				aria-label='Dataset participant navigator'

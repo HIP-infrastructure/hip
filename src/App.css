@@ -3,6 +3,10 @@
 	overflow-x: hidden;
 }
 
+.iframe-hidden {
+    visibility: hidden;
+}
+
 /* NextClooud overrides overrides */
 div.select2-drop .select2-search input, select, button:not(.button-vue), .button, input:not([type='range']), textarea, div[contenteditable=true], .pager li a {
     margin: 3px 3px 3px 0;
@@ -23,4 +27,15 @@ select, button:not(.button-vue), .button, input[type='button'], input[type='subm
     /* cursor: pointer; */
     /* box-sizing: border-box; */
     /* background-color: var(--color-background-dark); */
+}
+
+#alternative-logins a.keycloak {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    box-sizing: border-box;
+    border: 2px solid #ffffff;
+    background-color: #0082c9;
+    color: #ffffff;
+    border-radius: 100px;
 }
