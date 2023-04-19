@@ -37,15 +37,10 @@ const Data = () => {
 
 				<Box sx={{ mt: 2 }}>
 					<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-						<Typography variant='h6'>{selectedProject?.title || ''} Files</Typography>
-						<Typography sx={{ mb: 2 }}>
-							You are currently viewing the metadata of the project file tree
-							hierarchy because the content within the files is private in
-							nature. The metadata provides information about the files, but
-							does not disclose the actual content contained within. This is
-							done to maintain the privacy and security of the information
-							within the files.
+						<Typography variant='h6'>
+							{selectedProject?.title || ''} Files
 						</Typography>
+
 						<Box
 							sx={{
 								display: 'flex',
@@ -57,6 +52,15 @@ const Data = () => {
 							<MetadataBrowser files={files} />
 						</Box>
 					</Box>
+
+					<Typography sx={{ mt: 2, mb: 2 }}>
+						You are currently viewing the metadata of the project file tree
+						hierarchy because the content within the files is private in nature.
+						The metadata provides information about the files, but does not
+						disclose the actual content contained within. This is done to
+						maintain the privacy and security of the information within the
+						files.
+					</Typography>
 				</Box>
 			</Box>
 		</Box>
