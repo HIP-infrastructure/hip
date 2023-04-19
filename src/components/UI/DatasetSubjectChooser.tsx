@@ -65,6 +65,7 @@ const DatasetSubjectChooser = ({
 				})
 			})
 			setNodes(nextNodes)
+			setExpanded(nextNodes.map(n => n.path))
 		}
 	}, [datasets])
 
