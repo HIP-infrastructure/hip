@@ -2,7 +2,8 @@ import * as React from 'react'
 import { Add, Edit } from '@mui/icons-material'
 import {
 	Box,
-	Button, IconButton,
+	Button,
+	IconButton,
 	Paper,
 	Table,
 	TableBody,
@@ -10,7 +11,7 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography
+	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { writeParticipantsTSV } from '../../api/bids'
@@ -19,8 +20,16 @@ import { useAppStore } from '../../Store'
 import CreateField from '../UI/createField'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
+import { useNotification } from '../../hooks/useNotification'
 
-const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
+const Participants = ({
+	dataset,
+	setDataset,
+}: {
+	dataset?: BIDSDataset
+	setDataset: React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
+}): JSX.Element => {
+	const { showNotif } = useNotification()
 	const [rows, setRows] = useState<Participant[]>([])
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
@@ -43,43 +52,49 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 				setFields(participantFields)
 			}
 		}
-	}, [dataset])
+	}, [dataset?.Participants])
 
 	useEffect(() => {
-		console.log('Set field and reset Participants...') // eslint-disable-line
-		if (dataset?.Participants) {
-			dataset.Participants.forEach((_part, index, items) => {
-				const item_keys = Object.keys(items[index])
-				fields.forEach((_field, field_id, fields) => {
-					if (!item_keys.includes(fields[field_id])) {
-						console.log('Add column ', fields[field_id]) // eslint-disable-line
-						items[index][fields[field_id]] = 'n/a'
-					}
-				})
-			})
-			setRows(dataset.Participants)
-			if (dataset.Path) {
-				console.log(`Write participants.tsv to ${dataset.Path}`) // eslint-disable-line
-				console.log(dataset.Participants) // eslint-disable-line
-				writeParticipantsTSV(user?.uid, dataset.Path, {Participants: dataset.Participants})
+		if (dataset?.Participants) setRows(dataset.Participants)
+	}, [dataset?.Participants, setRows])
+
+	useEffect(() => {
+		if (participantEditId) setIsCreateDialogOpen(true)
+	}, [participantEditId])
+
+	const handleCreateField = ({ key }: { key: string }) => {
+		if (key) {
+			const keys = [...fields, key]
+			setFields(keys)
+
+			if (dataset?.Participants) {
+				const participants = dataset.Participants.map(participant => ({
+					...participant,
+					[key]: participant[key] ?? 'n/a',
+				}))
+
+				dataset.Participants = participants
+				setRows(dataset.Participants)
+
+				if (dataset.Path) {
+					writeParticipantsTSV(user?.uid, dataset.Path, {
+						Participants: dataset.Participants,
+					})
+						.then(() => {
+							showNotif('New field saved. Participants updated', 'success')
+						})
+						.catch(() => {
+							showNotif('New field not saved', 'error')
+						})
+				}
 			}
 		}
-	}, [dataset, fields, user?.uid])
-
-	useEffect(() => {
-		console.log('Update rows...') // eslint-disable-line
-		if (dataset?.Participants) setRows(dataset.Participants)
-		// indexBidsDataset(user?.uid, dataset?.Path)
-	}, [dataset, fields, setRows])
+	}
 
 	const handleEditParticipant = (id: string) => {
 		setParticipantEditId(id)
 		setIsCreateDialogOpen(true)
 	}
-
-	useEffect(() => {
-		if (participantEditId) setIsCreateDialogOpen(true)
-	}, [participantEditId])
 
 	const columns = [
 		...(dataset?.Participants?.reduce(
@@ -97,13 +112,39 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 				dataset={dataset}
 				participantEditId={participantEditId}
 				open={isCreateDialogOpen}
-				handleClose={() => {
+				handleClose={participant => {
+					if (dataset && participant) {
+						const exists =
+							dataset?.Participants?.map(p => p.participant_id).includes(
+								participant.participant_id
+							) || false
+
+						const participants = exists
+							? dataset.Participants?.map(p =>
+									participant.participant_id === p.participant_id
+										? participant
+										: p
+							  ) // eslint-disable-line no-mixed-spaces-and-tabs
+							: [...(dataset.Participants || []), participant]
+
+						if (participants)
+							setDataset({
+								...dataset,
+								Participants: participants,
+							})
+					}
 					setParticipantEditId(undefined)
 					setIsCreateDialogOpen(!isCreateDialogOpen)
 				}}
 			/>
 			<Box sx={{ mt: 2 }}>
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'start',
+					}}
+				>
 					<Typography variant='h6'>Participants</Typography>
 					<Button
 						color='primary'
@@ -118,13 +159,7 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 					>
 						Add new Participant
 					</Button>
-					<CreateField
-						handleCreateField={({ key }) => {
-							if (key) {
-								setFields(f => [...f, key])
-							}
-						}}
-					/>
+					<CreateField handleCreateField={handleCreateField} />
 				</Box>
 				<Box
 					sx={{
@@ -182,7 +217,7 @@ const Participants = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 							flex: '1 1',
 						}}
 					>
-						<ParticipantInfo subject={selectedSubject} dataset={dataset}/>
+						<ParticipantInfo subject={selectedSubject} dataset={dataset} />
 					</Box>
 				</Box>
 			</Box>
