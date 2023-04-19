@@ -133,7 +133,6 @@ const Dataset = () => {
 						<Tab label='Files' id={'tab-1'} />
 						<Tab label='Participants' id={'tab-2'} />
 						<Tab label='Import files' id={'tab-3'} />
-						{/* <Tab label='Add Participant' id={'tab-4'} /> */}
 					</Tabs>
 
 					{tabIndex === 0 && (
@@ -186,10 +185,8 @@ const Dataset = () => {
 							</Box>
 						</>
 					)}
-
-					{tabIndex === 1 && <Participants dataset={dataset} />}
+					{tabIndex === 1 && <Participants dataset={dataset} setDataset={setDataset} />}
 					{tabIndex === 2 && <Import dataset={dataset} />}
-					{/* {tabIndex === 3 && <CreateParticipant dataset={dataset} />} */}
 				</Box>
 			</Box>
 		</>
