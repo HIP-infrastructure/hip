@@ -46,7 +46,7 @@ const LandingPage = (): JSX.Element => {
 					/>
 				</Box>
 			</Box>
-			<Box sx={{ mt: 4 }}>
+			{/* <Box sx={{ mt: 4 }}>
 				<Typography variant='h5' sx={{ color: 'secondary.main' }}>
 					Data Management
 				</Typography>
@@ -87,7 +87,7 @@ const LandingPage = (): JSX.Element => {
 					iEEG visuals and results, enabling them to make more informed
 					decisions and conduct more robust research.
 				</Typography>
-			</Box>
+			</Box> */}
 		</Box>
 	)
 }

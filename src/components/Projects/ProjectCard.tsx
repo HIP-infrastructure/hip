@@ -7,6 +7,7 @@ import {
 	CardHeader,
 	CardMedia,
 	IconButton,
+	Link,
 	Paper,
 	Stack,
 	Typography,
@@ -15,16 +16,8 @@ import { HIPProject, User } from '../../api/types'
 import { nameToColor } from '../theme'
 import * as React from 'react'
 import UserInfo from '../UI/UserInfo'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { linkStyle, ROUTE_PREFIX } from '../../constants'
-import { red } from '@mui/material/colors'
-import {
-	ExpandMore,
-	Favorite,
-	Link,
-	MoreVert,
-	Share,
-} from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
+import { ROUTE_PREFIX } from '../../constants'
 
 interface Props {
 	project: HIPProject
@@ -57,7 +50,7 @@ const ProjectCard = ({ project, users }: Props) => {
 				// 	</IconButton>
 				// }
 				title={project?.title}
-				subheader={projectAdmins?.map(u => u.displayName).join(', ')}
+				subheader={`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
 			/>
 			<CardMedia
 				sx={{

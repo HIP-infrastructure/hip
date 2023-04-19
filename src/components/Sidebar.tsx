@@ -92,10 +92,6 @@ const Sidebar = () => {
 					top: `${APP_MARGIN_TOP}px`,
 					width: `${DRAWER_WIDTH}px`,
 				},
-				'& .Mui-selected': {
-					color: 'white',
-					backgroundColor: '#37474f !important',
-				},
 				flexShrink: 0,
 				width: DRAWER_WIDTH,
 			}}
