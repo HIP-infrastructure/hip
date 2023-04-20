@@ -73,14 +73,13 @@ const Participants = ({
 					[key]: participant[key] ?? 'n/a',
 				}))
 
-				dataset.Participants = participants
-				setRows(dataset.Participants)
-
 				if (dataset.Path) {
 					writeParticipantsTSV(user?.uid, dataset.Path, {
 						Participants: dataset.Participants,
 					})
 						.then(() => {
+							dataset.Participants = participants
+							setRows(dataset.Participants)
 							showNotif('New field saved. Participants updated', 'success')
 						})
 						.catch(() => {
@@ -89,6 +88,31 @@ const Participants = ({
 				}
 			}
 		}
+	}
+
+	const handleCloseCreateParticipant = (participant: Participant | undefined) => {
+		if (dataset && participant) {
+			const exists =
+				dataset?.Participants?.map(p => p.participant_id).includes(
+					participant.participant_id
+				) || false
+
+			const participants = exists
+				? dataset.Participants?.map(p =>
+						participant.participant_id === p.participant_id
+							? participant
+							: p
+					) // eslint-disable-line no-mixed-spaces-and-tabs
+				: [...(dataset.Participants || []), participant]
+
+			if (participants)
+				setDataset({
+					...dataset,
+					Participants: participants,
+				})
+		}
+		setParticipantEditId(undefined)
+		setIsCreateDialogOpen(!isCreateDialogOpen)
 	}
 
 	const handleEditParticipant = (id: string) => {
@@ -112,30 +136,7 @@ const Participants = ({
 				dataset={dataset}
 				participantEditId={participantEditId}
 				open={isCreateDialogOpen}
-				handleClose={participant => {
-					if (dataset && participant) {
-						const exists =
-							dataset?.Participants?.map(p => p.participant_id).includes(
-								participant.participant_id
-							) || false
-
-						const participants = exists
-							? dataset.Participants?.map(p =>
-									participant.participant_id === p.participant_id
-										? participant
-										: p
-							  ) // eslint-disable-line no-mixed-spaces-and-tabs
-							: [...(dataset.Participants || []), participant]
-
-						if (participants)
-							setDataset({
-								...dataset,
-								Participants: participants,
-							})
-					}
-					setParticipantEditId(undefined)
-					setIsCreateDialogOpen(!isCreateDialogOpen)
-				}}
+				handleClose={handleCloseCreateParticipant}
 			/>
 			<Box sx={{ mt: 2 }}>
 				<Box
