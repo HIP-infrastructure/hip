@@ -25,7 +25,7 @@ import { useNotification } from './hooks/useNotification'
 import Project from './components/Project/index'
 import Files from './components/Project/Files'
 import MyFiles from './components/Center/Files'
-import LandingPage from './components/Documentation/LandingPage'
+import GettingStarted from './components/Documentation/GettingStarted'
 import TransferData from './components/Project/TransferData'
 
 export interface Space {
@@ -90,7 +90,7 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<LandingPage />} />
+			<Route index element={<GettingStarted />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'about'} element={<About />} />
