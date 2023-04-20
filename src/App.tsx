@@ -33,14 +33,13 @@ export interface Space {
 	route: string
 }
 
-const footerStyle = {
+const devNameStyle = {
 	position: 'fixed',
-	width: '100vw',
-	bottom: 0,
-	left: 0,
-	textAlign: 'center',
-	padding: 0,
-	margin: 0,
+	top: '8px',
+	right: '200px',
+	color: '#F5B800',
+	zIndex: '10000',
+	transform: 'translateX(-50%)',
 }
 
 const Layout = (): JSX.Element => {
@@ -51,7 +50,7 @@ const Layout = (): JSX.Element => {
 			isLoggedIn().catch(error => {
 				showNotif(
 					'You have been logged out, please refresh your browser',
-					'error'
+					'warning'
 				)
 			})
 		}, 30 * 1000)
@@ -62,26 +61,13 @@ const Layout = (): JSX.Element => {
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
 			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-				<Typography
-					sx={{
-						position: 'fixed',
-						top: '8px',
-						right: '200px',
-						color: '#F5B800',
-						zIndex: '10000',
-						transform: 'translateX(-50%)',
-					}}
-					variant='h6'
-				>
+				<Typography sx={devNameStyle} variant='h6'>
 					{process.env.REACT_APP_HOSTNAME}
 				</Typography>
 			)}
 			<Navigation />
 			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
 				<Outlet />
-			</Box>
-			<Box component='footer' sx={{ ...footerStyle }}>
-				<p>HIP {new Date().getFullYear()}</p>
 			</Box>
 		</Box>
 	)

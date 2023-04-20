@@ -8,12 +8,18 @@ import {
 	CardMedia,
 	Grid,
 	Link,
+	List,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
+	Switch,
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTE_PREFIX } from '../../constants'
 import { useAppStore } from '../../Store'
+import { Help } from '@mui/icons-material'
 
 function GettingStartedCard({
 	step,
@@ -23,18 +29,17 @@ function GettingStartedCard({
 	img,
 	link,
 }: any) {
+	const {
+		tooltips: [showTooltip, setShowTooltip],
+	} = useAppStore()
+
 	return (
 		<Card sx={{ width: 360, textAlign: 'center' }}>
-			<CardMedia
-				component='img'
-				height='222'
-				image={`/api/v1/public/media/${img}`}
-				alt='green iguana'
-			/>
 			<CardContent sx={{ textAlign: 'center' }}>
 				<Typography sx={{ mt: 2 }} variant='h5' component='div'>
 					{title}
 				</Typography>
+
 				<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
 					{subtitle}
 				</Typography>
@@ -66,9 +71,15 @@ function GettingStartedCard({
 						window.open(link)
 					}}
 				>
-					Visit
+					Documentation
 				</Button>
 			</CardActions>
+			<CardMedia
+				component='img'
+				height='222'
+				image={`/api/v1/public/media/${img}`}
+				alt='green iguana'
+			/>
 		</Card>
 	)
 }
@@ -78,10 +89,20 @@ const GettingStarted = (): JSX.Element => {
 
 	const {
 		user: [user],
+		tooltips: [showTooltip, setShowTooltip],
 	} = useAppStore()
 
 	return (
 		<Box>
+			<List sx={{ float: 'right', width: 200}}>
+				<ListItemButton onClick={() => setShowTooltip(!showTooltip)}>
+					<ListItemIcon>
+						<Help />
+					</ListItemIcon>
+					<ListItemText primary='Tooltips' />
+					<Switch checked={showTooltip} />
+				</ListItemButton>
+			</List>
 			<Box sx={{ p: 4, textAlign: 'center', backgroundColor: '#efefef' }}>
 				<Box sx={{ mt: 3, textAlign: 'center' }}>
 					<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
@@ -125,7 +146,7 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={3}
 							title='Collaborate'
-							subtitle='Share your data with other users'
+							subtitle='Share your data within projects'
 							description={
 								'Once converted to BIDS, you can transfer subjects to your collaborative project'
 							}
