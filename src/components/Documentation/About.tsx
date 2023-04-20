@@ -29,8 +29,8 @@ const spaces: Doc[] = [
 		state: 'beta',
 	},
 	{
-		label: 'Quick Start',
-		buttonLabel: 'Onboarding Guide',
+		label: 'Onboarding Guide',
+		buttonLabel: 'guide',
 		url: 'https://hip-infrastructure.github.io/build/html/hip_beta_onboarding.html',
 		description:
 			'See the onboarding guide for a quick overview of the platform.',
