@@ -15,6 +15,7 @@ import {
 	Support,
 	SyncProblem,
 	Storage,
+	Help,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -23,6 +24,7 @@ import {
 	Drawer,
 	IconButton,
 	Switch,
+	Tooltip,
 } from '@mui/material'
 
 import Box from '@mui/material/Box'
@@ -41,6 +43,18 @@ import { useAppStore } from '../Store'
 
 const defaultCenters = [{ label: 'WORKSPACE', id: null, logo: null }]
 
+const footerStyle = {
+	position: 'fixed',
+	width: DRAWER_WIDTH - 1,
+	backgroundColor: '#fff',
+	borderTop: '1px solid #e0e0e0',
+	bottom: 0,
+	left: 0,
+	textAlign: 'center',
+	padding: 0,
+	margin: 0,
+}
+
 const Sidebar = () => {
 	const navigate = useNavigate()
 	const { trackPageView } = useMatomo()
@@ -51,11 +65,13 @@ const Sidebar = () => {
 		centers: [centers],
 		projects: [projects],
 		selectedProject: [selectedProject],
+		tooltips: [showTooltip, setShowTooltip]
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
+
 
 	useEffect(() => {
 		if (!user?.uid) return
@@ -114,39 +130,65 @@ const Sidebar = () => {
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
-						<ListItemButton
-							sx={{ pl: 2 }}
-							disabled={!userCenters}
-							selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
-							onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
+						<Tooltip
+							title={`${center.label} Private Workspace: a safe place to store your data. Contains a personal workspace and a private center workspace`}
+							placement='right'
+							arrow
+							disableHoverListener
+							disableFocusListener
+							open={showTooltip}
 						>
-							<ListItemIcon>
-								{userCenters ? (
-									<Avatar
-										alt={center.label}
-										src={`${API_GATEWAY}/public/${center?.logo}`}
-										sx={{ width: 32, height: 32 }}
-									/>
-								) : (
-									<CircularProgress size={18} color='secondary' />
-								)}
-							</ListItemIcon>
-							<ListItemText primary={center.label} />
-						</ListItemButton>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							selected={
-								`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
-							}
-							onClick={() =>
-								handleClickNavigate(`/centers/${center.id}/desktops`)
-							}
+							<ListItemButton
+								sx={{ pl: 2 }}
+								disabled={!userCenters}
+								selected={`${ROUTE_PREFIX}/centers/${center?.id}` === pathname}
+								onClick={() => handleClickNavigate(`/centers/${center?.id}`)}
+							>
+								<ListItemIcon>
+									{userCenters ? (
+										<Avatar
+											alt={center.label}
+											src={`${API_GATEWAY}/public/${center?.logo}`}
+											sx={{ width: 32, height: 32 }}
+										/>
+									) : (
+										<CircularProgress size={18} color='secondary' />
+									)}
+								</ListItemIcon>
+								<ListItemText primary={center.label} />
+							</ListItemButton>
+						</Tooltip>
+						<Tooltip
+							title='Process: Open apps in remote desktops'
+							placement='right'
+							arrow
+							disableHoverListener
+							disableFocusListener
+							open={showTooltip}
 						>
-							<ListItemIcon>
-								<Monitor />
-							</ListItemIcon>
-							<ListItemText primary='Desktops' />
-						</ListItemButton>
+							<ListItemButton
+								sx={{ pl: 4 }}
+								selected={
+									`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
+								}
+								onClick={() =>
+									handleClickNavigate(`/centers/${center.id}/desktops`)
+								}
+							>
+								<ListItemIcon>
+									<Monitor />
+								</ListItemIcon>
+								<ListItemText primary='Desktops' />
+							</ListItemButton>
+						</Tooltip>
+						<Tooltip
+							title='Upload: Manage your files and folders'
+							placement='right'
+							arrow
+							disableHoverListener
+							disableFocusListener
+							open={showTooltip}
+						>
 						<ListItemButton
 							sx={{ pl: 4 }}
 							selected={
@@ -159,6 +201,7 @@ const Sidebar = () => {
 							</ListItemIcon>
 							<ListItemText primary='Files' />
 						</ListItemButton>
+						</Tooltip>
 						<ListItemButton
 							sx={{ pl: 4 }}
 							selected={
@@ -202,9 +245,7 @@ const Sidebar = () => {
 							justifyContent: 'space-between',
 						}}
 					>
-						<ListSubheader id='my-projects-subheader'>
-							Projects
-						</ListSubheader>
+						<ListSubheader id='my-projects-subheader'>Projects</ListSubheader>
 						{(!projects || !user) && (
 							<CircularProgress size={18} color='secondary' />
 						)}
@@ -346,13 +387,14 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
-				<ListItemButton onClick={() => setDebug(!debug)}>
+				<ListItemButton onClick={() => setShowTooltip(!showTooltip)}>
 					<ListItemIcon>
-						<Adb />
+						<Help />
 					</ListItemIcon>
-					<ListItemText primary='Debug' />
-					<Switch checked={debug} />
+					<ListItemText primary='Tooltips' />
+					<Switch checked={showTooltip} />
 				</ListItemButton>
+
 				<ListItemButton
 					selected={`${ROUTE_PREFIX}/about` === pathname}
 					onClick={() => handleClickNavigate('/about')}
@@ -402,9 +444,20 @@ const Sidebar = () => {
 					</ListItemIcon>
 					<ListItemText primary='Feedback' />
 				</ListItemButton>
+				<ListItemButton onClick={() => setDebug(!debug)}>
+					<ListItemIcon>
+						<Adb />
+					</ListItemIcon>
+					<ListItemText primary='Debug' />
+					<Switch checked={debug} />
+				</ListItemButton>
 
-				<Box height={`${APP_MARGIN_TOP}px}`} />
+				<Box height={`${APP_MARGIN_TOP + 24}px}`} />
 			</List>
+
+			<Box component='footer' sx={{ ...footerStyle }}>
+				<p>Copyright © HIP {new Date().getFullYear()}</p>
+			</Box>
 		</Drawer>
 	)
 }

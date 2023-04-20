@@ -21,6 +21,7 @@ import {
 
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+	tooltips: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	user: [
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
@@ -81,6 +82,7 @@ export const AppStoreProvider = ({
 	const counter = useRef<number>(0)
 	const effectCalled = useRef<boolean>(false)
 	const [debug, setDebug] = useState(false)
+	const [showTooltip, setShowTooltip] = React.useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
 	const [containers, setContainers] = useState<Container[] | null>(null)
 	const [projectContainers, setProjectContainers] = useState<
@@ -192,6 +194,7 @@ export const AppStoreProvider = ({
 	const value: IAppState = React.useMemo(
 		() => ({
 			debug: [debug, setDebug],
+			tooltips: [showTooltip, setShowTooltip],
 			user: [user, setUser],
 			centers: [centers, setCenters],
 			projects: [projects, setProjects],
@@ -207,6 +210,8 @@ export const AppStoreProvider = ({
 		[
 			debug,
 			setDebug,
+			showTooltip,
+			setShowTooltip,
 			user,
 			setUser,
 			centers,
