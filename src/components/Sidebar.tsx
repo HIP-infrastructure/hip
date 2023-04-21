@@ -24,8 +24,8 @@ import {
 	Drawer,
 	IconButton,
 	Switch,
-	Tooltip,
 } from '@mui/material'
+import Tooltip from './UI/Tooltip'
 
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
@@ -65,13 +65,12 @@ const Sidebar = () => {
 		centers: [centers],
 		projects: [projects],
 		selectedProject: [selectedProject],
-		tooltips: [showTooltip, setShowTooltip]
+		tooltips: [showTooltip, setShowTooltip],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
-
 
 	useEffect(() => {
 		if (!user?.uid) return
@@ -131,12 +130,8 @@ const Sidebar = () => {
 				<Box key={center.id}>
 					<List>
 						<Tooltip
-							title={`${center.label} Private Workspace: a safe place to store your data. Contains a personal workspace and a private center workspace`}
-							placement='right'
-							arrow
-							disableHoverListener
-							disableFocusListener
-							open={showTooltip}
+							title={`Your Private Workspace`}
+							showTooltip={showTooltip}
 						>
 							<ListItemButton
 								sx={{ pl: 2 }}
@@ -159,12 +154,8 @@ const Sidebar = () => {
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
-							title='Process: Open apps in remote desktops'
-							placement='right'
-							arrow
-							disableHoverListener
-							disableFocusListener
-							open={showTooltip}
+							title='Process data in remote desktops'
+							showTooltip={showTooltip}
 						>
 							<ListItemButton
 								sx={{ pl: 4 }}
@@ -182,25 +173,23 @@ const Sidebar = () => {
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
-							title='Upload: Manage your files and folders'
-							placement='right'
-							arrow
-							disableHoverListener
-							disableFocusListener
-							open={showTooltip}
+							title='Upload your files'
+							showTooltip={showTooltip}
 						>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							selected={
-								`${ROUTE_PREFIX}/centers/${center?.id}/files` === pathname
-							}
-							onClick={() => handleClickNavigate(`/centers/${center.id}/files`)}
-						>
-							<ListItemIcon>
-								<Storage />
-							</ListItemIcon>
-							<ListItemText primary='Files' />
-						</ListItemButton>
+							<ListItemButton
+								sx={{ pl: 4 }}
+								selected={
+									`${ROUTE_PREFIX}/centers/${center?.id}/files` === pathname
+								}
+								onClick={() =>
+									handleClickNavigate(`/centers/${center.id}/files`)
+								}
+							>
+								<ListItemIcon>
+									<Storage />
+								</ListItemIcon>
+								<ListItemText primary='Files' />
+							</ListItemButton>
 						</Tooltip>
 						<ListItemButton
 							sx={{ pl: 4 }}
@@ -237,28 +226,33 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='projects-subheader'
 				subheader={
-					<Box
-						sx={{
-							display: 'flex',
-							alignItems: 'center',
-							mr: 1,
-							justifyContent: 'space-between',
-						}}
+					<Tooltip
+						title='Collaborative Projects'
+						showTooltip={showTooltip}
 					>
-						<ListSubheader id='my-projects-subheader'>Projects</ListSubheader>
-						{(!projects || !user) && (
-							<CircularProgress size={18} color='secondary' />
-						)}
-						{user?.hasProjectsAdminRole && (
-							<IconButton
-								color='primary'
-								onClick={() => navigate(`${ROUTE_PREFIX}/projects/create`)}
-								aria-label={`Create new project`}
-							>
-								<CreateNewFolder />
-							</IconButton>
-						)}
-					</Box>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								mr: 1,
+								justifyContent: 'space-between',
+							}}
+						>
+							<ListSubheader id='my-projects-subheader'>Projects</ListSubheader>
+							{(!projects || !user) && (
+								<CircularProgress size={18} color='secondary' />
+							)}
+							{user?.hasProjectsAdminRole && (
+								<IconButton
+									color='primary'
+									onClick={() => navigate(`${ROUTE_PREFIX}/projects/create`)}
+									aria-label={`Create new project`}
+								>
+									<CreateNewFolder />
+								</IconButton>
+							)}
+						</Box>
+					</Tooltip>
 				}
 			>
 				{projects?.filter(p => p.isMember).length === 0 && (

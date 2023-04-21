@@ -92,17 +92,16 @@ const GettingStarted = (): JSX.Element => {
 		tooltips: [showTooltip, setShowTooltip],
 	} = useAppStore()
 
+	React.useEffect(() => {
+		setShowTooltip(true)
+
+		return () => {
+			setShowTooltip(false)
+		}
+	}, [setShowTooltip])
+
 	return (
 		<Box>
-			<List sx={{ float: 'right', width: 200}}>
-				<ListItemButton onClick={() => setShowTooltip(!showTooltip)}>
-					<ListItemIcon>
-						<Help />
-					</ListItemIcon>
-					<ListItemText primary='Tooltips' />
-					<Switch checked={showTooltip} />
-				</ListItemButton>
-			</List>
 			<Box sx={{ p: 4, textAlign: 'center', backgroundColor: '#efefef' }}>
 				<Box sx={{ mt: 3, textAlign: 'center' }}>
 					<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
