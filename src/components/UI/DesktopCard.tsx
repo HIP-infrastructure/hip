@@ -76,7 +76,6 @@ const DesktopCard = ({
 		</Box>
 		<CardContent sx={{ flexGrow: 1 }}>
 			<DesktopInfo desktop={desktop} />
-
 			<Typography
 				sx={{ mt: 2 }}
 				gutterBottom
@@ -94,24 +93,26 @@ const DesktopCard = ({
 			</Typography>
 		</CardContent>
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
-			<Tooltip title='Remove' placement='top'>
-				<span>
-					<IconButton
-						disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
-						edge='end'
-						color='primary'
-						aria-label='Remove'
-						onClick={() => {
-							handleRemoveDesktop(desktop.id, true)
-						}}
-					>
-						<Clear />
-					</IconButton>
-				</span>
-			</Tooltip>
+			{(debug ||
+				desktop.state === ContainerState.DESTROYED) && (
+					<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+						<IconButton
+							disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
+							edge='end'
+							color='primary'
+							aria-label='Remove'
+							onClick={() => {
+								handleRemoveDesktop(desktop.id, true)
+							}}
+						>
+							<Clear />
+						</IconButton>
+						<Typography variant='body2'>Remove</Typography>
+					</Box>
+				)}
 
-			<Tooltip title='Shut down' placement='top'>
-				<span>
+			{desktop.state !== ContainerState.DESTROYED && (
+				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
 					<IconButton
 						disabled={desktop.state !== ContainerState.RUNNING}
 						edge='end'
@@ -123,11 +124,12 @@ const DesktopCard = ({
 					>
 						<PowerSettingsNew />
 					</IconButton>
-				</span>
-			</Tooltip>
+					<Typography variant='body2'>Quit</Typography>
+				</Box>
+			)}
 
 			{desktop.state === ContainerState.PAUSED && (
-				<Tooltip title='Resume the desktop' placement='top'>
+				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
 					<IconButton
 						edge='end'
 						color='primary'
@@ -138,15 +140,13 @@ const DesktopCard = ({
 					>
 						<Replay />
 					</IconButton>
-				</Tooltip>
+					<Typography variant='body2'>Resume</Typography>
+				</Box>
 			)}
 
-			{desktop.state !== ContainerState.PAUSED && (
-				<Tooltip
-					title='Pause the desktop. You can resume it later'
-					placement='top'
-				>
-					<span>
+			{desktop.state !== ContainerState.PAUSED &&
+				desktop.state !== ContainerState.DESTROYED && (
+					<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
 						<IconButton
 							disabled={desktop.state !== ContainerState.RUNNING}
 							edge='end'
@@ -158,12 +158,12 @@ const DesktopCard = ({
 						>
 							<Pause />
 						</IconButton>
-					</span>
-				</Tooltip>
-			)}
+						<Typography variant='body2'>Sleep</Typography>
+					</Box>
+				)}
 
-			<Tooltip title='Open' placement='top'>
-				<span>
+			{desktop.state !== ContainerState.DESTROYED && (
+				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
 					<IconButton
 						disabled={desktop.state !== ContainerState.RUNNING}
 						sx={{ ml: 0.6 }}
@@ -176,8 +176,9 @@ const DesktopCard = ({
 					>
 						<Visibility />
 					</IconButton>
-				</span>
-			</Tooltip>
+					<Typography variant='body2'>Open</Typography>
+				</Box>
+			)}
 		</CardActions>
 	</Card>
 )
