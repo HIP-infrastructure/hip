@@ -94,8 +94,8 @@ const CenterDesktops = (): JSX.Element => {
 
 		if (!modalRef.current) return
 		const reply = await modalRef.current.open(
-			'Remove desktop ?',
-			'Permanently remove this desktop and all its applications?'
+			'Quit desktop ?',
+			'Quit this desktop and all its applications?'
 		)
 
 		if (reply) {
