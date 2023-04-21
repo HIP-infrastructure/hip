@@ -112,7 +112,8 @@ const CenterDesktops = (): JSX.Element => {
 	}
 
 	const handlePauseDesktop = async (desktopId: string) => {
-		pauseAppsAndDesktop(desktopId, user?.uid || '')
+		const containers = await pauseAppsAndDesktop(desktopId, user?.uid || '')
+		setContainers(containers)
 		trackEvent({
 			category: 'Desktop',
 			action: 'Pause a desktop',
@@ -120,7 +121,8 @@ const CenterDesktops = (): JSX.Element => {
 		})
 	}
 	const handleResumeDesktop = async (desktopId: string) => {
-		resumeAppsAndDesktop(desktopId, user?.uid || '')
+		const containers = await resumeAppsAndDesktop(desktopId, user?.uid || '')
+		setContainers(containers)
 		trackEvent({
 			category: 'Desktop',
 			action: 'Resume a desktop',
