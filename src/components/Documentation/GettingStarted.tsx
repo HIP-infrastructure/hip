@@ -74,12 +74,11 @@ function GettingStartedCard({
 					Documentation
 				</Button>
 			</CardActions>
-			<CardMedia
+			{/* <CardMedia
 				component='img'
 				height='222'
 				image={`/api/v1/public/media/${img}`}
-				alt='green iguana'
-			/>
+			/> */}
 		</Card>
 	)
 }
@@ -179,7 +178,7 @@ const GettingStarted = (): JSX.Element => {
 							</Link>
 						</Typography>
 						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							User Documentation. Technical Documentation
+							User and technical doc
 						</Typography>
 					</Grid>
 					<Grid item xs={6}>
