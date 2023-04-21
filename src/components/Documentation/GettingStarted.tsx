@@ -35,6 +35,11 @@ function GettingStartedCard({
 
 	return (
 		<Card sx={{ width: 360, textAlign: 'center' }}>
+			<CardMedia
+				component='img'
+				height='222'
+				image={`/api/v1/public/media/${img}`}
+			/>
 			<CardContent sx={{ textAlign: 'center' }}>
 				<Typography sx={{ mt: 2 }} variant='h5' component='div'>
 					{title}
@@ -74,11 +79,7 @@ function GettingStartedCard({
 					Documentation
 				</Button>
 			</CardActions>
-			{/* <CardMedia
-				component='img'
-				height='222'
-				image={`/api/v1/public/media/${img}`}
-			/> */}
+			
 		</Card>
 	)
 }
