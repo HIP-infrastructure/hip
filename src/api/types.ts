@@ -19,8 +19,10 @@ export enum ContainerState {
 	CREATED = 'created',
 	LOADING = 'loading',
 	RUNNING = 'running',
-	STOPPING = 'stopping',
+	PAUSING = 'pausing',
+	RESUMING = 'resuming',
 	PAUSED = 'paused',
+	STOPPING = 'stopping',
 	EXITED = 'exited',
 	DESTROYED = 'destroyed',
 }
