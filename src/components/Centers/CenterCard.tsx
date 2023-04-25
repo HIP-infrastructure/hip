@@ -12,10 +12,10 @@ import {
 	Box,
 	Card,
 	CardContent,
-	CardMedia,
 	CircularProgress,
 	IconButton,
 	Link,
+	Paper,
 	Typography,
 } from '@mui/material'
 import { HIPCenter } from '../../api/types'
@@ -74,6 +74,8 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 
 			{group && (
 				<Card
+					elevation={3}
+					component={Paper}
 					sx={{
 						width: 280,
 					}}
@@ -91,35 +93,29 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 							<Avatar
 								alt={group?.label}
 								src={`${API_GATEWAY}/public/${group.logo}`}
-								sx={{ width: 32, height: 32 }}
+								sx={{ width: 96, height: 96 }}
 							/>
 						</Box>
-						<Typography
-							sx={{ mt: 2 }}
-							gutterBottom
-							variant='body2'
-							color='text.secondary'
-						>
+						<Typography sx={{ mt: 2 }} variant='body2' color='text.secondary'>
 							{group.description}
 						</Typography>
-
+						{group.website && (
+							<Box sx={{ mb: 2, mt: 2 }}>
+								<Typography
+									sx={{ wordWrap: 'break-word' }}
+									variant='caption'
+									color='text.secondary'
+								>
+									<Link href={group.website} target='_blank' style={linkStyle}>
+										{group.website}
+									</Link>
+								</Typography>
+							</Box>
+						)}
 						<Typography variant='subtitle2'>{group.pi}</Typography>
 						<Typography variant='body2' gutterBottom>
 							{group.city}, {group.country}
 						</Typography>
-
-						{group.website && (
-							<Typography
-								sx={{ wordWrap: 'break-word' }}
-								gutterBottom
-								variant='caption'
-								color='text.secondary'
-							>
-								<Link href={group.website} target='_blank' style={linkStyle}>
-									{group.website}
-								</Link>
-							</Typography>
-						)}
 					</CardContent>
 					<Box sx={{ flexGrow: 1 }}></Box>
 					<Box
