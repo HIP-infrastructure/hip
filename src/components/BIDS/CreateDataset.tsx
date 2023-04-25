@@ -1,8 +1,6 @@
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import {
-	Grid, TextField
-} from '@mui/material'
+import { Grid, TextField } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
@@ -255,16 +253,18 @@ const CreateDataset = ({ setDatasetCreated }: ICreateDataset) => {
 								/>
 							</Grid>
 
-							<LoadingButton
-								color='primary'
-								type='submit'
-								loading={submitted}
-								loadingPosition='start'
-								startIcon={<Save />}
-								variant='contained'
-							>
-								Save
-							</LoadingButton>
+							<Grid item xs={6}>
+								<LoadingButton
+									color='primary'
+									type='submit'
+									loading={submitted}
+									loadingPosition='start'
+									startIcon={<Save />}
+									variant='contained'
+								>
+									Save
+								</LoadingButton>
+							</Grid>
 						</Grid>
 					</Form>
 				)
