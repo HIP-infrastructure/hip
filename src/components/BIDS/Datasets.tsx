@@ -5,7 +5,8 @@ import {
 	Button,
 	Checkbox,
 	CircularProgress,
-	Dialog, DialogContent,
+	Dialog,
+	DialogContent,
 	DialogTitle,
 	FormControl,
 	FormControlLabel,
@@ -20,11 +21,11 @@ import {
 	SelectChangeEvent,
 	Slider,
 	TextField,
-	Typography
+	Typography,
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { queryBidsDatasets } from '../../api/bids'
-import { BIDSDataset } from '../../api/types'
+import { queryBidsDatasets, refreshBidsDatasetsIndex } from '../../api/bids'
+import { BIDSDataset, BIDSDatasetResponse } from '../../api/types'
 import useDebounce from '../../hooks/useDebounce'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
@@ -58,7 +59,6 @@ const Datasets = () => {
 	} = useAppStore()
 
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-	const [datasetCreated, setDatasetCreated] = useState(false)
 	const [term, setTerm] = useState('*')
 	const [debouncedAgeRange, ageRange, setAgeRange] = useDebounce<number[]>([
 		0, 100,
@@ -113,15 +113,14 @@ const Datasets = () => {
 		queryDatasets()
 	}, [queryDatasets, term, page, numberOfResultsPerPage])
 
-	useEffect(() => {
-		if (datasetCreated) {
-			// refreshBidsDatasetsIndex(user?.uid).then(() => {
-			// 	queryDatasets()
-			// })
-
-			setDatasetCreated(false)
-		}
-	}, [queryDatasets, datasetCreated, user?.uid])
+	const handleDatasetCreated = () => {
+		setIsCreateDialogOpen(false)
+		refreshBidsDatasetsIndex(user?.uid).then(() => {
+			setTimeout(() => {
+				queryDatasets()
+			}, 10 * 1000)
+		})
+	}
 
 	const handleDatatypeChange = (dt: string) => {
 		setSelectedDatatypes(s =>
@@ -147,7 +146,7 @@ const Datasets = () => {
 					</IconButton>
 				</DialogTitle>
 				<DialogContent dividers>
-					<CreateDataset setDatasetCreated={setDatasetCreated} />
+					<CreateDataset setDatasetCreated={handleDatasetCreated} />
 				</DialogContent>
 			</Dialog>
 
@@ -203,9 +202,7 @@ const Datasets = () => {
 
 				<Box display='flex' justifyContent='center' alignItems='center'>
 					<Pagination
-						count={Math.ceil(
-							totalNumberOfDatasets / numberOfResultsPerPage
-						)}
+						count={Math.ceil(totalNumberOfDatasets / numberOfResultsPerPage)}
 						page={page}
 						onChange={(_, value) => setPage(value)}
 					/>
@@ -291,9 +288,7 @@ const Datasets = () => {
 
 				<Box display='flex' justifyContent='center' alignItems='center'>
 					<Pagination
-						count={Math.ceil(
-							totalNumberOfDatasets  / numberOfResultsPerPage
-						)}
+						count={Math.ceil(totalNumberOfDatasets / numberOfResultsPerPage)}
 						page={page}
 						onChange={(_, value) => setPage(value)}
 					/>
