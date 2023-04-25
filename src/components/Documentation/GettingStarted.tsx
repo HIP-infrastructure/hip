@@ -102,7 +102,7 @@ const GettingStarted = (): JSX.Element => {
 
 	return (
 		<Box>
-			<Box sx={{ p: 4, textAlign: 'center', backgroundColor: '#efefef' }}>
+			<Box sx={{ p: 4, textAlign: 'center' }}>
 				<Box sx={{ mt: 3, textAlign: 'center' }}>
 					<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
 						Getting started
@@ -116,7 +116,7 @@ const GettingStarted = (): JSX.Element => {
 				<Box sx={{ mb: 4, textAlign: 'center' }}>
 					<Box
 						display='flex'
-						gap='32px 32px'
+						gap='64px 64px'
 						justifyContent='center'
 						alignItems='start'
 					>
@@ -172,7 +172,7 @@ const GettingStarted = (): JSX.Element => {
 					rowSpacing={1}
 					columnSpacing={{ xs: 1, sm: 2, md: 3, width: '500' }}
 				>
-					<Grid item xs={12}>
+					<Grid item xs={6}>
 						<Typography sx={{ mt: 2 }} variant='h6'>
 							<Link onClick={() => navigate(`${ROUTE_PREFIX}/documentation`)}>
 								Documentation
