@@ -86,14 +86,12 @@ const CreateProject = () => {
 									},
 								}
 
-								const futureName = title
-									.replace(/[^a-zA-Z0-9]+/g, '-')
-									.toLowerCase()
+								const futureName = `HIP-${title.replace(/[^a-zA-Z0-9]+/g, '-')}`
 
 								trackEvent({
 									category: 'Project',
 									action: 'Create a project',
-									name: `project/HIP-${futureName}`,
+									name: `project/${futureName}`,
 								})
 
 								createProject(project)
