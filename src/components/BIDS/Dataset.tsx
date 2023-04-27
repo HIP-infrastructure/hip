@@ -90,21 +90,6 @@ const Dataset = () => {
 		})
 	}, [selectedFile])
 
-	// FIXME: This is a temporary solution to get datasets path
-	useEffect(() => {
-		if (dataset) {
-			const nextPath = dataset.Path?.replace(
-				/mnt\/nextcloud-dp\/nextcloud\/data\/.*?\/files\//,
-				''
-			).replace(
-				/\/mnt\/nextcloud-dp\/nextcloud\/data\/__groupfolders\/.*?\//,
-				'/groupfolder/'
-			)
-
-			if (nextPath) setPath(nextPath)
-		}
-	}, [dataset])
-
 	return (
 		<>
 			<TitleBar title='BIDS Dataset' />
