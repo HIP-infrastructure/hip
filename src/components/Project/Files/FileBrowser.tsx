@@ -95,7 +95,7 @@ const FileBrowser = ({
 				...(groups?.map(name => ({
 					name,
 					isDirectory: true,
-					path: `/groupfolder/${name}`,
+					path: `/GROUP_FOLDER/${name}`,
 					parentPath: '/',
 				})) || []),
 			])
