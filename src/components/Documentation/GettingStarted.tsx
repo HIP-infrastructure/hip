@@ -11,8 +11,8 @@ import {
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ROUTE_PREFIX } from '../../constants'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { ROUTE_PREFIX, linkStyle } from '../../constants'
 
 function GettingStartedCard({
 	step,
@@ -20,24 +20,29 @@ function GettingStartedCard({
 	subtitle,
 	description,
 	img,
+	video,
 	link,
 }: any) {
-
 	return (
 		<Card sx={{ width: 360, textAlign: 'center' }}>
-			<CardMedia
-				component='img'
-				height='222'
-				image={`/api/v1/public/media/${img}`}
-			/>
-			<CardContent sx={{ textAlign: 'center' }}>
-				<Typography sx={{ mt: 2 }} variant='h5' component='div'>
-					{title}
-				</Typography>
+			{img && (
+				<CardMedia
+					component='img'
+					height='222'
+					image={`/api/v1/public/media/${img}`}
+				/>
+			)}
+			{video && (
+				<CardMedia
+					component='video'
+					height='222'
+					autoPlay
+					src={`/api/v1/public/media/${video}`}
+					controls
+				/>
+			)}
 
-				<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
-					{subtitle}
-				</Typography>
+			<CardContent sx={{ textAlign: 'center' }}>
 				<Box
 					display='flex'
 					gap='32px 32px'
@@ -47,6 +52,14 @@ function GettingStartedCard({
 				>
 					<Avatar>{step}</Avatar>
 				</Box>
+				<Typography sx={{ mt: 2 }} variant='h5' component='div'>
+					{title}
+				</Typography>
+
+				<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
+					{subtitle}
+				</Typography>
+
 				<Typography variant='body2' color='text.secondary'>
 					{description}
 				</Typography>
@@ -69,7 +82,6 @@ function GettingStartedCard({
 					Documentation
 				</Button>
 			</CardActions>
-			
 		</Card>
 	)
 }
@@ -100,11 +112,11 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={1}
 							title='Upload'
-							subtitle='Transfer your data your center"s workspace'
+							subtitle="Transfer your data to your center's workspace"
 							description={
-								'Upload data directly from the web browser or using the Nextcloud client.'
+								'Upload up to 1TB directly from the web. Use Nextcloud client for more.'
 							}
-							img='gettingstarted-1.png'
+							video='getting-started-upload.mp4'
 							link={
 								'https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_prepare_and_upload_data_to_the_HIP.html'
 							}
@@ -113,9 +125,7 @@ const GettingStarted = (): JSX.Element => {
 							step={2}
 							title='Process'
 							subtitle='Use a Desktop App to process your data'
-							description={
-								'Use Desktops and run applications from the App Catalog'
-							}
+							description={'Use Desktops and run applications'}
 							img='gettingstarted-2.png'
 							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_Desktops_and_run_applications_from_the_App_Catalog.html'
 						/>
@@ -124,7 +134,16 @@ const GettingStarted = (): JSX.Element => {
 							title='Collaborate'
 							subtitle='Share your data within projects'
 							description={
-								'Once converted to BIDS, you can transfer subjects to your collaborative project'
+								<Box>
+									Convert your files to BIDS (get {' '}
+									<NavLink
+										style={linkStyle}
+										to={`https://thehip.app/call/yizibxg5`}
+									>
+										support
+									</NavLink>
+									), and transfer your subject to your collaborative project
+								</Box>
 							}
 							img='gettingstarted-3.png'
 							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_the_HIP_spaces_and_share_data_with_other_users.html'
