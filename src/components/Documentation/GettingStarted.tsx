@@ -8,18 +8,11 @@ import {
 	CardMedia,
 	Grid,
 	Link,
-	List,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	Switch,
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTE_PREFIX } from '../../constants'
-import { useAppStore } from '../../Store'
-import { Help } from '@mui/icons-material'
 
 function GettingStartedCard({
 	step,
@@ -29,9 +22,6 @@ function GettingStartedCard({
 	img,
 	link,
 }: any) {
-	const {
-		tooltips: [showTooltip, setShowTooltip],
-	} = useAppStore()
 
 	return (
 		<Card sx={{ width: 360, textAlign: 'center' }}>
@@ -86,19 +76,6 @@ function GettingStartedCard({
 
 const GettingStarted = (): JSX.Element => {
 	const navigate = useNavigate()
-
-	const {
-		user: [user],
-		tooltips: [showTooltip, setShowTooltip],
-	} = useAppStore()
-
-	React.useEffect(() => {
-		setShowTooltip(true)
-
-		return () => {
-			setShowTooltip(false)
-		}
-	}, [setShowTooltip])
 
 	return (
 		<Box>
