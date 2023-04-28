@@ -29,9 +29,9 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 				/>
 				<CardContent>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
-
+					<Typography variant='body2' color='text.secondary'>id: {dataset?.id}</Typography>
 					<Typography
-						sx={{ mb: 2 }}
+						sx={{ mt: 2, mb: 2 }}
 						variant='body2'
 						gutterBottom
 						color='text.secondary'
