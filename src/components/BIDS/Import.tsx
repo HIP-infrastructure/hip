@@ -129,6 +129,8 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 			p => p.participant_id === selectedParticipant
 		)
 
+		if (!participant) showNotif('Please select a subject', 'error')
+
 		if (
 			participant &&
 			!selectedParticipants
