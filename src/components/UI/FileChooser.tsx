@@ -1,9 +1,16 @@
 import { Article, Folder } from '@mui/icons-material'
-import { Box, Divider, TextField, Typography } from '@mui/material'
+import {
+	Box,
+	CircularProgress,
+	Divider,
+	TextField,
+	Typography,
+} from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { getFiles2 } from '../../api/gatewayClientAPI'
+import { getFiles2, getGroupFolders } from '../../api/gatewayClientAPI'
 import { Node } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
 
 const root: Node = {
 	name: '/',
@@ -21,46 +28,67 @@ const FileChooser = ({
 	handleSelectedFile?: (path: string) => void
 }): JSX.Element => {
 	const [files, setFiles] = useState<Node[]>([root])
+	const [groups, setGroups] = useState<string[] | null>(null)
 	const [fileListVisible, setFileListVisible] = useState(false)
 	const [selectedFile, setSelectedFile] = useState<Node>(root)
 	const [loading, setLoading] = useState(false)
 	const { showNotif } = useNotification()
 
-	const getFiles = useCallback(
-		(path: string) => {
+	const {
+		user: [user],
+	} = useAppStore()
+
+	useEffect(() => {
+		handleSelectedFile && handleSelectedFile(selectedFile.path)
+
+		const exists =
+			files.find(i => i.parentPath === selectedFile.path)?.name !== undefined
+		const isDirectory = selectedFile.isDirectory
+
+		if (!exists && isDirectory) {
 			setLoading(true)
-			getFiles2(path)
+			getFiles2(selectedFile.path || '/')
 				.then(data => {
-					setFiles(f => sortFile([...f, ...data]))
+					// remove duplicates
+					const nextData = Array.from(new Set([...files, ...data]))
+					setFiles(f => sortFile(nextData))
+					setLoading(false)
 				})
 				.catch(err => {
 					showNotif(err.message, 'error')
 				})
 				.finally(() => setLoading(false))
-		},
-		[setFiles, showNotif]
-	)
+		}
+	}, [selectedFile.path, setFiles])
 
 	useEffect(() => {
-		const exists = files.find(i => i.parentPath === selectedFile.path)
-		const isDirectory = selectedFile.isDirectory
+		if (groups) return
 
-		if (!exists && isDirectory && !loading) {
-			getFiles(selectedFile.path)
-		}
-		handleSelectedFile && handleSelectedFile(selectedFile.path)
-	}, [loading, selectedFile, files, getFiles, handleSelectedFile])
+		getGroupFolders(user?.uid).then(groupFolders => {
+			setGroups(groupFolders?.map(g => g.label))
+		})
+	}, [user, setGroups, groups])
+
+	useEffect(() => {
+		const hasGroup = groups && files.some(f => groups.includes(f.name))
+		if (hasGroup) return
+
+		setFiles(files =>
+			sortFile([
+				...files,
+				...(groups?.map(name => ({
+					name,
+					isDirectory: true,
+					path: `/GROUP_FOLDER/${name}`,
+					parentPath: '/',
+				})) || []),
+			])
+		)
+	}, [groups, files, setFiles])
 
 	const parent = files?.find(f => f.path === selectedFile.parentPath)
 	const currentFolder: Node[] = [
-		...(files
-			?.filter(f => new RegExp(selectedFile.path).test(f.parentPath || ''))
-			?.filter(f => {
-				// filter out files that are not in the current directory
-				return (
-					f.path.split('/').length <= selectedFile.path.split('/').length + 1
-				)
-			}) || []),
+		...(files?.filter(f => selectedFile.path === f.parentPath) || []),
 	]
 	const folder = parent
 		? [{ ...parent, name: '..' }, ...currentFolder]
@@ -74,15 +102,23 @@ const FileChooser = ({
 					sx={{ width: '100%', mb: 2 }}
 					label='Files'
 					variant='outlined'
-					value={selectedFile.path}
+					value={selectedFile.path.replace('/GROUP_FOLDER/', '')}
 					onFocus={() => setFileListVisible(true)}
 					// onBlur={() => setFileListVisible(false)}
 				/>
+
 				<Box
 					component='ul'
 					sx={{ display: fileListVisible ? 'block' : 'none' }}
 				>
-					{folder?.map((f, i) => (
+					{loading && (
+						<CircularProgress
+							size={16}
+							color='secondary'
+							sx={{ top: 10, left: 10 }}
+						/>
+					)}
+					{!loading && folder?.map((f, i) => (
 						<>
 							<Box
 								sx={{
@@ -109,7 +145,7 @@ const FileChooser = ({
 									{f.name}
 								</Typography>
 							</Box>
-							{i === 0 && <Divider />}
+							{i === 0 && f.name === '..' && <Divider />}
 						</>
 					))}
 				</Box>
