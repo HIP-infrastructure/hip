@@ -34,6 +34,7 @@ const Participants = ({
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [participantEditId, setParticipantEditId] = useState<string>()
 	const [selectedSubject, setSelectedSubject] = useState<string>()
+	const [isCreatingField, setIsCreatingField] = useState(false)
 	const [fields, setFields] = useState<string[]>([
 		'participant_id',
 		'age',
@@ -64,6 +65,7 @@ const Participants = ({
 
 	const handleCreateField = ({ key }: { key: string }) => {
 		if (key) {
+			setIsCreatingField(true)
 			const keys = [...fields, key]
 			setFields(keys)
 
@@ -84,6 +86,9 @@ const Participants = ({
 						})
 						.catch(() => {
 							showNotif('New field not saved', 'error')
+						})
+						.finally(() => {
+							setIsCreatingField(false)
 						})
 				}
 			}
@@ -160,7 +165,7 @@ const Participants = ({
 					>
 						Add new Participant
 					</Button>
-					<CreateField handleCreateField={handleCreateField} />
+					<CreateField handleCreateField={handleCreateField} creating={isCreatingField}/>
 				</Box>
 				<Box
 					sx={{
