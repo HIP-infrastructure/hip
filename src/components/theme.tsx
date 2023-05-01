@@ -3,6 +3,13 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 // See https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=37474f&secondary.color=0277BD
 
+// MEDICAL PLATFORM PALETTE
+// Concrete: #f2f2f2
+// Lynch: #6f7d9b
+// Picton Blue: #1eb7e6 
+// Selective Yellow: #f5b800 
+// Gable Green: #174040
+
 const colors = {
 	primary: '#1eb7e6',
 	secondary: '#174040',

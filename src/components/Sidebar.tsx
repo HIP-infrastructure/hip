@@ -126,13 +126,18 @@ const Sidebar = () => {
 				</List>
 			)}
 			<Divider />
+			<Box>
+				<Tooltip title={`Files`} placement={'bottom'} showTooltip={showTooltip}>
+					<Box></Box>
+				</Tooltip>
+				<Tooltip title={`Chat`} placement={'bottom'} showTooltip={showTooltip}>
+					<Box sx={{ ml: 12 }}></Box>
+				</Tooltip>
+			</Box>
 			{(userCenters || defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
-						<Tooltip
-							title={`Your Private Workspace`}
-							showTooltip={showTooltip}
-						>
+						<Tooltip title={`Your Private Workspace`} showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 2 }}
 								disabled={!userCenters}
@@ -172,10 +177,7 @@ const Sidebar = () => {
 								<ListItemText primary='Desktops' />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip
-							title='Upload your files'
-							showTooltip={showTooltip}
-						>
+						<Tooltip title='Upload your files' showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 4 }}
 								selected={
@@ -191,21 +193,26 @@ const Sidebar = () => {
 								<ListItemText primary='Files' />
 							</ListItemButton>
 						</Tooltip>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							selected={
-								`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
-							}
-							disabled={!userCenters}
-							onClick={() =>
-								handleClickNavigate(`/centers/${center.id}/datasets`)
-							}
+						<Tooltip
+							title='BIDS Tools: Manage your datasets'
+							showTooltip={showTooltip}
 						>
-							<ListItemIcon>
-								<Assignment />
-							</ListItemIcon>
-							<ListItemText primary='BIDS Datasets' />
-						</ListItemButton>
+							<ListItemButton
+								sx={{ pl: 4 }}
+								selected={
+									`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
+								}
+								disabled={!userCenters}
+								onClick={() =>
+									handleClickNavigate(`/centers/${center.id}/datasets`)
+								}
+							>
+								<ListItemIcon>
+									<Assignment />
+								</ListItemIcon>
+								<ListItemText primary='BIDS Datasets' />
+							</ListItemButton>
+						</Tooltip>
 					</List>
 					<Divider />
 				</Box>
@@ -226,10 +233,7 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='projects-subheader'
 				subheader={
-					<Tooltip
-						title='Collaborative Projects'
-						showTooltip={showTooltip}
-					>
+					<Tooltip title='Your collaborative Projects' showTooltip={showTooltip}>
 						<Box
 							sx={{
 								display: 'flex',

@@ -39,3 +39,7 @@ select, button:not(.button-vue), .button, input[type='button'], input[type='subm
     color: #ffffff;
     border-radius: 100px;
 }
+
+.MuiTooltip-arrow::before {
+    color: #f5b800;
+}
