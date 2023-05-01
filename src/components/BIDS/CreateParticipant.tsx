@@ -174,28 +174,6 @@ const CreateParticipant = ({
 										)
 									})}
 								</Grid>
-								{/* 
-							<CreateField
-								handleCreateField={({ key }) => {
-									if (key) {
-										// const nextParticipants = dataset?.Participants?.map(p => ({
-										// 	...p,
-										// 	[key]: '',
-										// }))
-
-										// if (nextParticipants && dataset)
-										// 	setdataset({
-										// 		...dataset,
-										// 		Participants: nextParticipants,
-										// 	})
-
-										if (editMode) {
-											setFields(f => [...f, key])
-										}
-									}
-								}}
-							/>
-*/}
 							</DialogContent>
 
 							<DialogActions>
