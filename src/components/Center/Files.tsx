@@ -29,12 +29,10 @@ export default function Files() {
 				<TitleBar title={'Files'} />
 			</Box>
 
-			<Typography
-			>
-				Nextcloud files{' '}
+			<Box display={'flex'} alignItems={'center'} gap={'0 16px'}>
+				<Typography>Nextcloud files</Typography>
 				{loading && <CircularProgress size={18} color='secondary' />}
-			</Typography>
-
+			</Box>
 			<iframe
 				ref={iFrameRef}
 				title='Nextcloud Files'
