@@ -51,7 +51,12 @@ const Dataset = () => {
 					<Typography>No visualization available yet</Typography>
 					<Link
 						target='_blank'
-						href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`}
+						href={`${window.location.protocol}//${
+							window.location.host
+						}/apps/files/?dir=${selectedFile
+							.split('/')
+							.slice(0, -1)
+							.join('/')}`}
 					>
 						View file in NextCloud
 					</Link>
@@ -104,6 +109,7 @@ const Dataset = () => {
 
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
+					<Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>id: {dataset?.id}</Typography>
 					<DatasetInfo dataset={dataset} />
 				</Box>
 
@@ -137,9 +143,9 @@ const Dataset = () => {
 										component={Paper}
 										sx={{ p: 1, flex: '1 0' }}
 									>
-										{path && (
+										{dataset?.Path && (
 											<FileBrowser
-												path={path}
+												path={dataset.Path}
 												selectedFile={setSelectedFile}
 												showSearch={true}
 											/>
@@ -170,7 +176,9 @@ const Dataset = () => {
 							</Box>
 						</>
 					)}
-					{tabIndex === 1 && <Participants dataset={dataset} setDataset={setDataset} />}
+					{tabIndex === 1 && (
+						<Participants dataset={dataset} setDataset={setDataset} />
+					)}
 					{tabIndex === 2 && <Import dataset={dataset} />}
 				</Box>
 			</Box>
