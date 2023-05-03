@@ -16,6 +16,7 @@ import {
 	SyncProblem,
 	Storage,
 	Help,
+	Schedule,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -263,7 +264,7 @@ const Sidebar = () => {
 					<List component='div' disablePadding>
 						<ListItemButton>
 							<ListItemIcon>
-								<SyncProblem />
+								<Schedule />
 							</ListItemIcon>
 							<ListItemText primary={`You are not part of any project`} />
 						</ListItemButton>

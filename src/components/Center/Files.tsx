@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TitleBar from '../UI/titleBar'
 import { Box, CircularProgress, Typography } from '@mui/material'
+import { DRAWER_WIDTH } from '../../constants'
 
 export default function Files() {
 	const [loading, setLoading] = useState(true)
@@ -39,8 +40,9 @@ export default function Files() {
 				src={'/apps/files'}
 				allow={'autoplay; clipboard-write;'}
 				style={{
-					width: '55vw',
+					width: `calc(100vw - ${DRAWER_WIDTH}px)`,
 					height: 'calc(100vh - 100px)',
+					marginLeft: '-120px',
 					backgroundColor: '#333',
 				}}
 				className='iframe-display'
