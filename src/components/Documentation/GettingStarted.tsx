@@ -112,7 +112,7 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={1}
 							title='Upload'
-							subtitle="Transfer your data to your center's workspace"
+							subtitle="Transfer your data to your center's workspace."
 							description={
 								'Upload up to 1TB directly from the web. Use Nextcloud client for more.'
 							}
@@ -124,7 +124,7 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={2}
 							title='Process'
-							subtitle='Use a Desktop App to process your data'
+							subtitle='Use a Desktop App to process your data.'
 							description={'Use Desktops and run applications'}
 							img='gettingstarted-2.png'
 							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_Desktops_and_run_applications_from_the_App_Catalog.html'
@@ -132,7 +132,7 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={3}
 							title='Collaborate'
-							subtitle='Share your data within projects'
+							subtitle='Share your data within projects.'
 							description={
 								<Box>
 									Convert your files to BIDS (get {' '}
@@ -142,7 +142,7 @@ const GettingStarted = (): JSX.Element => {
 									>
 										support
 									</NavLink>
-									), and transfer your subject to your collaborative project
+									), and transfer your subject to your collaborative project.
 								</Box>
 							}
 							img='gettingstarted-3.png'
@@ -175,7 +175,7 @@ const GettingStarted = (): JSX.Element => {
 							</Link>
 						</Typography>
 						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							User and technical doc
+							User and technical doc.
 						</Typography>
 					</Grid>
 					<Grid item xs={6}>
@@ -185,7 +185,7 @@ const GettingStarted = (): JSX.Element => {
 							</Link>
 						</Typography>
 						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							A platform for processing and sharing intracerebral EEG data
+							A platform for processing and sharing intracerebral EEG data.
 						</Typography>
 					</Grid>
 					<Grid item xs={6}>
