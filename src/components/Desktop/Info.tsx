@@ -10,6 +10,7 @@ const SessionInfo = ({ desktop }: { desktop?: Container }) => {
 		<Card
 			sx={{
 				minWidth: DRAWER_WIDTH,
+				pb: 2
 			}}
 		>
 			<CardContent>
