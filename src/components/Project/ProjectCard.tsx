@@ -49,7 +49,6 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 				<Card
 					sx={{
 						width: 320,
-						height: 440,
 					}}
 					key={`center-${project.title}`}
 				>
