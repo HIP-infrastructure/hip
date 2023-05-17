@@ -54,17 +54,17 @@ const AppList = ({ desktop, containers, handleToggleApp }: Props) => {
 	return (
 		<List
 			sx={{
+				pt: 1,
 				mb: 6,
 				width: '100%',
 				maxWidth: 360,
-				bgcolor: 'background.paper',
+				bgcolor: 'grey.100',
 				position: 'relative',
 				overflow: 'auto',
 				'& ul': { padding: 0 },
 			}}
 			subheader={<li />}
 		>
-			<ListItem sx={{ fontSize: 22 }}>Applications</ListItem>
 			{availableAppsForDesktop?.map(app => (
 				<SmallToolTip
 					key={app.name}
