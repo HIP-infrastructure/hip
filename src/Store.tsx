@@ -19,6 +19,15 @@ import {
 	UserCredentials,
 } from './api/types'
 
+const sortApps = (data: Application[]) => {
+	return data.sort((a, b) => {
+		const aa = a?.label || a.name
+		const bb = b?.label || b.name
+
+		return aa.localeCompare(bb)
+	})
+}
+
 export interface IAppState {
 	debug: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 	tooltips: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
@@ -126,7 +135,7 @@ export const AppStoreProvider = ({
 		getCenters()
 			.then(centers => {
 				if (centers) {
-					setCenters(centers)
+					setCenters(centers.sort((a,b) => a.label.localeCompare(b.label)))
 				}
 			})
 			.catch(error => {
@@ -144,7 +153,9 @@ export const AppStoreProvider = ({
 			})
 
 		getAvailableAppList()
-			.then(data => setAvailableApps(data))
+			.then(data => {
+				setAvailableApps(sortApps(data))
+			})
 			.catch(error => {
 				console.error(error) // eslint-disable-line no-console
 			})
