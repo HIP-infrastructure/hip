@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := help
 
+include ../.env
+export
+
 #dep: @ Install all depencies defined in package.json
 dep:
 	npm install

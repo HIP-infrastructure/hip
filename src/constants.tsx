@@ -3,7 +3,12 @@ import { IEntity } from './api/types'
 export const ROUTE_PREFIX = '/apps/hip'
 export const APP_MARGIN_TOP = 50
 export const DRAWER_WIDTH = 240
-export const POLLING = 2
+export const POLLING = Number(process.env.REACT_APP_POLLING_INTERVAL) || 2
+
+export const linkStyle = {
+	textDecoration: 'underline',
+	color: '#0277bd',
+}
 
 export const DATA_TYPES = [
 	{ name: 'anat', description: 'structural imaging data' },
@@ -12,7 +17,7 @@ export const DATA_TYPES = [
 
 export const MODALITIES: {
 	name: string
-	type: 'anat' | 'ieeg'
+	type: 'anat' | 'ieeg' | 'ct'
 }[] = [
 	{
 		name: 'T1w',
@@ -42,6 +47,10 @@ export const MODALITIES: {
 		name: 'photo',
 		type: 'ieeg',
 	},
+	{
+		name: 'ct',
+		type: 'ct',
+	},
 ]
 
 export const ENTITIES: IEntity[] = [
@@ -57,6 +66,10 @@ export const ENTITIES: IEntity[] = [
 			},
 			{
 				dataType: 'ieeg',
+				required: false,
+			},
+			{
+				dataType: 'ct',
 				required: false,
 			},
 		],
@@ -90,6 +103,10 @@ export const ENTITIES: IEntity[] = [
 				dataType: 'ieeg',
 				required: false,
 			},
+			{
+				dataType: 'ct',
+				required: false,
+			},
 		],
 		options: [],
 	},
@@ -103,6 +120,10 @@ export const ENTITIES: IEntity[] = [
 				dataType: 'anat',
 				required: false,
 			},
+			{
+				dataType: 'ct',
+				required: false,
+			},
 		],
 		options: [],
 	},
@@ -114,6 +135,10 @@ export const ENTITIES: IEntity[] = [
 		requirements: [
 			{
 				dataType: 'anat',
+				required: false,
+			},
+			{
+				dataType: 'ct',
 				required: false,
 			},
 		],

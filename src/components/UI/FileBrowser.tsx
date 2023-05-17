@@ -1,44 +1,12 @@
 import { TreeItem, treeItemClasses, TreeItemProps, TreeView } from '@mui/lab'
 import { Box, CircularProgress, TextField } from '@mui/material'
 import { alpha, styled } from '@mui/material/styles'
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getFiles2, getGroupFolders, search } from '../../api/gatewayClientAPI'
-import { File2, GroupFolder, ISearch } from '../../api/types'
-import { useAppStore } from '../../store/appProvider'
-
-function MinusSquare(props: SvgIconProps) {
-	return (
-		<SvgIcon fontSize='inherit' style={{ width: 14, height: 14 }} {...props}>
-			{/* tslint:disable-next-line: max-line-length */}
-			<path d='M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z' />
-		</SvgIcon>
-	)
-}
-
-function PlusSquare(props: SvgIconProps) {
-	return (
-		<SvgIcon fontSize='inherit' style={{ width: 14, height: 14 }} {...props}>
-			{/* tslint:disable-next-line: max-line-length */}
-			<path d='M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z' />
-		</SvgIcon>
-	)
-}
-
-function CloseSquare(props: SvgIconProps) {
-	return (
-		<SvgIcon
-			className='close'
-			fontSize='inherit'
-			style={{ width: 14, height: 14 }}
-			{...props}
-		>
-			{/* tslint:disable-next-line: max-line-length */}
-			<path d='M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z' />
-		</SvgIcon>
-	)
-}
+import { ISearch, Node } from '../../api/types'
+import { useAppStore } from '../../Store'
+import { DocumentSquare, MinusSquare, PlusSquare } from './Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -55,60 +23,68 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 	},
 }))
 
-const root = {
-	name: 'root',
-	isDirectory: true,
-	path: '/',
-	parentPath: 'root',
-}
-
-const FileBrowser = () => {
-	const [files, setFiles] = React.useState<File2[]>([root])
-	const [expanded, setExpanded] = React.useState(['/'])
-	const [term, setTerm] = React.useState('')
-	const [filesCache, setFilesCache] = React.useState<File2[]>([])
-	const [groupFolders, setGroupFolders] = React.useState<GroupFolder[] | null>(
-		null
-	)
+const FileBrowser = ({
+	path,
+	showGroups,
+	showSearch,
+	selectedFile,
+}: {
+	path?: string
+	showGroups?: boolean
+	showSearch?: boolean
+	selectedFile?: (path: string) => void
+}) => {
+	const rootFile = {
+		name: 'root',
+		isDirectory: true,
+		path: path || '/',
+		parentPath: 'root',
+	}
 
 	const {
 		user: [user],
 	} = useAppStore()
 
+	const [files, setFiles] = useState<Node[]>([rootFile])
+	const [groups, setGroups] = useState<string[] | null>(null)
+	const [expanded, setExpanded] = useState([rootFile.path])
+	const [term, setTerm] = useState('')
+	const [filesCache, setFilesCache] = useState<Node[]>([])
+
 	useEffect(() => {
-		getFiles2('/').then(data => {
+		getFiles2(path || '/').then(data => {
 			const r = sortFile(data)
 			setFiles(r)
 			setFilesCache(r)
 		})
-	}, [])
+	}, [path])
 
 	useEffect(() => {
+		if (!showGroups) return
+
 		getGroupFolders(user?.uid).then(groupFolders => {
-			setGroupFolders(groupFolders)
+			setGroups(groupFolders?.map(g => g.label))
 		})
-	}, [user])
+	}, [showGroups, user, setGroups])
 
 	useEffect(() => {
-		if (!groupFolders) return
-
-		const r = sortFile([
-			...files,
-			...(groupFolders?.map(group => ({
-				name: group.label,
-				isDirectory: true,
-				path: `/groupfolder/${group.label}`,
-				parentPath: '/',
-			})) || []),
-		])
-
-		setFiles(r)
-	}, [groupFolders])
+		setFiles(files =>
+			sortFile([
+				...files,
+				...(groups?.map(name => ({
+					name,
+					isDirectory: true,
+					path: `/GROUP_FOLDER/${name}`,
+					parentPath: '/',
+				})) || []),
+			])
+		)
+	}, [groups])
 
 	useEffect(() => {
 		if (term.length > 1) {
 			search(term).then((result: ISearch) => {
-				const nextFiles: File2[] = result.entries.map(file => ({
+				const nextFiles: Node[] = result.entries.map(file => ({
 					name: file.title,
 					isDirectory: false,
 					path: file.attributes.path,
@@ -146,33 +122,38 @@ const FileBrowser = () => {
 		}
 	}, [term, filesCache, setFiles])
 
-	const sortFile = (data: File2[]) =>
-		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
+	const sortFile = (data: Node[]) =>
+		data.sort((a: Node, b: Node) => -b.name.localeCompare(a.name))
 
-	const renderLabel = (item: File2) => {
+	const renderLabel = (file: Node) => {
 		return (
-			(files.find(i => i.parentPath === item.path) && (
-				<span>{item.name}</span>
+			// file exists, don't load it again
+			(files.find(i => i.parentPath === file.path) && (
+				<span>{file.name}</span>
 			)) || (
 				<span
 					onClick={event => {
 						event.stopPropagation()
 						event.preventDefault()
 
-						getFiles2(item.path)
-							.then(data => setFiles(f => [...f, ...data]))
-							.then(() => {
-								setExpanded(items => [...items, item.path])
-							})
+						if (file.isDirectory) {
+							getFiles2(file.path)
+								.then(data => setFiles(f => [...f, ...data]))
+								.then(() => {
+									setExpanded(items => [...items, file.path])
+								})
+						} else {
+							selectedFile && selectedFile(file.path)
+						}
 					}}
 				>
-					{item.name}
+					{file.name}
 				</span>
 			)
 		)
 	}
 
-	const subItems = (file: File2) => {
+	const subFiles = (file: Node) => {
 		const items = files
 			?.filter(f => new RegExp(file.path).test(f.parentPath || ''))
 			?.filter(f => {
@@ -183,12 +164,12 @@ const FileBrowser = () => {
 				return false
 			})
 			.map(f => (
-				<StyledTreeItem key={file.path} label={renderLabel(f)} nodeId={f.path}>
-					{subItems(f)}
+				<StyledTreeItem key={f.path} label={renderLabel(f)} nodeId={f.path}>
+					{subFiles(f)}
 				</StyledTreeItem>
 			))
 
-		// Display a fake item to show the expand icon
+		// At root: display a fake item to show the expand icon
 		return file.isDirectory ? (
 			items.length > 0 ? (
 				items
@@ -207,21 +188,23 @@ const FileBrowser = () => {
 					sx={{ top: 10, left: 10 }}
 				/>
 			)}
-			<TextField
-				id='search-textfield'
-				sx={{ width: '100%', mb: 2 }}
-				onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
-					setTerm(e.target.value)
-				}
-				label='Search'
-				variant='outlined'
-			/>
+			{showSearch && (
+				<TextField
+					id='search-textfield'
+					sx={{ width: '100%', mb: 2 }}
+					onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
+						setTerm(e.target.value)
+					}
+					label='Search'
+					variant='outlined'
+				/>
+			)}
 			<TreeView
 				aria-label='file system navigator'
-				defaultExpanded={[root.path]}
+				defaultExpanded={[rootFile.path]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
-				defaultEndIcon={<CloseSquare />}
+				defaultEndIcon={<DocumentSquare />}
 				onNodeToggle={(_event, filesIds: string[]) => {
 					const clickedId = filesIds[0]
 					const directoryExists = files.find(f => f.parentPath === clickedId)
@@ -243,14 +226,14 @@ const FileBrowser = () => {
 				}}
 			>
 				{files
-					.filter(f => f.parentPath === '/')
+					.filter(f => f.parentPath === rootFile.path)
 					.map(file => (
 						<StyledTreeItem
 							key={file.path}
 							label={renderLabel(file)}
 							nodeId={file.path}
 						>
-							{subItems(file)}
+							{subFiles(file)}
 						</StyledTreeItem>
 					))}
 			</TreeView>

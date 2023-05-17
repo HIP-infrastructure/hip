@@ -1,29 +1,17 @@
-export interface APIContainersResponse {
-	data?: Container[]
-	error?: string
-}
+export type WorkspaceType = 'private' | 'collab'
+
 export interface Container {
 	id: string
 	name: string
-	user: string
+	userId: string
 	url: string
 	state: ContainerState
 	error: Error | null
 	type: ContainerType
 	parentId?: string
-	apps?: AppContainer[]
-}
-
-export interface GroupFolder {
-	id: number
-	label: string
-	path: string
-}
-
-export type AppContainer = Container & ContainerOptions
-
-export interface ContainerOptions {
-	app: string
+	groupIds?: string[]
+	workspace: WorkspaceType
+	apps?: any
 }
 
 export enum ContainerState {
@@ -31,14 +19,16 @@ export enum ContainerState {
 	CREATED = 'created',
 	LOADING = 'loading',
 	RUNNING = 'running',
-	STOPPING = 'stopping',
+	PAUSING = 'pausing',
+	RESUMING = 'resuming',
 	PAUSED = 'paused',
+	STOPPING = 'stopping',
 	EXITED = 'exited',
 	DESTROYED = 'destroyed',
 }
 
 export enum ContainerType {
-	SESSION = 'server',
+	DESKTOP = 'server',
 	APP = 'app',
 }
 
@@ -48,6 +38,7 @@ export interface UserCredentials {
 	isAdmin?: boolean
 	password?: string
 	groups?: string[]
+	hasProjectsAdminRole?: boolean
 }
 
 export interface NavigationItem {
@@ -67,11 +58,18 @@ export interface User {
 	id: string
 	displayName?: string | null
 	email?: string | null
-	lastLogin: number
+	lastLogin?: number
 	groups?: string[]
-	enabled: boolean
+	enabled?: boolean
 }
-export interface HIPGroup {
+
+export interface GroupFolder {
+	id: number
+	label: string
+	path: string
+}
+
+export interface HIPCenter {
 	label: string
 	id: string
 	pi: string
@@ -85,6 +83,22 @@ export interface HIPGroup {
 		[index: string]: string
 	}
 	users?: User[]
+}
+
+export interface HIPProject {
+	name: string
+	title: string
+	description?: string
+	acceptMembershipRequest?: boolean
+	isMember?: boolean
+	admins?: string[]
+	members?: string[]
+	dataset?: BIDSDataset
+}
+
+export interface ImportSubjectDto {
+	datasetPath: string
+	subjectId: string
 }
 
 export interface Application {
@@ -114,11 +128,23 @@ export interface TreeNode {
 	children?: boolean
 }
 
-export interface File2 {
+export interface Node {
 	name: string
 	isDirectory: boolean
 	path: string
-	parentPath?: string
+	parentPath: string
+}
+
+export interface InspectResult {
+	name: string
+	type: 'file' | 'dir' | 'symlink'
+	size: number
+	relativePath: string
+	children: InspectResult[]
+	modifyTime: string
+	changeTime: string
+	birthTime: string
+	accessTime: string
 }
 
 export interface Document {
@@ -142,10 +168,7 @@ export interface Participant {
 
 export type BIDSDatasetResponse = { data?: BIDSDataset[]; error?: Error }
 
-export interface BIDSDataset {
-	id: string
-	path?: string
-	participants?: Participant[]
+export interface BIDSDatasetDescription {
 	Name: string
 	BIDSVersion?: string
 	License?: string
@@ -155,6 +178,47 @@ export interface BIDSDataset {
 	Funding?: string[]
 	ReferencesAndLinks?: string[]
 	DatasetDOI?: string
+}
+
+export interface BIDSDataset extends BIDSDatasetDescription {
+	id: string
+	User?: string
+	Path?: string
+	CreationDate: string
+	ParticipantsCount: number
+	ParticipantsGroups: string[]
+	// AgeRange: number[]
+	AgeMin: number[]
+	AgeMax: number[]
+	Participants?: Participant[]
+	SessionsCount?: number
+	Tasks?: string[]
+	RunsCount?: number
+	DataTypes?: string[]
+	Formats?: string[]
+	ECOGChannelCount?: number
+	SEEGChannelCount?: number
+	EEGChannelCount?: number
+	EOGChannelCount?: number
+	ECGChannelCount?: number
+	EMGChannelCount?: number
+	MiscChannelCount?: number
+	TriggerChannelCount?: number
+	SamplingFrequency?: number
+	RecordingDuration?: number
+	EventsFileCount?: number
+	Size?: string
+	FileCount?: number
+	BIDSSchemaVersion?: string
+	BIDSErrors?: []
+	BIDSWarnings?: []
+	BIDSIgnored?: []
+	BIDSValid?: boolean
+}
+
+export interface BIDSDatasetsQueryResponse {
+	datasets?: BIDSDataset[]
+	total?: number
 }
 
 export type IOption = { label: string; inputValue?: string }
@@ -237,8 +301,7 @@ export interface IError {
 
 export interface CreateBidsDatasetDto {
 	readonly owner: string
-	readonly dataset: string
-	readonly path: string // relative path for user or group eg: data/file.md
+	readonly parent_path: string // relative path for user or group eg: data/file.md
 
 	readonly DatasetDescJSON: {
 		readonly Name: string
@@ -255,10 +318,9 @@ export interface CreateBidsDatasetDto {
 
 export interface CreateSubjectDto {
 	readonly owner: string
-	readonly dataset: string
-	readonly path: string // relative path for user or group eg: data/file.md
+	readonly dataset_path: string
 	subjects: Participant[]
-	readonly files: File[]
+	readonly files: BIDSFile[]
 }
 
 export interface EditSubjectClinicalDto {
@@ -271,7 +333,7 @@ export interface EditSubjectClinicalDto {
 	}
 }
 
-export interface File {
+export interface BIDSFile {
 	modality: string
 	subject: string
 	path: string
@@ -280,45 +342,6 @@ export interface File {
 	}
 }
 
-export interface GetBidsDatasetDto {
-	readonly owner: string
-	readonly dataset: string
-	readonly path: string // relative path for user or group eg: data/file.md
-	BIDS_definitions: string[]
-}
-
-export class BidsDatasetDefinitionDto {
-	'BIDS_definitions': {
-		Anat: {
-			keylist: string[]
-			required_keys: string[]
-			allowed_modalities: string[]
-			allowed_file_formats: string[]
-			readable_file_formats: string[]
-			required_protocol_keys: []
-		}
-		AnatJSON: {
-			keylist: string[]
-		}
-		Ieeg: {
-			keylist: string[]
-			required_keys: string[]
-			allowed_modalities: string[]
-			allowed_file_formats: string[]
-			readable_file_formats: string[]
-			channel_type: string[]
-			mod_channel_type: string[]
-			required_protocol_keys: []
-		}
-		IeegJSON: {
-			keylist: string[]
-			required_keys: string[]
-		}
-		DatasetDescJSON: {
-			keylist: string[]
-			required_keys: string[]
-			filename: string
-			bids_version: string
-		}
-	}
+export interface CreateBidsDatasetParticipantsTsvDto {
+	readonly Participants: Participant[]
 }

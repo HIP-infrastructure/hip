@@ -1,4 +1,5 @@
-import { API_GATEWAY, checkError } from './gatewayClientAPI'
+import { API_GATEWAY, catchError, checkForError } from './gatewayClientAPI'
+
 import {
 	BIDSDataset,
 	BIDSDatasetResponse,
@@ -6,18 +7,88 @@ import {
 	CreateBidsDatasetDto,
 	CreateSubjectDto,
 	EditSubjectClinicalDto,
+	CreateBidsDatasetParticipantsTsvDto,
 	IError,
 	Participant,
+	BIDSDatasetsQueryResponse
 } from './types'
 
-export const getBidsDatasets = async (
-	owner?: string
-): Promise<BIDSDataset[]> => {
-	return fetch(`${API_GATEWAY}/tools/bids/datasets?owner=${owner}`, {
+export const createBidsDatasetsIndex = async (): Promise<void> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
+	return fetch(url, {
 		headers: {
+			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const refreshBidsDatasetsIndex = async (
+	owner?: string
+): Promise<BIDSDataset[]> => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/refresh_index?owner=${owner}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const indexBidsDataset = async (
+	owner?: string,
+	path?: string
+): Promise<BIDSDataset> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/index?owner=${owner}&path=${path}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const deleteBidsDataset = async (
+	owner?: string,
+	path?: string
+): Promise<BIDSDataset> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/delete?owner=${owner}&path=${path}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const queryBidsDatasets = async (
+	userId?: string,
+	query = '*',
+	page = 1,
+	nbOfResults = 200,
+	ageRange = [0, 100],
+	participantsCountRange = [0, 200],
+	datatypes: string[]  = ['*']
+): Promise<BIDSDatasetsQueryResponse> => {
+	if (!userId) return { datasets: [], total: 0 }
+
+	const url = `${API_GATEWAY}/tools/bids/datasets/search?query=${query}&ageRange=${ageRange}&participantsCountRange=${participantsCountRange}&datatypes=${datatypes}&owner=${userId}&page=${page}&nbOfResults=${nbOfResults}`
+	return fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
 
 export const createBidsDataset = async (
@@ -31,7 +102,9 @@ export const createBidsDataset = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(CreateBidsDatasetDto),
-	}).then(data => data.json())
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
 
 export const getParticipants = async (
@@ -43,7 +116,27 @@ export const getParticipants = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(data => data.json())
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
+export const writeParticipantsTSV = async (
+	userId: string | undefined,
+	datasetPath: string,
+	createBidsDatasetParticipantsTsvDto: CreateBidsDatasetParticipantsTsvDto
+): Promise<any> => {
+	const url = `${API_GATEWAY}/tools/bids/dataset/write_participants_tsv?owner=${userId}&datasetPath=${datasetPath}`
+	return fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(createBidsDatasetParticipantsTsvDto),
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
 
 export const getSubject = async (
@@ -56,7 +149,9 @@ export const getSubject = async (
 		headers: {
 			requesttoken: window.OC.requestToken,
 		},
-	}).then(checkError)
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
 
 export const importSubject = async (
@@ -70,23 +165,21 @@ export const importSubject = async (
 			requesttoken: window.OC.requestToken,
 		},
 		body: JSON.stringify(createSubject),
-	}).then(checkError)
+	})
+		.then(checkForError)
+		.catch(catchError)
 }
 
 export const subEditClinical = async (
 	editSubject: EditSubjectClinicalDto
-): Promise<EditSubjectClinicalDto> => {
-	const url = `${API_GATEWAY}/tools/bids/subject`
-	try {
-		return await fetch(url, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				requesttoken: window.OC.requestToken,
-			},
-			body: JSON.stringify(editSubject),
-		}).then(checkError)
-	} catch (error) {
-		return Promise.reject(error)
-	}
-}
+): Promise<EditSubjectClinicalDto> =>
+	await fetch(`${API_GATEWAY}/tools/bids/subject`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+		body: JSON.stringify(editSubject),
+	})
+		.then(checkForError)
+		.catch(catchError)

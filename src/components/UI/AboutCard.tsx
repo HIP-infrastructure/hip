@@ -9,12 +9,9 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Doc } from '../About'
-
-const linkStyle = {
-	textDecoration: 'underline',
-	color: '#0277bd',
-}
+import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { linkStyle } from '../../constants'
+import { Doc } from '../Documentation/About'
 
 const AboutCard = ({ doc }: { doc: Doc }) => {
 	const handleClickLink = ({ url, target }: Doc) => {
@@ -37,7 +34,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 					<CardMedia
 						component='img'
 						height='160'
-						src={`${process.env.REACT_APP_GATEWAY_API}/${doc.image}`}
+						src={`${API_GATEWAY}/${doc.image}`}
 						alt={doc.label}
 						title={doc.credit}
 					/>

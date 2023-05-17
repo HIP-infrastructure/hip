@@ -1,53 +1,94 @@
 import { Article, Folder } from '@mui/icons-material'
-import { Box, Divider, TextField, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
-import { getFiles2 } from '../../api/gatewayClientAPI'
-import { File2 } from '../../api/types'
+import {
+	Box,
+	CircularProgress,
+	Divider,
+	TextField,
+	Typography,
+} from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
+import { getFiles2, getGroupFolders } from '../../api/gatewayClientAPI'
+import { Node } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
+import { useAppStore } from '../../Store'
 
-const root: File2 = {
+const root: Node = {
 	name: '/',
 	isDirectory: true,
 	path: '/',
 	parentPath: 'root',
 }
 
-const FileChooser = (): JSX.Element => {
-	const [files, setFiles] = React.useState<File2[]>([root])
-	const [fileListVisible, setFileListVisible] = React.useState(false)
-	const [requestSent, setRequestSent] = React.useState(false)
-	const [selectedFile, setSelectedFile] = React.useState<File2>(root)
+const sortFile = (data: Node[]) =>
+	data.sort((a: Node, b: Node) => -b.name.localeCompare(a.name))
+
+const FileChooser = ({
+	handleSelectedFile,
+}: {
+	handleSelectedFile?: (path: string) => void
+}): JSX.Element => {
+	const [files, setFiles] = useState<Node[]>([root])
+	const [groups, setGroups] = useState<string[] | null>(null)
+	const [fileListVisible, setFileListVisible] = useState(false)
+	const [selectedFile, setSelectedFile] = useState<Node>(root)
+	const [loading, setLoading] = useState(false)
 	const { showNotif } = useNotification()
 
+	const {
+		user: [user],
+	} = useAppStore()
+
 	useEffect(() => {
-		const exists = files.find(i => i.parentPath === selectedFile.path)
-		if (!exists) {
-			setRequestSent(true)
-			getFiles2(selectedFile.path)
+		handleSelectedFile && handleSelectedFile(selectedFile.path)
+
+		const exists =
+			files.find(i => i.parentPath === selectedFile.path)?.name !== undefined
+		const isDirectory = selectedFile.isDirectory
+
+		if (!exists && isDirectory) {
+			setLoading(true)
+			getFiles2(selectedFile.path || '/')
 				.then(data => {
-					setFiles(f => sortFile([...f, ...data]))
+					// remove duplicates
+					const nextData = Array.from(new Set([...files, ...data]))
+					setFiles(f => sortFile(nextData))
+					setLoading(false)
 				})
 				.catch(err => {
 					showNotif(err.message, 'error')
-				}).finally(() => {
-					setRequestSent(false)
 				})
+				.finally(() => setLoading(false))
 		}
-	}, [selectedFile, files, showNotif, setRequestSent])
+	}, [selectedFile.path, setFiles])
 
-	const sortFile = (data: File2[]) =>
-		data.sort((a: File2, b: File2) => -b.name.localeCompare(a.name))
+	useEffect(() => {
+		if (groups) return
+
+		getGroupFolders(user?.uid).then(groupFolders => {
+			setGroups(groupFolders?.map(g => g.label))
+		})
+	}, [user, setGroups, groups])
+
+	useEffect(() => {
+		const hasGroup = groups && files.some(f => groups.includes(f.name))
+		if (hasGroup) return
+
+		setFiles(files =>
+			sortFile([
+				...files,
+				...(groups?.map(name => ({
+					name,
+					isDirectory: true,
+					path: `/GROUP_FOLDER/${name}`,
+					parentPath: '/',
+				})) || []),
+			])
+		)
+	}, [groups, files, setFiles])
 
 	const parent = files?.find(f => f.path === selectedFile.parentPath)
-	const currentFolder: File2[] = [
-		...(files
-			?.filter(f => new RegExp(selectedFile.path).test(f.parentPath || ''))
-			?.filter(f => {
-				// filter out files that are not in the current directory
-				return (
-					f.path.split('/').length <= selectedFile.path.split('/').length + 1
-				)
-			}) || []),
+	const currentFolder: Node[] = [
+		...(files?.filter(f => selectedFile.path === f.parentPath) || []),
 	]
 	const folder = parent
 		? [{ ...parent, name: '..' }, ...currentFolder]
@@ -61,15 +102,23 @@ const FileChooser = (): JSX.Element => {
 					sx={{ width: '100%', mb: 2 }}
 					label='Files'
 					variant='outlined'
-					value={selectedFile.path}
+					value={selectedFile.path.replace('/GROUP_FOLDER/', '')}
 					onFocus={() => setFileListVisible(true)}
 					// onBlur={() => setFileListVisible(false)}
 				/>
+
 				<Box
 					component='ul'
 					sx={{ display: fileListVisible ? 'block' : 'none' }}
 				>
-					{folder?.map((f, i) => (
+					{loading && (
+						<CircularProgress
+							size={16}
+							color='secondary'
+							sx={{ top: 10, left: 10 }}
+						/>
+					)}
+					{!loading && folder?.map((f, i) => (
 						<>
 							<Box
 								sx={{
@@ -77,14 +126,14 @@ const FileChooser = (): JSX.Element => {
 									alignItems: 'top',
 									gap: 1,
 									'&:hover': { backgroundColor: 'whitesmoke' },
-									cursor: requestSent ? 'wait': 'pointer',
+									cursor: 'pointer',
 								}}
 								component='li'
 								key={f.path}
 								onClick={(
 									event: React.MouseEvent<HTMLDivElement, MouseEvent>
 								) => {
-									!requestSent && setSelectedFile(f)
+									setSelectedFile(f)
 								}}
 							>
 								{f.isDirectory ? (
@@ -96,7 +145,7 @@ const FileChooser = (): JSX.Element => {
 									{f.name}
 								</Typography>
 							</Box>
-							{i === 0 && <Divider />}
+							{i === 0 && f.name === '..' && <Divider />}
 						</>
 					))}
 				</Box>

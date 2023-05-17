@@ -1,3 +1,5 @@
+import { Add } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import { Button, TextField, Box, Tooltip } from '@mui/material'
 import React, { useState } from 'react'
 
@@ -7,9 +9,10 @@ interface Field {
 
 interface ICreateField {
 	handleCreateField: ({ key }: Field) => void
+	creating: boolean
 }
 
-const CreateField = ({ handleCreateField }: ICreateField) => {
+const CreateField = ({ handleCreateField, creating }: ICreateField) => {
 	const [show, setShow] = useState(false)
 	const [field, setField] = useState<Field>()
 
@@ -24,16 +27,19 @@ const CreateField = ({ handleCreateField }: ICreateField) => {
 	return (
 		<>
 			{!show && (
-				<Tooltip title='Add a new field to BIDS Clinical data'>
-					<Button
+				<Tooltip title='Add a new column to the BIDS participants.tsv file'>
+					<LoadingButton
 						onClick={() => setShow(!show)}
 						variant='outlined'
 						color='primary'
 						size='small'
+						loading={creating}
+						loadingPosition='start'
+						startIcon={<Add />}
 						sx={{ mt: 0.5, mb: 2, ml: 0.5 }}
 					>
-						Add Key
-					</Button>
+						Add Column
+					</LoadingButton>
 				</Tooltip>
 			)}
 			{show && (
