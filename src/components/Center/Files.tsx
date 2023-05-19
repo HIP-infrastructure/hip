@@ -7,7 +7,6 @@ export default function Files() {
 	const [loading, setLoading] = useState(true)
 	const iFrameRef = useRef<HTMLIFrameElement>(null)
 
-	// Check for XPra readiness
 	useEffect(() => {
 		if (!iFrameRef.current) return
 

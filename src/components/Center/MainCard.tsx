@@ -126,7 +126,7 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 											<SocialButton
 												key={key}
 												network={key}
-												url={group.socialnetwork[key]}
+												url={group.socialnetwork && group.socialnetwork[key] || ''}
 											></SocialButton>
 										)
 								)}

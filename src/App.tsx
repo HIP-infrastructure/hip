@@ -3,14 +3,13 @@ import { Box, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
-import About from './components/Documentation/About'
 import Admin from './components/Center/Admin'
 import AppList from './components/Documentation/AppList'
 import Dataset from './components/BIDS/Dataset'
 import Datasets from './components/BIDS/Datasets'
 import Centers from './components/Centers'
 import CenterWorkspace from './components/Center/Workspace'
-import Documentation from './components/Documentation/Documentation'
+import About from './components/Documentation/About'
 import CreateProject from './components/Projects/Create'
 import ProjectWorkspace from './components/Project/Workspace'
 import ProjectDataset from './components/Project/Dataset'
@@ -78,7 +77,6 @@ const App = () => (
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
 			<Route index element={<GettingStarted />} />
 			<Route path={'apps'} element={<AppList />} />
-			<Route path={'documentation'} element={<Documentation />} />
 			<Route path={'about'} element={<About />} />
 			<Route path={'admin'} element={<Admin />} />
 			<Route path={'centers'} element={<Outlet />}>
