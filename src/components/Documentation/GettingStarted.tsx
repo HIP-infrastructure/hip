@@ -26,7 +26,7 @@ function GettingStartedCard({
 	img,
 	video,
 	link,
-	linkName
+	linkName,
 }: any) {
 	return (
 		<Card sx={{ width: 360, textAlign: 'center', alignSelf: 'stretch' }}>
@@ -35,6 +35,7 @@ function GettingStartedCard({
 					component='img'
 					height='222'
 					image={`/api/v1/public/media/${img}`}
+					sx={{ borderBottom: '1px solid #e0e0e0' }}
 				/>
 			)}
 			{video && (
@@ -192,9 +193,7 @@ const GettingStarted = (): JSX.Element => {
 							step={1}
 							title='Find your community'
 							subtitle='Find your center and join the community'
-							description={
-								''
-							}
+							description={''}
 							img='gettingstarted_community1.png'
 						/>
 						<GettingStartedCard
@@ -212,7 +211,6 @@ const GettingStarted = (): JSX.Element => {
 							link={'/call/yizibxg5'}
 							linkName='Support'
 						/>
-						
 					</Box>
 				</Box>
 			</Box>
