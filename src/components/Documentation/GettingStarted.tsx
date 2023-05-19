@@ -26,6 +26,7 @@ function GettingStartedCard({
 	img,
 	video,
 	link,
+	linkName
 }: any) {
 	return (
 		<Card sx={{ width: 360, textAlign: 'center', alignSelf: 'stretch' }}>
@@ -84,7 +85,7 @@ function GettingStartedCard({
 							window.location.href = link
 						}}
 					>
-						Documentation
+						{linkName || 'Documentation'}
 					</Button>
 				)}
 			</CardActions>
@@ -209,6 +210,7 @@ const GettingStarted = (): JSX.Element => {
 							subtitle='Use the support chat to ask questions and get help'
 							img='gettingstarted-1.png'
 							link={'/call/yizibxg5'}
+							linkName='Support'
 						/>
 						
 					</Box>
