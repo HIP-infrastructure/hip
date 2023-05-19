@@ -157,7 +157,7 @@ const GettingStarted = (): JSX.Element => {
 									Convert your files to BIDS (get{' '}
 									<NavLink
 										style={linkStyle}
-										to={`https://thehip.app/call/yizibxg5`}
+										to={`/call/yizibxg5`}
 									>
 										support
 									</NavLink>
