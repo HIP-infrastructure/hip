@@ -249,10 +249,7 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='projects-subheader'
 				subheader={
-					<Tooltip
-						title='Your collaborative Projects'
-						showTooltip={showTooltip}
-					>
+					<Tooltip title={`Your projects ${user?.hasProjectsAdminRole ? 'As an admin, you can create new projects': ''}`} showTooltip={showTooltip}>
 						<Box
 							sx={{
 								display: 'flex',
@@ -389,15 +386,17 @@ const Sidebar = () => {
 							<Divider />
 						</Box>
 					))}
-				<ListItemButton
-					selected={`${ROUTE_PREFIX}/projects` === pathname}
-					onClick={() => handleClickNavigate('/projects')}
-				>
-					<ListItemIcon>
-						<Apps />
-					</ListItemIcon>
-					<ListItemText primary='Collaborative projects' />
-				</ListItemButton>
+				<Tooltip title='Project list' showTooltip={showTooltip}>
+					<ListItemButton
+						selected={`${ROUTE_PREFIX}/projects` === pathname}
+						onClick={() => handleClickNavigate('/projects')}
+					>
+						<ListItemIcon>
+							<Apps />
+						</ListItemIcon>
+						<ListItemText primary='Collaborative projects' />
+					</ListItemButton>
+				</Tooltip>
 			</List>
 			<Divider />
 			<List
@@ -418,6 +417,7 @@ const Sidebar = () => {
 					<ListItemText primary='Getting Started' />
 				</ListItemButton>
 
+				<Tooltip title='About the HIP. Participating Centers. App catalog' showTooltip={showTooltip}>
 				<ListItemButton
 					selected={`${ROUTE_PREFIX}/about` === pathname}
 					onClick={() => {
@@ -431,6 +431,7 @@ const Sidebar = () => {
 					<ListItemText primary='About' />
 					{openTools ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
+				</Tooltip>
 				<Collapse in={openTools} timeout='auto' unmountOnExit>
 					<List>
 						<ListItemButton
@@ -457,7 +458,7 @@ const Sidebar = () => {
 				</Collapse>
 				<ListItemButton
 					onClick={() => {
-						window.location.href = 'https://thehip.app/call/yizibxg5'
+						window.location.href = '/call/yizibxg5'
 					}}
 				>
 					<ListItemIcon>
