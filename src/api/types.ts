@@ -84,7 +84,7 @@ export interface HIPCenter {
 	}
 	users?: User[]
 	community?: {
-			url?: string
+		url?: string
 	}
 }
 
@@ -213,7 +213,12 @@ export interface BIDSDataset extends BIDSDatasetDescription {
 	Size?: string
 	FileCount?: number
 	BIDSSchemaVersion?: string
-	BIDSErrors?: []
+	BIDSErrors?: [{
+		key: string
+		severity: string
+		reason: string
+		files: [{file: { name: string; relativePath: string }}]
+	}]
 	BIDSWarnings?: []
 	BIDSIgnored?: []
 	BIDSValid?: boolean
