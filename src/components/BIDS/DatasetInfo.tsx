@@ -1,6 +1,6 @@
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Typography } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
+import { Box, Tooltip, Typography } from '@mui/material'
 import { BIDSDataset } from '../../api/types'
 import * as React from 'react'
 
@@ -9,7 +9,7 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 		{dataset?.DataTypes && dataset?.DataTypes?.length > 0 && (
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
 				<Typography variant='body2' color='text.secondary'>
-				Datatype(s):
+					Datatype(s):
 				</Typography>
 
 				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
@@ -58,22 +58,26 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 				Participants: <strong>{dataset?.ParticipantsCount}</strong>
 			</Typography>
 			<Typography variant='body2' color='text.secondary'>
-				Ages: <strong>[{dataset?.AgeMin}, {dataset?.AgeMax}]</strong>
+				Ages:{' '}
+				<strong>
+					[{dataset?.AgeMin}, {dataset?.AgeMax}]
+				</strong>
 			</Typography>
-			{dataset?.ParticipantsGroups && dataset?.ParticipantsGroups.length > 0 && (
-				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
-					<Typography variant='body2' color='text.secondary'>
-						Groups:
-					</Typography>
-					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
-						{dataset?.ParticipantsGroups?.map(t => (
-							<Typography key={t} variant='body2' color='text.secondary'>
-								<strong>{t}</strong>
-							</Typography>
-						))}
+			{dataset?.ParticipantsGroups &&
+				dataset?.ParticipantsGroups.length > 0 && (
+					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 4px' }}>
+						<Typography variant='body2' color='text.secondary'>
+							Groups:
+						</Typography>
+						<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
+							{dataset?.ParticipantsGroups?.map(t => (
+								<Typography key={t} variant='body2' color='text.secondary'>
+									<strong>{t}</strong>
+								</Typography>
+							))}
+						</Box>
 					</Box>
-				</Box>
-			)}
+				)}
 			<Typography variant='body2' color='text.secondary'>
 				Size: <strong>{dataset?.Size}</strong>
 			</Typography>
@@ -86,9 +90,23 @@ const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
 				BIDS Validation:
 			</Typography>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0px 8px' }}>
-				{dataset?.BIDSValid ?
-					<CheckIcon sx={{ color: '#009900' }}></CheckIcon> :
-					<CloseIcon sx={{ color: '#cc0000' }}></CloseIcon>}
+				{dataset?.BIDSValid && (
+					<CheckIcon sx={{ color: '#009900' }}></CheckIcon>
+				)}
+				{!dataset?.BIDSValid && (
+					<>
+						<Tooltip
+							title={`${
+								dataset?.BIDSErrors && dataset?.BIDSErrors[0]?.reason
+							} (file: ${
+								dataset?.BIDSErrors &&
+								dataset?.BIDSErrors[0]?.files[0].file.relativePath
+							})`}
+						>
+							<CloseIcon sx={{ color: '#cc0000' }}></CloseIcon>
+						</Tooltip>
+					</>
+				)}
 			</Box>
 		</Box>
 	</>
