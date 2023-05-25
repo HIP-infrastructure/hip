@@ -99,7 +99,7 @@ const CreateProject = () => {
 										setSubmitting(false)
 										resetForm()
 										setIsLoading(false)
-										setProjects(projects)
+										if (projects) setProjects(projects)
 										showNotif('Project created', 'success')
 										navigate(`${ROUTE_PREFIX}/projects/${futureName}`)
 									})
