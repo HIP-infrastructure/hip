@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { API_GATEWAY, getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, HIPCenter } from '../../api/types'
+import { BIDSDataset, ContainerType, HIPCenter } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
@@ -20,19 +20,32 @@ import MainCard from './MainCard'
 import Members from './Members'
 import Tools from './Tools'
 import { linkStyle } from '../../constants'
+import { getAllBidsDataset } from '../../api/bids'
 
 const Workspace = () => {
 	const params = useParams()
 	const { showNotif } = useNotification()
 	// const { trackEvent } = useMatomo()
 	const {
-		containers: [containers],
-		BIDSDatasets: [bidsDatasets],
 		centers: [centers, setCenters],
+		containers: [containers],
 		user: [user],
 	} = useAppStore()
 
 	const [center, setCenter] = useState<HIPCenter | undefined>()
+	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
+
+	useEffect(() => {
+		if (!user?.uid) return
+
+		getAllBidsDataset(user?.uid)
+			.then(datasets => {
+				if (datasets) setBidsDatasets(datasets)
+			})
+			.catch(e => {
+				showNotif(e.message, 'error')
+			})
+	}, [user])
 
 	useEffect(() => {
 		if (!params.centerId) return
@@ -140,7 +153,7 @@ const Workspace = () => {
 								<Tools />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-								<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+								{bidsDatasets && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
 							</Box>
 						</>
 					)}

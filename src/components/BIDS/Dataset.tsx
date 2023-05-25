@@ -23,25 +23,42 @@ import DatasetDescription from './DatasetDescription'
 import DatasetInfo from './DatasetInfo'
 import Import from './Import'
 import Participants from './Participants'
+import { getAllBidsDataset } from '../../api/bids'
+import { useNotification } from '../../hooks/useNotification'
 
 const Dataset = () => {
 	const [dataset, setDataset] = useState<BIDSDataset>()
 	const [fileContent, setFileContent] = useState<JSX.Element>()
 	const [selectedFile, setSelectedFile] = useState<string>()
-	const [path, setPath] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
+	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
+	
 	const params = useParams()
 	const navigate = useNavigate()
+	const { showNotif } = useNotification()
+
 	const {
-		BIDSDatasets: [datasets],
+		user: [user],
 	} = useAppStore()
+
+	useEffect(() => {
+		if (!user?.uid) return
+
+		getAllBidsDataset(user?.uid)
+			.then(datasets => {
+				if (datasets) setBidsDatasets(datasets)
+			})
+			.catch(e => {
+				showNotif(e.message, 'error')
+			})
+	}, [user])
 
 	useEffect(() => {
 		if (dataset) return
 
-		const ds = datasets?.data?.find(dataset => dataset.id === params.datasetId)
+		const ds = bidsDatasets?.find(dataset => dataset.id === params.datasetId)
 		setDataset(ds)
-	}, [dataset, datasets, params])
+	}, [dataset, bidsDatasets, params])
 
 	useEffect(() => {
 		if (!selectedFile) return
@@ -92,6 +109,8 @@ const Dataset = () => {
 			} else {
 				setFileContent(<div>{data}</div>)
 			}
+		}).catch(e => {
+			showNotif(e.message, 'error')
 		})
 	}, [selectedFile])
 

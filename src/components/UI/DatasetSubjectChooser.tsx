@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react'
 import { BIDSDataset, Participant } from '../../api/types'
 import { useAppStore } from '../../Store'
 import { MinusSquare, PlusSquare } from './Icons'
+import { useNotification } from '../../hooks/useNotification'
+import { getAllBidsDataset } from '../../api/bids'
 
 interface Node {
 	id: string
@@ -35,23 +37,38 @@ const DatasetSubjectChooser = ({
 }: {
 	setSelected?: (datasetPath: string, subjectId: string) => void
 }) => {
-	const {
-		BIDSDatasets: [datasets],
-	} = useAppStore()
-
 	const [nodes, setNodes] = useState<Node[]>([])
 	const [selectedNode, setSelectedNode] = useState<Node>()
 	const [expanded, setExpanded] = useState<string[]>([])
+	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
+
+	const { showNotif } = useNotification()
+
+	const {
+		user: [user],
+	} = useAppStore()
 
 	useEffect(() => {
-		if (datasets?.data) {
+		if (!user?.uid) return
+
+		getAllBidsDataset(user?.uid)
+			.then(datasets => {
+				if (datasets) setBidsDatasets(datasets)
+			})
+			.catch(e => {
+				showNotif(e.message, 'error')
+			})
+	}, [user])
+
+	useEffect(() => {
+		if (bidsDatasets) {
 			const nextNodes: Node[] = []
-			datasets.data.forEach((d: BIDSDataset) => {
+			bidsDatasets.forEach((d: BIDSDataset) => {
 				nextNodes.push({
 					id: d.id,
 					name: d.Name,
 					isDirectory: true,
-					path: d.Path || '/',
+					path: d.Path ?? '/',
 					parentPath: '/',
 				})
 				d.Participants?.forEach((p: Participant) => {
@@ -67,7 +84,7 @@ const DatasetSubjectChooser = ({
 			setNodes(nextNodes)
 			setExpanded(nextNodes.map(n => n.path))
 		}
-	}, [datasets])
+	}, [bidsDatasets])
 
 	useEffect(() => {
 		if (setSelected && selectedNode)

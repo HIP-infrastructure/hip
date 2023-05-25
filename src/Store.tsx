@@ -1,10 +1,6 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState, useRef } from 'react'
-import {
-	createBidsDatasetsIndex,
-	queryBidsDatasets,
-	refreshBidsDatasetsIndex,
-} from './api/bids'
+import { createBidsDatasetsIndex, refreshBidsDatasetsIndex } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
 import { getProjects } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
@@ -59,12 +55,7 @@ export interface IAppState {
 		Container[] | null,
 		React.Dispatch<React.SetStateAction<Container[] | null>>
 	]
-	BIDSDatasets: [
-		{ data?: BIDSDataset[]; error?: string } | undefined,
-		React.Dispatch<
-			React.SetStateAction<{ data?: BIDSDataset[]; error?: string } | undefined>
-		>
-	]
+
 	selectedBidsDataset: [
 		BIDSDataset | undefined,
 		React.Dispatch<React.SetStateAction<BIDSDataset | undefined>>
@@ -87,9 +78,6 @@ export const AppStoreProvider = ({
 }: {
 	children: JSX.Element
 }): JSX.Element => {
-	const [timesRun, setTimesRun] = useState(0)
-	const counter = useRef<number>(0)
-	const effectCalled = useRef<boolean>(false)
 	const [debug, setDebug] = useState(false)
 	const [showTooltip, setShowTooltip] = React.useState(false)
 	const [availableApps, setAvailableApps] = useState<Application[] | null>(null)
@@ -103,10 +91,6 @@ export const AppStoreProvider = ({
 	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(
 		null
 	)
-	const [bidsDatasets, setBidsDatasets] = useState<{
-		data?: BIDSDataset[]
-		error?: string
-	}>()
 
 	// BIDS Tools Store, to be renamed or refactored into a new type
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
@@ -135,7 +119,7 @@ export const AppStoreProvider = ({
 		getCenters()
 			.then(centers => {
 				if (centers) {
-					setCenters(centers.sort((a,b) => a.label.localeCompare(b.label)))
+					setCenters(centers.sort((a, b) => a.label.localeCompare(b.label)))
 				}
 			})
 			.catch(error => {
@@ -149,6 +133,7 @@ export const AppStoreProvider = ({
 				}
 			})
 			.catch(error => {
+				setProjects([])
 				console.error(error) // eslint-disable-line no-console
 			})
 
@@ -162,44 +147,23 @@ export const AppStoreProvider = ({
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
 		createBidsDatasetsIndex()
+			.then(() => {return})
+			.catch(error => {
+				throw error
+			})
 
 		// Perform a full index of the BIDS datasets
-		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-			if (!effectCalled.current) refreshBidsDatasetsIndex(currentUser.uid)
-		} else {
-			refreshBidsDatasetsIndex(currentUser.uid)
-		}
-
-		queryBidsDatasets(
-			currentUser.uid || '',
-			'*',
-			1,
-			200,
-			[0, 100],
-			[0, 200],
-			[]
-		)
-			.then(data => {
-				const { datasets } = data
-				if (datasets) {
-					const uniqueArray = datasets.filter((obj, index, arr) => {
-						return arr.findIndex(t => t.Path === obj.Path) === index
-					})
-					setBidsDatasets({ data: uniqueArray })
-				}
+		refreshBidsDatasetsIndex(currentUser.uid)
+			.then(() => {return })
+			.catch(error => {
+				throw error
 			})
-			.catch(error => setBidsDatasets({ error }))
 
 		getDesktopsAndApps('private', currentUser.uid || '', [])
 			.then(data => setContainers(data))
 			.catch(error => {
 				console.error(error) // eslint-disable-line no-console
 			})
-
-		// udpade timesRun to track if the component is re-mounted in development mode
-		counter.current += 1
-		setTimesRun(counter.current)
-		effectCalled.current = true
 	}, [])
 
 	const value: IAppState = React.useMemo(
@@ -213,7 +177,6 @@ export const AppStoreProvider = ({
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
 			projectContainers: [projectContainers, setProjectContainers],
-			BIDSDatasets: [bidsDatasets, setBidsDatasets],
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
@@ -237,8 +200,6 @@ export const AppStoreProvider = ({
 			setProjectContainers,
 			availableApps,
 			setAvailableApps,
-			bidsDatasets,
-			setBidsDatasets,
 			selectedBidsDataset,
 			setSelectedBidsDataset,
 			selectedParticipants,
