@@ -111,15 +111,31 @@ const Datasets = () => {
 
 	useEffect(() => {
 		queryDatasets()
+			.then(() => {
+				return
+			})
+			.catch(e => {
+				throw e
+			})
 	}, [queryDatasets, term, page, numberOfResultsPerPage])
 
 	const handleDatasetCreated = () => {
 		setIsCreateDialogOpen(false)
-		refreshBidsDatasetsIndex(user?.uid).then(() => {
-			setTimeout(() => {
-				queryDatasets()
-			}, 10 * 1000)
-		})
+		refreshBidsDatasetsIndex(user?.uid)
+			.then(() => {
+				setTimeout(() => {
+					queryDatasets()
+						.then(() => {
+							return
+						})
+						.catch(e => {
+							throw e
+						})
+				}, 10 * 1000)
+			})
+			.catch(error => {
+				throw error
+			})
 	}
 
 	const handleDatatypeChange = (dt: string) => {

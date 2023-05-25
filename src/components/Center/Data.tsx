@@ -8,16 +8,13 @@ import {
 	Typography,
 } from '@mui/material'
 import { BIDSDataset, Container } from '../../api/types'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 const Data = ({
 	bidsDatasets,
 	sessions,
 }: {
-	bidsDatasets?: {
-		data?: BIDSDataset[] | undefined
-		error?: string | undefined
-	}
+	bidsDatasets?: BIDSDataset[]
 	sessions?: Container[]
 }) => {
 	return (
@@ -65,12 +62,12 @@ const Data = ({
 							<Box sx={{ mr: 0.5 }}>
 								<Typography variant='subtitle2'>
 									{!bidsDatasets && <CircularProgress size={12} />}
-									{bidsDatasets?.data?.reduce(
+									{bidsDatasets?.reduce(
 										(a, b) => a + (b?.ParticipantsCount || 0),
 										0
 									)}{' '}
 									subjects in {''}
-									{bidsDatasets?.data?.length} BIDS datasets
+									{bidsDatasets?.length} BIDS datasets
 								</Typography>
 							</Box>
 						</Box>

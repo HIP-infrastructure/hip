@@ -10,12 +10,12 @@ import {
 	CreateBidsDatasetParticipantsTsvDto,
 	IError,
 	Participant,
-	BIDSDatasetsQueryResponse
+	BIDSDatasetsQueryResponse,
 } from './types'
 
-export const createBidsDatasetsIndex = async (): Promise<void> => {
+export const createBidsDatasetsIndex = async () => {
 	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
-	return fetch(url, {
+	fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
 			requesttoken: window.OC.requestToken,
@@ -76,7 +76,7 @@ export const queryBidsDatasets = async (
 	nbOfResults = 200,
 	ageRange = [0, 100],
 	participantsCountRange = [0, 200],
-	datatypes: string[]  = ['*']
+	datatypes: string[] = ['*']
 ): Promise<BIDSDatasetsQueryResponse> => {
 	if (!userId) return { datasets: [], total: 0 }
 
@@ -89,6 +89,28 @@ export const queryBidsDatasets = async (
 	})
 		.then(checkForError)
 		.catch(catchError)
+}
+
+export const getAllBidsDataset = async (
+	userId?: string
+): Promise<BIDSDataset[] | undefined> => {
+	return queryBidsDatasets(
+		userId ?? '',
+		'*',
+		1,
+		200,
+		[0, 100],
+		[0, 200],
+		[]
+	).then(data => {
+		const { datasets } = data
+		if (datasets) {
+			const uniqueArray = datasets.filter((obj, index, arr) => {
+				return arr.findIndex(t => t.Path === obj.Path) === index
+			})
+			return uniqueArray
+		}
+	})
 }
 
 export const createBidsDataset = async (
