@@ -70,9 +70,9 @@ const DatasetDescription = ({ dataset }: { dataset?: BIDSDataset }) => {
 						<Box>
 							<Link
 								target='_blank'
-								href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${dataset?.Path}`}
+								href={`${window.location.protocol}//${window.location.host}/apps/files/?dir=${dataset?.Path?.replace('/GROUP_FOLDER', '')}`}
 							>
-								{dataset?.Path}
+								{dataset?.Path?.replace('/GROUP_FOLDER', '')}
 							</Link>
 						</Box>
 					</CardContent>
