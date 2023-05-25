@@ -25,7 +25,7 @@ export default function LandingCard({ title, description }: any) {
 			<Box sx={{ flexGrow: 1 }}></Box>
 			<CardActions>
 				<Button size='small' color='primary'>
-					Visit
+					More...
 				</Button>
 			</CardActions>
 		</Card>

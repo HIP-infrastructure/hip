@@ -86,7 +86,7 @@ function GettingStartedCard({
 							window.location.href = link
 						}}
 					>
-						{linkName || 'Documentation'}
+						More...
 					</Button>
 				)}
 			</CardActions>

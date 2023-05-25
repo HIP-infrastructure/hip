@@ -79,7 +79,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 						}}
 						variant='outlined'
 					>
-						{doc.buttonLabel}
+						More...
 					</Button>
 				)}
 				{doc.route && (
@@ -90,7 +90,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 						color='text.secondary'
 					>
 						<Link to={doc.route} target='_blank' style={linkStyle}>
-							{doc.buttonLabel}
+							More...
 						</Link>
 					</Typography>
 				)}
