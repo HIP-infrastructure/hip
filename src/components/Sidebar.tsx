@@ -45,7 +45,7 @@ import { HIPCenter } from '../api/types'
 const defaultCenters: HIPCenter[] = [
 	{
 		label: 'WORKSPACE',
-		id: '',
+		id: 'default',
 	},
 ]
 
@@ -141,7 +141,7 @@ const Sidebar = () => {
 					<Box sx={{ ml: 12 }}></Box>
 				</Tooltip>
 			</Box>
-			{(userCenters || defaultCenters).map(center => (
+			{(userCenters ?? defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
 						<Tooltip title={`Your Private Workspace`} showTooltip={showTooltip}>
