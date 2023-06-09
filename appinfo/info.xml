@@ -1,20 +1,24 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<!--
+    SPDX-FileCopyrightText: Manuel Spuhler <manuel.spuhler@chuv.ch>
+    SPDX-License-Identifier: CC0-1.0
+    -->
 	<id>hip</id>
-	<name>HIP (Human Intracerebral EEG Platform)</name>
+	<name>HIP</name>
+	<summary>Human Intracerebral SEEG Platform</summary>
 	<description><![CDATA[]]></description>
 	<version>0.0.3</version>
-	<author>CHUV</author>
+  <author mail="manuel.spuhler@chuv.ch" >Manuel Spuhler</author>
 	<namespace>HIP</namespace>
 	<category>tools</category>
-	<website>https://thehip.app/</website>
+	<bugs>https://chuv.ch</bugs>
 	<repository type="git">https://github.com/HIP-infrastructure/hip</repository>
 	<screenshot small-thumbnail="https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png">https://raw.githubusercontent.com/HIP-infrastructure/hip/main/screenshots/dashboard-small.png</screenshot>
 	<dependencies>
 		<nextcloud min-version="19" max-version="25" />
 	</dependencies>
-
 	<navigations>
 		<navigation>
 			<name>HIP</name>
