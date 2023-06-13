@@ -19,8 +19,8 @@ import {
 } from '@mui/material'
 import { Container, ContainerState } from '../../api/types'
 import { loading } from '../../api/utils'
-import DesktopImage from '../../assets/session-thumbnail.png'
 import DesktopInfo from './DesktopInfo'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 interface Props {
 	desktop: Container
@@ -55,7 +55,7 @@ const DesktopCard = ({
 					}}
 					component='img'
 					height='140'
-					src={DesktopImage}
+					src={`${API_GATEWAY}/public/media/session-thumbnail.png`}
 					alt={`Open ${desktop.name}`}
 					onClick={() =>
 						desktop.state === ContainerState.RUNNING &&
