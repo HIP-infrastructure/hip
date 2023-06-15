@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TitleBar from '../UI/titleBar'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { DRAWER_WIDTH } from '../../constants'

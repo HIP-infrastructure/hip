@@ -1,8 +1,6 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	ArrowBack,
-	ChevronLeft,
-	ChevronRight,
 	ExpandMore,
 	Fullscreen,
 	Menu,
@@ -11,17 +9,15 @@ import {
 import {
 	Box,
 	CircularProgress,
-	Divider,
 	Drawer,
 	IconButton,
 	MenuItem,
 	Select,
 	SelectChangeEvent,
 	Toolbar,
-	Typography,
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
@@ -50,7 +46,6 @@ const Desktop = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
 	const params = useParams()
 	const location = useLocation()
-	const theme = useTheme()
 	const navigate = useNavigate()
 	const { showNotif } = useNotification()
 
@@ -223,7 +218,7 @@ const Desktop = (): JSX.Element => {
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar,
 		justifyContent: 'flex-end',
-		backgroundColor: theme.palette.grey[100]
+		backgroundColor: theme.palette.grey[100],
 	}))
 
 	return (
@@ -331,7 +326,9 @@ const Desktop = (): JSX.Element => {
 						<Menu />
 					</IconButton>
 				</DrawerHeader>
-				<Box><Info desktop={desktop} /></Box>
+				<Box>
+					<Info desktop={desktop} />
+				</Box>
 				<AppList
 					desktop={desktop}
 					containers={containers}

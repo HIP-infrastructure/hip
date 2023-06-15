@@ -21,7 +21,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { importSubject } from '../../api/bids'
 import {
-	BIDSDataset,	
+	BIDSDataset,
 	CreateSubjectDto,
 	BIDSFile,
 	IEntity,

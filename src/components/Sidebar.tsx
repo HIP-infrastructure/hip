@@ -249,7 +249,14 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='projects-subheader'
 				subheader={
-					<Tooltip title={`Your projects ${user?.hasProjectsAdminRole ? 'As an admin, you can create new projects': ''}`} showTooltip={showTooltip}>
+					<Tooltip
+						title={`Your projects ${
+							user?.hasProjectsAdminRole
+								? 'As an admin, you can create new projects'
+								: ''
+						}`}
+						showTooltip={showTooltip}
+					>
 						<Box
 							sx={{
 								display: 'flex',
@@ -417,20 +424,23 @@ const Sidebar = () => {
 					<ListItemText primary='Getting Started' />
 				</ListItemButton>
 
-				<Tooltip title='About the HIP. Participating Centers. App catalog' showTooltip={showTooltip}>
-				<ListItemButton
-					selected={`${ROUTE_PREFIX}/about` === pathname}
-					onClick={() => {
-						handleClickNavigate('/about')
-						setOpenTools(!openTools)
-					}}
+				<Tooltip
+					title='About the HIP. Participating Centers. App catalog'
+					showTooltip={showTooltip}
 				>
-					<ListItemIcon>
-						<HelpCenter />
-					</ListItemIcon>
-					<ListItemText primary='About' />
-					{openTools ? <ExpandLess /> : <ExpandMore />}
-				</ListItemButton>
+					<ListItemButton
+						selected={`${ROUTE_PREFIX}/about` === pathname}
+						onClick={() => {
+							handleClickNavigate('/about')
+							setOpenTools(!openTools)
+						}}
+					>
+						<ListItemIcon>
+							<HelpCenter />
+						</ListItemIcon>
+						<ListItemText primary='About' />
+						{openTools ? <ExpandLess /> : <ExpandMore />}
+					</ListItemButton>
 				</Tooltip>
 				<Collapse in={openTools} timeout='auto' unmountOnExit>
 					<List>

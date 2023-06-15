@@ -204,7 +204,6 @@ export default function TransferData() {
 							</Box>
 						</Box>
 
-
 						{/* <Box sx={{ mb: 2 }} display={'flex'} justifyContent={'center'}>
 							<Stack width={320} >
 								<Laptop fontSize='large'/>

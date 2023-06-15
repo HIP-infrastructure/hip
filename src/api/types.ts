@@ -213,12 +213,14 @@ export interface BIDSDataset extends BIDSDatasetDescription {
 	Size?: string
 	FileCount?: number
 	BIDSSchemaVersion?: string
-	BIDSErrors?: [{
-		key: string
-		severity: string
-		reason: string
-		files: [{file: { name: string; relativePath: string }}]
-	}]
+	BIDSErrors?: [
+		{
+			key: string
+			severity: string
+			reason: string
+			files: [{ file: { name: string; relativePath: string } }]
+		}
+	]
 	BIDSWarnings?: []
 	BIDSIgnored?: []
 	BIDSValid?: boolean

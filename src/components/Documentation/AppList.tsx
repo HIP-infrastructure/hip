@@ -5,7 +5,7 @@ import {
 	CardMedia,
 	Chip,
 	Divider,
-	Link
+	Link,
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'

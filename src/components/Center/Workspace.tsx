@@ -27,7 +27,7 @@ const Workspace = () => {
 	const { showNotif } = useNotification()
 	// const { trackEvent } = useMatomo()
 	const {
-		centers: [centers, setCenters],
+		centers: [centers],
 		containers: [containers],
 		user: [user],
 	} = useAppStore()
@@ -62,7 +62,6 @@ const Workspace = () => {
 		if (!center?.id) return
 
 		if (!users) {
-			
 			getUsersForGroup(center.id)
 				.then(users => {
 					setUsers(users)
@@ -80,7 +79,7 @@ const Workspace = () => {
 		<>
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
-					title={`${center?.label || ''} Private Workspace`}
+					title={`${center?.label ?? ''} Private Workspace`}
 					description={''}
 				/>
 			</Box>
@@ -146,7 +145,9 @@ const Workspace = () => {
 								<Tools />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-								{bidsDatasets && <Data bidsDatasets={bidsDatasets} sessions={sessions} />}
+								{bidsDatasets && (
+									<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+								)}
 							</Box>
 						</>
 					)}

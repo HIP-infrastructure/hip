@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {
 	Box,
-	Button,
 	Card,
 	CardActions,
 	CardContent,
@@ -101,8 +100,8 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 					<CardActions sx={{ p: 2 }}>
 						{user?.uid && project?.admins?.includes(user?.uid) && (
 							<LoadingButton
-							disabled={loading}
-							loading={loading}
+								disabled={loading}
+								loading={loading}
 								onClick={() => {
 									setLoading(true)
 									handleRemoveProject(project.name)

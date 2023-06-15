@@ -32,7 +32,7 @@ const Dataset = () => {
 	const [selectedFile, setSelectedFile] = useState<string>()
 	const [tabIndex, setTabIndex] = useState(0)
 	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
-	
+
 	const params = useParams()
 	const navigate = useNavigate()
 	const { showNotif } = useNotification()
@@ -83,35 +83,37 @@ const Dataset = () => {
 			return
 		}
 
-		getFileContent(selectedFile).then(data => {
-			if (selectedFile.endsWith('.md')) {
-				setFileContent(
-					<div dangerouslySetInnerHTML={{ __html: data }} /> // marked(data) }} />
-				)
-			} else if (selectedFile.endsWith('.json')) {
-				setFileContent(
-					<pre style={{ whiteSpace: 'pre-wrap' }}>
-						{JSON.stringify(JSON.parse(data), null, 2)}
-					</pre>
-				)
-			} else if (selectedFile.endsWith('.csv')) {
-				setFileContent(
-					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
-						{CSV2Table({ data })}
-					</Box>
-				)
-			} else if (selectedFile.endsWith('.tsv')) {
-				setFileContent(
-					<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
-						{CSV2Table({ data, splitChar: '\t' })}
-					</Box>
-				)
-			} else {
-				setFileContent(<div>{data}</div>)
-			}
-		}).catch(e => {
-			showNotif(e.message, 'error')
-		})
+		getFileContent(selectedFile)
+			.then(data => {
+				if (selectedFile.endsWith('.md')) {
+					setFileContent(
+						<div dangerouslySetInnerHTML={{ __html: data }} /> // marked(data) }} />
+					)
+				} else if (selectedFile.endsWith('.json')) {
+					setFileContent(
+						<pre style={{ whiteSpace: 'pre-wrap' }}>
+							{JSON.stringify(JSON.parse(data), null, 2)}
+						</pre>
+					)
+				} else if (selectedFile.endsWith('.csv')) {
+					setFileContent(
+						<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
+							{CSV2Table({ data })}
+						</Box>
+					)
+				} else if (selectedFile.endsWith('.tsv')) {
+					setFileContent(
+						<Box sx={{ overflow: 'auto', maxWidth: '45vw' }}>
+							{CSV2Table({ data, splitChar: '\t' })}
+						</Box>
+					)
+				} else {
+					setFileContent(<div>{data}</div>)
+				}
+			})
+			.catch(e => {
+				showNotif(e.message, 'error')
+			})
 	}, [selectedFile])
 
 	return (
@@ -128,7 +130,9 @@ const Dataset = () => {
 
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
-					<Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>id: {dataset?.id}</Typography>
+					<Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+						id: {dataset?.id}
+					</Typography>
 					<DatasetInfo dataset={dataset} />
 				</Box>
 
