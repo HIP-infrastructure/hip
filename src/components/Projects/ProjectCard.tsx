@@ -63,7 +63,12 @@ const ProjectCard = ({ project, users }: Props) => {
 					{project?.description}
 				</Typography>
 
-				<Stack>
+				<Stack sx={{ 
+					maxHeight: 240,
+					display: 'flex',
+					flexDirection: 'column', 
+					overflowY: 'scroll'
+				}}>
 					<Typography variant='subtitle1'>Members</Typography>
 					{project?.members?.length === 0 && (
 						<Typography variant='subtitle1'>No members yet</Typography>
@@ -71,12 +76,13 @@ const ProjectCard = ({ project, users }: Props) => {
 					{[...(project?.members || [])]
 						.map(
 							u =>
-								users.find(user => user.id === u) || {
+								users.find(user => user.id === u) ?? {
 									id: u,
 									name: u,
 									displayName: u,
 								}
 						)
+						
 						.map(u => (
 							<Box
 								key={u.id}
