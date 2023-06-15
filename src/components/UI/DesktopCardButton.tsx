@@ -4,8 +4,9 @@ import {
 	Card,
 	CardActions,
 	CardContent,
-	CardMedia, Tooltip,
-	Typography
+	CardMedia,
+	Tooltip,
+	Typography,
 } from '@mui/material'
 import * as React from 'react'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'

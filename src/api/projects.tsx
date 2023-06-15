@@ -123,7 +123,7 @@ export const importBIDSSubject = async (
 
 export const importDocument = async (
 	importDocumentDto: {
-		sourceFilePath: string,
+		sourceFilePath: string
 		targetDirPath: string
 	},
 	projectName: string

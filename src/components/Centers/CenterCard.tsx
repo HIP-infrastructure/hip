@@ -133,7 +133,9 @@ const Center = ({ group }: { group?: HIPCenter }) => {
 										<SocialButton
 											key={key}
 											network={key}
-											url={group.socialnetwork && group.socialnetwork[key] || ''}
+											url={
+												(group.socialnetwork && group.socialnetwork[key]) || ''
+											}
 											aria-label={key}
 										></SocialButton>
 									)

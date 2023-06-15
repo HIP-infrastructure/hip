@@ -1,10 +1,4 @@
-import {
-	Node,
-	HIPCenter,
-	TreeNode,
-	User,
-	GroupFolder
-} from './types';
+import { Node, HIPCenter, TreeNode, User, GroupFolder } from './types'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`

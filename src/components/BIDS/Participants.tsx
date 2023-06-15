@@ -95,7 +95,9 @@ const Participants = ({
 		}
 	}
 
-	const handleCloseCreateParticipant = (participant: Participant | undefined) => {
+	const handleCloseCreateParticipant = (
+		participant: Participant | undefined
+	) => {
 		if (dataset && participant) {
 			const exists =
 				dataset?.Participants?.map(p => p.participant_id).includes(
@@ -104,10 +106,8 @@ const Participants = ({
 
 			const participants = exists
 				? dataset.Participants?.map(p =>
-						participant.participant_id === p.participant_id
-							? participant
-							: p
-					) // eslint-disable-line no-mixed-spaces-and-tabs
+						participant.participant_id === p.participant_id ? participant : p
+				  ) // eslint-disable-line no-mixed-spaces-and-tabs
 				: [...(dataset.Participants || []), participant]
 
 			if (participants)
@@ -165,7 +165,10 @@ const Participants = ({
 					>
 						Add new Participant
 					</Button>
-					<CreateField handleCreateField={handleCreateField} creating={isCreatingField}/>
+					<CreateField
+						handleCreateField={handleCreateField}
+						creating={isCreatingField}
+					/>
 				</Box>
 				<Box
 					sx={{

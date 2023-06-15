@@ -93,23 +93,22 @@ const DesktopCard = ({
 			</Typography>
 		</CardContent>
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
-			{(debug ||
-				desktop.state === ContainerState.DESTROYED) && (
-					<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-						<IconButton
-							disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
-							edge='end'
-							color='primary'
-							aria-label='Remove'
-							onClick={() => {
-								handleRemoveDesktop(desktop.id, true)
-							}}
-						>
-							<Clear />
-						</IconButton>
-						<Typography variant='body2'>Remove</Typography>
-					</Box>
-				)}
+			{(debug || desktop.state === ContainerState.DESTROYED) && (
+				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+					<IconButton
+						disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
+						edge='end'
+						color='primary'
+						aria-label='Remove'
+						onClick={() => {
+							handleRemoveDesktop(desktop.id, true)
+						}}
+					>
+						<Clear />
+					</IconButton>
+					<Typography variant='body2'>Remove</Typography>
+				</Box>
+			)}
 
 			{desktop.state !== ContainerState.DESTROYED && (
 				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>

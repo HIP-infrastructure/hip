@@ -109,7 +109,7 @@ const CreateParticipant = ({
 								return
 							}
 
-							const { participant_id, ...other } = (values as any)
+							const { participant_id, ...other } = values as any
 
 							const subEditClinicalDto: EditSubjectClinicalDto = {
 								owner: user.uid,
@@ -120,7 +120,7 @@ const CreateParticipant = ({
 							}
 
 							subEditClinical(subEditClinicalDto)
-								.then((participant) => {
+								.then(participant => {
 									showNotif('Participant saved', 'success')
 									resetForm()
 									setSubmitted(false)

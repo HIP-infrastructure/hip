@@ -3,17 +3,12 @@ import {
 	Avatar,
 	CircularProgress,
 	List,
-	ListItem,
 	ListItemAvatar,
 	ListItemButton,
 	ListItemSecondaryAction,
-	ListItemText
+	ListItemText,
 } from '@mui/material'
-import {
-	Application,
-	Container,
-	ContainerState
-} from '../../api/types'
+import { Application, Container, ContainerState } from '../../api/types'
 import { useAppStore } from '../../Store'
 import SmallToolTip from '../UI/smallToolTip'
 import React from 'react'
@@ -42,7 +37,9 @@ const AppList = ({ desktop, containers, handleToggleApp }: Props) => {
 		.map(app => ({
 			name: app.name,
 			started: app.state === ContainerState.RUNNING,
-			loading: app.state === ContainerState.LOADING || app.state === ContainerState.STOPPING,
+			loading:
+				app.state === ContainerState.LOADING ||
+				app.state === ContainerState.STOPPING,
 		}))
 
 	const availableAppsForDesktop = availableApps?.map(app => ({
@@ -76,7 +73,9 @@ const AppList = ({ desktop, containers, handleToggleApp }: Props) => {
 						sx={{ cursor: 'pointer' }}
 						aria-label={app.label}
 						disabled={
-							debounce[app.name] || desktop?.state !== ContainerState.RUNNING || app.loading
+							debounce[app.name] ||
+							desktop?.state !== ContainerState.RUNNING ||
+							app.loading
 						}
 						onClick={() => {
 							handleToggleApp && handleToggleApp(app)

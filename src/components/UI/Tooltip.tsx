@@ -13,10 +13,10 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
 	},
 }))
 
-const CustomToolTip = ({ title, placement, showTooltip, children }: any) => (
+const CustomToolTip = ({ title, placement, showTooltip, children }: {title: string, placement?: TooltipProps["placement"], showTooltip: boolean, children: JSX.Element}) => (
 	<LightTooltip
 		title={title}
-		placement={placement || 'right'}
+		placement={placement ?? 'right'}
 		arrow
 		disableHoverListener
 		disableFocusListener

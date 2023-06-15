@@ -30,7 +30,7 @@ const UserInfo = ({ user }: Props) => (
 				window.open(`/u/${user.id}`, '_blank')
 			}}
 			aria-label={`Chat with ${user.displayName}`}
-            title={`Chat with ${user.displayName}`}
+			title={`Chat with ${user.displayName}`}
 		>
 			<Chat />
 		</IconButton>

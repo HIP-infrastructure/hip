@@ -1,6 +1,10 @@
 import {
-	Table, TableBody, TableCell, TableContainer, TableHead,
-	TableRow
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
 } from '@mui/material'
 import * as React from 'react'
 
@@ -32,7 +36,9 @@ const CSV2Table = ({
 				<TableHead>
 					<TableRow>
 						{headerKeys.map(key => (
-							<TableCell key={key}><strong>{key}</strong></TableCell>
+							<TableCell key={key}>
+								<strong>{key}</strong>
+							</TableCell>
 						))}
 					</TableRow>
 				</TableHead>
@@ -45,7 +51,7 @@ const CSV2Table = ({
 							{Object.values(row).map(
 								val =>
 									(i === 0 && (
-										<TableCell  key={`${i}`} component='th' scope='row'>
+										<TableCell key={`${i}`} component='th' scope='row'>
 											{val}
 										</TableCell>
 									)) || <TableCell key={`${i}`}>{val}</TableCell>

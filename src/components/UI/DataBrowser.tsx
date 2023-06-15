@@ -17,7 +17,8 @@ const DataBrowser = () => {
 					target='_blank'
 					href={`${window.location.protocol}//${
 						window.location.host
-					}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`} rel="noreferrer"
+					}/apps/files/?dir=${selectedFile.split('/').slice(0, -1).join('/')}`}
+					rel='noreferrer'
 				>
 					View file in NextCloud
 				</a>
@@ -37,10 +38,7 @@ const DataBrowser = () => {
 				}}
 			>
 				<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-					<FileBrowser
-						selectedFile={setSelectedFile}
-						showSearch={true}
-					/>
+					<FileBrowser selectedFile={setSelectedFile} showSearch={true} />
 				</Box>
 				<Box
 					elevation={2}

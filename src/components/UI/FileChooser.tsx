@@ -6,7 +6,7 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getFiles2, getGroupFolders } from '../../api/gatewayClientAPI'
 import { Node } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
@@ -67,7 +67,7 @@ const FileChooser = ({
 		getGroupFolders(user?.uid).then(groupFolders => {
 			setGroups(groupFolders?.map(g => g.label))
 		})
-	}, [user, setGroups, groups])
+	}, [user, setGroups, groups, selectedFile, files])
 
 	useEffect(() => {
 		const hasGroup = groups && files.some(f => groups.includes(f.name))
@@ -118,36 +118,37 @@ const FileChooser = ({
 							sx={{ top: 10, left: 10 }}
 						/>
 					)}
-					{!loading && folder?.map((f, i) => (
-						<>
-							<Box
-								sx={{
-									display: 'flex',
-									alignItems: 'top',
-									gap: 1,
-									'&:hover': { backgroundColor: 'whitesmoke' },
-									cursor: 'pointer',
-								}}
-								component='li'
-								key={f.path}
-								onClick={(
-									event: React.MouseEvent<HTMLDivElement, MouseEvent>
-								) => {
-									setSelectedFile(f)
-								}}
-							>
-								{f.isDirectory ? (
-									<Folder color='action' />
-								) : (
-									<Article color='action' />
-								)}
-								<Typography gutterBottom color='text.secondary'>
-									{f.name}
-								</Typography>
-							</Box>
-							{i === 0 && f.name === '..' && <Divider />}
-						</>
-					))}
+					{!loading &&
+						folder?.map((f, i) => (
+							<>
+								<Box
+									sx={{
+										display: 'flex',
+										alignItems: 'top',
+										gap: 1,
+										'&:hover': { backgroundColor: 'whitesmoke' },
+										cursor: 'pointer',
+									}}
+									component='li'
+									key={f.path}
+									onClick={(
+										event: React.MouseEvent<HTMLDivElement, MouseEvent>
+									) => {
+										setSelectedFile(f)
+									}}
+								>
+									{f.isDirectory ? (
+										<Folder color='action' />
+									) : (
+										<Article color='action' />
+									)}
+									<Typography gutterBottom color='text.secondary'>
+										{f.name}
+									</Typography>
+								</Box>
+								{i === 0 && f.name === '..' && <Divider />}
+							</>
+						))}
 				</Box>
 			</Box>
 		</Box>

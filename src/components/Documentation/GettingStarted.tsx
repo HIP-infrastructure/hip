@@ -25,9 +25,8 @@ function GettingStartedCard({
 	description,
 	img,
 	video,
-	link,
-	linkName,
-}: any) {
+	link
+}: {step: number; title: string; subtitle: string; description?: JSX.Element | string; img?: string; video?: string; link?: string}) {
 	return (
 		<Card sx={{ width: 360, textAlign: 'center', alignSelf: 'stretch' }}>
 			{img && (
@@ -155,10 +154,7 @@ const GettingStarted = (): JSX.Element => {
 							description={
 								<Box>
 									Convert your files to BIDS (get{' '}
-									<NavLink
-										style={linkStyle}
-										to={`/call/yizibxg5`}
-									>
+									<NavLink style={linkStyle} to={`/call/yizibxg5`}>
 										support
 									</NavLink>
 									), and transfer your subject to your collaborative project
@@ -209,7 +205,6 @@ const GettingStarted = (): JSX.Element => {
 							subtitle='Use the support chat to ask questions and get help'
 							img='gettingstarted-1.png'
 							link={'/call/yizibxg5'}
-							linkName='Support'
 						/>
 					</Box>
 				</Box>
