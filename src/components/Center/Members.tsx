@@ -46,8 +46,14 @@ const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {
 								sx={{ top: 10, left: 10 }}
 							/>
 						)}
-
-						<Stack spacing={1}>
+						<Stack spacing={1} 
+							sx={{ 
+								maxHeight: 190,
+								display: 'flex',
+								flexDirection: 'column', 
+								overflowY: 'scroll'
+							}}
+						>
 							{users?.length === 0 && (
 								<Typography variant='subtitle2'>No members yet</Typography>
 							)}
