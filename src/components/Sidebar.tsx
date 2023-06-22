@@ -40,7 +40,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../Store'
-import { HIPCenter } from '../api/types'
+import { HIPCenter, HIPProject } from '../api/types'
+import { getProjectsForUser } from '../api/projects'
 
 const defaultCenters: HIPCenter[] = [
 	{
@@ -69,7 +70,7 @@ const Sidebar = () => {
 		user: [user],
 		debug: [debug, setDebug],
 		centers: [centers],
-		projects: [projects],
+		userProjects: [userProjects, setUserProjects],
 		selectedProject: [selectedProject],
 		tooltips: [showTooltip],
 	} = useAppStore()
@@ -78,10 +79,6 @@ const Sidebar = () => {
 		[key: string]: boolean
 	}>({})
 	const [openTools, setOpenTools] = React.useState(false)
-
-	useEffect(() => {
-		if (!user?.uid) return
-	}, [user])
 
 	useEffect(() => {
 		const projectId = selectedProject?.name
@@ -163,6 +160,7 @@ const Sidebar = () => {
 									)}
 								</ListItemIcon>
 								<ListItemText primary={center.label} />
+								<ExpandMore />
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
@@ -268,7 +266,7 @@ const Sidebar = () => {
 							<ListSubheader id='my-projects-subheader'>
 								My projects
 							</ListSubheader>
-							{(!projects || !user) && (
+							{(!userProjects || !user) && (
 								<CircularProgress size={18} color='secondary' />
 							)}
 							{user?.hasProjectsAdminRole && (
@@ -284,7 +282,7 @@ const Sidebar = () => {
 					</Tooltip>
 				}
 			>
-				{projects?.filter(p => p.isMember).length === 0 && (
+				{userProjects?.length === 0 && (
 					<List component='div' disablePadding>
 						<ListItemButton>
 							<ListItemIcon>
@@ -294,9 +292,7 @@ const Sidebar = () => {
 						</ListItemButton>
 					</List>
 				)}
-				{projects
-					?.filter(p => p.isMember)
-					.map(project => (
+				{userProjects?.map(project => (
 						<Box
 							key={project.name}
 							sx={{

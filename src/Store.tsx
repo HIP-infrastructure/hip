@@ -2,8 +2,9 @@ import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
 import { createBidsDatasetsIndex, refreshBidsDatasetsIndex } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
-import { getProjects } from './api/projects'
+import { getProjectsForUser } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
+import { getUsers } from './api/gatewayClientAPI'
 import {
 	Application,
 	BIDSDataset,
@@ -12,6 +13,7 @@ import {
 	HIPCenter,
 	HIPProject,
 	Participant,
+	User,
 	UserCredentials,
 } from './api/types'
 
@@ -31,11 +33,12 @@ export interface IAppState {
 		UserCredentials | null,
 		React.Dispatch<React.SetStateAction<UserCredentials | null>>
 	]
+	users: [User[] | null, React.Dispatch<React.SetStateAction<User[] | null>>]
 	centers: [
 		HIPCenter[] | null,
 		React.Dispatch<React.SetStateAction<HIPCenter[] | null>>
 	]
-	projects: [
+	userProjects: [
 		HIPProject[] | null,
 		React.Dispatch<React.SetStateAction<HIPProject[] | null>>
 	]
@@ -86,8 +89,9 @@ export const AppStoreProvider = ({
 		Container[] | null
 	>(null)
 	const [user, setUser] = useState<UserCredentials | null>(null)
+	const [users, setUsers] = useState<User[] | null>(null)
 	const [centers, setCenters] = useState<HIPCenter[] | null>(null)
-	const [projects, setProjects] = useState<HIPProject[] | null>(null)
+	const [userProjects, setUserProjects] = useState<HIPProject[] | null>(null)
 	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(
 		null
 	)
@@ -116,6 +120,12 @@ export const AppStoreProvider = ({
 				console.error(error) // eslint-disable-line no-console
 			})
 
+		getUsers()
+			.then(users => setUsers(users))
+			.catch(error => {
+				console.error(error) // eslint-disable-line no-console
+			})
+
 		getCenters()
 			.then(centers => {
 				if (centers) {
@@ -126,14 +136,14 @@ export const AppStoreProvider = ({
 				console.error(error) // eslint-disable-line no-console
 			})
 
-		getProjects()
-			.then(projects => {
-				if (projects) {
-					setProjects(projects)
+		getProjectsForUser(currentUser.uid || '')
+			.then(userProjects => {
+				if (userProjects) {
+					setUserProjects(userProjects)
 				}
 			})
 			.catch(error => {
-				setProjects([])
+				setUserProjects([])
 				console.error(error) // eslint-disable-line no-console
 			})
 
@@ -175,8 +185,9 @@ export const AppStoreProvider = ({
 			debug: [debug, setDebug],
 			tooltips: [showTooltip, setShowTooltip],
 			user: [user, setUser],
+			users: [users, setUsers],
 			centers: [centers, setCenters],
-			projects: [projects, setProjects],
+			userProjects: [userProjects, setUserProjects],
 			selectedProject: [selectedProject, setSelectedProject],
 			availableApps: [availableApps, setAvailableApps],
 			containers: [containers, setContainers],
@@ -190,12 +201,14 @@ export const AppStoreProvider = ({
 			setDebug,
 			showTooltip,
 			setShowTooltip,
+			users,
+			setUsers,
 			user,
 			setUser,
 			centers,
 			setCenters,
-			projects,
-			setProjects,
+			userProjects,
+			setUserProjects,
 			selectedProject,
 			setSelectedProject,
 			containers,

@@ -28,7 +28,7 @@ const ProjectDesktops = (): JSX.Element => {
 	const {
 		user: [user],
 		debug: [debug],
-		projects: [projects],
+		userProjects: [projects],
 		projectContainers: [containers, setContainers],
 	} = useAppStore()
 	const modalRef = useRef<ModalComponentHandle>(null)

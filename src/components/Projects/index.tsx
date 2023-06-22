@@ -1,8 +1,7 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import * as React from 'react'
-import { getUsers } from '../../api/gatewayClientAPI'
 import { getProjects } from '../../api/projects'
-import { User } from '../../api/types'
+import { HIPProject, User } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
@@ -10,10 +9,9 @@ import ProjectCard from './ProjectCard'
 
 const Projects = () => {
 	const { showNotif } = useNotification()
-	const [users, setUsers] = React.useState<User[]>([])
-
+	const [projects, setProjects] = React.useState<HIPProject[]>()
 	const {
-		projects: [projects, setProjects],
+		users: [users],
 	} = useAppStore()
 
 	React.useEffect(() => {
@@ -25,14 +23,6 @@ const Projects = () => {
 				showNotif(`${e}`, 'error')
 			})
 	}, [setProjects, showNotif])
-
-	React.useEffect(() => {
-		getUsers()
-			.then(users => setUsers(users))
-			.catch(e => {
-				showNotif(`${e}`, 'error')
-			})
-	}, [setUsers, showNotif])
 
 	return (
 		<>
@@ -63,7 +53,7 @@ const Projects = () => {
 						</Typography>
 					</Box>
 				)}
-				{projects?.map(project => (
+				{users && projects?.map(project => (
 					<ProjectCard key={project.name} project={project} users={users} />
 				))}
 			</Box>
