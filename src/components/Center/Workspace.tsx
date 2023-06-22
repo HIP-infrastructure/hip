@@ -10,7 +10,6 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { API_GATEWAY, getUsersForGroup } from '../../api/gatewayClientAPI'
 import { BIDSDataset, ContainerType, HIPCenter, User } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
@@ -21,6 +20,7 @@ import Members from './Members'
 import Tools from './Tools'
 import { linkStyle } from '../../constants'
 import { getAllBidsDataset } from '../../api/bids'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 const Workspace = () => {
 	const params = useParams()
@@ -29,11 +29,11 @@ const Workspace = () => {
 	const {
 		centers: [centers],
 		containers: [containers],
+		users: [users],
 		user: [user],
 	} = useAppStore()
 
 	const [center, setCenter] = useState<HIPCenter | undefined>()
-	const [users, setUsers] = useState<User[] | undefined>()
 	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
 
 	useEffect(() => {
@@ -57,20 +57,6 @@ const Workspace = () => {
 
 		setCenter(center)
 	}, [centers, params.centerId])
-
-	useEffect(() => {
-		if (!center?.id) return
-
-		if (!users) {
-			getUsersForGroup(center.id)
-				.then(users => {
-					setUsers(users)
-				})
-				.catch(err => {
-					showNotif(err.message, 'error')
-				})
-		}
-	}, [center, users, setUsers, showNotif, params.centerId])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const isMember = center && user?.groups?.includes(center?.id)
@@ -139,7 +125,7 @@ const Workspace = () => {
 					{isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-								{center && <Members group={center} users={users} />}
+								{center && users && <Members group={center} users={users} />}
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
 								<Tools />
@@ -154,7 +140,7 @@ const Workspace = () => {
 					{!isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
-								{center && <Members group={center} users={users} />}
+								{center && users && <Members group={center} users={users} />}
 							</Box>
 						</>
 					)}

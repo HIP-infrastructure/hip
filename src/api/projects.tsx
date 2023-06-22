@@ -14,6 +14,15 @@ export const getProjects = async (): Promise<HIPProject[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
+export const getProjectsForUser = async (
+	userId: string
+): Promise<HIPProject[]> =>
+	fetch(`${API_GATEWAY}/projects/users/${userId}`, {
+		headers: { requesttoken: window.OC.requestToken },
+	})
+		.then(checkForError)
+		.catch(catchError)
+
 export const createProject = async (createProject: {
 	adminId: string
 	title: string

@@ -84,18 +84,6 @@ export const getCenters = async (): Promise<HIPCenter[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
-	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-	return users
-}
-
 export const scanUserFiles = async (userid: string): Promise<string> => {
 	return fetch(`${API_GATEWAY}/users/${userid}/scan-files`, {
 		headers: {

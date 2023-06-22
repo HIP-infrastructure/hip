@@ -45,7 +45,7 @@ const CreateProject = () => {
 	const { trackEvent } = useMatomo()
 	const {
 		user: [user],
-		projects: [projects, setProjects], // eslint-disable-line @typescript-eslint/no-unused-vars
+		userProjects: [_, setUserProjects], // eslint-disable-line
 	} = useAppStore()
 	const [submitting, setSubmitting] = React.useState(false)
 	const [isLoading, setIsLoading] = React.useState(false)
@@ -99,7 +99,7 @@ const CreateProject = () => {
 										setSubmitting(false)
 										resetForm()
 										setIsLoading(false)
-										if (projects) setProjects(projects)
+										if (projects) setUserProjects(projects)
 										showNotif('Project created', 'success')
 										navigate(`${ROUTE_PREFIX}/projects/${futureName}`)
 									})
