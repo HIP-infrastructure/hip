@@ -125,7 +125,12 @@ const Workspace = () => {
 					{isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-								{center && users && <Members group={center} users={users} />}
+								{center && users && (
+									<Members
+										group={center}
+										users={users.filter(u => u.groups?.includes(center.id))}
+									/>
+								)}
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
 								<Tools />
@@ -140,7 +145,12 @@ const Workspace = () => {
 					{!isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
-								{center && users && <Members group={center} users={users} />}
+								{center && users && (
+									<Members
+										group={center}
+										users={users.filter(u => u.groups?.includes(center.id))}
+									/>
+								)}
 							</Box>
 						</>
 					)}
