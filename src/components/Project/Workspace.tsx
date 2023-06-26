@@ -1,15 +1,13 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Box, CircularProgress, Typography } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getUsers } from '../../api/gatewayClientAPI'
 import {
 	addUserToProject,
 	deleteProject,
 	getProjectsForUser,
 	removeUserFromProject,
 } from '../../api/projects'
-import { User } from '../../api/types'
 import { ROUTE_PREFIX } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'

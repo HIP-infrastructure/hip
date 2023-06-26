@@ -40,8 +40,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
 import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
 import { useAppStore } from '../Store'
-import { HIPCenter, HIPProject } from '../api/types'
-import { getProjectsForUser } from '../api/projects'
+import { HIPCenter } from '../api/types'
 
 const defaultCenters: HIPCenter[] = [
 	{
