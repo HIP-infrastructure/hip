@@ -28,23 +28,24 @@ On the master branch, `npm run publish` will produce a Nextcloud app, compiling 
 The package can then be deployed as a NextCloud app by moving the hip folder inside nextcloud/apps/hip
 
 `make deploy`on the frontend package will also create the production version, based on React production assets.
+
 ## stats
 
 Matomo is used to gather some metrics about events and page views.
 
 trackEvent({
-    category: 'server',
-    action: 'view' || 'stop' || 'start' || 'resume' || 'pause'
+category: 'server',
+action: 'view' || 'stop' || 'start' || 'resume' || 'pause'
 })
 
 trackEvent({
-    category: 'app',
-    action: 'stop' || 'start'
+category: 'app',
+action: 'stop' || 'start'
 })
 
 trackEvent({
-    category: 'bids',
-    action: 'import',
+category: 'bids',
+action: 'import',
 })
 
 trackPageView { documentTitle: route }

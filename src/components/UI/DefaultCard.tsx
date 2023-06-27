@@ -9,9 +9,21 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { linkStyle } from '../../constants'
-import { Doc } from '../Documentation/About'
+
+export interface Doc {
+	label: string
+	buttonLabel?: string
+	url: string
+	description: string
+	image?: string
+	credit: string
+	target?: string
+	state?: string
+	subtitle?: string
+	route?: string
+}
 
 const AboutCard = ({ doc }: { doc: Doc }) => {
 	const handleClickLink = ({ url, target }: Doc) => {
@@ -67,7 +79,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 						}}
 						variant='outlined'
 					>
-						{doc.buttonLabel}
+						More...
 					</Button>
 				)}
 				{doc.route && (
@@ -78,7 +90,7 @@ const AboutCard = ({ doc }: { doc: Doc }) => {
 						color='text.secondary'
 					>
 						<Link to={doc.route} target='_blank' style={linkStyle}>
-							{doc.buttonLabel}
+							More...
 						</Link>
 					</Typography>
 				)}

@@ -4,11 +4,12 @@ import {
 	Card,
 	CardActions,
 	CardContent,
-	CardMedia, Tooltip,
-	Typography
+	CardMedia,
+	Tooltip,
+	Typography,
 } from '@mui/material'
-import DesktopImage from '../../assets/session-thumbnail-empty.png'
 import * as React from 'react'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 interface Props {
 	createNewDesktop: () => void
@@ -30,7 +31,7 @@ const DesktopCardButton = ({ createNewDesktop }: Props) => (
 					}}
 					component='img'
 					height='140'
-					src={DesktopImage}
+					src={`${API_GATEWAY}/public/media/session-thumbnail-empty.png`}
 					alt={`CreateDesktop`}
 					onClick={createNewDesktop}
 				/>

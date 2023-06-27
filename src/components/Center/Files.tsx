@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TitleBar from '../UI/titleBar'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { DRAWER_WIDTH } from '../../constants'
@@ -7,7 +7,6 @@ export default function Files() {
 	const [loading, setLoading] = useState(true)
 	const iFrameRef = useRef<HTMLIFrameElement>(null)
 
-	// Check for XPra readiness
 	useEffect(() => {
 		if (!iFrameRef.current) return
 

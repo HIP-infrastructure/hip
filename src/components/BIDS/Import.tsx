@@ -152,7 +152,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 			},
 		}
 
-		setFilesToImport(f => [...(f || []), file])
+		setFilesToImport(f => [file, ...(f || [])])
 		showNotif('File added.', 'success')
 	}
 
@@ -173,7 +173,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{filesToImport?.reverse().map(file => (
+									{filesToImport?.map(file => (
 										<TableRow key={file.path}>
 											<TableCell padding='checkbox'>
 												{/* <IconButton color='primary' aria-label='edit'>
@@ -229,7 +229,7 @@ const Import = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => {
 								sx={{ width: 320 }}
 								color='primary'
 								type='submit'
-								disabled={!(filesToImport.length > 0) || submitted}
+								disabled={filesToImport.length === 0 || submitted}
 								loading={submitted}
 								onClick={handleImportSubject}
 								loadingPosition='start'

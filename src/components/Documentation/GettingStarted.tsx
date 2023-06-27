@@ -6,13 +6,17 @@ import {
 	CardActions,
 	CardContent,
 	CardMedia,
-	Grid,
-	Link,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
+	Switch,
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { ROUTE_PREFIX, linkStyle } from '../../constants'
+import { NavLink } from 'react-router-dom'
+import { linkStyle } from '../../constants'
+import { useAppStore } from '../../Store'
+import { Help } from '@mui/icons-material'
 
 function GettingStartedCard({
 	step,
@@ -21,15 +25,16 @@ function GettingStartedCard({
 	description,
 	img,
 	video,
-	link,
-}: any) {
+	link
+}: {step: number; title: string; subtitle: string; description?: JSX.Element | string; img?: string; video?: string; link?: string}) {
 	return (
-		<Card sx={{ width: 360, textAlign: 'center' }}>
+		<Card sx={{ width: 360, textAlign: 'center', alignSelf: 'stretch' }}>
 			{img && (
 				<CardMedia
 					component='img'
 					height='222'
 					image={`/api/v1/public/media/${img}`}
+					sx={{ borderBottom: '1px solid #e0e0e0' }}
 				/>
 			)}
 			{video && (
@@ -72,27 +77,40 @@ function GettingStartedCard({
 					alignItems: 'end',
 				}}
 			>
-				<Button
-					size='small'
-					color='primary'
-					onClick={() => {
-						window.open(link)
-					}}
-				>
-					Documentation
-				</Button>
+				{link && (
+					<Button
+						size='small'
+						color='primary'
+						onClick={() => {
+							window.location.href = link
+						}}
+					>
+						More...
+					</Button>
+				)}
 			</CardActions>
 		</Card>
 	)
 }
 
 const GettingStarted = (): JSX.Element => {
-	const navigate = useNavigate()
+	const {
+		tooltips: [showTooltip, setShowTooltip],
+	} = useAppStore()
 
 	return (
 		<Box>
+			<Box sx={{ width: 240 }}>
+				<ListItemButton onClick={() => setShowTooltip(!showTooltip)}>
+					<ListItemIcon>
+						<Help />
+					</ListItemIcon>
+					<ListItemText primary='Show tooltips' />
+					<Switch checked={showTooltip} />
+				</ListItemButton>
+			</Box>
 			<Box sx={{ p: 4, textAlign: 'center' }}>
-				<Box sx={{ mt: 3, textAlign: 'center' }}>
+				<Box sx={{ textAlign: 'center' }}>
 					<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
 						Getting started
 					</Typography>
@@ -102,7 +120,7 @@ const GettingStarted = (): JSX.Element => {
 					</Typography>
 				</Box>
 
-				<Box sx={{ mb: 4, textAlign: 'center' }}>
+				<Box sx={{ mb: 4, textAlign: 'center', justifyContent: 'stretch' }}>
 					<Box
 						display='flex'
 						gap='64px 64px'
@@ -112,9 +130,9 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={1}
 							title='Upload'
-							subtitle="Transfer your data to your center's workspace."
+							subtitle="Transfer your data to your center's workspace"
 							description={
-								'Upload up to 1TB directly from the web. Use Nextcloud client for more.'
+								'Upload up to 1TB directly from the web. Use Nextcloud client for more'
 							}
 							video='getting-started-upload.mp4'
 							link={
@@ -132,17 +150,14 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={3}
 							title='Collaborate'
-							subtitle='Share your data within projects.'
+							subtitle='Share your data within projects'
 							description={
 								<Box>
-									Convert your files to BIDS (get {' '}
-									<NavLink
-										style={linkStyle}
-										to={`https://thehip.app/call/yizibxg5`}
-									>
+									Convert your files to BIDS (get{' '}
+									<NavLink style={linkStyle} to={`/call/yizibxg5`}>
 										support
 									</NavLink>
-									), and transfer your subject to your collaborative project.
+									), and transfer your subject to your collaborative project
 								</Box>
 							}
 							img='gettingstarted-3.png'
@@ -152,53 +167,47 @@ const GettingStarted = (): JSX.Element => {
 				</Box>
 			</Box>
 
-			<Box
-				sx={{
-					mt: 4,
-					textAlign: 'center',
-					width: '400',
-				}}
-			>
-				<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
-					Next
-				</Typography>
+			<Box sx={{ p: 4, textAlign: 'center' }}>
+				<Box sx={{ textAlign: 'center' }}>
+					<Typography variant='h4' sx={{ mb: 2, color: 'secondary.main' }}>
+						Community
+					</Typography>
 
-				<Grid
-					container
-					rowSpacing={1}
-					columnSpacing={{ xs: 1, sm: 2, md: 3, width: '500' }}
-				>
-					<Grid item xs={6}>
-						<Typography sx={{ mt: 2 }} variant='h6'>
-							<Link onClick={() => navigate(`${ROUTE_PREFIX}/documentation`)}>
-								Documentation
-							</Link>
-						</Typography>
-						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							User and technical doc.
-						</Typography>
-					</Grid>
-					<Grid item xs={6}>
-						<Typography sx={{ mt: 2 }} variant='h6'>
-							<Link onClick={() => navigate(`${ROUTE_PREFIX}/about`)}>
-								About the HIP
-							</Link>
-						</Typography>
-						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							A platform for processing and sharing intracerebral EEG data.
-						</Typography>
-					</Grid>
-					<Grid item xs={6}>
-						<Typography sx={{ mt: 2 }} variant='h6'>
-							<Link onClick={() => navigate(`${ROUTE_PREFIX}/about`)}>
-								Onboarding guide
-							</Link>
-						</Typography>
-						<Typography sx={{ mb: 4, color: 'secondary.main' }}>
-							A quick overview of the platform.
-						</Typography>
-					</Grid>
-				</Grid>
+					<Typography sx={{ mb: 4, color: 'secondary.main', width: '600' }}>
+						Join the community to get support and contribute to the platform
+					</Typography>
+				</Box>
+
+				<Box sx={{ mb: 4, textAlign: 'center' }}>
+					<Box
+						display='flex'
+						gap='64px 64px'
+						justifyContent='center'
+						alignItems='start'
+					>
+						<GettingStartedCard
+							step={1}
+							title='Find your community'
+							subtitle='Find your center and join the community'
+							description={''}
+							img='gettingstarted_community1.png'
+						/>
+						<GettingStartedCard
+							step={2}
+							title='Collaborate'
+							subtitle='Interact with your team, users of other centers, share documents.'
+							description={'Use the chat to ask questions and share your work.'}
+							img='gettingstarted-3.png'
+						/>
+						<GettingStartedCard
+							step={3}
+							title='Get Support'
+							subtitle='Use the support chat to ask questions and get help'
+							img='gettingstarted-1.png'
+							link={'/call/yizibxg5'}
+						/>
+					</Box>
+				</Box>
 			</Box>
 		</Box>
 	)

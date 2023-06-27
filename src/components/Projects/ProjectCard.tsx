@@ -24,9 +24,9 @@ interface Props {
 const ProjectCard = ({ project, users }: Props) => {
 	const navigate = useNavigate()
 
-	const projectAdmins = [...(project?.admins || [])].map(
+	const projectAdmins = [...(project?.admins ?? [])].map(
 		u =>
-			users?.find(user => user.id === u) || {
+			users?.find(user => user.id === u) ?? {
 				id: u,
 				name: u,
 				displayName: u,
@@ -63,20 +63,28 @@ const ProjectCard = ({ project, users }: Props) => {
 					{project?.description}
 				</Typography>
 
-				<Stack>
+				<Stack
+					sx={{
+						maxHeight: 240,
+						display: 'flex',
+						flexDirection: 'column',
+						overflowY: 'scroll',
+					}}
+				>
 					<Typography variant='subtitle1'>Members</Typography>
 					{project?.members?.length === 0 && (
 						<Typography variant='subtitle1'>No members yet</Typography>
 					)}
-					{[...(project?.members || [])]
+					{[...(project?.members ?? [])]
 						.map(
 							u =>
-								users.find(user => user.id === u) || {
+								users.find(user => user.id === u) ?? {
 									id: u,
 									name: u,
 									displayName: u,
 								}
 						)
+
 						.map(u => (
 							<Box
 								key={u.id}

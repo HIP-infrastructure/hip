@@ -10,8 +10,7 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { API_GATEWAY, getUsersForGroup } from '../../api/gatewayClientAPI'
-import { ContainerType, HIPCenter } from '../../api/types'
+import { BIDSDataset, ContainerType, HIPCenter, User } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
@@ -20,19 +19,34 @@ import MainCard from './MainCard'
 import Members from './Members'
 import Tools from './Tools'
 import { linkStyle } from '../../constants'
+import { getAllBidsDataset } from '../../api/bids'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 const Workspace = () => {
 	const params = useParams()
 	const { showNotif } = useNotification()
 	// const { trackEvent } = useMatomo()
 	const {
+		centers: [centers],
 		containers: [containers],
-		BIDSDatasets: [bidsDatasets],
-		centers: [centers, setCenters],
+		users: [users],
 		user: [user],
 	} = useAppStore()
 
 	const [center, setCenter] = useState<HIPCenter | undefined>()
+	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
+
+	useEffect(() => {
+		if (!user?.uid) return
+
+		getAllBidsDataset(user?.uid)
+			.then(datasets => {
+				if (datasets) setBidsDatasets(datasets)
+			})
+			.catch(e => {
+				showNotif(e.message, 'error')
+			})
+	}, [user])
 
 	useEffect(() => {
 		if (!params.centerId) return
@@ -44,29 +58,6 @@ const Workspace = () => {
 		setCenter(center)
 	}, [centers, params.centerId])
 
-	// FIXME: looks like a code smell
-	useEffect(() => {
-		if (!center?.users) {
-			if (!center?.id) return
-			getUsersForGroup(center.id)
-				.then(users => {
-					setCenters(centers =>
-						(centers || []).map(c =>
-							c.id === center?.id ? { ...center, users } : c
-						)
-					)
-					const center = centers
-						?.filter(c => c.id === params.centerId)
-						?.find((_, i) => i === 0)
-
-					setCenter(center)
-				})
-				.catch(err => {
-					showNotif(err.message, 'error')
-				})
-		}
-	}, [center, setCenters, showNotif, params.centerId])
-
 	const sessions = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const isMember = center && user?.groups?.includes(center?.id)
 
@@ -74,7 +65,7 @@ const Workspace = () => {
 		<>
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
-					title={`${center?.label || ''} Private Workspace`}
+					title={`${center?.label ?? ''} Private Workspace`}
 					description={''}
 				/>
 			</Box>
@@ -134,20 +125,32 @@ const Workspace = () => {
 					{isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-								{center && <Members group={center} users={center?.users} />}
+								{center && users && (
+									<Members
+										group={center}
+										users={users.filter(u => u.groups?.includes(center.id))}
+									/>
+								)}
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
 								<Tools />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
-								<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+								{bidsDatasets && (
+									<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+								)}
 							</Box>
 						</>
 					)}
 					{!isMember && (
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
-								{center && <Members group={center} users={center?.users} />}
+								{center && users && (
+									<Members
+										group={center}
+										users={users.filter(u => u.groups?.includes(center.id))}
+									/>
+								)}
 							</Box>
 						</>
 					)}

@@ -18,8 +18,11 @@ const Project = () => {
 			getProject(params.projectId).then(project => {
 				setProject(project)
 			})
+			.catch(e => {
+				setProject(null)
+			})
 		} else setProject(project)
-	}, [params, project?.name, setProject])
+	}, [params, project, setProject])
 
 	return <Outlet />
 }

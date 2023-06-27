@@ -1,10 +1,4 @@
-import {
-	Node,
-	HIPCenter,
-	TreeNode,
-	User,
-	GroupFolder
-} from './types';
+import { Node, HIPCenter, TreeNode, User, GroupFolder } from './types'
 
 export const API_GATEWAY = process.env.REACT_APP_GATEWAY_API
 	? `${process.env.REACT_APP_GATEWAY_API}`
@@ -89,18 +83,6 @@ export const getCenters = async (): Promise<HIPCenter[]> =>
 	fetch(`${API_GATEWAY}/public/data/centers.json`, {})
 		.then(checkForError)
 		.catch(catchError)
-
-export const getUsersForGroup = async (groupid: string): Promise<User[]> => {
-	const users = fetch(`${API_GATEWAY}/groups/${groupid}/users`, {
-		headers: {
-			requesttoken: window.OC.requestToken,
-		},
-	})
-		.then(checkForError)
-		.catch(catchError)
-
-	return users
-}
 
 export const scanUserFiles = async (userid: string): Promise<string> => {
 	return fetch(`${API_GATEWAY}/users/${userid}/scan-files`, {

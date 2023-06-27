@@ -6,14 +6,15 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 // MEDICAL PLATFORM PALETTE
 // Concrete: #f2f2f2
 // Lynch: #6f7d9b
-// Picton Blue: #1eb7e6 
-// Selective Yellow: #f5b800 
+// Picton Blue: #1eb7e6
+// Selective Yellow: #f5b800
+
 // Gable Green: #174040
+// Pickled Bluewood #314259
 
 const colors = {
 	primary: '#1eb7e6',
-	secondary: '#174040',
-	background: '#f2f2f2',
+	secondary: '#314259',
 }
 
 const theme = createTheme({

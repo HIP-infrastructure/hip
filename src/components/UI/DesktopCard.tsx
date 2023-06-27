@@ -19,8 +19,8 @@ import {
 } from '@mui/material'
 import { Container, ContainerState } from '../../api/types'
 import { loading } from '../../api/utils'
-import DesktopImage from '../../assets/session-thumbnail.png'
 import DesktopInfo from './DesktopInfo'
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 interface Props {
 	desktop: Container
@@ -55,7 +55,7 @@ const DesktopCard = ({
 					}}
 					component='img'
 					height='140'
-					src={DesktopImage}
+					src={`${API_GATEWAY}/public/media/session-thumbnail.png`}
 					alt={`Open ${desktop.name}`}
 					onClick={() =>
 						desktop.state === ContainerState.RUNNING &&
@@ -93,23 +93,22 @@ const DesktopCard = ({
 			</Typography>
 		</CardContent>
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
-			{(debug ||
-				desktop.state === ContainerState.DESTROYED) && (
-					<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-						<IconButton
-							disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
-							edge='end'
-							color='primary'
-							aria-label='Remove'
-							onClick={() => {
-								handleRemoveDesktop(desktop.id, true)
-							}}
-						>
-							<Clear />
-						</IconButton>
-						<Typography variant='body2'>Remove</Typography>
-					</Box>
-				)}
+			{(debug || desktop.state === ContainerState.DESTROYED) && (
+				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+					<IconButton
+						disabled={!(debug || desktop.state === ContainerState.DESTROYED)}
+						edge='end'
+						color='primary'
+						aria-label='Remove'
+						onClick={() => {
+							handleRemoveDesktop(desktop.id, true)
+						}}
+					>
+						<Clear />
+					</IconButton>
+					<Typography variant='body2'>Remove</Typography>
+				</Box>
+			)}
 
 			{desktop.state !== ContainerState.DESTROYED && (
 				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>

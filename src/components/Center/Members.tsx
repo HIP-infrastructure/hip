@@ -4,8 +4,9 @@ import {
 	Card,
 	CardContent,
 	CardMedia,
-	CircularProgress, Stack,
-	Typography
+	CircularProgress,
+	Stack,
+	Typography,
 } from '@mui/material'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 import { HIPCenter, User } from '../../api/types'
@@ -46,8 +47,15 @@ const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {
 								sx={{ top: 10, left: 10 }}
 							/>
 						)}
-
-						<Stack spacing={1}>
+						<Stack
+							spacing={1}
+							sx={{
+								maxHeight: 190,
+								display: 'flex',
+								flexDirection: 'column',
+								overflowY: 'scroll',
+							}}
+						>
 							{users?.length === 0 && (
 								<Typography variant='subtitle2'>No members yet</Typography>
 							)}

@@ -41,7 +41,7 @@ const MetadataBrowser = ({
 		if (!unselect) return
 		// select last uploaded file's folder
 		selectedNode?.relativePath && setExpanded([selectedNode?.relativePath])
-		
+
 		setSelectedNode(undefined)
 		setSelected && setSelected(undefined)
 	}, [unselect, selectedNode, setSelected])

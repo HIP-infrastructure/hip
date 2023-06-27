@@ -19,7 +19,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
 	Name: '',
-	BIDSVersion: '1.1.4',
+	BIDSVersion: '1.7.0',
 	License: '',
 	Authors: '',
 	Acknowledgements: '',

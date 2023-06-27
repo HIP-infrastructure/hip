@@ -72,17 +72,20 @@ export interface GroupFolder {
 export interface HIPCenter {
 	label: string
 	id: string
-	pi: string
-	email: string
-	city: string
-	country: string
+	pi?: string
+	email?: string
+	city?: string
+	country?: string
 	logo?: string
 	description?: string
 	website?: string
-	socialnetwork: {
+	socialnetwork?: {
 		[index: string]: string
 	}
 	users?: User[]
+	community?: {
+		url?: string
+	}
 }
 
 export interface HIPProject {
@@ -210,7 +213,14 @@ export interface BIDSDataset extends BIDSDatasetDescription {
 	Size?: string
 	FileCount?: number
 	BIDSSchemaVersion?: string
-	BIDSErrors?: []
+	BIDSErrors?: [
+		{
+			key: string
+			severity: string
+			reason: string
+			files: [{ file: { name: string; relativePath: string } }]
+		}
+	]
 	BIDSWarnings?: []
 	BIDSIgnored?: []
 	BIDSValid?: boolean

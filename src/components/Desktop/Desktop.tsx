@@ -1,26 +1,23 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import {
 	ArrowBack,
-	ChevronLeft,
-	ChevronRight,
 	ExpandMore,
 	Fullscreen,
 	Menu,
+	MenuOpen,
 } from '@mui/icons-material'
 import {
 	Box,
 	CircularProgress,
-	Divider,
 	Drawer,
 	IconButton,
 	MenuItem,
 	Select,
 	SelectChangeEvent,
 	Toolbar,
-	Typography,
 } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
@@ -49,7 +46,6 @@ const Desktop = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
 	const params = useParams()
 	const location = useLocation()
-	const theme = useTheme()
 	const navigate = useNavigate()
 	const { showNotif } = useNotification()
 
@@ -222,6 +218,7 @@ const Desktop = (): JSX.Element => {
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar,
 		justifyContent: 'flex-end',
+		backgroundColor: theme.palette.grey[100],
 	}))
 
 	return (
@@ -274,7 +271,7 @@ const Desktop = (): JSX.Element => {
 						edge='end'
 						sx={{ mr: 2, ...(drawerOpen && { display: 'none' }) }}
 					>
-						<Menu />
+						<MenuOpen />
 					</IconButton>
 				</Toolbar>
 			</AppBar>
@@ -326,12 +323,12 @@ const Desktop = (): JSX.Element => {
 			>
 				<DrawerHeader>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
-						<Typography variant='subtitle2'>hide</Typography>
-						{theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
+						<Menu />
 					</IconButton>
 				</DrawerHeader>
-				<Info desktop={desktop} />
-				<Divider />
+				<Box>
+					<Info desktop={desktop} />
+				</Box>
 				<AppList
 					desktop={desktop}
 					containers={containers}

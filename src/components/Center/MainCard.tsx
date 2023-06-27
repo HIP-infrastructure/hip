@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 import { HIPCenter } from '../../api/types'
 import { linkStyle } from '../../constants'
-import { API_GATEWAY } from '../../api/gatewayClientAPI';
+import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
 const MainCard = ({ group }: { group?: HIPCenter }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {
@@ -121,12 +121,15 @@ const MainCard = ({ group }: { group?: HIPCenter }) => {
 						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'start' }}>
 							{group.socialnetwork &&
 								Object.keys(group.socialnetwork).map(
-									(key) =>
+									key =>
 										key && (
 											<SocialButton
 												key={key}
 												network={key}
-												url={group.socialnetwork[key]}
+												url={
+													(group.socialnetwork && group.socialnetwork[key]) ||
+													''
+												}
 											></SocialButton>
 										)
 								)}

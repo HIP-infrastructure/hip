@@ -20,8 +20,11 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 		<>
 			<Card elevation={3} component={Paper} sx={{ width: 320 }}>
 				<CardMedia
-					sx={{ 
-						background: `linear-gradient(to top, ${nameToColor(dataset.Name, '33' )}), url(/api/v1/public/media/2109057773_human__neural_pathway__consciousness__autistic_thinking__futuristic__neurons_and_dendrites__photo_realistic__picture_of_the_day.png) no-repeat top center`
+					sx={{
+						background: `linear-gradient(to top, ${nameToColor(
+							dataset.Name,
+							'33'
+						)}), url(/api/v1/public/media/2109057773_human__neural_pathway__consciousness__autistic_thinking__futuristic__neurons_and_dendrites__photo_realistic__picture_of_the_day.png) no-repeat top center`,
 					}}
 					component='img'
 					height='96'
@@ -29,7 +32,9 @@ const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 				/>
 				<CardContent>
 					<Typography variant='h6'>{dataset?.Name}</Typography>
-					<Typography variant='body2' color='text.secondary'>id: {dataset?.id}</Typography>
+					<Typography variant='body2' color='text.secondary'>
+						id: {dataset?.id}
+					</Typography>
 					<Typography
 						sx={{ mt: 2, mb: 2 }}
 						variant='body2'
