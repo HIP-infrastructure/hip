@@ -14,13 +14,13 @@ import {
 	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { writeParticipantsTSV } from '../../api/bids'
-import { BIDSDataset, Participant } from '../../api/types'
-import { useAppStore } from '../../Store'
-import CreateField from '../UI/createField'
+import { writeParticipantsTSV } from '../../../api/bids'
+import { BIDSDataset, Participant } from '../../../api/types'
+import { useAppStore } from '../../../Store'
+import CreateField from '../../UI/createField'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
-import { useNotification } from '../../hooks/useNotification'
+import { useNotification } from '../../../hooks/useNotification'
 
 const Participants = ({
 	dataset,
