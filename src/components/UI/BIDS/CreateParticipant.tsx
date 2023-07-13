@@ -17,10 +17,10 @@ import {
 	BIDSDataset,
 	EditSubjectClinicalDto,
 	Participant,
-} from '../../api/types'
-import { useNotification } from '../../hooks/useNotification'
-import { useAppStore } from '../../Store'
-import { subEditClinical } from '../../api/bids'
+} from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
+import { useAppStore } from '../../../Store'
+import { subEditClinical } from '../../../api/bids'
 
 type IField = Record<string, string>
 

@@ -8,11 +8,11 @@ import {
 	Typography,
 } from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
-import { BIDSDataset } from '../../api/types'
-import { linkStyle, ROUTE_PREFIX } from '../../constants'
+import { BIDSDataset } from '../../../api/types'
+import { linkStyle, ROUTE_PREFIX } from '../../../constants'
 import DatasetInfo from './DatasetInfo'
 import * as React from 'react'
-import { nameToColor } from '../theme'
+import { nameToColor } from '../../theme'
 
 const DatasetCard = ({ dataset }: { dataset: BIDSDataset }): JSX.Element => {
 	const params = useParams()
