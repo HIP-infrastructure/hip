@@ -3,10 +3,10 @@ import { Box, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Admin from './components/Center/Admin'
 import AppList from './components/Documentation/AppList'
 import Dataset from './components/BIDS/Dataset'
-import Datasets from './components/BIDS/Datasets'
+import CenterDatasets from './components/Center/Datasets'
+import PublicDatasets from './components/Public/Datasets'
 import Centers from './components/Centers'
 import CenterWorkspace from './components/Center/Workspace'
 import About from './components/Documentation/About'
@@ -78,14 +78,13 @@ const App = () => (
 			<Route index element={<GettingStarted />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'about'} element={<About />} />
-			<Route path={'admin'} element={<Admin />} />
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
 				<Route path={':centerId'} element={<CenterWorkspace />} />
 				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
 				<Route path={':centerId/files'} element={<MyFiles />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
-					<Route index element={<Datasets />} />
+					<Route index element={<CenterDatasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
 			</Route>
@@ -103,6 +102,7 @@ const App = () => (
 					</Route>
 				</Route>
 			</Route>
+			<Route path={'public'} element={<PublicDatasets />}></Route>
 			<Route
 				path='*'
 				element={
