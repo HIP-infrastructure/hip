@@ -4,7 +4,7 @@ import { alpha, styled } from '@mui/material/styles'
 import { useState } from 'react'
 import { InspectResult } from '../../../api/types'
 import React, { useEffect } from 'react'
-import { MinusSquare, PlusSquare, DocumentSquare } from '../../UI/Icons'
+import { MinusSquare, PlusSquare } from '../../UI/Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -111,7 +111,6 @@ const MetadataBrowser = ({
 				defaultExpanded={[rootFile.relativePath]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
-				defaultEndIcon={<DocumentSquare />}
 				onNodeToggle={(_event, filesIds: string[]) => {
 					if (filesIds) setExpanded(filesIds)
 				}}
