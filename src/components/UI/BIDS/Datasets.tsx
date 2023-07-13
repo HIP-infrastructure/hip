@@ -53,7 +53,7 @@ const ageRangeMarks = [
 	{ value: 100, label: '100' },
 ]
 
-const Datasets = () => {
+const Datasets = ({ action }: { action?: JSX.Element }) => {
 	const {
 		user: [user],
 	} = useAppStore()
@@ -296,7 +296,9 @@ const Datasets = () => {
 							}}
 						>
 							{datasets?.data?.map(dataset => (
-								<DatasetCard key={dataset.id} dataset={dataset} />
+								<DatasetCard key={dataset.id} dataset={dataset}>
+									{action}
+								</DatasetCard>
 							))}
 						</Box>
 					</Box>
