@@ -8,9 +8,9 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
-import { API_GATEWAY } from '../../api/gatewayClientAPI'
-import { HIPCenter, User } from '../../api/types'
-import UserInfo from '../UI/UserInfo'
+import { API_GATEWAY } from '../../../api/gatewayClientAPI'
+import { HIPCenter, User } from '../../../api/types'
+import UserInfo from '../../UI/UserInfo'
 
 const Members = ({ group, users }: { group?: HIPCenter; users?: User[] }) => {
 	return (

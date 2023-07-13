@@ -14,10 +14,10 @@ import { BIDSDataset, ContainerType, HIPCenter, User } from '../../api/types'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import TitleBar from '../UI/titleBar'
-import Data from './Data'
-import MainCard from './MainCard'
-import Members from './Members'
-import Tools from './Tools'
+import DataCard from './Cards/DataCard'
+import MainCard from './Cards/MainCard'
+import MembersCard from './Cards/MembersCard'
+import ToolsCard from './Cards/ToolsCard'
 import { linkStyle } from '../../constants'
 import { getAllBidsDataset } from '../../api/bids'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
@@ -126,18 +126,18 @@ const Workspace = () => {
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
 								{center && users && (
-									<Members
+									<MembersCard
 										group={center}
 										users={users.filter(u => u.groups?.includes(center.id))}
 									/>
 								)}
 							</Box>
 							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
-								<Tools />
+								<ToolsCard />
 							</Box>
 							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}>
 								{bidsDatasets && (
-									<Data bidsDatasets={bidsDatasets} sessions={sessions} />
+									<DataCard bidsDatasets={bidsDatasets} sessions={sessions} />
 								)}
 							</Box>
 						</>
@@ -146,7 +146,7 @@ const Workspace = () => {
 						<>
 							<Box sx={{ gridColumn: '2', gridRow: '1 / 3' }}>
 								{center && users && (
-									<Members
+									<MembersCard
 										group={center}
 										users={users.filter(u => u.groups?.includes(center.id))}
 									/>
