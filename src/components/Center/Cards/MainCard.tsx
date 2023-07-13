@@ -17,9 +17,9 @@ import {
 	Link,
 	Typography,
 } from '@mui/material'
-import { HIPCenter } from '../../api/types'
-import { linkStyle } from '../../constants'
-import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { HIPCenter } from '../../../api/types'
+import { linkStyle } from '../../../constants'
+import { API_GATEWAY } from '../../../api/gatewayClientAPI'
 
 const MainCard = ({ group }: { group?: HIPCenter }) => {
 	const SocialButton = ({ network, url }: { network: string; url: string }) => {

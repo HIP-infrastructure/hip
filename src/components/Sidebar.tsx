@@ -292,102 +292,100 @@ const Sidebar = () => {
 					</List>
 				)}
 				{userProjects?.map(project => (
-						<Box
-							key={project.name}
-							sx={{
-								backgroundColor:
-									openProjects[project.name] &&
-									pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
-										? '#f2f2f2'
-										: 'white',
+					<Box
+						key={project.name}
+						sx={{
+							backgroundColor:
+								openProjects[project.name] &&
+								pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
+									? '#f2f2f2'
+									: 'white',
+						}}
+					>
+						<ListItemButton
+							onClick={() => {
+								handleClickNavigate(`/projects/${project.name}`)
+								handleProjectClick(project?.name)
 							}}
+							selected={`${ROUTE_PREFIX}/projects/${project.name}` === pathname}
 						>
-							<ListItemButton
-								onClick={() => {
-									handleClickNavigate(`/projects/${project.name}`)
-									handleProjectClick(project?.name)
-								}}
-								selected={
-									`${ROUTE_PREFIX}/projects/${project.name}` === pathname
-								}
-							>
-								<ListItemIcon>
-									<Folder />
-								</ListItemIcon>
-								<ListItemText primary={`${project.title}`} />
-								{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse
-								in={openProjects[project.name]}
-								timeout='auto'
-								unmountOnExit
-							>
-								<List component='div' disablePadding>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}/desktops` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}/desktops`)
-										}
-									>
-										<ListItemIcon>
-											<Monitor />
-										</ListItemIcon>
-										<ListItemText primary='Desktops' />
-									</ListItemButton>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}/transfer` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}/transfer`)
-										}
-									>
-										<ListItemIcon>
-											<ContentCopy />
-										</ListItemIcon>
-										<ListItemText primary='Transfer' />
-									</ListItemButton>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}/metadata` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}/metadata`)
-										}
-									>
-										<ListItemIcon>
-											<Storage />
-										</ListItemIcon>
-										<ListItemText primary='Files' />
-									</ListItemButton>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}/datasets`)
-										}
-									>
-										<ListItemIcon>
-											<Assignment />
-										</ListItemIcon>
-										<ListItemText primary='BIDS Dataset' />
-									</ListItemButton>
-								</List>
-							</Collapse>
-							<Divider />
-						</Box>
-					))}
+							<ListItemIcon>
+								<Folder />
+							</ListItemIcon>
+							<ListItemText primary={`${project.title}`} />
+							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
+						</ListItemButton>
+						<Collapse
+							in={openProjects[project.name]}
+							timeout='auto'
+							unmountOnExit
+						>
+							<List component='div' disablePadding>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/projects/${project.name}/desktops` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/projects/${project.name}/desktops`)
+									}
+								>
+									<ListItemIcon>
+										<Monitor />
+									</ListItemIcon>
+									<ListItemText primary='Desktops' />
+								</ListItemButton>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/projects/${project.name}/transfer` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/projects/${project.name}/transfer`)
+									}
+								>
+									<ListItemIcon>
+										<ContentCopy />
+									</ListItemIcon>
+									<ListItemText primary='Transfer' />
+								</ListItemButton>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/projects/${project.name}/metadata` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/projects/${project.name}/metadata`)
+									}
+								>
+									<ListItemIcon>
+										<Storage />
+									</ListItemIcon>
+									<ListItemText primary='Files' />
+								</ListItemButton>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/projects/${project.name}/datasets`)
+									}
+								>
+									<ListItemIcon>
+										<Assignment />
+									</ListItemIcon>
+									<ListItemText primary='BIDS Dataset' />
+								</ListItemButton>
+							</List>
+						</Collapse>
+						<Divider />
+					</Box>
+				))}
 				<Tooltip title='Project list' showTooltip={showTooltip}>
 					<ListItemButton
 						selected={`${ROUTE_PREFIX}/projects` === pathname}
@@ -397,6 +395,23 @@ const Sidebar = () => {
 							<Apps />
 						</ListItemIcon>
 						<ListItemText primary='Collaborative projects' />
+					</ListItemButton>
+				</Tooltip>
+			</List>
+			<Divider />
+			<List
+				component='nav'
+				aria-labelledby='docs-subheader'
+			>
+				<Tooltip title='Public Datasets' showTooltip={showTooltip}>
+					<ListItemButton
+						selected={`${ROUTE_PREFIX}/public` === pathname}
+						onClick={() => handleClickNavigate('/public')}
+					>
+						<ListItemIcon>
+							<Apps />
+						</ListItemIcon>
+						<ListItemText primary='Public Datasets' />
 					</ListItemButton>
 				</Tooltip>
 			</List>
