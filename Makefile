@@ -5,8 +5,8 @@ export
 
 #dep: @ Install all depencies defined in package.json
 dep:
-	npm install
 	sudo npm i -g husky
+	npm install
 	npm run prepare
 
 #dep.init: @ Install all depencies for Ubuntu
