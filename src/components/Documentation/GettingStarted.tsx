@@ -116,7 +116,7 @@ const GettingStarted = (): JSX.Element => {
 					</Typography>
 
 					<Typography sx={{ mb: 4, color: 'secondary.main', width: '600' }}>
-						Follow these steps to get started with the HIP
+						Follow these steps to get started with the DIP
 					</Typography>
 				</Box>
 

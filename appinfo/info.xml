@@ -17,7 +17,7 @@
 
 	<navigations>
 		<navigation>
-			<name>HIP</name>
+			<name>HOME</name>
 			<route>hip.page.index</route>
 		</navigation>
 	</navigations>

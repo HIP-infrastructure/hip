@@ -2,7 +2,7 @@ import { IEntity } from './api/types'
 
 export const ROUTE_PREFIX = '/apps/hip'
 export const APP_MARGIN_TOP = 50
-export const DRAWER_WIDTH = 240
+export const DRAWER_WIDTH = 260
 export const POLLING = Number(process.env.REACT_APP_POLLING_INTERVAL) || 2
 
 export const linkStyle = {

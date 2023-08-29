@@ -32,15 +32,6 @@ export interface Space {
 	route: string
 }
 
-const devNameStyle = {
-	position: 'fixed',
-	top: '8px',
-	right: '200px',
-	color: '#F5B800',
-	zIndex: '10000',
-	transform: 'translateX(-50%)',
-}
-
 const Layout = (): JSX.Element => {
 	const { showNotif } = useNotification()
 
@@ -59,11 +50,6 @@ const Layout = (): JSX.Element => {
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
-			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-				<Typography sx={devNameStyle} variant='h6'>
-					{process.env.REACT_APP_HOSTNAME}
-				</Typography>
-			)}
 			<Navigation />
 			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
 				<Outlet />
@@ -75,12 +61,12 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<GettingStarted />} />
+			<Route index element={<CenterWorkspace centerId={"dip"} />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'about'} element={<About />} />
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
-				<Route path={':centerId'} element={<CenterWorkspace />} />
+				<Route path={':centerId'} element={<CenterWorkspace centerId={"dip"}/>} />
 				<Route path={':centerId/desktops'} element={<Outlet />}>
 					<Route index element={<CenterDesktops />} />
 					<Route path={':id'} element={<Desktop />} />
