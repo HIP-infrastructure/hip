@@ -14,7 +14,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 const colors = {
 	primary: '#1eb7e6',
-	secondary: '#314259',
+	secondary: '#009933',
 }
 
 const theme = createTheme({
