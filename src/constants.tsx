@@ -145,3 +145,14 @@ export const ENTITIES: IEntity[] = [
 		options: [],
 	},
 ]
+
+export const SERVICES = [
+	{
+		label: 'Cohorte Explorer',
+		url: 'https://www.chuv.ch/fr/rc/qui-sommes-nous/data-science'
+	},
+	{
+		label: 'Kheops',
+		url: 'https://www.chuv.ch/fr/rc/qui-sommes-nous/data-science'
+	}
+]

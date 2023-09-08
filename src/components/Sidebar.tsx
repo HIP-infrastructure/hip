@@ -16,6 +16,8 @@ import {
 	Storage,
 	Schedule,
 	Chat,
+	Hub,
+	Inventory
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -38,7 +40,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX, SERVICES } from '../constants'
 import { useAppStore } from '../Store'
 import { HIPCenter } from '../api/types'
 
@@ -406,6 +408,39 @@ const Sidebar = () => {
 				aria-labelledby='docs-subheader'
 			>
 				<Divider />
+				<ListItemButton
+					onClick={() => {
+						setOpenTools(!openTools)
+					}}
+				>
+					<ListItemIcon>
+						<Inventory />
+					</ListItemIcon>
+					<ListItemText primary={'Services'} />
+					{openTools ? <ExpandLess /> : <ExpandMore />}
+				</ListItemButton>
+				<Collapse
+					in={openTools}
+					timeout='auto'
+					unmountOnExit
+				>
+					<List component='div' disablePadding>
+					{SERVICES.map((s, i) => 
+						<ListItemButton
+							sx={{ pl: 4 }}
+							key={s.label}
+							onClick={() =>
+								window.open(`${s.url}`, '_blank')
+							}
+						>
+							<ListItemIcon>
+								<Hub />
+							</ListItemIcon>
+							<ListItemText primary={s.label} />
+						</ListItemButton>
+					)}
+					</List>
+				</Collapse>
 				<ListItemButton
 					selected={`${ROUTE_PREFIX}/apps` === pathname}
 					onClick={() => handleClickNavigate('/apps')}
