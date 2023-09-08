@@ -55,7 +55,7 @@ const CreateProject = () => {
 			<TitleBar
 				title={`Create Project`}
 				description={
-					'A project is a collaborative workspace where your data is privately stored and cannot be downloaded by other users. Users can run Desktop apps on the data and share the results with other users.'
+					'A project is a collaborative workspace where your data is privately stored and cannot be downloaded by other users. Users can run apps on the data and share the results with other users.'
 				}
 			/>
 

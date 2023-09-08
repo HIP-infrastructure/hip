@@ -47,7 +47,7 @@ const DesktopCard = ({
 		}}
 	>
 		<Box sx={{ position: 'relative' }}>
-			<Tooltip title={`Open Desktop #${desktop.name}`} placement='bottom'>
+			<Tooltip title={`Open Workbench #${desktop.name}`} placement='bottom'>
 				<CardMedia
 					sx={{
 						cursor:

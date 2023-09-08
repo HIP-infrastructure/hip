@@ -166,7 +166,7 @@ const Sidebar = () => {
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
-							title='Process data in remote desktops'
+							title='Process data in remote workbenches'
 							showTooltip={showTooltip}
 						>
 							<ListItemButton
@@ -181,7 +181,7 @@ const Sidebar = () => {
 								<ListItemIcon>
 									<Monitor />
 								</ListItemIcon>
-								<ListItemText primary='Desktops' />
+								<ListItemText primary='Workbenches' />
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip title='Upload your files' showTooltip={showTooltip}>
@@ -298,7 +298,7 @@ const Sidebar = () => {
 										<ListItemIcon>
 											<Monitor />
 										</ListItemIcon>
-										<ListItemText primary='Desktops' />
+										<ListItemText primary='Workbenches' />
 									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}

@@ -252,7 +252,7 @@ const Desktop = (): JSX.Element => {
 							<MenuItem
 								value={s?.id}
 								key={s?.id}
-							>{`Desktop #${s?.name}`}</MenuItem>
+							>{`Workbench #${s?.name}`}</MenuItem>
 						))}
 					</Select>
 					<Box sx={{ flexGrow: 1 }} />
@@ -294,7 +294,7 @@ const Desktop = (): JSX.Element => {
 				{desktopIsAlive && desktop && desktop?.url && (
 					<iframe
 						ref={fullScreenRef}
-						title='Desktop'
+						title='Workbench'
 						src={desktop.url}
 						allow={'autoplay; fullscreen; clipboard-write;'}
 						style={{

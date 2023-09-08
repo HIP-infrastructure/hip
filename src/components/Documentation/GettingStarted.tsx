@@ -142,8 +142,8 @@ const GettingStarted = (): JSX.Element => {
 						<GettingStartedCard
 							step={2}
 							title='Process'
-							subtitle='Use a Desktop App to process your data.'
-							description={'Use Desktops and run applications'}
+							subtitle='Use an App to process your data.'
+							description={'Use Workbenches and run applications'}
 							img='gettingstarted-2.png'
 							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_Desktops_and_run_applications_from_the_App_Catalog.html'
 						/>
