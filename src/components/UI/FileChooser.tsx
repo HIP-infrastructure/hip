@@ -62,12 +62,10 @@ const FileChooser = ({
 	}, [selectedFile.path, setFiles])
 
 	useEffect(() => {
-		if (groups) return
-
 		getGroupFolders(user?.uid).then(groupFolders => {
 			setGroups(groupFolders?.map(g => g.label))
 		})
-	}, [user, setGroups, groups, selectedFile, files])
+	}, [user, setGroups])
 
 	useEffect(() => {
 		const hasGroup = groups && files.some(f => groups.includes(f.name))
