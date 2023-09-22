@@ -17,7 +17,8 @@ import {
 	Schedule,
 	Chat,
 	Hub,
-	Inventory
+	Inventory,
+	Api
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -414,7 +415,7 @@ const Sidebar = () => {
 					}}
 				>
 					<ListItemIcon>
-						<Inventory />
+						<Hub />
 					</ListItemIcon>
 					<ListItemText primary={'Services'} />
 					{openTools ? <ExpandLess /> : <ExpandMore />}
@@ -434,7 +435,7 @@ const Sidebar = () => {
 							}
 						>
 							<ListItemIcon>
-								<Hub />
+								<Api />
 							</ListItemIcon>
 							<ListItemText primary={s.label} />
 						</ListItemButton>
