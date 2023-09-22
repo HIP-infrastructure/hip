@@ -148,11 +148,15 @@ export const ENTITIES: IEntity[] = [
 
 export const SERVICES = [
 	{
-		label: 'Cohorte Explorer',
-		url: 'https://www.chuv.ch/fr/rc/qui-sommes-nous/data-science'
+		label: 'Cohort Explorer (i2b2) ',
+		url: 'https://www.i2b2.org/webclient/'
 	},
 	{
-		label: 'Kheops',
-		url: 'https://www.chuv.ch/fr/rc/qui-sommes-nous/data-science'
+		label: 'DICOM Images Explorer (Kheops)',
+		url: 'https://demo.kheops.online'
+	},
+	{
+		label: 'Remote Data Science Notebook (Sarus)',
+		url: 'https://www.sarus.tech'
 	}
 ]
