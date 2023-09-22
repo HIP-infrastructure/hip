@@ -118,7 +118,10 @@ const Desktop = (): JSX.Element => {
 					// console.log(e)
 				})
 		}, 1000)
-		return () => intervalRef.current && clearInterval(intervalRef.current)
+		return () => {
+			intervalRef.current && clearInterval(intervalRef.current)
+			intervalRef.current = undefined
+		}
 	}, [desktop, desktopIsAlive])
 
 	useEffect(() => {

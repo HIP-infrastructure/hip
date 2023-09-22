@@ -44,7 +44,6 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('gpu1.thehip.app');
 		$csp->addAllowedFrameDomain('cpu1.thehip.app');
 		$csp->addAllowedFrameDomain('cpu2.thehip.app');
-		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
 		$csp->addAllowedFrameDomain('backend.thehip.app');
 		$csp->addAllowedFrameDomain('iam.ebrains.eu');
 		$csp->addAllowedFrameDomain('iam-int.ebrains.eu');
@@ -53,6 +52,8 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('dip.thehip.app:9001');
 		$csp->addAllowedFrameDomain('hip.collab.local:9001');
 		$csp->addAllowedFrameDomain('collab-dev.thehip.app');
+		$csp->addAllowedFrameDomain('keycloak.thehip.app');
+		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
 
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('cpu1.thehip.app');
@@ -64,11 +65,10 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('dip.thehip.app');
 		$csp->addAllowedConnectDomain('dip.thehip.app:9001');
 		$csp->addAllowedConnectDomain('hip.collab.local:9001');
-		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
 		$csp->addAllowedConnectDomain('collab-dev.thehip.app');
-		
-		$csp->addAllowedScriptDomain('stats.humanbrainproject.eu');
-		
+		$csp->addAllowedConnectDomain('keycloak.thehip.app');
+		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+
 		$response->setContentSecurityPolicy($csp);
 
 		return $response;
