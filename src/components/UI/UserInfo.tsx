@@ -24,16 +24,6 @@ const UserInfo = ({ user }: Props) => (
 			</Typography>
 		</Stack>
 
-		<IconButton
-			color='primary'
-			onClick={() => {
-				window.open(`/u/${user.id}`, '_blank')
-			}}
-			aria-label={`Chat with ${user.displayName}`}
-			title={`Chat with ${user.displayName}`}
-		>
-			<Chat />
-		</IconButton>
 	</Box>
 )
 

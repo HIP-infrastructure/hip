@@ -49,6 +49,8 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('iam.ebrains.eu');
 		$csp->addAllowedFrameDomain('iam-int.ebrains.eu');
 		$csp->addAllowedFrameDomain('hip.local:9001');
+		$csp->addAllowedFrameDomain('dip.thehip.app');
+		$csp->addAllowedFrameDomain('dip.thehip.app:9001');
 		$csp->addAllowedFrameDomain('hip.collab.local:9001');
 		$csp->addAllowedFrameDomain('collab-dev.thehip.app');
 
@@ -59,6 +61,8 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('iam.ebrains.eu');
 		$csp->addAllowedConnectDomain('iam-int.ebrains.eu');
 		$csp->addAllowedConnectDomain('hip.local:9001');
+		$csp->addAllowedConnectDomain('dip.thehip.app');
+		$csp->addAllowedConnectDomain('dip.thehip.app:9001');
 		$csp->addAllowedConnectDomain('hip.collab.local:9001');
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
 		$csp->addAllowedConnectDomain('collab-dev.thehip.app');

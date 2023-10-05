@@ -22,8 +22,9 @@ import { linkStyle } from '../../constants'
 import { getAllBidsDataset } from '../../api/bids'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
 
-const Workspace = () => {
+const Workspace = ({ centerId }: { centerId:any }) => {
 	const params = useParams()
+	if (!centerId && params.centerId) centerId = params.centerId
 	const { showNotif } = useNotification()
 	// const { trackEvent } = useMatomo()
 	const {
@@ -49,14 +50,14 @@ const Workspace = () => {
 	}, [user])
 
 	useEffect(() => {
-		if (!params.centerId) return
+		if (!centerId) return
 
 		const center = centers
-			?.filter(c => c.id === params.centerId)
+			?.filter(c => c.id === centerId)
 			?.find((_, i) => i === 0)
 
 		setCenter(center)
-	}, [centers, params.centerId])
+	}, [centers, centerId])
 
 	const sessions = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const isMember = center && user?.groups?.includes(center?.id)
