@@ -157,6 +157,10 @@ export const SERVICES = [
 	},
 	{
 		label: 'Remote Data Science Notebook (Sarus)',
-		url: 'https://www.sarus.tech'
+		url: 'http://lvn01091v.intranet.chuv/'
+	},
+	{
+		label: 'Datasets catalog',
+		url: 'https://catalog.horus-services.intranet.chuv/'
 	}
 ]
