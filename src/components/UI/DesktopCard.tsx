@@ -47,7 +47,7 @@ const DesktopCard = ({
 		}}
 	>
 		<Box sx={{ position: 'relative' }}>
-			<Tooltip title={`Open Desktop #${desktop.name}`} placement='bottom'>
+			<Tooltip title={`Open Workbench #${desktop.name}`} placement='bottom'>
 				<CardMedia
 					sx={{
 						cursor:
@@ -55,7 +55,7 @@ const DesktopCard = ({
 					}}
 					component='img'
 					height='140'
-					src={`${API_GATEWAY}/public/media/session-thumbnail.png`}
+					src={`${API_GATEWAY}/public/media/session-thumbnail${(desktop.state === ContainerState.DESTROYED || desktop.state === ContainerState.PAUSED) ? '-empty': ''}.png`}
 					alt={`Open ${desktop.name}`}
 					onClick={() =>
 						desktop.state === ContainerState.RUNNING &&

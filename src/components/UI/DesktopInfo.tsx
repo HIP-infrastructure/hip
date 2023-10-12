@@ -15,7 +15,7 @@ const DesktopInfo = ({ desktop }: { desktop: Container }) => (
 			<Box>
 				<Typography sx={{ fontSize: 14 }}>{desktop?.userId}</Typography>
 				<Typography variant='h5' component='div'>
-					Desktop #{desktop?.name}
+					Workbench #{desktop?.name}
 				</Typography>
 			</Box>
 			<Chip

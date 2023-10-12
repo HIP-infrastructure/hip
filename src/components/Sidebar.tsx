@@ -16,6 +16,9 @@ import {
 	Storage,
 	Schedule,
 	Chat,
+	Hub,
+	Inventory,
+	Api
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -38,7 +41,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX, SERVICES } from '../constants'
 import { useAppStore } from '../Store'
 import { HIPCenter } from '../api/types'
 
@@ -137,6 +140,9 @@ const Sidebar = () => {
 					<Box sx={{ ml: 12 }}></Box>
 				</Tooltip>
 			</Box>
+			<ListSubheader id='my-private-workspaces-subheader'>
+				Private workspace
+			</ListSubheader>
 			{(userCenters ?? defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
@@ -163,7 +169,7 @@ const Sidebar = () => {
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
-							title='Process data in remote desktops'
+							title='Process data in remote workbenches'
 							showTooltip={showTooltip}
 						>
 							<ListItemButton
@@ -178,7 +184,7 @@ const Sidebar = () => {
 								<ListItemIcon>
 									<Monitor />
 								</ListItemIcon>
-								<ListItemText primary='Desktops' />
+								<ListItemText primary='Workbenches' />
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip title='Upload your files' showTooltip={showTooltip}>
@@ -197,47 +203,6 @@ const Sidebar = () => {
 								<ListItemText primary='Files' />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip
-							title='BIDS Tools: Manage your datasets'
-							showTooltip={showTooltip}
-						>
-							<ListItemButton
-								sx={{ pl: 4 }}
-								selected={
-									`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
-								}
-								disabled={!userCenters}
-								onClick={() =>
-									handleClickNavigate(`/centers/${center.id}/datasets`)
-								}
-							>
-								<ListItemIcon>
-									<Assignment />
-								</ListItemIcon>
-								<ListItemText primary='BIDS Datasets' />
-							</ListItemButton>
-						</Tooltip>
-						{center.community?.url && (
-							<Tooltip title='Community chat' showTooltip={showTooltip}>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/centers/${center?.id}/community` ===
-										pathname
-									}
-									disabled={!userCenters}
-									onClick={() => {
-										if (center?.community?.url)
-											window.location.href = center.community.url
-									}}
-								>
-									<ListItemIcon>
-										<Chat />
-									</ListItemIcon>
-									<ListItemText primary='Community' />
-								</ListItemButton>
-							</Tooltip>
-						)}
 					</List>
 					<Divider />
 				</Box>
@@ -263,7 +228,7 @@ const Sidebar = () => {
 							}}
 						>
 							<ListSubheader id='my-projects-subheader'>
-								My projects
+								Collaborative workspaces
 							</ListSubheader>
 							{(!userProjects || !user) && (
 								<CircularProgress size={18} color='secondary' />
@@ -336,7 +301,7 @@ const Sidebar = () => {
 										<ListItemIcon>
 											<Monitor />
 										</ListItemIcon>
-										<ListItemText primary='Desktops' />
+										<ListItemText primary='Workbenches' />
 									</ListItemButton>
 									<ListItemButton
 										sx={{ pl: 4 }}
@@ -368,39 +333,11 @@ const Sidebar = () => {
 										</ListItemIcon>
 										<ListItemText primary='Files' />
 									</ListItemButton>
-									<ListItemButton
-										sx={{ pl: 4 }}
-										selected={
-											`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/projects/${project.name}/datasets`)
-										}
-									>
-										<ListItemIcon>
-											<Assignment />
-										</ListItemIcon>
-										<ListItemText primary='BIDS Dataset' />
-									</ListItemButton>
 								</List>
 							</Collapse>
-							<Divider />
 						</Box>
 					))}
-				<Tooltip title='Project list' showTooltip={showTooltip}>
-					<ListItemButton
-						selected={`${ROUTE_PREFIX}/projects` === pathname}
-						onClick={() => handleClickNavigate('/projects')}
-					>
-						<ListItemIcon>
-							<Apps />
-						</ListItemIcon>
-						<ListItemText primary='Collaborative projects' />
-					</ListItemButton>
-				</Tooltip>
 			</List>
-			<Divider />
 			<List
 				sx={{
 					marginTop: 'auto',
@@ -410,57 +347,47 @@ const Sidebar = () => {
 			>
 				<Divider />
 				<ListItemButton
-					selected={`${ROUTE_PREFIX}/` === pathname}
-					onClick={() => handleClickNavigate('/')}
+					onClick={() => {
+						setOpenTools(!openTools)
+					}}
 				>
 					<ListItemIcon>
-						<Info />
+						<Hub />
 					</ListItemIcon>
-					<ListItemText primary='Getting Started' />
+					<ListItemText primary={'Services'} />
+					{openTools ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-
-				<Tooltip
-					title='About the HIP. Participating Centers. App catalog'
-					showTooltip={showTooltip}
+				<Collapse
+					in={openTools}
+					timeout='auto'
+					unmountOnExit
 				>
-					<ListItemButton
-						selected={`${ROUTE_PREFIX}/about` === pathname}
-						onClick={() => {
-							handleClickNavigate('/about')
-							setOpenTools(!openTools)
-						}}
-					>
-						<ListItemIcon>
-							<HelpCenter />
-						</ListItemIcon>
-						<ListItemText primary='About' />
-						{openTools ? <ExpandLess /> : <ExpandMore />}
-					</ListItemButton>
-				</Tooltip>
-				<Collapse in={openTools} timeout='auto' unmountOnExit>
-					<List>
+					<List component='div' disablePadding>
+					{SERVICES.map((s, i) => 
 						<ListItemButton
 							sx={{ pl: 4 }}
-							selected={`${ROUTE_PREFIX}/centers` === pathname}
-							onClick={() => handleClickNavigate('/centers')}
+							key={s.label}
+							onClick={() =>
+								window.open(`${s.url}`, '_blank')
+							}
 						>
 							<ListItemIcon>
-								<Apps />
+								<Api />
 							</ListItemIcon>
-							<ListItemText primary='Participating centers' />
+							<ListItemText primary={s.label} />
 						</ListItemButton>
+					)}
 					</List>
-					<ListItemButton
-						sx={{ pl: 4 }}
-						selected={`${ROUTE_PREFIX}/apps` === pathname}
-						onClick={() => handleClickNavigate('/apps')}
-					>
-						<ListItemIcon>
-							<Apps />
-						</ListItemIcon>
-						<ListItemText primary='App Catalog' />
-					</ListItemButton>
 				</Collapse>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/apps` === pathname}
+					onClick={() => handleClickNavigate('/apps')}
+				>
+					<ListItemIcon>
+						<Apps />
+					</ListItemIcon>
+					<ListItemText primary='App Catalog' />
+				</ListItemButton>
 				<ListItemButton
 					onClick={() => {
 						window.location.href = '/call/yizibxg5'
@@ -483,7 +410,7 @@ const Sidebar = () => {
 			</List>
 
 			<Box component='footer' sx={{ ...footerStyle }}>
-				<p>Copyright © HIP {new Date().getFullYear()}</p>
+				<p>Copyright © DIP {new Date().getFullYear()}</p>
 			</Box>
 		</Drawer>
 	)

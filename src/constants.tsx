@@ -2,7 +2,7 @@ import { IEntity } from './api/types'
 
 export const ROUTE_PREFIX = '/apps/hip'
 export const APP_MARGIN_TOP = 50
-export const DRAWER_WIDTH = 240
+export const DRAWER_WIDTH = 260
 export const POLLING = Number(process.env.REACT_APP_POLLING_INTERVAL) || 2
 
 export const linkStyle = {
@@ -144,4 +144,23 @@ export const ENTITIES: IEntity[] = [
 		],
 		options: [],
 	},
+]
+
+export const SERVICES = [
+	{
+		label: 'i2b2 Cohort Explorer',
+		url: 'http://lvn00473d.chuv.ch/webclient-1.8.0_RC2/'
+	},
+	{
+		label: 'Kheops DICOM Images Explorer',
+		url: 'https://kheops.chuv.ch/'
+	},
+	{
+		label: 'Sarus',
+		url: 'http://lvn01091v.intranet.chuv/'
+	},
+	{
+		label: 'Datasets catalog',
+		url: 'https://catalog.horus-services.intranet.chuv/'
+	}
 ]

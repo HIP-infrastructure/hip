@@ -24,7 +24,7 @@ const DesktopCardButton = ({ createNewDesktop }: Props) => (
 		}}
 	>
 		<Box sx={{ position: 'relative' }}>
-			<Tooltip title={`Create new Desktop`} placement='bottom'>
+			<Tooltip title={`Create new Workbench`} placement='bottom'>
 				<CardMedia
 					sx={{
 						cursor: 'pointer',
@@ -49,18 +49,18 @@ const DesktopCardButton = ({ createNewDesktop }: Props) => (
 					<Box>
 						<Typography sx={{ fontSize: 14 }}>...</Typography>
 						<Typography variant='h5' component='div'>
-							Desktop
+							Workbench
 						</Typography>
 					</Box>
 				</Box>
 				<Typography variant='caption' gutterBottom component='div'>
-					You don&apos;t have any desktop running.
+					You don&apos;t have any workbench running.
 				</Typography>
 			</>
 		</CardContent>
 		<CardActions sx={{ justifyContent: 'end', pr: 2 }}>
 			<Button variant='contained' color='primary' onClick={createNewDesktop}>
-				Create Desktop
+				Create Workbench
 			</Button>
 		</CardActions>
 	</Card>
