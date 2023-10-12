@@ -148,15 +148,15 @@ export const ENTITIES: IEntity[] = [
 
 export const SERVICES = [
 	{
-		label: 'Cohort Explorer (i2b2) ',
-		url: 'https://www.i2b2.org/webclient/'
+		label: 'i2b2 Cohort Explorer',
+		url: 'http://lvn00473d.chuv.ch/webclient-1.8.0_RC2/'
 	},
 	{
-		label: 'DICOM Images Explorer (Kheops)',
-		url: 'https://demo.kheops.online'
+		label: 'Kheops DICOM Images Explorer',
+		url: 'https://kheops.chuv.ch/'
 	},
 	{
-		label: 'Remote Data Science Notebook (Sarus)',
+		label: 'Sarus',
 		url: 'http://lvn01091v.intranet.chuv/'
 	},
 	{
