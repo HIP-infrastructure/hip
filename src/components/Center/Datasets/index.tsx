@@ -11,14 +11,24 @@ import {
 	FormControlLabel,
 	Typography,
 } from '@mui/material'
+import { publishDatasetToPublicSpace } from '../../../api/bids'
+import { BIDSDataset } from '../../../api/types'
 
 const DatasetsIndex = () => {
 	const [open, setOpen] = React.useState(false)
 	const [checked1, setChecked1] = React.useState(false)
 	const [checked2, setChecked2] = React.useState(false)
+	const [datasetPath, setDatasetPath] = React.useState('')	
 
-	const handleClickOpen = () => {
+	const handleClickedDataset = (dataset: BIDSDataset) => {
 		setOpen(true)
+		setDatasetPath(dataset?.Path || '')
+	}
+
+	const handleCheckedClicked = () => {
+		setOpen(false)
+		publishDatasetToPublicSpace(datasetPath)
+		
 	}
 
 	const handleClose = () => {
@@ -27,20 +37,8 @@ const DatasetsIndex = () => {
 
 	return (
 		<>
-			<Datasets
-				action={
-					<Button
-						size='small'
-						onClick={async e => {
-							e.preventDefault()
-							handleClickOpen()
-						}}
-					>
-						Make public
-					</Button>
-				}
-			/>
-			<Dialog open={open} onClose={handleClose}>
+			<Datasets handleClickedDataset={handleClickedDataset} buttonTitle={'Make public'} />
+			<Dialog open={open} onClose={handleCheckedClicked}>
 				<DialogTitle>Make Dataset Public</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
@@ -96,7 +94,7 @@ const DatasetsIndex = () => {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose}>Cancel</Button>
-					<Button disabled={!checked1 && !checked2} onClick={handleClose}>
+					<Button disabled={!checked1 && !checked2} onClick={handleCheckedClicked}>
 						Publish
 					</Button>
 				</DialogActions>

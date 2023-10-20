@@ -53,7 +53,7 @@ const ageRangeMarks = [
 	{ value: 100, label: '100' },
 ]
 
-const Datasets = ({ action }: { action?: JSX.Element }) => {
+const Datasets = ({ handleClickedDataset, buttonTitle }: { handleClickedDataset?: (dataset: BIDSDataset) => void, buttonTitle: string}) => {
 	const {
 		user: [user],
 	} = useAppStore()
@@ -297,7 +297,15 @@ const Datasets = ({ action }: { action?: JSX.Element }) => {
 						>
 							{datasets?.data?.map(dataset => (
 								<DatasetCard key={dataset.id} dataset={dataset}>
-									{action}
+								{handleClickedDataset && <Button
+										size='small'
+										onClick={async e => {
+											e.preventDefault()
+											handleClickedDataset(dataset)
+										}}
+									>
+										{buttonTitle}
+									</Button>}
 								</DatasetCard>
 							))}
 						</Box>

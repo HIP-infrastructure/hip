@@ -8,12 +8,22 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from '@mui/material'
+import { BIDSDataset } from '../../api/types'
+import { publishDatasetToPublicSpace } from '../../api/bids'
 
 const PublicDatasets = () => {
 	const [open, setOpen] = React.useState(false)
+	const [datasetPath, setDatasetPath] = React.useState('')	
 
-	const handleClickOpen = () => {
+	const handleClickedDataset = (dataset: BIDSDataset) => {
 		setOpen(true)
+		setDatasetPath(dataset?.Path || '')
+	}
+
+	const handleCheckedClicked = () => {
+		setOpen(false)
+		publishDatasetToPublicSpace(datasetPath)
+
 	}
 
 	const handleClose = () => {
@@ -22,29 +32,17 @@ const PublicDatasets = () => {
 
 	return (
 		<>
-			<Datasets
-				action={
-					<Button
-						size='small'
-						onClick={async e => {
-							e.preventDefault()
-							handleClickOpen()
-						}}
-					>
-						Clone
-					</Button>
-				}
-			/>
+			<Datasets handleClickedDataset={handleClickedDataset}  buttonTitle={'Clone this dataset'}/>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle>Clone Dataset</DialogTitle>
+				<DialogTitle>Copy Dataset</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						This dataset is going to be cloned in your personal space.
+						This dataset is going to be copied in your personal space.
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose}>Cancel</Button>
-					<Button onClick={handleClose}>Clone</Button>
+					<Button onClick={handleCheckedClicked}>Clone</Button>
 				</DialogActions>
 			</Dialog>
 		</>
