@@ -81,7 +81,10 @@ const App = () => (
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
 				<Route path={':centerId'} element={<CenterWorkspace />} />
-				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
+				<Route path={':centerId/desktops'} element={<Outlet />}>
+					<Route index element={<CenterDesktops />} />
+					<Route path={':id'} element={<Desktop />} />
+				</Route>
 				<Route path={':centerId/files'} element={<MyFiles />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<CenterDatasets />} />
@@ -89,7 +92,7 @@ const App = () => (
 				</Route>
 			</Route>
 			<Route path={'projects'} element={<Outlet />}>
-				<Route index element={<Projects />} />
+				<Route index element={<Projects /	>} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />

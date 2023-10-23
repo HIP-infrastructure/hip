@@ -52,6 +52,7 @@ const Desktop = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
 		user: [user],
+		tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
 	} = useAppStore()
 	const [containers, setContainers] = React.useState<Container[]>([])
 	const [desktop, setDesktop] = useState<Container>()
@@ -126,8 +127,13 @@ const Desktop = (): JSX.Element => {
 
 	useEffect(() => {
 		if (!params.id) return
+		const desktopId: string = params.id.toString()
+		const desktops = Array.from(new Set([...tabbedDesktops, desktopId]))
+		setTabbedDesktops(desktops)
 
-		getDesktop(params.id).then(data => setDesktop(data))
+		getDesktop(params.id).then(data => {
+			setDesktop(data)
+		})
 	}, [setDesktop, params])
 
 	useEffect(() => {

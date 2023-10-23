@@ -72,6 +72,7 @@ const Sidebar = () => {
 		userProjects: [userProjects, setUserProjects],
 		selectedProject: [selectedProject],
 		tooltips: [showTooltip],
+		tabbedDesktops: [tabbedDesktops],
 	} = useAppStore()
 
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -162,25 +163,45 @@ const Sidebar = () => {
 								<ExpandMore />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip
-							title='Process data in remote desktops'
-							showTooltip={showTooltip}
-						>
-							<ListItemButton
-								sx={{ pl: 4 }}
-								selected={
-									`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
-								}
-								onClick={() =>
-									handleClickNavigate(`/centers/${center.id}/desktops`)
-								}
+						<List>
+							<Tooltip
+								title='Process data in remote desktops'
+								showTooltip={showTooltip}
 							>
-								<ListItemIcon>
-									<Monitor />
-								</ListItemIcon>
-								<ListItemText primary='Desktops' />
-							</ListItemButton>
-						</Tooltip>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/centers/${center.id}/desktops`)
+									}
+								>
+									<ListItemIcon>
+										<Monitor />
+									</ListItemIcon>
+									<ListItemText primary='Desktops' />
+								</ListItemButton>
+								</Tooltip>
+								{tabbedDesktops?.map(d => 
+									<ListItemButton
+										key={d}
+										sx={{ pl: 8 }}
+										selected={
+											`${ROUTE_PREFIX}/centers/${center?.id}/desktops/${d}` ===
+											pathname
+										}
+										onClick={() =>
+											handleClickNavigate(`/centers/${center?.id}/desktops/${d}`)
+										}
+									>
+										<ListItemIcon>
+											<Monitor />
+										</ListItemIcon>
+										<ListItemText primary={`${d}`} />
+									</ListItemButton>
+								)}
+						</List>
 						<Tooltip title='Upload your files' showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 4 }}

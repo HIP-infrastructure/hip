@@ -65,7 +65,7 @@ const CenterDesktops = (): JSX.Element => {
 	}, [setContainers, user, showAdminView, getDesktops])
 
 	const handleOpenDesktop = (desktopId: string) => {
-		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
+		navigate(`${ROUTE_PREFIX}/centers/${params.centerId}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'private',
