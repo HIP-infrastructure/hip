@@ -9,6 +9,7 @@ import {
 	IconButton,
 	TextField,
 	Typography,
+	InputAdornment
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
@@ -61,7 +62,7 @@ const CreateParticipant = ({
 				setFields(participantFields)
 			}
 		}
-	}, [dataset])
+	}, [dataset, participantEditId])
 
 	useEffect(() => {
 		if (dataset?.Participants && participantEditId) {
@@ -120,7 +121,7 @@ const CreateParticipant = ({
 							}
 
 							subEditClinical(subEditClinicalDto)
-								.then(participant => {
+								.then(() => {
 									showNotif('Participant saved', 'success')
 									resetForm()
 									setSubmitted(false)
@@ -132,7 +133,15 @@ const CreateParticipant = ({
 									handleClose()
 								})
 						} else {
-							handleClose(values)
+
+							const { participant_id, ...other } = values as any
+
+							const participant = {
+								participant_id: `sub-${participant_id}`,
+								...other,
+							}
+
+							handleClose(participant)
 							showNotif('Participant created.', 'success')
 							resetForm()
 							setSubmitted(false)
@@ -157,6 +166,9 @@ const CreateParticipant = ({
 													label={field}
 													value={(values as IField)[field]}
 													onChange={handleChange}
+													InputProps={field === 'participant_id' && !editMode &&  {
+														startAdornment: <InputAdornment position="start">sub-</InputAdornment>,
+													} || {}}
 													error={
 														// eslint-disable-next-line @typescript-eslint/no-explicit-any
 														(touched as any)[field] && (errors as IField)[field]

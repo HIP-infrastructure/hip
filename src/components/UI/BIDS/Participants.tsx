@@ -77,10 +77,11 @@ const Participants = ({
 
 				if (dataset.Path) {
 					writeParticipantsTSV(user?.uid, dataset.Path, {
-						Participants: dataset.Participants,
+						Participants: participants,
 					})
 						.then(() => {
 							dataset.Participants = participants
+							setDataset(dataset)
 							setRows(dataset.Participants)
 							showNotif('New field saved. Participants updated', 'success')
 						})
@@ -209,7 +210,7 @@ const Participants = ({
 												</IconButton>
 											</TableCell>
 											{Object.keys(row).map(key => (
-												<TableCell key={key}>{row[key]}</TableCell>
+												<TableCell key={key}>{`${row[key]}`}</TableCell>
 											))}
 										</TableRow>
 									))}
