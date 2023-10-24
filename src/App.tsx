@@ -26,6 +26,7 @@ import Files from './components/Project/Files'
 import MyFiles from './components/Center/Files'
 import GettingStarted from './components/Documentation/GettingStarted'
 import TransferData from './components/Project/TransferData'
+import Service from './components/Services/Service'
 
 export interface Space {
 	label: string
@@ -92,6 +93,10 @@ const App = () => (
 				</Route>
 			</Route>
 			<Route path={'public'} element={<PublicDatasets />}></Route>
+			<Route path={'services'} element={<Outlet />}>
+				<Route index element={<Outlet /	>} />
+				<Route path={':serviceId'} element={<Service />}></Route>
+			</Route>
 			<Route
 				path='*'
 				element={

@@ -18,7 +18,9 @@ import {
 	Chat,
 	Hub,
 	Inventory,
-	Api
+	Api,
+	Laptop,
+	WebAsset,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -29,7 +31,6 @@ import {
 	Switch,
 } from '@mui/material'
 import Tooltip from './UI/Tooltip'
-
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -41,7 +42,12 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX, SERVICES } from '../constants'
+import {
+	APP_MARGIN_TOP,
+	DRAWER_WIDTH,
+	ROUTE_PREFIX,
+	SERVICES,
+} from '../constants'
 import { useAppStore } from '../Store'
 import { HIPCenter } from '../api/types'
 
@@ -77,7 +83,7 @@ const Sidebar = () => {
 		tooltips: [showTooltip],
 		tabbedDesktops: [tabbedDesktops],
 	} = useAppStore()
-
+	const [drawerOpen, setDrawerOpen] = React.useState(true)
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
@@ -106,7 +112,6 @@ const Sidebar = () => {
 
 	return (
 		<Drawer
-			variant='permanent'
 			anchor='left'
 			sx={{
 				'& .MuiDrawer-paper': {
@@ -117,6 +122,9 @@ const Sidebar = () => {
 				flexShrink: 0,
 				width: DRAWER_WIDTH,
 			}}
+			variant='persistent'
+			open={true}
+			elevation={100}
 		>
 			{userCenters?.length === 0 && (
 				<List component='div' disablePadding>
@@ -177,36 +185,39 @@ const Sidebar = () => {
 								<ListItemButton
 									sx={{ pl: 4 }}
 									selected={
-										`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
+										`${ROUTE_PREFIX}/centers/${center?.id}/desktops` ===
+										pathname
 									}
 									onClick={() =>
 										handleClickNavigate(`/centers/${center.id}/desktops`)
 									}
 								>
 									<ListItemIcon>
-										<Monitor />
+										<Laptop />
 									</ListItemIcon>
-									<ListItemText primary='Desktops' />
+									<ListItemText primary='Workbenches' />
 								</ListItemButton>
-								</Tooltip>
-								{tabbedDesktops?.map(d => 
-									<ListItemButton
-										key={d}
-										sx={{ pl: 8 }}
-										selected={
-											`${ROUTE_PREFIX}/centers/${center?.id}/desktops/${d}` ===
-											pathname
-										}
-										onClick={() =>
-											handleClickNavigate(`/centers/${center?.id}/desktops/${d}`)
-										}
-									>
-										<ListItemIcon>
-											<Monitor />
-										</ListItemIcon>
-										<ListItemText primary={`${d}`} />
-									</ListItemButton>
-								)}
+							</Tooltip>
+							{tabbedDesktops?.map(d => (
+								<ListItemButton
+									key={d.id}
+									sx={{ pl: 8 }}
+									selected={
+										`${ROUTE_PREFIX}/centers/${center?.id}/desktops/${d.id}` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(
+											`/centers/${center?.id}/desktops/${d.id}`
+										)
+									}
+								>
+									<ListItemIcon>
+										<WebAsset />
+									</ListItemIcon>
+									<ListItemText primary={`Workbench #${d.name}`} />
+								</ListItemButton>
+							))}
 						</List>
 						<Tooltip title='Upload your files' showTooltip={showTooltip}>
 							<ListItemButton
@@ -320,7 +331,7 @@ const Sidebar = () => {
 									<ListItemIcon>
 										<Monitor />
 									</ListItemIcon>
-									<ListItemText primary='Desktops' />
+									<ListItemText primary='Workbenches' />
 								</ListItemButton>
 								<ListItemButton
 									sx={{ pl: 4 }}
@@ -352,55 +363,12 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Files' />
 								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/projects/${project.name}/datasets`)
-									}
-								>
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
 							</List>
 						</Collapse>
 						<Divider />
 					</Box>
 				))}
-				<Tooltip title='Project list' showTooltip={showTooltip}>
-					<ListItemButton
-						selected={`${ROUTE_PREFIX}/projects` === pathname}
-						onClick={() => handleClickNavigate('/projects')}
-					>
-						<ListItemIcon>
-							<Apps />
-						</ListItemIcon>
-						<ListItemText primary='Collaborative projects' />
-					</ListItemButton>
-				</Tooltip>
 			</List>
-			<List
-				component='nav'
-				aria-labelledby='docs-subheader'
-			>
-				<Tooltip title='Public Datasets' showTooltip={showTooltip}>
-					<ListItemButton
-						selected={`${ROUTE_PREFIX}/public` === pathname}
-						onClick={() => handleClickNavigate('/public')}
-					>
-						<ListItemIcon>
-							<Apps />
-						</ListItemIcon>
-						<ListItemText primary='Public Datasets' />
-					</ListItemButton>
-				</Tooltip>
-			</List>
-			<Divider />
 			<List
 				sx={{
 					marginTop: 'auto',
@@ -420,26 +388,20 @@ const Sidebar = () => {
 					<ListItemText primary={'Services'} />
 					{openTools ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-				<Collapse
-					in={openTools}
-					timeout='auto'
-					unmountOnExit
-				>
+				<Collapse in={openTools} timeout='auto' unmountOnExit>
 					<List component='div' disablePadding>
-					{SERVICES.map((s, i) => 
-						<ListItemButton
-							sx={{ pl: 4 }}
-							key={s.label}
-							onClick={() =>
-								window.open(`${s.url}`, '_blank')
-							}
-						>
-							<ListItemIcon>
-								<Api />
-							</ListItemIcon>
-							<ListItemText primary={s.label} />
-						</ListItemButton>
-					)}
+						{SERVICES.map((s, i) => (
+							<ListItemButton
+								sx={{ pl: 4 }}
+								key={s.label}
+								onClick={() => handleClickNavigate(`/services/${s.id}`)}
+							>
+								<ListItemIcon>
+									<Api />
+								</ListItemIcon>
+								<ListItemText primary={s.label} />
+							</ListItemButton>
+						))}
 					</List>
 				</Collapse>
 				<ListItemButton
