@@ -37,22 +37,19 @@ export default function Service() {
 	}, [iFrameRef])
 
 	return (
-		<Box>
-			<TitleBar title={service?.label} />
-			{service && (
-				<iframe
-					ref={iFrameRef}
-					title='services'
-					src={service?.url}
-					allow={'autoplay; fullscreen; clipboard-write;'}
-					style={{
-						width: '100%',
-						height: 'calc(100vh - 164px)',
-						backgroundColor: '#333',
-					}}
-					className='iframe-display'
-				/>
-			)}
-		</Box>
+		service && (
+			<iframe
+				ref={iFrameRef}
+				title='services'
+				src={service?.url}
+				allow={'autoplay; fullscreen; clipboard-write;'}
+				style={{
+					width: '100%',
+					height: 'calc(100vh - 164px)',
+					backgroundColor: '#333',
+				}}
+				className='iframe-display'
+			/>
+		)
 	)
 }

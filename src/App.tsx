@@ -83,7 +83,10 @@ const App = () => (
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
-					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'desktops'} element={<Outlet />}>
+						<Route index element={<ProjectDesktops />} />
+						<Route path={':id'} element={<Desktop />} />
+					</Route>
 					<Route path={'transfer'} element={<TransferData />} />
 					<Route path={'metadata'} element={<Files />} />
 					<Route path={'datasets'} element={<Outlet />}>
@@ -106,7 +109,6 @@ const App = () => (
 				}
 			/>
 		</Route>
-		<Route path={`${ROUTE_PREFIX}/desktops/:id`} element={<Desktop />} />
 	</Routes>
 )
 

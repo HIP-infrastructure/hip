@@ -100,9 +100,14 @@ const Sidebar = () => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
 	}
 
-	const handleClickNavigate = (route: string) => {
+	const handleClickNavigate = (route: string, options:any = null) => {
 		trackPageView({ documentTitle: route })
-		navigate(`${ROUTE_PREFIX}${route}`)
+
+		if (options) {
+			navigate(`${ROUTE_PREFIX}${route}`, options)
+		} else {
+			navigate(`${ROUTE_PREFIX}${route}`)
+		}
 	}
 
 	const userCenters =
@@ -208,7 +213,15 @@ const Sidebar = () => {
 									}
 									onClick={() =>
 										handleClickNavigate(
-											`/centers/${center?.id}/desktops/${d.id}`
+											`/centers/${center?.id}/desktops/${d.id}`,
+											{
+												state: {
+													from: `/apps/hip/centers/${center?.id}/desktops`,
+													workspace: 'private',
+													trackingName: `center/${center?.id}`,
+													showAdminView: false
+												}
+											}
 										)
 									}
 								>
@@ -394,6 +407,10 @@ const Sidebar = () => {
 							<ListItemButton
 								sx={{ pl: 4 }}
 								key={s.label}
+								selected={
+									`${ROUTE_PREFIX}/services/${s.id}` ===
+									pathname
+								}
 								onClick={() => handleClickNavigate(`/services/${s.id}`)}
 							>
 								<ListItemIcon>

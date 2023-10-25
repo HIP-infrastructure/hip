@@ -10,7 +10,6 @@ import {
 	Toolbar,
 	Typography,
 } from '@mui/material'
-import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled } from '@mui/material/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -27,10 +26,6 @@ import { useAppStore } from '../../Store'
 import AppList from './AppList'
 import Info from './Info'
 
-interface AppBarProps extends MuiAppBarProps {
-	open?: boolean
-}
-
 const Desktop = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
 	const params = useParams()
@@ -42,8 +37,13 @@ const Desktop = (): JSX.Element => {
 	const {
 		user: [user],
 		tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
+		projectContainers: [pcontainers],
+		containers: [ccontainers],
 	} = useAppStore()
-	const [containers, setContainers] = React.useState<Container[]>([])
+	const [containers, setContainers] = React.useState<Container[]>([
+		...(pcontainers || []),
+		...(ccontainers || []),
+	])
 	const [desktop, setDesktop] = useState<Container>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true)
@@ -61,11 +61,12 @@ const Desktop = (): JSX.Element => {
 			getDesktopsAndApps(workspace, userId, groupIds, showAdminView)
 				.then(data => setContainers(data))
 				.catch(error => showNotif(error, 'error')),
-		[workspace, groupIds, showAdminView, showNotif]
+		[workspace, groupIds, showAdminView, showNotif, params]
 	)
 
 	// Remove scroll for entire window
 	useEffect(() => {
+		setContainers([...(pcontainers || []), ...(ccontainers || [])])
 		document.body.classList.add('body-fixed')
 		return () => {
 			document.body.classList.remove('body-fixed')
@@ -83,7 +84,7 @@ const Desktop = (): JSX.Element => {
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [user, getDesktops])
+	}, [user, getDesktops, params.id])
 
 	// Check for XPra readiness
 	useEffect(() => {
@@ -115,22 +116,27 @@ const Desktop = (): JSX.Element => {
 	// get remote content of desktop
 	useEffect(() => {
 		if (!params.id) return
+
 		const desktopId: string = params.id.toString()
-
-		if (!desktopId) return
-
 		const desktop = containers?.find(d => d.id === desktopId)
 
 		if (!desktop) return
 
-		if (tabbedDesktops?.map(d => d.id).includes(desktopId)) return
+		setTabbedDesktops(ds => {
+			if (
+				desktop.workspace === 'private' &&
+				!ds?.map(d => d.id).includes(desktopId)
+			) {
+				return [...ds, desktop as Container]
+			}
 
-		setTabbedDesktops(ds => [...ds, desktop as Container])
+			return ds
+		})
 
 		getDesktop(desktopId).then(data => {
 			setDesktop(data)
 		})
-	}, [containers, setDesktop, params])
+	}, [containers, setDesktop, params, workspace])
 
 	useEffect(() => {
 		if (fullscreen) {
