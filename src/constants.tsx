@@ -149,7 +149,7 @@ export const ENTITIES: IEntity[] = [
 export const SERVICES = [
 	{
 		label: 'i2b2 Cohort Explorer',
-		url: 'http://lvn00473d.chuv.ch/webclient-1.8.0_RC2/'
+		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/'
 	},
 	{
 		label: 'Kheops DICOM Images Explorer',
