@@ -10,7 +10,7 @@ import {
 } from '../../../api/gatewayClientAPI'
 import { ISearch, Node } from '../../../api/types'
 import { useAppStore } from '../../../Store'
-import { DocumentSquare, MinusSquare, PlusSquare } from '../../UI/Icons'
+import { MinusSquare, PlusSquare } from '../../UI/Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -237,7 +237,6 @@ const FileBrowser = ({
 				defaultExpanded={[rootFile.path]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
-				defaultEndIcon={<DocumentSquare />}
 				onNodeToggle={(_event, filesIds: string[]) => {
 					const clickedId = filesIds[0]
 					const directoryExists = files.find(f => f.parentPath === clickedId)

@@ -1,5 +1,5 @@
 import { Box, CardActions, CardContent, Link, Typography } from '@mui/material'
-import { BIDSDataset } from '../../api/types'
+import { BIDSDataset } from '../../../api/types'
 import * as React from 'react'
 
 const DatasetDescription = ({ dataset }: { dataset?: BIDSDataset }) => {

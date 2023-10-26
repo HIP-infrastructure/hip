@@ -1,7 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, Tooltip, Typography } from '@mui/material'
-import { BIDSDataset } from '../../api/types'
+import { BIDSDataset } from '../../../api/types'
 import * as React from 'react'
 
 const DatasetInfo = ({ dataset }: { dataset?: BIDSDataset }): JSX.Element => (
