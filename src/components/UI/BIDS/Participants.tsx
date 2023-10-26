@@ -14,13 +14,13 @@ import {
 	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { writeParticipantsTSV } from '../../api/bids'
-import { BIDSDataset, Participant } from '../../api/types'
-import { useAppStore } from '../../Store'
-import CreateField from '../UI/createField'
+import { writeParticipantsTSV } from '../../../api/bids'
+import { BIDSDataset, Participant } from '../../../api/types'
+import { useAppStore } from '../../../Store'
+import CreateField from '../../UI/createField'
 import CreateParticipant from './CreateParticipant'
 import ParticipantInfo from './ParticipantInfo'
-import { useNotification } from '../../hooks/useNotification'
+import { useNotification } from '../../../hooks/useNotification'
 
 const Participants = ({
 	dataset,
@@ -77,10 +77,11 @@ const Participants = ({
 
 				if (dataset.Path) {
 					writeParticipantsTSV(user?.uid, dataset.Path, {
-						Participants: dataset.Participants,
+						Participants: participants,
 					})
 						.then(() => {
 							dataset.Participants = participants
+							setDataset(dataset)
 							setRows(dataset.Participants)
 							showNotif('New field saved. Participants updated', 'success')
 						})
@@ -209,7 +210,7 @@ const Participants = ({
 												</IconButton>
 											</TableCell>
 											{Object.keys(row).map(key => (
-												<TableCell key={key}>{row[key]}</TableCell>
+												<TableCell key={key}>{`${row[key]}`}</TableCell>
 											))}
 										</TableRow>
 									))}

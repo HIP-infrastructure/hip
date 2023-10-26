@@ -22,7 +22,7 @@ const Project = () => {
 				setProject(null)
 			})
 		} else setProject(project)
-	}, [params, project, setProject])
+	}, [params, setProject,])
 
 	return <Outlet />
 }

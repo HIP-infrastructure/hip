@@ -3,26 +3,26 @@
 include ../.env
 export
 
+require:
+	@echo "Checking the programs required for the build are installed..."
+	@node --version >/dev/null 2>&1 || (echo "ERROR: node is required."; exit 1)
+	@husky --version >/dev/null 2>&1 || (echo "ERROR: husky is required."; exit 1)
+
 #dep: @ Install all depencies defined in package.json
 dep:
 	sudo npm i -g husky
 	npm install
 	npm run prepare
 
-#dep.init: @ Install all depencies for Ubuntu
-dep.init:
-	curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-	sudo apt-get install -y nodejs
-
 #test: @ Run all tests
 test: t.prettier t.lint 
 
 #t.prettier: @ Prettify the source code
-t.prettier: dep
+t.prettier:
 	npm run prettier
 
 #t.lint: @ Checks the source code against defined coding standard rules
-t.lint: dep
+t.lint:
 	npm run lint
 
 #build: @ Builds the project

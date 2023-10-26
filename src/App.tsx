@@ -3,10 +3,10 @@ import { Box, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Admin from './components/Center/Admin'
 import AppList from './components/Documentation/AppList'
-import Dataset from './components/BIDS/Dataset'
-import Datasets from './components/BIDS/Datasets'
+import Dataset from './components/UI/BIDS/Dataset'
+import CenterDatasets from './components/Center/Datasets'
+import PublicDatasets from './components/Public/Datasets'
 import Centers from './components/Centers'
 import CenterWorkspace from './components/Center/Workspace'
 import About from './components/Documentation/About'
@@ -26,6 +26,7 @@ import Files from './components/Project/Files'
 import MyFiles from './components/Center/Files'
 import GettingStarted from './components/Documentation/GettingStarted'
 import TransferData from './components/Project/TransferData'
+import Service from './components/Services/Service'
 
 export interface Space {
 	label: string
@@ -64,23 +65,28 @@ const App = () => (
 			<Route index element={<CenterWorkspace centerId={"dip"} />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'about'} element={<About />} />
-			<Route path={'admin'} element={<Admin />} />
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
-				<Route path={':centerId'} element={<CenterWorkspace centerId={null}/>} />
-				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
+				<Route path={':centerId'} element={<CenterWorkspace centerId={"dip"}/>} />
+				<Route path={':centerId/desktops'} element={<Outlet />}>
+					<Route index element={<CenterDesktops />} />
+					<Route path={':id'} element={<Desktop />} />
+				</Route>
 				<Route path={':centerId/files'} element={<MyFiles />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
-					<Route index element={<Datasets />} />
+					<Route index element={<CenterDatasets />} />
 					<Route path={':datasetId'} element={<Dataset />} />
 				</Route>
 			</Route>
 			<Route path={'projects'} element={<Outlet />}>
-				<Route index element={<Projects />} />
+				<Route index element={<Projects /	>} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
-					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'desktops'} element={<Outlet />}>
+						<Route index element={<ProjectDesktops />} />
+						<Route path={':id'} element={<Desktop />} />
+					</Route>
 					<Route path={'transfer'} element={<TransferData />} />
 					<Route path={'metadata'} element={<Files />} />
 					<Route path={'datasets'} element={<Outlet />}>
@@ -88,6 +94,11 @@ const App = () => (
 						<Route path={':datasetId'} element={<ProjectDataset />} />
 					</Route>
 				</Route>
+			</Route>
+			<Route path={'public'} element={<PublicDatasets />}></Route>
+			<Route path={'services'} element={<Outlet />}>
+				<Route index element={<Outlet /	>} />
+				<Route path={':serviceId'} element={<Service />}></Route>
 			</Route>
 			<Route
 				path='*'
@@ -98,7 +109,6 @@ const App = () => (
 				}
 			/>
 		</Route>
-		<Route path={`${ROUTE_PREFIX}/desktops/:id`} element={<Desktop />} />
 	</Routes>
 )
 

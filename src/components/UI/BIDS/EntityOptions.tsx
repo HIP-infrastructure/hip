@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import React, { useEffect } from 'react'
-import { IEntity, IOption } from '../../api/types'
+import { IEntity, IOption } from '../../../api/types'
 
 const filter = createFilterOptions<IOption>()
 

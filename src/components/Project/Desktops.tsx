@@ -57,7 +57,7 @@ const ProjectDesktops = (): JSX.Element => {
 	}, [user, params.projectId, getDesktops])
 
 	const handleOpenDesktop = (desktopId: string) => {
-		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
+		navigate(`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'collab',

@@ -9,8 +9,8 @@ import {
 	Typography,
 } from '@mui/material'
 import * as React from 'react'
-import { API_GATEWAY, scanUserFiles } from '../../api/gatewayClientAPI'
-import { useAppStore } from '../../Store'
+import { API_GATEWAY, scanUserFiles } from '../../../api/gatewayClientAPI'
+import { useAppStore } from '../../../Store'
 
 const Tools = () => {
 	const {

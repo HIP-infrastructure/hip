@@ -54,6 +54,10 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('collab-dev.thehip.app');
 		$csp->addAllowedFrameDomain('keycloak.thehip.app');
 		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
+		$csp->addAllowedFrameDomain('lvn00473d.chuv.ch');
+		$csp->addAllowedFrameDomain('kheops.chuv.ch');
+		$csp->addAllowedFrameDomain('lvn01091v.intranet.chuv');
+		$csp->addAllowedFrameDomain('catalog.horus-services.intranet.chuv');
 
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('cpu1.thehip.app');
@@ -68,6 +72,8 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('collab-dev.thehip.app');
 		$csp->addAllowedConnectDomain('keycloak.thehip.app');
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+
+		$csp->addAllowedFrameDomain('*');
 
 		$response->setContentSecurityPolicy($csp);
 
