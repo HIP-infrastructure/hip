@@ -236,7 +236,9 @@ export const AppStoreProvider = ({
 			selectedFiles,
 			setSelectedFiles,
 			tabbedDesktops,
-			setTabbedDesktops
+			setTabbedDesktops,
+			tabbedServices,
+			setTabbedServices
 		]
 	)
 

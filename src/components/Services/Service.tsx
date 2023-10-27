@@ -43,6 +43,7 @@ export default function Service() {
 
 	useEffect(() => {
 		if (!iFrameRef.current) return
+
 		iFrameRef.current.addEventListener('load', function () {
 			setLoading(false)
 		})
