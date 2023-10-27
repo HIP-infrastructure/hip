@@ -82,12 +82,11 @@ const Sidebar = () => {
 		selectedProject: [selectedProject],
 		tooltips: [showTooltip],
 		tabbedDesktops: [tabbedDesktops],
+		tabbedServices: [tabbedServices],
 	} = useAppStore()
-	const [drawerOpen, setDrawerOpen] = React.useState(true)
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
-	const [openTools, setOpenTools] = React.useState(false)
 
 	useEffect(() => {
 		const projectId = selectedProject?.name
@@ -100,7 +99,7 @@ const Sidebar = () => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
 	}
 
-	const handleClickNavigate = (route: string, options:any = null) => {
+	const handleClickNavigate = (route: string, options: any = null) => {
 		trackPageView({ documentTitle: route })
 
 		if (options) {
@@ -219,8 +218,8 @@ const Sidebar = () => {
 													from: `/apps/hip/centers/${center?.id}/desktops`,
 													workspace: 'private',
 													trackingName: `center/${center?.id}`,
-													showAdminView: false
-												}
+													showAdminView: false,
+												},
 											}
 										)
 									}
@@ -392,35 +391,30 @@ const Sidebar = () => {
 				<Divider />
 				<ListItemButton
 					onClick={() => {
-						setOpenTools(!openTools)
+						handleClickNavigate(`/services`)
 					}}
+					selected={`${ROUTE_PREFIX}/services` === pathname}
 				>
 					<ListItemIcon>
 						<Hub />
 					</ListItemIcon>
 					<ListItemText primary={'Services'} />
-					{openTools ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-				<Collapse in={openTools} timeout='auto' unmountOnExit>
-					<List component='div' disablePadding>
-						{SERVICES.map((s, i) => (
-							<ListItemButton
-								sx={{ pl: 4 }}
-								key={s.label}
-								selected={
-									`${ROUTE_PREFIX}/services/${s.id}` ===
-									pathname
-								}
-								onClick={() => handleClickNavigate(`/services/${s.id}`)}
-							>
-								<ListItemIcon>
-									<Api />
-								</ListItemIcon>
-								<ListItemText primary={s.label} />
-							</ListItemButton>
-						))}
-					</List>
-				</Collapse>
+				{tabbedServices
+					?.map(s => ({ ...SERVICES.find(t => `${t.id}` === s) }))
+					.map(st => (
+						<ListItemButton
+							key={``}
+							sx={{ pl: 4 }}
+							selected={`${ROUTE_PREFIX}/services/${st?.id}` === pathname}
+							onClick={() => handleClickNavigate(`/services/${st.id}`)}
+						>
+							<ListItemIcon>
+								<Api />
+							</ListItemIcon>
+							<ListItemText primary={st.label} />
+						</ListItemButton>
+					))}
 				<ListItemButton
 					selected={`${ROUTE_PREFIX}/apps` === pathname}
 					onClick={() => handleClickNavigate('/apps')}

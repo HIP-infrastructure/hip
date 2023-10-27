@@ -146,25 +146,40 @@ export const ENTITIES: IEntity[] = [
 	},
 ]
 
+
 export const SERVICES = [
 	{
-		id: 1,
+		id: 'i2b2',
 		label: 'i2b2 Cohort Explorer',
-		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/'
+		description: 'i2b2 Cohort Explorer',
+		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/',
+		image: 'i2b2',
+		target: 'self',
 	},
 	{
-		id: 2,
+		id: 'kheops',
 		label: 'Kheops DICOM Images Explorer',
-		url: 'https://kheops.chuv.ch/'
+		description: 'Kheops DICOM Images Explorer',
+		url: 'https://kheops.chuv.ch/',
+		image: 'kheops',
+		target: 'self',
 	},
 	{
-		id: 3,
+		id: 'sarus',
 		label: 'Sarus',
-		url: 'http://lvn01091v.intranet.chuv/'
+		description: 'Sarus',
+		url: 'http://lvn01091v.intranet.chuv/',
+		image: 'sarus',
+		target: '_blank',
 	},
 	{
-		id: 4,
+		id: 'datasets-catalog',
 		label: 'Datasets catalog',
-		url: 'https://catalog.horus-services.intranet.chuv/'
-	}
+		description: 'Datasets catalog',
+		url: 'https://catalog.horus-services.intranet.chuv/',
+		image: 'chuv',
+		target: 'self',
+	},
 ]
+
+export type ISERVICE = typeof SERVICES[0]

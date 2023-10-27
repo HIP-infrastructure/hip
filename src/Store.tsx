@@ -75,6 +75,10 @@ export interface IAppState {
 		Container[],
 		React.Dispatch<React.SetStateAction<Container[]>>
 	]
+	tabbedServices: [
+		string[],
+		React.Dispatch<React.SetStateAction<string[]>>
+	]
 }
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
@@ -100,6 +104,7 @@ export const AppStoreProvider = ({
 		null
 	)
 	const [tabbedDesktops, setTabbedDesktops] = useState<Container[]>([])
+	const [tabbedServices, setTabbedServices] = useState<string[]>([])
 
 	// BIDS Tools Store, to be renamed or refactored into a new type
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
@@ -201,6 +206,7 @@ export const AppStoreProvider = ({
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
 			tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
+			tabbedServices: [tabbedServices, setTabbedServices],
 		}),
 		[
 			debug,

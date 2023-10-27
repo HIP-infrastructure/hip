@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TitleBar from '../UI/titleBar'
-import { Box, CircularProgress, Typography } from '@mui/material'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import {
-	APP_MARGIN_TOP,
-	DRAWER_WIDTH,
-	ROUTE_PREFIX,
-	SERVICES,
-} from '../../constants'
+import { CircularProgress } from '@mui/material'
+import { useParams } from 'react-router-dom'
+import { SERVICES } from '../../constants'
+import { useAppStore } from '../../Store'
 
 export default function Service() {
 	const [loading, setLoading] = useState(true)
 	const [service, setService] = useState<any>(null)
 	const iFrameRef = useRef<HTMLIFrameElement>(null)
 	const params = useParams()
+	const {
+		tabbedServices: [tabbedServices, setTabbedServices],
+	} = useAppStore()
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -24,10 +23,23 @@ export default function Service() {
 	}, [])
 
 	useEffect(() => {
-		const serviceId = Number(params?.serviceId)
+		if (!params.serviceId) return
+
+		const serviceId = params?.serviceId
 		const service = SERVICES.find(s => s.id === serviceId)
+
+		if (!service) return
+
 		setService(service)
-	}, [params])
+		setTabbedServices((prev: any) => {
+			const index = prev.findIndex((s: any) => s === serviceId)
+			if (index === -1) {
+				return [...prev, serviceId]
+			}
+
+			return prev
+		})
+	}, [params, setTabbedServices, setService])
 
 	useEffect(() => {
 		if (!iFrameRef.current) return
@@ -37,19 +49,37 @@ export default function Service() {
 	}, [iFrameRef])
 
 	return (
-		service && (
-			<iframe
-				ref={iFrameRef}
-				title='services'
-				src={service?.url}
-				allow={'autoplay; fullscreen; clipboard-write;'}
-				style={{
-					width: '100%',
-					height: 'calc(100vh - 164px)',
-					backgroundColor: '#333',
-				}}
-				className='iframe-display'
-			/>
-		)
+		<>
+			<TitleBar title={service?.label} />
+			{loading && (
+				<div
+					aria-label='Loading remote desktop'
+					style={{
+						width: '100%',
+						height: 'calc(100vh - 164px)',
+						display: 'flex',
+						alignItems: 'center',
+						backgroundColor: '#eee',
+						justifyContent: 'center',
+					}}
+				>
+					<CircularProgress size={32} />
+				</div>
+			)}
+			{!loading && service && (
+				<iframe
+					ref={iFrameRef}
+					title='services'
+					src={service?.url}
+					allow={'autoplay; fullscreen; clipboard-write;'}
+					style={{
+						width: '100%',
+						height: 'calc(100vh - 164px)',
+						backgroundColor: '#333',
+					}}
+					className='iframe-display'
+				/>
+			)}
+		</>
 	)
 }
