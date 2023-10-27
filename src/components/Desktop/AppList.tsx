@@ -55,7 +55,6 @@ const AppList = ({ desktop, containers, handleToggleApp }: Props) => {
 				mb: 6,
 				width: '100%',
 				maxWidth: 360,
-				bgcolor: 'grey.100',
 				position: 'relative',
 				overflow: 'auto',
 				'& ul': { padding: 0 },

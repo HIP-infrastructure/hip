@@ -7,6 +7,7 @@ import {
 	Drawer,
 	Grid,
 	IconButton,
+	Paper,
 	Toolbar,
 	Typography,
 } from '@mui/material'
@@ -216,8 +217,12 @@ const Desktop = (): JSX.Element => {
 				component='div'
 				color='secondary'
 				position='static'
-				elevation={0}
-				sx={{ zIndex: 0, borderBottom: 1 }}
+				elevation={5}
+				sx={{
+					zIndex: 0,
+					borderBottom: 0,
+					width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
+				}}
 			>
 				<Toolbar variant='dense'>
 					<Grid container alignItems='center' spacing={1}>
@@ -259,48 +264,44 @@ const Desktop = (): JSX.Element => {
 					</Grid>
 				</Toolbar>
 			</AppBar>
-			<Box sx={{ display: 'flex' }}>
-				<Box
-					style={{
-						flex: 1,
-						backgroundColor: '#eee',
-						overflow: 'hidden',
-					}}
-				>
-					{!desktopIsAlive && (
-						<div
-							aria-label='Loading remote desktop'
-							style={{
-								width: '100%',
-								height: 'calc(100vh - 164px)',
-								backgroundColor: '#333',
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
-						>
-							<CircularProgress size={32} />
-						</div>
-					)}
-					{desktopIsAlive && desktop?.url && (
-						<iframe
-							ref={fullScreenRef}
-							title='Workbench'
-							src={desktop.url}
-							allow={'autoplay; fullscreen; clipboard-write;'}
-							width={'100%'}
-							height={'100%'}
-							style={{
-								// width: drawerOpen ? `calc(100vw - ${DRAWER_WIDTH}px)` : '100vw',
-								width: '100%',
-								height: 'calc(100vh - 164px)',
-								backgroundColor: '#333',
-								flex: 1,
-							}}
-						/>
-					)}
-				</Box>
-			</Box>
+			<Paper
+				square
+				elevation={5}
+				sx={{
+					p: 0,
+					width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
+				}}
+			>
+				{!desktopIsAlive && (
+					<div
+						aria-label='Loading remote desktop'
+						style={{
+							width: '100%',
+							height: 'calc(100vh - 164px)',
+							display: 'flex',
+							alignItems: 'center',
+							backgroundColor: '#eee',
+							justifyContent: 'center',
+						}}
+					>
+						<CircularProgress size={32} />
+					</div>
+				)}
+				{desktopIsAlive && desktop?.url && (
+					<iframe
+						ref={fullScreenRef}
+						title='Workbench'
+						src={desktop.url}
+						allow={'autoplay; fullscreen; clipboard-write;'}
+						style={{
+							width: '100%',
+							height: 'calc(100vh - 164px)',
+							backgroundColor: '#eee',
+							overflowY: 'hidden',
+						}}
+					/>
+				)}
+			</Paper>
 			<Drawer
 				sx={{
 					width: DRAWER_WIDTH,
@@ -314,13 +315,12 @@ const Desktop = (): JSX.Element => {
 				anchor={'right'}
 				variant='persistent'
 				open={drawerOpen}
-				elevation={100}
 			>
-				<DrawerHeader>
+				<Box sx={{ p: 1 }}>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
 						<Menu />
 					</IconButton>
-				</DrawerHeader>
+				</Box>
 				<Box>
 					<Info desktop={desktop} />
 				</Box>
