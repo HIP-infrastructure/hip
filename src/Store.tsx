@@ -161,22 +161,22 @@ export const AppStoreProvider = ({
 			})
 
 		// Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
-			.then(() => {
-				return
-			})
-			.catch(error => {
-				throw error
-			})
+		// createBidsDatasetsIndex()
+		// 	.then(() => {
+		// 		return
+		// 	})
+		// 	.catch(error => {
+		// 		throw error
+		// 	})
 
 		// Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
-			.then(() => {
-				return
-			})
-			.catch(error => {
-				throw error
-			})
+		// refreshBidsDatasetsIndex(currentUser.uid)
+		// 	.then(() => {
+		// 		return
+		// 	})
+		// 	.catch(error => {
+		// 		throw error
+		// 	})
 
 		getDesktopsAndApps('private', currentUser.uid || '', [])
 			.then(data => setContainers(data))
