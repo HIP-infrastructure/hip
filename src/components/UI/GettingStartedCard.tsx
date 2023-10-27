@@ -11,7 +11,7 @@ export default function LandingCard({ title, description }: {title: string, desc
 			<CardMedia
 				component='img'
 				height='140'
-				image='/api/v1/public/media/651069478_synapses__technology__meta___database__information__network__neural_path__futuristic_and_medical__re.png'
+				image='/api/v1/public/media/dirtv_minimalist_desktop_background_Hospital_staff_doctors_nurs_9d31e755-26b5-4379-9a94-82c7d853407d.png'
 				alt='green iguana'
 			/>
 			<CardContent>

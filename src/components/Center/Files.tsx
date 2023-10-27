@@ -31,7 +31,7 @@ export default function Files() {
 
 			<iframe
 				ref={iFrameRef}
-				title='Nextcloud Files'
+				title='Files'
 				src={'/apps/files'}
 				allow={'autoplay; clipboard-write;'}
 				style={{
