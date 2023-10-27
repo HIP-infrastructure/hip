@@ -26,13 +26,9 @@ export default function Files() {
 	return (
 		<Box>
 			<Box sx={{ mb: 2 }}>
-				<TitleBar title={'Files'} />
+				<TitleBar title={'Files'} button={loading && <CircularProgress size={18} color='secondary' /> || <></>}/>
 			</Box>
 
-			<Box display={'flex'} alignItems={'center'} gap={'0 16px'}>
-				<Typography>Nextcloud files</Typography>
-				{loading && <CircularProgress size={18} color='secondary' />}
-			</Box>
 			<iframe
 				ref={iFrameRef}
 				title='Nextcloud Files'
