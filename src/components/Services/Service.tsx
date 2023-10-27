@@ -41,33 +41,10 @@ export default function Service() {
 		})
 	}, [params, setTabbedServices, setService])
 
-	useEffect(() => {
-		if (!iFrameRef.current) return
-
-		iFrameRef.current.addEventListener('load', function () {
-			setLoading(false)
-		})
-	}, [iFrameRef])
-
 	return (
 		<>
 			<TitleBar title={service?.label} />
-			{loading && (
-				<div
-					aria-label='Loading remote desktop'
-					style={{
-						width: '100%',
-						height: 'calc(100vh - 164px)',
-						display: 'flex',
-						alignItems: 'center',
-						backgroundColor: '#eee',
-						justifyContent: 'center',
-					}}
-				>
-					<CircularProgress size={32} />
-				</div>
-			)}
-			{!loading && service && (
+			{service && (
 				<iframe
 					ref={iFrameRef}
 					title='services'
