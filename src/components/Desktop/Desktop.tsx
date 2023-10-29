@@ -38,6 +38,7 @@ const Desktop = (): JSX.Element => {
 	const {
 		user: [user],
 		tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
+		tabbedProjectDesktops: [tabbedProjectDesktops, setTabbedProjectDesktops],
 		projectContainers: [pcontainers],
 		containers: [ccontainers],
 	} = useAppStore()
@@ -123,16 +124,28 @@ const Desktop = (): JSX.Element => {
 
 		if (!desktop) return
 
-		setTabbedDesktops(ds => {
-			if (
-				desktop.workspace === 'private' &&
-				!ds?.map(d => d.id).includes(desktopId)
-			) {
-				return [...ds, desktop as Container]
-			}
+		if (desktop.workspace === 'private')
+			setTabbedDesktops(ds => {
+				if (!ds?.map(d => d.id).includes(desktopId)) {
+					return [...ds, desktop as Container]
+				}
 
-			return ds
-		})
+				return ds
+			})
+
+		if (desktop.workspace === 'collab') {
+			const projectName = params.projectId
+			if (projectName)
+			setTabbedProjectDesktops(ds => {
+				if (
+					!ds[projectName]?.map(d => d.id).includes(desktopId)
+				) {
+					return {...ds, [projectName]: [...(ds[projectName] || []), desktop as Container]}
+				}
+
+				return ds
+			})
+		}
 
 		getDesktop(desktopId).then(data => {
 			setDesktop(data)

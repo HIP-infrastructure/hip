@@ -95,10 +95,10 @@ const App = () => (
 					</Route>
 				</Route>
 			</Route>
-			<Route path={'public'} element={<PublicDatasets />}></Route>
+			<Route path={'public'} element={<PublicDatasets />} />
 			<Route path={'services'} element={<Outlet />}>
 				<Route index element={<Services /	>} />
-				<Route path={':serviceId'} element={<Service />}></Route>
+				<Route path={':serviceId'} element={<Service />} />
 			</Route>
 			<Route
 				path='*'

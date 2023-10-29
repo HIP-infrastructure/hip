@@ -82,6 +82,7 @@ const Sidebar = () => {
 		selectedProject: [selectedProject],
 		tooltips: [showTooltip],
 		tabbedDesktops: [tabbedDesktops],
+		tabbedProjectDesktops: [tabbedProjectDesktops],
 		tabbedServices: [tabbedServices],
 	} = useAppStore()
 	const [openProjects, setOpenProjects] = React.useState<{
@@ -345,6 +346,34 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Workbenches' />
 								</ListItemButton>
+								{project.name && tabbedProjectDesktops[project.name]?.map(d => (
+								<ListItemButton
+									key={d.id}
+									sx={{ pl: 8 }}
+									selected={
+										`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${d.id}` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(
+											`/projects/${project?.name}/desktops/${d.id}`,
+											{
+												state: {
+													from: `/apps/hip/projects/${project?.name}/desktops`,
+													workspace: 'private',
+													trackingName: `center/${project?.name}`,
+													showAdminView: false,
+												},
+											}
+										)
+									}
+								>
+									<ListItemIcon>
+										<WebAsset />
+									</ListItemIcon>
+									<ListItemText primary={`Workbench #${d.name}`} />
+								</ListItemButton>
+							))}
 								<ListItemButton
 									sx={{ pl: 4 }}
 									selected={
