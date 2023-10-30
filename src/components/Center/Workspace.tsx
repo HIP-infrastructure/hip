@@ -37,17 +37,17 @@ const Workspace = ({ centerId }: { centerId:any }) => {
 	const [center, setCenter] = useState<HIPCenter | undefined>()
 	const [bidsDatasets, setBidsDatasets] = useState<BIDSDataset[]>()
 
-	useEffect(() => {
-		if (!user?.uid) return
+	// useEffect(() => {
+	// 	if (!user?.uid) return
 
-		getAllBidsDataset(user?.uid)
-			.then(datasets => {
-				if (datasets) setBidsDatasets(datasets)
-			})
-			.catch(e => {
-				showNotif(e.message, 'error')
-			})
-	}, [user])
+	// 	getAllBidsDataset(user?.uid)
+	// 		.then(datasets => {
+	// 			if (datasets) setBidsDatasets(datasets)
+	// 		})
+	// 		.catch(e => {
+	// 			showNotif(e.message, 'error')
+	// 		})
+	// }, [user])
 
 	useEffect(() => {
 		if (!centerId) return
