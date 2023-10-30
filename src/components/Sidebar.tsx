@@ -427,7 +427,7 @@ const Sidebar = () => {
 					<ListItemIcon>
 						<Hub />
 					</ListItemIcon>
-					<ListItemText primary={'Services'} />
+					<ListItemText primary={'Web Services Catalog'} />
 				</ListItemButton>
 				{tabbedServices
 					?.map(s => ({ ...SERVICES.find(t => `${t.id}` === s) }))
@@ -451,7 +451,7 @@ const Sidebar = () => {
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
-					<ListItemText primary='App Catalog' />
+					<ListItemText primary='Desktop App Catalog' />
 				</ListItemButton>
 				<ListItemButton
 					onClick={() => {
