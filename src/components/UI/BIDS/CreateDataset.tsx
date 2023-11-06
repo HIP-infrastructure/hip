@@ -4,10 +4,10 @@ import { Grid, TextField } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { createBidsDataset } from '../../api/bids'
-import { CreateBidsDatasetDto, IError } from '../../api/types'
-import { useNotification } from '../../hooks/useNotification'
-import { useAppStore } from '../../Store'
+import { createBidsDataset } from '../../../api/bids'
+import { CreateBidsDatasetDto, IError } from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
+import { useAppStore } from '../../../Store'
 
 const validationSchema = Yup.object().shape({
 	Name: Yup.string()
