@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { createBidsDatasetsIndex, refreshBidsDatasetsIndex } from './api/bids'
+import { refreshBidsDatasetsIndex } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
 import { getProjectsForUser } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
@@ -155,22 +155,13 @@ export const AppStoreProvider = ({
 				console.error(error) // eslint-disable-line no-console
 			})
 
-		// Create initial elasticsearch index for datasets (if it does not exist yet)
-		createBidsDatasetsIndex()
-			.then(() => {
-				return
-			})
-			.catch(error => {
-				throw error
-			})
-
 		// Perform a full index of the BIDS datasets
 		refreshBidsDatasetsIndex(currentUser.uid)
 			.then(() => {
 				return
 			})
 			.catch(error => {
-				throw error
+				console.error(error) // eslint-disable-line no-console
 			})
 
 		getDesktopsAndApps('private', currentUser.uid || '', [])
