@@ -168,9 +168,9 @@ export const SERVICES = [
 		id: 'sarus',
 		label: 'Sarus',
 		description: 'Sarus',
-		url: 'http://lvn01091v.intranet.chuv/',
+		url: 'https://sarus.horus-tools.intranet.chuv/',
 		image: 'sarus',
-		target: '_blank',
+		target: 'self',
 	},
 	{
 		id: 'datasets-catalog',
