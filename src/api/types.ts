@@ -33,10 +33,9 @@ export enum ContainerType {
 }
 
 export interface UserCredentials {
-	uid?: string
-	displayName?: string | null
-	isAdmin?: boolean
-	password?: string
+	uid: string
+	displayName: string | null
+	isAdmin: boolean
 	groups?: string[]
 	hasProjectsAdminRole?: boolean
 }

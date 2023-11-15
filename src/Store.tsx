@@ -1,4 +1,4 @@
-import { getCurrentUser } from '@nextcloud/auth'
+import { getCurrentUser } from './nextcloudAuth'
 import React, { useState } from 'react'
 import { refreshBidsDatasetsIndex } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
@@ -104,9 +104,10 @@ export const AppStoreProvider = ({
 
 	// Fetch initial data
 	React.useEffect(() => {
-		const currentUser = getCurrentUser() as UserCredentials
-		setUser(currentUser)
+		const currentUser = getCurrentUser()
+		if (!currentUser) return
 
+		setUser(currentUser)
 		getUser(currentUser.uid)
 			.then(data => {
 				if (data) {
