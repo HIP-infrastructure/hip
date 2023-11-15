@@ -159,7 +159,6 @@ const Sidebar = () => {
 									)}
 								</ListItemIcon>
 								<ListItemText primary={center.label} />
-								<ExpandMore />
 							</ListItemButton>
 						</Tooltip>
 						<Tooltip
