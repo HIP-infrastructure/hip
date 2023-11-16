@@ -37,7 +37,7 @@ const DatasetsIndex = () => {
 
 	return (
 		<>
-			<Datasets handleClickedDataset={handleClickedDataset} buttonTitle={'Make public'} />
+			<Datasets />
 			<Dialog open={open} onClose={handleCheckedClicked}>
 				<DialogTitle>Make Dataset Public</DialogTitle>
 				<DialogContent>

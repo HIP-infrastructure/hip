@@ -33,10 +33,9 @@ export enum ContainerType {
 }
 
 export interface UserCredentials {
-	uid?: string
-	displayName?: string | null
-	isAdmin?: boolean
-	password?: string
+	uid: string
+	displayName: string | null
+	isAdmin: boolean
 	groups?: string[]
 	hasProjectsAdminRole?: boolean
 }
@@ -91,8 +90,8 @@ export interface HIPCenter {
 export interface HIPProject {
 	name: string
 	title: string
+	isPublic: boolean
 	description?: string
-	acceptMembershipRequest?: boolean
 	isMember?: boolean
 	admins?: string[]
 	members?: string[]

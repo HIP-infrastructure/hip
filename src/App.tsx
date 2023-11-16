@@ -6,14 +6,12 @@ import './App.css'
 import AppList from './components/Documentation/AppList'
 import Dataset from './components/UI/BIDS/Dataset'
 import CenterDatasets from './components/Center/Datasets'
-import PublicDatasets from './components/Public/Datasets'
 import Centers from './components/Centers'
 import CenterWorkspace from './components/Center/Workspace'
 import About from './components/Documentation/About'
 import CreateProject from './components/Projects/Create'
 import ProjectWorkspace from './components/Project/Workspace'
 import ProjectDataset from './components/Project/Dataset'
-import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
 import CenterDesktops from './components/Center/Desktops'
 import ProjectDesktops from './components/Project/Desktops'
@@ -89,7 +87,6 @@ const App = () => (
 				</Route>
 			</Route>
 			<Route path={'projects'} element={<Outlet />}>
-				<Route index element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
@@ -102,7 +99,17 @@ const App = () => (
 					</Route>
 				</Route>
 			</Route>
-			<Route path={'public'} element={<PublicDatasets />}></Route>
+			<Route path={'public'} element={<Outlet />}>
+				<Route path={':projectId'} element={<Project />}>
+					<Route index element={<ProjectWorkspace />} />
+					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'metadata'} element={<Files />} />
+					<Route path={'datasets'} element={<Outlet />}>
+						<Route index element={<ProjectDataset />} />
+						<Route path={':datasetId'} element={<ProjectDataset />} />
+					</Route>
+				</Route>
+			</Route>
 			<Route
 				path='*'
 				element={

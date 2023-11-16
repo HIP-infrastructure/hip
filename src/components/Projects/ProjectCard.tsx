@@ -35,7 +35,7 @@ const ProjectCard = ({ project, users }: Props) => {
 
 	return (
 		<NavLink to={`${ROUTE_PREFIX}/projects/${project.name}`}>
-			<Card elevation={3} component={Paper} sx={{ width: 280 }}>
+			<Card elevation={3} component={Paper} sx={{ width: 280, minHeight: 320 }}>
 				<CardContent>
 					<Box
 						sx={{
