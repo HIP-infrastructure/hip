@@ -150,7 +150,7 @@ export const ENTITIES: IEntity[] = [
 export const SERVICES = [
 	{
 		id: 'i2b2',
-		label: 'i2b2 Cohort Explorer',
+		label: 'Cohort Explorer (i2b2)',
 		description: 'i2b2 Cohort Explorer',
 		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/',
 		image: 'i2b2',
@@ -158,26 +158,26 @@ export const SERVICES = [
 	},
 	{
 		id: 'kheops',
-		label: 'Kheops DICOM Images Explorer',
+		label: 'Images Explorer (Kheops)',
 		description: 'Kheops DICOM Images Explorer',
 		url: 'https://kheops.chuv.ch/',
 		image: 'kheops',
-		target: 'self',
+		target: '_blank',
 	},
 	{
 		id: 'sarus',
-		label: 'Sarus',
-		description: 'Sarus',
+		label: 'Remote data analytics interface (Sarus)',
+		description: 'Remote query execution environment provided by Sarus technologies',
 		url: 'https://sarus.horus-tools.intranet.chuv/',
 		image: 'sarus',
 		target: 'self',
 	},
 	{
 		id: 'datasets-catalog',
-		label: 'Datasets catalog',
-		description: 'Datasets catalog',
+		label: 'Datasets catalog (ckan)',
+		description: 'Datasets catalog powered by CKAN',
 		url: 'https://catalog.horus-services.intranet.chuv/',
-		image: 'chuv',
+		image: 'ckan',
 		target: 'self',
 	},
 ]

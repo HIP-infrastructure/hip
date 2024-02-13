@@ -45,8 +45,8 @@ const Apps = () => {
 									{app.label}
 								</Typography>
 
-								<Chip
-									label={app.state}
+								{/* <Chip
+									label={'app.state'}
 									color={
 										app.state === 'ready'
 											? 'success'
@@ -55,7 +55,7 @@ const Apps = () => {
 											: 'error'
 									}
 									variant='outlined'
-								/>
+								/> */}
 							</Box>
 							<Typography gutterBottom variant='caption'>
 								version: {app.version}

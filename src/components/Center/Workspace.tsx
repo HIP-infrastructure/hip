@@ -66,7 +66,7 @@ const Workspace = ({ centerId }: { centerId:any }) => {
 		<>
 			<Box sx={{ mb: 2 }}>
 				<TitleBar
-					title={`${center?.label ?? ''} Private Workspace`}
+					title={`${center?.label ?? ''} Personal workspace`}
 					description={''}
 				/>
 			</Box>

@@ -62,7 +62,7 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<CenterWorkspace centerId={"dip"} />} />
+			<Route index element={<MyFiles />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'about'} element={<About />} />
 			<Route path={'centers'} element={<Outlet />}>

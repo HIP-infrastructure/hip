@@ -3,16 +3,12 @@ import TitleBar from '../UI/titleBar'
 import { CircularProgress } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { SERVICES } from '../../constants'
-import { useAppStore } from '../../Store'
 
 export default function Service() {
 	const [loading, setLoading] = useState(true)
 	const [service, setService] = useState<any>(null)
 	const iFrameRef = useRef<HTMLIFrameElement>(null)
 	const params = useParams()
-	const {
-		tabbedServices: [tabbedServices, setTabbedServices],
-	} = useAppStore()
 
 	// Remove scroll for entire window
 	useEffect(() => {
@@ -31,19 +27,10 @@ export default function Service() {
 		if (!service) return
 
 		setService(service)
-		setTabbedServices((prev: any) => {
-			const index = prev.findIndex((s: any) => s === serviceId)
-			if (index === -1) {
-				return [...prev, serviceId]
-			}
-
-			return prev
-		})
-	}, [params, setTabbedServices, setService])
+	}, [params, setService])
 
 	return (
 		<>
-			<TitleBar title={service?.label} />
 			{service && (
 				<iframe
 					ref={iFrameRef}

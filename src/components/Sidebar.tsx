@@ -83,11 +83,11 @@ const Sidebar = () => {
 		tooltips: [showTooltip],
 		tabbedDesktops: [tabbedDesktops],
 		tabbedProjectDesktops: [tabbedProjectDesktops],
-		tabbedServices: [tabbedServices],
 	} = useAppStore()
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
+	const [servicesListIsOpen, setServicesListIsOpen] = React.useState(true)
 
 	useEffect(() => {
 		const projectId = selectedProject?.name
@@ -100,8 +100,16 @@ const Sidebar = () => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
 	}
 
+	const handleServicesClick = () => setServicesListIsOpen(!servicesListIsOpen)
+
 	const handleClickNavigate = (route: string, options: any = null) => {
 		trackPageView({ documentTitle: route })
+
+		if (options?.target === '_blank') {
+			window.open(`${ROUTE_PREFIX}${route}`)
+
+			return
+		}
 
 		if (options) {
 			navigate(`${ROUTE_PREFIX}${route}`, options)
@@ -155,12 +163,12 @@ const Sidebar = () => {
 				</Tooltip>
 			</Box>
 			<ListSubheader id='my-private-workspaces-subheader'>
-				Private workspace
+				Personal workspace
 			</ListSubheader>
 			{(userCenters ?? defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
-						<Tooltip title={`Your Private Workspace`} showTooltip={showTooltip}>
+						<Tooltip title={`Your Personal Workspace`} showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 2 }}
 								disabled={!userCenters}
@@ -257,11 +265,10 @@ const Sidebar = () => {
 				aria-labelledby='projects-subheader'
 				subheader={
 					<Tooltip
-						title={`Your projects ${
-							user?.hasProjectsAdminRole
-								? 'As an admin, you can create new projects'
-								: ''
-						}`}
+						title={`Your projects ${user?.hasProjectsAdminRole
+							? 'As an admin, you can create new projects'
+							: ''
+							}`}
 						showTooltip={showTooltip}
 					>
 						<Box
@@ -307,7 +314,7 @@ const Sidebar = () => {
 						sx={{
 							backgroundColor:
 								openProjects[project.name] &&
-								pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
+									pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
 									? '#f2f2f2'
 									: 'white',
 						}}
@@ -347,33 +354,33 @@ const Sidebar = () => {
 									<ListItemText primary='Workbenches' />
 								</ListItemButton>
 								{project.name && tabbedProjectDesktops[project.name]?.map(d => (
-								<ListItemButton
-									key={d.id}
-									sx={{ pl: 8 }}
-									selected={
-										`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${d.id}` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(
-											`/projects/${project?.name}/desktops/${d.id}`,
-											{
-												state: {
-													from: `/apps/hip/projects/${project?.name}/desktops`,
-													workspace: 'private',
-													trackingName: `center/${project?.name}`,
-													showAdminView: false,
-												},
-											}
-										)
-									}
-								>
-									<ListItemIcon>
-										<WebAsset />
-									</ListItemIcon>
-									<ListItemText primary={`Workbench #${d.name}`} />
-								</ListItemButton>
-							))}
+									<ListItemButton
+										key={d.id}
+										sx={{ pl: 8 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${d.id}` ===
+											pathname
+										}
+										onClick={() =>
+											handleClickNavigate(
+												`/projects/${project?.name}/desktops/${d.id}`,
+												{
+													state: {
+														from: `/apps/hip/projects/${project?.name}/desktops`,
+														workspace: 'private',
+														trackingName: `center/${project?.name}`,
+														showAdminView: false,
+													},
+												}
+											)
+										}
+									>
+										<ListItemIcon>
+											<WebAsset />
+										</ListItemIcon>
+										<ListItemText primary={`Workbench #${d.name}`} />
+									</ListItemButton>
+								))}
 								<ListItemButton
 									sx={{ pl: 4 }}
 									selected={
@@ -419,31 +426,41 @@ const Sidebar = () => {
 			>
 				<Divider />
 				<ListItemButton
-					onClick={() => {
-						handleClickNavigate(`/services`)
-					}}
+					onClick={handleServicesClick}
 					selected={`${ROUTE_PREFIX}/services` === pathname}
 				>
 					<ListItemIcon>
 						<Hub />
 					</ListItemIcon>
-					<ListItemText primary={'Web Services Catalog'} />
+					<ListItemText primary={'Services'} />
+					{servicesListIsOpen ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-				{tabbedServices
-					?.map(s => ({ ...SERVICES.find(t => `${t.id}` === s) }))
-					.map(st => (
-						<ListItemButton
-							key={``}
-							sx={{ pl: 4 }}
-							selected={`${ROUTE_PREFIX}/services/${st?.id}` === pathname}
-							onClick={() => handleClickNavigate(`/services/${st.id}`)}
-						>
-							<ListItemIcon>
-								<Api />
-							</ListItemIcon>
-							<ListItemText primary={st.label} />
-						</ListItemButton>
-					))}
+				<Collapse
+					in={servicesListIsOpen}
+					timeout='auto'
+					unmountOnExit
+				>
+					<List component='div' disablePadding>
+						{SERVICES
+							.map(service => (
+								<ListItemButton
+									key={``}
+									sx={{ pl: 4 }}
+									selected={`${ROUTE_PREFIX}/services/${service?.id}` === pathname}
+									onClick={() => handleClickNavigate(`/services/${service.id}`, { target: service.target })}
+								>
+									<ListItemIcon>
+										<Avatar
+											alt={service.label}
+											src={`${API_GATEWAY}/public/media/288x140-${service.image}__logo.png`}
+											sx={{ width: 32, height: 32 }}
+										/>
+									</ListItemIcon>
+									<ListItemText primary={service.label} />
+								</ListItemButton>
+							))}
+					</List>
+				</Collapse>
 				<ListItemButton
 					selected={`${ROUTE_PREFIX}/apps` === pathname}
 					onClick={() => handleClickNavigate('/apps')}
@@ -451,7 +468,7 @@ const Sidebar = () => {
 					<ListItemIcon>
 						<Apps />
 					</ListItemIcon>
-					<ListItemText primary='Desktop App Catalog' />
+					<ListItemText primary='App Store' />
 				</ListItemButton>
 				<ListItemButton
 					onClick={() => {

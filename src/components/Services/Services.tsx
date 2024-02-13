@@ -31,8 +31,8 @@ const Services = () => {
 	return (
 		<>
 			<TitleBar
-				title={'Services Catalog'}
-				description={'A list of all the services made available to the users.'}
+				title={'Web Apps Catalog'}
+				description={'A list of all the web apps made available to the users.'}
 			/>
 			<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}>
 				{SERVICES?.map((service, i) => (
@@ -86,7 +86,7 @@ const Services = () => {
 									goto(service)
 								}}
 							>
-								Open Service
+								Open web app
 							</Button>
 						</CardActions>
 					</Card>
