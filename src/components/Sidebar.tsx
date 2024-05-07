@@ -246,11 +246,10 @@ const Sidebar = () => {
 				aria-labelledby='projects-subheader'
 				subheader={
 					<Tooltip
-						title={`Your projects ${
-							user?.hasProjectsAdminRole
+						title={`My projects ${user?.hasProjectsAdminRole
 								? 'As an admin, you can create new projects'
 								: ''
-						}`}
+							}`}
 						showTooltip={showTooltip}
 					>
 						<Box
@@ -296,7 +295,7 @@ const Sidebar = () => {
 						sx={{
 							backgroundColor:
 								openProjects[project.name] &&
-								pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
+									pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
 									? '#f2f2f2'
 									: 'white',
 						}}
@@ -385,6 +384,17 @@ const Sidebar = () => {
 						<Divider />
 					</Box>
 				))}
+				<Tooltip title='Project list' showTooltip={showTooltip}>
+					<ListItemButton
+						selected={`${ROUTE_PREFIX}/projects` === pathname}
+						onClick={() => handleClickNavigate('/projects')}
+					>
+						<ListItemIcon>
+							<Apps />
+						</ListItemIcon>
+						<ListItemText primary='Collaborative projects' />
+					</ListItemButton>
+				</Tooltip>
 			</List>
 			<List
 				component='nav'
@@ -428,7 +438,7 @@ const Sidebar = () => {
 						sx={{
 							backgroundColor:
 								openProjects[project.name] &&
-								pathname.includes(`${ROUTE_PREFIX}/public/${project.name}`)
+									pathname.includes(`${ROUTE_PREFIX}/public/${project.name}`)
 									? '#f2f2f2'
 									: 'white',
 						}}
