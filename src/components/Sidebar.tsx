@@ -260,9 +260,12 @@ const Sidebar = () => {
 								justifyContent: 'space-between',
 							}}
 						>
-							<ListSubheader id='my-projects-subheader'>
-								Collaborative projects
-							</ListSubheader>
+							{user?.hasProjectsAdminRole && <ListSubheader id='my-projects-subheader' sx={{ lineHeight: '18px', marginTop: '6px' }}>
+								My Collaborative Projects
+							</ListSubheader>}
+							{!user?.hasProjectsAdminRole && <ListSubheader id='my-projects-subheader'>
+								My Collaborative Projects
+							</ListSubheader>}
 							{(!userProjects || !user) && (
 								<CircularProgress size={18} color='secondary' />
 							)}
@@ -391,9 +394,10 @@ const Sidebar = () => {
 						<ListItemIcon>
 							<Apps />
 						</ListItemIcon>
-						<ListItemText primary='Collaborative projects' />
+						<ListItemText primary='Collaborative Space' />
 					</ListItemButton>
 				</Tooltip>
+				<Divider />
 			</List>
 			<List
 				component='nav'

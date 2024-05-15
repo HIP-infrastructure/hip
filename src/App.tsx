@@ -24,6 +24,7 @@ import Files from './components/Project/Files'
 import MyFiles from './components/Center/Files'
 import GettingStarted from './components/Documentation/GettingStarted'
 import TransferData from './components/Project/TransferData'
+import Projects from './components/Projects'
 
 export interface Space {
 	label: string
@@ -87,6 +88,7 @@ const App = () => (
 				</Route>
 			</Route>
 			<Route path={'projects'} element={<Outlet />}>
+				<Route index  element={<Projects />} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
