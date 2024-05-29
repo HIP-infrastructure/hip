@@ -14,7 +14,13 @@ import DatasetInfo from './DatasetInfo'
 import * as React from 'react'
 import { nameToColor } from '../../theme'
 
-const DatasetCard = ({ dataset, children }: { dataset: BIDSDataset, children?: JSX.Element }): JSX.Element => {
+const DatasetCard = ({
+	dataset,
+	children,
+}: {
+	dataset: BIDSDataset
+	children?: JSX.Element
+}): JSX.Element => {
 	const params = useParams()
 
 	return (
@@ -49,9 +55,7 @@ const DatasetCard = ({ dataset, children }: { dataset: BIDSDataset, children?: J
 						</Typography>
 						<DatasetInfo dataset={dataset} />
 					</CardContent>
-					<CardActions sx={{ p: 2 }}>
-						{children}
-					</CardActions>
+					<CardActions sx={{ p: 2 }}>{children}</CardActions>
 				</Card>
 			</NavLink>
 		</>

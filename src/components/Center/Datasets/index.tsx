@@ -18,7 +18,7 @@ const DatasetsIndex = () => {
 	const [open, setOpen] = React.useState(false)
 	const [checked1, setChecked1] = React.useState(false)
 	const [checked2, setChecked2] = React.useState(false)
-	const [datasetPath, setDatasetPath] = React.useState('')	
+	const [datasetPath, setDatasetPath] = React.useState('')
 
 	const handleClickedDataset = (dataset: BIDSDataset) => {
 		setOpen(true)
@@ -28,7 +28,6 @@ const DatasetsIndex = () => {
 	const handleCheckedClicked = () => {
 		setOpen(false)
 		publishDatasetToPublicSpace(datasetPath)
-		
 	}
 
 	const handleClose = () => {
@@ -94,7 +93,10 @@ const DatasetsIndex = () => {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose}>Cancel</Button>
-					<Button disabled={!checked1 && !checked2} onClick={handleCheckedClicked}>
+					<Button
+						disabled={!checked1 && !checked2}
+						onClick={handleCheckedClicked}
+					>
 						Publish
 					</Button>
 				</DialogActions>
