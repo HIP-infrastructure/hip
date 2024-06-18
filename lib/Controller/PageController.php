@@ -71,6 +71,9 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('id.thehip.app');
 		$csp->addAllowedConnectDomain('dev.id.thehip.app');
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
+		if ($d = getenv('ALLOWED_FRAME_DOMAIN', true)) {
+			$csp->addAllowedConnectDomain($d);
+		}
 
 		$response->setContentSecurityPolicy($csp);
 
