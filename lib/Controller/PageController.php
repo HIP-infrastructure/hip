@@ -54,6 +54,9 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('id.thehip.app');
 		$csp->addAllowedFrameDomain('dev.id.thehip.app');
 		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
+		if ($d = getenv('ALLOWED_FRAME_DOMAIN', true)) {
+			$csp->addAllowedFrameDomain($d);
+		}
 
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('cpu1.thehip.app');
