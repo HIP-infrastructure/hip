@@ -1,13 +1,15 @@
-FROM node:17 AS base
+FROM node:18 AS base
 
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /base
 
-RUN apt update && apt install -y gettext
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -qy \
+ && apt-get install -qy --no-install-recommends \
+        gettext
 
-RUN npm install --location=global npm@8.3.0
 RUN npm install --location=global react-scripts typescript --silent
 COPY package.json ./
 RUN npm install

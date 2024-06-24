@@ -5,7 +5,13 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import { Box, Button, CardActions } from '@mui/material'
 
-export default function LandingCard({ title, description }: {title: string, description: string}) {
+export default function LandingCard({
+	title,
+	description,
+}: {
+	title: string
+	description: string
+}) {
 	return (
 		<Card sx={{ width: 345, height: 360 }}>
 			<CardMedia

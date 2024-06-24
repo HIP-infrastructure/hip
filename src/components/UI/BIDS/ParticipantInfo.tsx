@@ -4,10 +4,12 @@ import { getSubject } from '../../../api/bids'
 import { BIDSDataset, BIDSSubjectFile } from '../../../api/types'
 import { useAppStore } from '../../../Store'
 
-type IExistingFile = {
-	modality: string
-	files: string[]
-}[] | undefined
+type IExistingFile =
+	| {
+			modality: string
+			files: string[]
+		}[]
+	| undefined
 
 const ParticipantInfo = ({
 	subject,

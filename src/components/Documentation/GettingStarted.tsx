@@ -25,8 +25,16 @@ function GettingStartedCard({
 	description,
 	img,
 	video,
-	link
-}: {step: number; title: string; subtitle: string; description?: JSX.Element | string; img?: string; video?: string; link?: string}) {
+	link,
+}: {
+	step: number
+	title: string
+	subtitle: string
+	description?: JSX.Element | string
+	img?: string
+	video?: string
+	link?: string
+}) {
 	return (
 		<Card sx={{ width: 360, textAlign: 'center', alignSelf: 'stretch' }}>
 			{img && (
