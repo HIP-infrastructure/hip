@@ -153,47 +153,47 @@ export const SERVICES = [
 		name: 'i2b2',
 		label: 'Cohort Explorer',
 		description: 'i2b2 Cohort Explorer',
-		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/',
+		url: '',
 		image: 'i2b2',
 		target: 'self',
-		status: 'on'
+		status: 'off'
 	},
 	{
 		id: 'kheops',
 		name: 'Kheops',
 		label: 'Images Explorer',
 		description: 'Kheops DICOM Images Explorer',
-		url: 'https://kheops.chuv.ch/',
+		url: '',
 		image: 'kheops',
 		target: '_blank',
-		status: 'on'
+		status: 'off'
 	},
 	{
 		id: 'sarus',
 		name: 'Sarus',
 		label: 'Remote data analytics interface',
 		description: 'Remote query execution environment provided by Sarus technologies',
-		url: 'https://sarus.horus-tools.intranet.chuv/',
+		url: '',
 		image: 'sarus',
 		target: 'self',
-		status: 'on'
+		status: 'off'
 	},
 	{
 		id: 'ckan',
 		name: 'CKAN',
 		label: 'Datasets Catalog',
 		description: 'Datasets catalog powered by CKAN',
-		url: 'https://catalog.horus-services.intranet.chuv/',
+		url: '',
 		image: 'ckan',
 		target: 'self',
-		status: 'on'
+		status: 'off'
 	},
 	{
 		id: 'jira',
 		name: 'Jira Service Desk',
 		label: 'Data request',
 		description: '',
-		url: 'https://jira.chuv.ch/servicedesk/customer/portal/1',
+		url: '',
 		image: 'jira',
 		target: 'self',
 		status: 'off'

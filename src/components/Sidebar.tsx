@@ -87,7 +87,7 @@ const Sidebar = () => {
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
-	const [servicesListIsOpen, setServicesListIsOpen] = React.useState(true)
+	const [servicesListIsOpen, setServicesListIsOpen] = React.useState(false)
 
 	useEffect(() => {
 		const projectId = selectedProject?.name
