@@ -106,7 +106,7 @@ const Sidebar = () => {
 		trackPageView({ documentTitle: route })
 
 		if (options?.target === '_blank') {
-			window.open(`${ROUTE_PREFIX}${route}`)
+			window.open(`${options.url}`)
 
 			return
 		}
@@ -444,10 +444,11 @@ const Sidebar = () => {
 						{SERVICES
 							.map(service => (
 								<ListItemButton
-									key={``}
-									sx={{ pl: 4 }}
+									key={service.id}
+									sx={{ p: 0, pl: 4 }}
 									selected={`${ROUTE_PREFIX}/services/${service?.id}` === pathname}
-									onClick={() => handleClickNavigate(`/services/${service.id}`, { target: service.target })}
+									disabled={service.status === 'off'}
+									onClick={() => handleClickNavigate(`/services/${service.id}`, { target: service.target, url: service.url })}
 								>
 									<ListItemIcon>
 										<Avatar
@@ -456,7 +457,7 @@ const Sidebar = () => {
 											sx={{ width: 32, height: 32 }}
 										/>
 									</ListItemIcon>
-									<ListItemText primary={service.label} />
+									<ListItemText primary={service.name} secondary={service.label} />
 								</ListItemButton>
 							))}
 					</List>
