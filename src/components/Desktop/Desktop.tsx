@@ -1,22 +1,16 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { ArrowBack, Fullscreen, Menu, MenuOpen } from '@mui/icons-material'
 import {
-	ArrowBack,
-	ExpandMore,
-	Fullscreen,
-	Menu,
-	MenuOpen,
-} from '@mui/icons-material'
-import {
+	AppBar,
 	Box,
 	CircularProgress,
 	Drawer,
+	Grid,
 	IconButton,
-	MenuItem,
-	Select,
-	SelectChangeEvent,
+	Paper,
 	Toolbar,
+	Typography,
 } from '@mui/material'
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled } from '@mui/material/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -26,21 +20,12 @@ import {
 	getDesktopsAndApps,
 	stopApp,
 } from '../../api/remoteApp'
-import { Application, Container, ContainerType } from '../../api/types'
-import {
-	APP_MARGIN_TOP,
-	DRAWER_WIDTH,
-	POLLING,
-	ROUTE_PREFIX,
-} from '../../constants'
+import { Application, Container } from '../../api/types'
+import { APP_MARGIN_TOP, DRAWER_WIDTH, POLLING } from '../../constants'
 import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import AppList from './AppList'
 import Info from './Info'
-
-interface AppBarProps extends MuiAppBarProps {
-	open?: boolean
-}
 
 const Desktop = (): JSX.Element => {
 	const { trackEvent } = useMatomo()
@@ -52,20 +37,25 @@ const Desktop = (): JSX.Element => {
 	const fullScreenRef = useRef<HTMLIFrameElement>(null)
 	const {
 		user: [user],
+		tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
+		tabbedProjectDesktops: [tabbedProjectDesktops, setTabbedProjectDesktops],
+		projectContainers: [pcontainers],
+		containers: [ccontainers],
 	} = useAppStore()
-	const [containers, setContainers] = React.useState<Container[]>([])
+	const [containers, setContainers] = React.useState<Container[]>([
+		...(pcontainers || []),
+		...(ccontainers || []),
+	])
 	const [desktop, setDesktop] = useState<Container>()
 	const [fullscreen, setFullscreen] = useState(false)
 	const [drawerOpen, setDrawerOpen] = useState(true)
 	const [desktopIsAlive, setDesktopIsAlive] = useState(false)
 	const intervalRef = useRef<NodeJS.Timeout>()
-
 	const [from] = useState(location.state?.from)
 	const [workspace] = useState(location.state?.workspace)
 	const [trackingName] = useState(location.state?.trackingName)
 	const [groupIds] = useState(location.state?.groupIds || [])
 	const [showAdminView] = useState(location.state?.showAdminView || false)
-	const desktops = containers?.filter(c => c.type === ContainerType.DESKTOP)
 	const desktopApps = containers?.filter(a => a.parentId === desktop?.id)
 
 	const getDesktops = useCallback(
@@ -73,11 +63,12 @@ const Desktop = (): JSX.Element => {
 			getDesktopsAndApps(workspace, userId, groupIds, showAdminView)
 				.then(data => setContainers(data))
 				.catch(error => showNotif(error, 'error')),
-		[workspace, groupIds, showAdminView, showNotif]
+		[workspace, groupIds, showAdminView, showNotif, params]
 	)
 
 	// Remove scroll for entire window
 	useEffect(() => {
+		setContainers([...(pcontainers || []), ...(ccontainers || [])])
 		document.body.classList.add('body-fixed')
 		return () => {
 			document.body.classList.remove('body-fixed')
@@ -95,7 +86,7 @@ const Desktop = (): JSX.Element => {
 		}, POLLING * 1000)
 
 		return () => clearInterval(interval)
-	}, [user, getDesktops])
+	}, [user, getDesktops, params.id])
 
 	// Check for XPra readiness
 	useEffect(() => {
@@ -124,11 +115,42 @@ const Desktop = (): JSX.Element => {
 		}
 	}, [desktop, desktopIsAlive])
 
+	// get remote content of desktop
 	useEffect(() => {
 		if (!params.id) return
 
-		getDesktop(params.id).then(data => setDesktop(data))
-	}, [setDesktop, params])
+		const desktopId: string = params.id.toString()
+		const desktop = containers?.find(d => d.id === desktopId)
+
+		if (!desktop) return
+
+		if (desktop.workspace === 'private')
+			setTabbedDesktops(ds => {
+				if (!ds?.map(d => d.id).includes(desktopId)) {
+					return [...ds, desktop as Container]
+				}
+
+				return ds
+			})
+
+		if (desktop.workspace === 'collab') {
+			const projectName = params.projectId
+			if (projectName)
+			setTabbedProjectDesktops(ds => {
+				if (
+					!ds[projectName]?.map(d => d.id).includes(desktopId)
+				) {
+					return {...ds, [projectName]: [...(ds[projectName] || []), desktop as Container]}
+				}
+
+				return ds
+			})
+		}
+
+		getDesktop(desktopId).then(data => {
+			setDesktop(data)
+		})
+	}, [containers, setDesktop, params, workspace])
 
 	useEffect(() => {
 		if (fullscreen) {
@@ -192,28 +214,6 @@ const Desktop = (): JSX.Element => {
 		if (from) navigate(from)
 	}
 
-	const handleOnChange = (event: SelectChangeEvent) => {
-		const desktopId = event.target.value as string
-		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`)
-	}
-
-	const AppBar = styled(MuiAppBar, {
-		shouldForwardProp: prop => prop !== 'open',
-	})<AppBarProps>(({ theme, open }) => ({
-		transition: theme.transitions.create(['margin', 'width'], {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		...(open && {
-			width: `calc(100% - ${DRAWER_WIDTH}px)`,
-			marginRight: `${DRAWER_WIDTH}px`,
-			transition: theme.transitions.create(['margin', 'width'], {
-				easing: theme.transitions.easing.easeOut,
-				duration: theme.transitions.duration.enteringScreen,
-			}),
-		}),
-	}))
-
 	const DrawerHeader = styled('div')(({ theme }) => ({
 		display: 'flex',
 		alignItems: 'center',
@@ -225,90 +225,96 @@ const Desktop = (): JSX.Element => {
 	}))
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<>
 			<AppBar
-				position='fixed'
-				open={drawerOpen}
+				component='div'
 				color='secondary'
+				position='static'
+				elevation={5}
 				sx={{
-					marginTop: `${APP_MARGIN_TOP}px`,
+					zIndex: 0,
+					borderBottom: 0,
+					width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
 				}}
 			>
 				<Toolbar variant='dense'>
-					<IconButton
-						color='inherit'
-						aria-label='go back'
-						onClick={handleBackLocation}
-					>
-						<ArrowBack />
-					</IconButton>
-					<Box sx={{ flexGrow: 1 }} />
-					<Select
-						id='desktop-select'
-						aria-label='Select desktop'
-						IconComponent={() => <ExpandMore />}
-						value={desktop?.id || ''}
-						onChange={handleOnChange}
-						sx={{ color: 'white' }}
-					>
-						{desktops?.map(s => (
-							<MenuItem
-								value={s?.id}
-								key={s?.id}
-							>{`Desktop #${s?.name}`}</MenuItem>
-						))}
-					</Select>
-					<Box sx={{ flexGrow: 1 }} />
-					<IconButton
-						color='inherit'
-						aria-label='full screen'
-						onClick={() => setFullscreen(!fullscreen)}
-						sx={{ mr: 2 }}
-					>
-						<Fullscreen />
-					</IconButton>
-					<IconButton
-						color='inherit'
-						aria-label='open drawer'
-						onClick={handleDrawerOpen}
-						edge='end'
-						sx={{ mr: 2, ...(drawerOpen && { display: 'none' }) }}
-					>
-						<MenuOpen />
-					</IconButton>
+					<Grid container alignItems='center' spacing={1}>
+						<Grid item xs>
+							<IconButton
+								color='inherit'
+								aria-label='go back'
+								onClick={handleBackLocation}
+							>
+								<ArrowBack />
+							</IconButton>
+						</Grid>
+						<Grid item xs>
+							<Typography color='inherit' variant='h6' component='div'>
+								{`#${desktop?.name}`}
+							</Typography>
+						</Grid>
+						<Grid item>
+							<IconButton
+								color='inherit'
+								aria-label='full screen'
+								onClick={() => setFullscreen(!fullscreen)}
+								sx={{ mr: 2 }}
+							>
+								<Fullscreen />
+							</IconButton>
+						</Grid>
+						<Grid item>
+							<IconButton
+								color='inherit'
+								aria-label='open drawer'
+								onClick={handleDrawerOpen}
+								edge='end'
+								sx={{ mr: 2, ...(drawerOpen && { display: 'none' }) }}
+							>
+								<MenuOpen />
+							</IconButton>
+						</Grid>
+					</Grid>
 				</Toolbar>
 			</AppBar>
-			<Box>
+			<Paper
+				square
+				elevation={5}
+				sx={{
+					p: 0,
+					width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
+				}}
+			>
 				{!desktopIsAlive && (
 					<div
 						aria-label='Loading remote desktop'
 						style={{
-							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
-							height: '100vh',
-							backgroundColor: '#333',
+							width: '100%',
+							height: 'calc(100vh - 164px)',
 							display: 'flex',
 							alignItems: 'center',
+							backgroundColor: '#eee',
 							justifyContent: 'center',
 						}}
 					>
 						<CircularProgress size={32} />
 					</div>
 				)}
-				{desktopIsAlive && desktop && desktop?.url && (
+				{desktopIsAlive && desktop?.url && (
 					<iframe
 						ref={fullScreenRef}
-						title='Desktop'
+						title='Workbench'
 						src={desktop.url}
 						allow={'autoplay; fullscreen; clipboard-write;'}
 						style={{
-							width: drawerOpen ? 'calc(100vw - 240px)' : '100vw',
-							height: 'calc(100vh - 100px)',
-							backgroundColor: '#333',
-							marginTop: '54px',
+							width: '100%',
+							height: 'calc(100vh - 164px)',
+							backgroundColor: '#eee',
+							overflowY: 'hidden',
 						}}
 					/>
 				)}
-			</Box>
+			</Paper>
 			<Drawer
 				sx={{
 					width: DRAWER_WIDTH,
@@ -322,13 +328,12 @@ const Desktop = (): JSX.Element => {
 				anchor={'right'}
 				variant='persistent'
 				open={drawerOpen}
-				elevation={100}
 			>
-				<DrawerHeader>
+				<Box sx={{ p: 1 }}>
 					<IconButton onClick={handleDrawerClose} aria-label='Close drawer'>
 						<Menu />
 					</IconButton>
-				</DrawerHeader>
+				</Box>
 				<Box>
 					<Info desktop={desktop} />
 				</Box>
@@ -338,7 +343,7 @@ const Desktop = (): JSX.Element => {
 					handleToggleApp={handleToggleApp}
 				/>
 			</Drawer>
-		</Box>
+		</>
 	)
 }
 

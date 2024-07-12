@@ -16,6 +16,11 @@ import {
 	Storage,
 	Schedule,
 	Chat,
+	Hub,
+	Inventory,
+	Api,
+	Laptop,
+	WebAsset,
 } from '@mui/icons-material'
 import {
 	Avatar,
@@ -26,7 +31,6 @@ import {
 	Switch,
 } from '@mui/material'
 import Tooltip from './UI/Tooltip'
-
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import List from '@mui/material/List'
@@ -38,7 +42,12 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { API_GATEWAY } from '../api/gatewayClientAPI'
-import { APP_MARGIN_TOP, DRAWER_WIDTH, ROUTE_PREFIX } from '../constants'
+import {
+	APP_MARGIN_TOP,
+	DRAWER_WIDTH,
+	ROUTE_PREFIX,
+	SERVICES,
+} from '../constants'
 import { useAppStore } from '../Store'
 import { HIPCenter } from '../api/types'
 
@@ -72,12 +81,13 @@ const Sidebar = () => {
 		userProjects: [userProjects, setUserProjects],
 		selectedProject: [selectedProject],
 		tooltips: [showTooltip],
+		tabbedDesktops: [tabbedDesktops],
+		tabbedProjectDesktops: [tabbedProjectDesktops],
 	} = useAppStore()
-
 	const [openProjects, setOpenProjects] = React.useState<{
 		[key: string]: boolean
 	}>({})
-	const [openTools, setOpenTools] = React.useState(false)
+	const [servicesListIsOpen, setServicesListIsOpen] = React.useState(true)
 
 	useEffect(() => {
 		const projectId = selectedProject?.name
@@ -90,9 +100,22 @@ const Sidebar = () => {
 		setOpenProjects(op => ({ ...op, [projectId]: !op[projectId] ?? false }))
 	}
 
-	const handleClickNavigate = (route: string) => {
+	const handleServicesClick = () => setServicesListIsOpen(!servicesListIsOpen)
+
+	const handleClickNavigate = (route: string, options: any = null) => {
 		trackPageView({ documentTitle: route })
-		navigate(`${ROUTE_PREFIX}${route}`)
+
+		if (options?.target === '_blank') {
+			window.open(`${options.url}`)
+
+			return
+		}
+
+		if (options) {
+			navigate(`${ROUTE_PREFIX}${route}`, options)
+		} else {
+			navigate(`${ROUTE_PREFIX}${route}`)
+		}
 	}
 
 	const userCenters =
@@ -102,7 +125,6 @@ const Sidebar = () => {
 
 	return (
 		<Drawer
-			variant='permanent'
 			anchor='left'
 			sx={{
 				'& .MuiDrawer-paper': {
@@ -113,6 +135,9 @@ const Sidebar = () => {
 				flexShrink: 0,
 				width: DRAWER_WIDTH,
 			}}
+			variant='persistent'
+			open={true}
+			elevation={100}
 		>
 			{userCenters?.length === 0 && (
 				<List component='div' disablePadding>
@@ -137,10 +162,13 @@ const Sidebar = () => {
 					<Box sx={{ ml: 12 }}></Box>
 				</Tooltip>
 			</Box>
+			<ListSubheader id='my-private-workspaces-subheader'>
+				Personal workspace
+			</ListSubheader>
 			{(userCenters ?? defaultCenters).map(center => (
 				<Box key={center.id}>
 					<List>
-						<Tooltip title={`Your Private Workspace`} showTooltip={showTooltip}>
+						<Tooltip title={`Your Personal Workspace`} showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 2 }}
 								disabled={!userCenters}
@@ -159,27 +187,59 @@ const Sidebar = () => {
 									)}
 								</ListItemIcon>
 								<ListItemText primary={center.label} />
+								<ExpandMore />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip
-							title='Process data in remote desktops'
-							showTooltip={showTooltip}
-						>
-							<ListItemButton
-								sx={{ pl: 4 }}
-								selected={
-									`${ROUTE_PREFIX}/centers/${center?.id}/desktops` === pathname
-								}
-								onClick={() =>
-									handleClickNavigate(`/centers/${center.id}/desktops`)
-								}
+						<List>
+							<Tooltip
+								title='Process data in remote desktops'
+								showTooltip={showTooltip}
 							>
-								<ListItemIcon>
-									<Monitor />
-								</ListItemIcon>
-								<ListItemText primary='Desktops' />
-							</ListItemButton>
-						</Tooltip>
+								<ListItemButton
+									sx={{ pl: 4 }}
+									selected={
+										`${ROUTE_PREFIX}/centers/${center?.id}/desktops` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(`/centers/${center.id}/desktops`)
+									}
+								>
+									<ListItemIcon>
+										<Laptop />
+									</ListItemIcon>
+									<ListItemText primary='Workbenches' />
+								</ListItemButton>
+							</Tooltip>
+							{tabbedDesktops?.map(d => (
+								<ListItemButton
+									key={d.id}
+									sx={{ pl: 8 }}
+									selected={
+										`${ROUTE_PREFIX}/centers/${center?.id}/desktops/${d.id}` ===
+										pathname
+									}
+									onClick={() =>
+										handleClickNavigate(
+											`/centers/${center?.id}/desktops/${d.id}`,
+											{
+												state: {
+													from: `/apps/hip/centers/${center?.id}/desktops`,
+													workspace: 'private',
+													trackingName: `center/${center?.id}`,
+													showAdminView: false,
+												},
+											}
+										)
+									}
+								>
+									<ListItemIcon>
+										<WebAsset />
+									</ListItemIcon>
+									<ListItemText primary={`Workbench #${d.name}`} />
+								</ListItemButton>
+							))}
+						</List>
 						<Tooltip title='Upload your files' showTooltip={showTooltip}>
 							<ListItemButton
 								sx={{ pl: 4 }}
@@ -196,47 +256,6 @@ const Sidebar = () => {
 								<ListItemText primary='Files' />
 							</ListItemButton>
 						</Tooltip>
-						<Tooltip
-							title='BIDS Tools: Manage your datasets'
-							showTooltip={showTooltip}
-						>
-							<ListItemButton
-								sx={{ pl: 4 }}
-								selected={
-									`${ROUTE_PREFIX}/centers/${center?.id}/datasets` === pathname
-								}
-								disabled={!userCenters}
-								onClick={() =>
-									handleClickNavigate(`/centers/${center.id}/datasets`)
-								}
-							>
-								<ListItemIcon>
-									<Assignment />
-								</ListItemIcon>
-								<ListItemText primary='BIDS Datasets' />
-							</ListItemButton>
-						</Tooltip>
-						{center.community?.url && (
-							<Tooltip title='Community chat' showTooltip={showTooltip}>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/centers/${center?.id}/community` ===
-										pathname
-									}
-									disabled={!userCenters}
-									onClick={() => {
-										if (center?.community?.url)
-											window.location.href = center.community.url
-									}}
-								>
-									<ListItemIcon>
-										<Chat />
-									</ListItemIcon>
-									<ListItemText primary='Community' />
-								</ListItemButton>
-							</Tooltip>
-						)}
 					</List>
 					<Divider />
 				</Box>
@@ -246,11 +265,10 @@ const Sidebar = () => {
 				aria-labelledby='projects-subheader'
 				subheader={
 					<Tooltip
-						title={`Your projects ${
-							user?.hasProjectsAdminRole
-								? 'As an admin, you can create new projects'
-								: ''
-						}`}
+						title={`Your projects ${user?.hasProjectsAdminRole
+							? 'As an admin, you can create new projects'
+							: ''
+							}`}
 						showTooltip={showTooltip}
 					>
 						<Box
@@ -262,7 +280,7 @@ const Sidebar = () => {
 							}}
 						>
 							<ListSubheader id='my-projects-subheader'>
-								Collaborative projects
+								Collaborative workspaces
 							</ListSubheader>
 							{(!userProjects || !user) && (
 								<CircularProgress size={18} color='secondary' />
@@ -280,7 +298,7 @@ const Sidebar = () => {
 					</Tooltip>
 				}
 			>
-				{userProjects?.filter(p => !p.isPublic).length === 0 && (
+				{userProjects?.length === 0 && (
 					<List component='div' disablePadding>
 						<ListItemButton>
 							<ListItemIcon>
@@ -290,13 +308,13 @@ const Sidebar = () => {
 						</ListItemButton>
 					</List>
 				)}
-				{userProjects?.filter(p => !p.isPublic).map(project => (
+				{userProjects?.map(project => (
 					<Box
 						key={project.name}
 						sx={{
 							backgroundColor:
 								openProjects[project.name] &&
-								pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
+									pathname.includes(`${ROUTE_PREFIX}/projects/${project.name}`)
 									? '#f2f2f2'
 									: 'white',
 						}}
@@ -333,8 +351,36 @@ const Sidebar = () => {
 									<ListItemIcon>
 										<Monitor />
 									</ListItemIcon>
-									<ListItemText primary='Desktops' />
+									<ListItemText primary='Workbenches' />
 								</ListItemButton>
+								{project.name && tabbedProjectDesktops[project.name]?.map(d => (
+									<ListItemButton
+										key={d.id}
+										sx={{ pl: 8 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${d.id}` ===
+											pathname
+										}
+										onClick={() =>
+											handleClickNavigate(
+												`/projects/${project?.name}/desktops/${d.id}`,
+												{
+													state: {
+														from: `/apps/hip/projects/${project?.name}/desktops`,
+														workspace: 'private',
+														trackingName: `center/${project?.name}`,
+														showAdminView: false,
+													},
+												}
+											)
+										}
+									>
+										<ListItemIcon>
+											<WebAsset />
+										</ListItemIcon>
+										<ListItemText primary={`Workbench #${d.name}`} />
+									</ListItemButton>
+								))}
 								<ListItemButton
 									sx={{ pl: 4 }}
 									selected={
@@ -365,138 +411,6 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Files' />
 								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/projects/${project.name}/datasets`)
-									}
-								>
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
-							</List>
-						</Collapse>
-						<Divider />
-					</Box>
-				))}
-			</List>
-			<List
-				component='nav'
-				aria-labelledby='projects-subheader'
-				subheader={
-					<Tooltip
-						title={`Public projects`}
-						showTooltip={showTooltip}
-					>
-						<Box
-							sx={{
-								display: 'flex',
-								alignItems: 'center',
-								mr: 1,
-								justifyContent: 'space-between',
-							}}
-						>
-							<ListSubheader id='public-projects-subheader'>
-								Public projects
-							</ListSubheader>
-							{(!userProjects || !user) && (
-								<CircularProgress size={18} color='secondary' />
-							)}
-						</Box>
-					</Tooltip>
-				}
-			>
-				{userProjects?.filter(p => p.isPublic).length === 0 && (
-					<List component='div' disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<Schedule />
-							</ListItemIcon>
-							<ListItemText primary={`There is no public projects yet`} />
-						</ListItemButton>
-					</List>
-				)}
-				{userProjects?.filter(p => p.isPublic).map(project => (
-					<Box
-						key={project.name}
-						sx={{
-							backgroundColor:
-								openProjects[project.name] &&
-								pathname.includes(`${ROUTE_PREFIX}/public/${project.name}`)
-									? '#f2f2f2'
-									: 'white',
-						}}
-					>
-						<ListItemButton
-							onClick={() => {
-								handleClickNavigate(`/public/${project.name}`)
-								handleProjectClick(project?.name)
-							}}
-							selected={`${ROUTE_PREFIX}/public/${project.name}` === pathname}
-						>
-							<ListItemIcon>
-								<Folder />
-							</ListItemIcon>
-							<ListItemText primary={`${project.title}`} />
-							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
-						</ListItemButton>
-						<Collapse
-							in={openProjects[project.name]}
-							timeout='auto'
-							unmountOnExit
-						>
-							<List component='div' disablePadding>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/public/${project.name}/desktops` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/public/${project.name}/desktops`)
-									}
-								>
-									<ListItemIcon>
-										<Monitor />
-									</ListItemIcon>
-									<ListItemText primary='Desktops' />
-								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/public/${project.name}/metadata` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/public/${project.name}/metadata`)
-									}
-								>
-									<ListItemIcon>
-										<Storage />
-									</ListItemIcon>
-									<ListItemText primary='Files' />
-								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/public/${project.name}/datasets` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/public/${project.name}/datasets`)
-									}
-								>
-									<ListItemIcon>
-										<Assignment />
-									</ListItemIcon>
-									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
 							</List>
 						</Collapse>
 						<Divider />
@@ -510,58 +424,53 @@ const Sidebar = () => {
 				component='nav'
 				aria-labelledby='docs-subheader'
 			>
+				<Divider />
 				<ListItemButton
-					selected={`${ROUTE_PREFIX}/` === pathname}
-					onClick={() => handleClickNavigate('/')}
+					onClick={handleServicesClick}
+					selected={`${ROUTE_PREFIX}/services` === pathname}
 				>
 					<ListItemIcon>
-						<Info />
+						<Hub />
 					</ListItemIcon>
-					<ListItemText primary='Getting Started' />
+					<ListItemText primary={'Services'} />
+					{servicesListIsOpen ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-
-				<Tooltip
-					title='About the HIP. Participating Centers. App catalog'
-					showTooltip={showTooltip}
+				<Collapse
+					in={servicesListIsOpen}
+					timeout='auto'
+					unmountOnExit
 				>
-					<ListItemButton
-						selected={`${ROUTE_PREFIX}/about` === pathname}
-						onClick={() => {
-							handleClickNavigate('/about')
-							setOpenTools(!openTools)
-						}}
-					>
-						<ListItemIcon>
-							<HelpCenter />
-						</ListItemIcon>
-						<ListItemText primary='About' />
-						{openTools ? <ExpandLess /> : <ExpandMore />}
-					</ListItemButton>
-				</Tooltip>
-				<Collapse in={openTools} timeout='auto' unmountOnExit>
-					<List>
-						<ListItemButton
-							sx={{ pl: 4 }}
-							selected={`${ROUTE_PREFIX}/centers` === pathname}
-							onClick={() => handleClickNavigate('/centers')}
-						>
-							<ListItemIcon>
-								<Apps />
-							</ListItemIcon>
-							<ListItemText primary='Participating centers' />
-						</ListItemButton>
+					<List component='div' disablePadding>
+						{SERVICES
+							.map(service => (
+								<ListItemButton
+									key={service.id}
+									sx={{ p: 0, pl: 4 }}
+									selected={`${ROUTE_PREFIX}/services/${service?.id}` === pathname}
+									disabled={service.status === 'off'}
+									onClick={() => handleClickNavigate(`/services/${service.id}`, { target: service.target, url: service.url })}
+								>
+									<ListItemIcon>
+										<Avatar
+											alt={service.label}
+											src={`${API_GATEWAY}/public/media/288x140-${service.image}__logo.png`}
+											sx={{ width: 32, height: 32 }}
+										/>
+									</ListItemIcon>
+									<ListItemText primary={service.name} secondary={service.label} />
+								</ListItemButton>
+							))}
 					</List>
-					<ListItemButton
-						sx={{ pl: 4 }}
-						selected={`${ROUTE_PREFIX}/apps` === pathname}
-						onClick={() => handleClickNavigate('/apps')}
-					>
-						<ListItemIcon>
-							<Apps />
-						</ListItemIcon>
-						<ListItemText primary='App Catalog' />
-					</ListItemButton>
 				</Collapse>
+				<ListItemButton
+					selected={`${ROUTE_PREFIX}/apps` === pathname}
+					onClick={() => handleClickNavigate('/apps')}
+				>
+					<ListItemIcon>
+						<Apps />
+					</ListItemIcon>
+					<ListItemText primary='App Store' />
+				</ListItemButton>
 				<ListItemButton
 					onClick={() => {
 						window.location.href = '/call/yizibxg5'
@@ -584,7 +493,7 @@ const Sidebar = () => {
 			</List>
 
 			<Box component='footer' sx={{ ...footerStyle }}>
-				<p>Copyright © HIP {new Date().getFullYear()}</p>
+				<p>Copyright © DIP {new Date().getFullYear()}</p>
 			</Box>
 		</Drawer>
 	)

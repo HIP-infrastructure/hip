@@ -59,7 +59,7 @@ export const getUsers = async (): Promise<User[]> =>
 		.then(checkForError)
 		.catch(catchError)
 
-export const getUser = async (userid: string): Promise<User> =>
+export const getUser = async (userid?: string): Promise<User> =>
 	fetch(`${API_GATEWAY}/users/${userid}`, {
 		headers: {
 			requesttoken: window.OC.requestToken,

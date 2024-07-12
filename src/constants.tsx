@@ -2,7 +2,7 @@ import { IEntity } from './api/types'
 
 export const ROUTE_PREFIX = '/apps/hip'
 export const APP_MARGIN_TOP = 50
-export const DRAWER_WIDTH = 240
+export const DRAWER_WIDTH = 260
 export const POLLING = Number(process.env.REACT_APP_POLLING_INTERVAL) || 2
 
 export const linkStyle = {
@@ -145,3 +145,79 @@ export const ENTITIES: IEntity[] = [
 		options: [],
 	},
 ]
+
+
+export const SERVICES = [
+	{
+		id: 'i2b2',
+		name: 'i2b2',
+		label: 'Cohort Explorer',
+		description: 'i2b2 Cohort Explorer',
+		url: 'https://i2b2.horus-tools.intranet.chuv/webclient2/',
+		image: 'i2b2',
+		target: 'self',
+		status: 'on'
+	},
+	{
+		id: 'kheops',
+		name: 'Kheops',
+		label: 'Images Explorer',
+		description: 'Kheops DICOM Images Explorer',
+		url: 'https://kheops.chuv.ch/',
+		image: 'kheops',
+		target: '_blank',
+		status: 'on'
+	},
+	{
+		id: 'sarus',
+		name: 'Sarus',
+		label: 'Remote data analytics interface',
+		description: 'Remote query execution environment provided by Sarus technologies',
+		url: 'https://sarus.horus-tools.intranet.chuv/',
+		image: 'sarus',
+		target: 'self',
+		status: 'on'
+	},
+	{
+		id: 'ckan',
+		name: 'CKAN',
+		label: 'Datasets Catalog',
+		description: 'Datasets catalog powered by CKAN',
+		url: 'https://catalog.horus-services.intranet.chuv/',
+		image: 'ckan',
+		target: 'self',
+		status: 'on'
+	},
+	{
+		id: 'jira',
+		name: 'Jira Service Desk',
+		label: 'Data request',
+		description: '',
+		url: 'https://jira.chuv.ch/servicedesk/customer/portal/1',
+		image: 'jira',
+		target: 'self',
+		status: 'off'
+	},
+	{
+		id: 'gitlab',
+		name: 'Gitlab',
+		label: 'Code Versioning',
+		description: '',
+		url: '',
+		image: 'gitlab',
+		target: 'self',
+		status: 'off'
+	},
+	{
+		id: 'dsw',
+		name: 'DSW',
+		label: 'Data stewardship wizard',
+		description: '',
+		url: '',
+		image: 'dsw',
+		target: 'self',
+		status: 'off'
+	}
+]
+
+export type ISERVICE = typeof SERVICES[0]

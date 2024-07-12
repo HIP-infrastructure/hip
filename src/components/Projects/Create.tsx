@@ -1,7 +1,7 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Grid, TextField, Typography } from '@mui/material'
+import { Box, Grid, TextField, Typography, Hidden } from '@mui/material'
 import { Form, Formik } from 'formik'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -55,7 +55,7 @@ const CreateProject = () => {
 			<TitleBar
 				title={`Create Project`}
 				description={
-					'A project is a collaborative workspace where your data is privately stored and cannot be downloaded by other users. Users can run Desktop apps on the data and share the results with other users.'
+					'A project is a collaborative workspace where your data is privately stored and cannot be downloaded by other users. Users can run apps on the data and share the results with other users.'
 				}
 			/>
 
@@ -86,7 +86,7 @@ const CreateProject = () => {
 									},
 								}
 
-								const futureName = `HIP-${title.replace(/[^a-zA-Z0-9]+/g, '-')}`
+								const futureName = `${title.replace(/[^a-zA-Z0-9]+/g, '-')}`
 
 								trackEvent({
 									category: 'Project',
@@ -171,6 +171,8 @@ const CreateProject = () => {
 													}
 												/>
 											</Grid>
+											
+											<Hidden xsDown smDown>
 											<Grid item xs={6}>
 												<TextField
 													disabled={true}
@@ -339,6 +341,7 @@ const CreateProject = () => {
 													}
 												/>
 											</Grid>
+											</Hidden>
 										</Grid>
 
 										<Grid item xs={12} sx={{ mt: 2 }}>

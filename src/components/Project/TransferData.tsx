@@ -110,7 +110,7 @@ export default function TransferData() {
 		<Box sx={{ mb: 2 }}>
 			<TitleBar
 				title={`Transfer data to ${selectedProject?.title || ''} `}
-				description='Transfer center data to a project '
+				description='Transfer data to a project '
 			/>
 
 			<Box sx={{ mt: 2, mb: 2 }}>
@@ -125,19 +125,7 @@ export default function TransferData() {
 					/> */}
 				</Box>
 
-				<Tabs
-					sx={{ mt: 2 }}
-					value={tabIndex}
-					onChange={(event: React.SyntheticEvent, newValue: number) =>
-						setTabIndex(newValue)
-					}
-					aria-label='Metadata tabs'
-				>
-					<Tab label='Transfer a document' id={'tab-1'} />
-					<Tab label='Transfer a BIDS Subject' id={'tab-2'} />
-				</Tabs>
 
-				{tabIndex === 0 && (
 					<Box sx={{ mt: 2 }}>
 						<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
 							<Box
@@ -230,75 +218,6 @@ export default function TransferData() {
 							</Box>
 						</Typography>
 					</Box>
-				)}
-
-				{tabIndex === 1 && (
-					<Box sx={{ mt: 2 }}>
-						<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2, p: 2 }}>
-							<Box>
-								<Typography gutterBottom variant='h6' component='div'>
-									{userCenters}&apos;s Datasets
-								</Typography>
-								<Box
-									elevation={2}
-									component={Paper}
-									sx={{ p: 1, flex: '1 0' }}
-									width={320}
-								>
-									<DatasetSubjectChooser
-										setSelected={(datasetPath, subjectId) => {
-											setSelectedSubject([datasetPath, subjectId])
-										}}
-									/>
-								</Box>
-							</Box>
-							<Box sx={{ mt: 2 }}>
-								<LoadingButton
-									color='primary'
-									size='small'
-									sx={{ my: 0.5 }}
-									disabled={!selectedSubject || selectedSubject?.length === 0}
-									onClick={handleImportSubject}
-									loading={loading}
-									loadingPosition='start'
-									startIcon={<CloudUpload />}
-									variant='outlined'
-								>
-									Transfer
-								</LoadingButton>
-							</Box>
-						</Box>
-
-						<Typography sx={{ mb: 2 }}>
-							<Box sx={{ ml: 4 }}>
-								<ol>
-									<li>
-										Select a subject in one of &quot;{userCenters}&apos;s
-										Datasets&quot;
-									</li>
-									<li>
-										Click transfer to push the subject to &quot;{projectTitle}
-										&quot;
-									</li>
-								</ol>
-							</Box>
-						</Typography>
-						{/* <Box sx={{ mt: 2 }}>
-								<Typography gutterBottom variant='h6' component='div'>
-									BIDS dataset
-								</Typography>
-								<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
-									<MetadataBrowser
-										files={files?.children
-											?.find((f: InspectResult) => f.name === 'inputs')
-											?.children?.find(
-												(f: InspectResult) => f.name === 'bids-dataset'
-											)}
-									/>
-								</Box>
-							</Box> */}
-					</Box>
-				)}
 			</Box>
 		</Box>
 	)

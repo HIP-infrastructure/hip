@@ -53,7 +53,7 @@ const ageRangeMarks = [
 	{ value: 100, label: '100' },
 ]
 
-const Datasets = ({ handleClickedDataset, buttonTitle }: { handleClickedDataset?: (dataset: BIDSDataset) => void, buttonTitle?: string}) => {
+const Datasets = ({ handleClickedDataset, buttonTitle }: { handleClickedDataset?: (dataset: BIDSDataset) => void, buttonTitle: string}) => {
 	const {
 		user: [user],
 	} = useAppStore()

@@ -6,12 +6,14 @@ import './App.css'
 import AppList from './components/Documentation/AppList'
 import Dataset from './components/UI/BIDS/Dataset'
 import CenterDatasets from './components/Center/Datasets'
+import PublicDatasets from './components/Public/Datasets'
 import Centers from './components/Centers'
 import CenterWorkspace from './components/Center/Workspace'
 import About from './components/Documentation/About'
 import CreateProject from './components/Projects/Create'
 import ProjectWorkspace from './components/Project/Workspace'
 import ProjectDataset from './components/Project/Dataset'
+import Projects from './components/Projects'
 import Desktop from './components/Desktop/Desktop'
 import CenterDesktops from './components/Center/Desktops'
 import ProjectDesktops from './components/Project/Desktops'
@@ -24,19 +26,11 @@ import Files from './components/Project/Files'
 import MyFiles from './components/Center/Files'
 import GettingStarted from './components/Documentation/GettingStarted'
 import TransferData from './components/Project/TransferData'
-
+import Service from './components/Services/Service'
+import Services from './components/Services/Services'
 export interface Space {
 	label: string
 	route: string
-}
-
-const devNameStyle = {
-	position: 'fixed',
-	top: '8px',
-	right: '200px',
-	color: '#F5B800',
-	zIndex: '10000',
-	transform: 'translateX(-50%)',
 }
 
 const Layout = (): JSX.Element => {
@@ -57,11 +51,6 @@ const Layout = (): JSX.Element => {
 	return (
 		<Box component='main' sx={{ display: 'flex', width: 'inherit' }}>
 			<CssBaseline />
-			{process.env.REACT_APP_HOSTNAME !== 'thehip.app' && (
-				<Typography sx={devNameStyle} variant='h6'>
-					{process.env.REACT_APP_HOSTNAME}
-				</Typography>
-			)}
 			<Navigation />
 			<Box sx={{ m: 4, pl: 1, width: 'inherit' }}>
 				<Outlet />
@@ -73,13 +62,16 @@ const Layout = (): JSX.Element => {
 const App = () => (
 	<Routes>
 		<Route path={`${ROUTE_PREFIX}/`} element={<Layout />}>
-			<Route index element={<GettingStarted />} />
+			<Route index element={<MyFiles />} />
 			<Route path={'apps'} element={<AppList />} />
 			<Route path={'about'} element={<About />} />
 			<Route path={'centers'} element={<Outlet />}>
 				<Route index element={<Centers />} />
-				<Route path={':centerId'} element={<CenterWorkspace />} />
-				<Route path={':centerId/desktops'} element={<CenterDesktops />} />
+				<Route path={':centerId'} element={<CenterWorkspace centerId={"dip"}/>} />
+				<Route path={':centerId/desktops'} element={<Outlet />}>
+					<Route index element={<CenterDesktops />} />
+					<Route path={':id'} element={<Desktop />} />
+				</Route>
 				<Route path={':centerId/files'} element={<MyFiles />} />
 				<Route path={':centerId/datasets'} element={<Outlet />}>
 					<Route index element={<CenterDatasets />} />
@@ -87,10 +79,14 @@ const App = () => (
 				</Route>
 			</Route>
 			<Route path={'projects'} element={<Outlet />}>
+				<Route index element={<Projects /	>} />
 				<Route path={'create'} element={<CreateProject />} />
 				<Route path={':projectId'} element={<Project />}>
 					<Route index element={<ProjectWorkspace />} />
-					<Route path={'desktops'} element={<ProjectDesktops />} />
+					<Route path={'desktops'} element={<Outlet />}>
+						<Route index element={<ProjectDesktops />} />
+						<Route path={':id'} element={<Desktop />} />
+					</Route>
 					<Route path={'transfer'} element={<TransferData />} />
 					<Route path={'metadata'} element={<Files />} />
 					<Route path={'datasets'} element={<Outlet />}>
@@ -99,16 +95,10 @@ const App = () => (
 					</Route>
 				</Route>
 			</Route>
-			<Route path={'public'} element={<Outlet />}>
-				<Route path={':projectId'} element={<Project />}>
-					<Route index element={<ProjectWorkspace />} />
-					<Route path={'desktops'} element={<ProjectDesktops />} />
-					<Route path={'metadata'} element={<Files />} />
-					<Route path={'datasets'} element={<Outlet />}>
-						<Route index element={<ProjectDataset />} />
-						<Route path={':datasetId'} element={<ProjectDataset />} />
-					</Route>
-				</Route>
+			<Route path={'public'} element={<PublicDatasets />} />
+			<Route path={'services'} element={<Outlet />}>
+				<Route index element={<Services /	>} />
+				<Route path={':serviceId'} element={<Service />} />
 			</Route>
 			<Route
 				path='*'
@@ -119,7 +109,6 @@ const App = () => (
 				}
 			/>
 		</Route>
-		<Route path={`${ROUTE_PREFIX}/desktops/:id`} element={<Desktop />} />
 	</Routes>
 )
 

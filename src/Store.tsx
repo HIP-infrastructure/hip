@@ -1,6 +1,6 @@
-import { getCurrentUser } from './nextcloudAuth'
+import { getCurrentUser } from '@nextcloud/auth'
 import React, { useState } from 'react'
-import { refreshBidsDatasetsIndex } from './api/bids'
+import { createBidsDatasetsIndex, refreshBidsDatasetsIndex } from './api/bids'
 import { getCenters, getUser } from './api/gatewayClientAPI'
 import { getProjectsForUser } from './api/projects'
 import { getAvailableAppList, getDesktopsAndApps } from './api/remoteApp'
@@ -71,6 +71,20 @@ export interface IAppState {
 		BIDSFile[] | undefined,
 		React.Dispatch<React.SetStateAction<BIDSFile[] | undefined>>
 	]
+	tabbedDesktops: [
+		Container[],
+		React.Dispatch<React.SetStateAction<Container[]>>
+	]
+	tabbedProjectDesktops: [
+		{
+			[projectId: string]: Container[]
+		},
+		React.Dispatch<
+			React.SetStateAction<{
+				[projectId: string]: Container[]
+			}>
+		>
+	]
 }
 
 export const AppContext = React.createContext<IAppState>({} as IAppState)
@@ -95,6 +109,8 @@ export const AppStoreProvider = ({
 	const [selectedProject, setSelectedProject] = useState<HIPProject | null>(
 		null
 	)
+	const [tabbedDesktops, setTabbedDesktops] = useState<Container[]>([])
+	const [tabbedProjectDesktops, setTabbedProjectDesktops] = useState({})	
 
 	// BIDS Tools Store, to be renamed or refactored into a new type
 	const [selectedBidsDataset, setSelectedBidsDataset] = useState<BIDSDataset>()
@@ -104,10 +120,9 @@ export const AppStoreProvider = ({
 
 	// Fetch initial data
 	React.useEffect(() => {
-		const currentUser = getCurrentUser()
-		if (!currentUser) return
-
+		const currentUser = getCurrentUser() as UserCredentials
 		setUser(currentUser)
+
 		getUser(currentUser.uid)
 			.then(data => {
 				if (data) {
@@ -156,14 +171,23 @@ export const AppStoreProvider = ({
 				console.error(error) // eslint-disable-line no-console
 			})
 
+		// Create initial elasticsearch index for datasets (if it does not exist yet)
+		// createBidsDatasetsIndex()
+		// 	.then(() => {
+		// 		return
+		// 	})
+		// 	.catch(error => {
+		// 		throw error
+		// 	})
+
 		// Perform a full index of the BIDS datasets
-		refreshBidsDatasetsIndex(currentUser.uid)
-			.then(() => {
-				return
-			})
-			.catch(error => {
-				console.error(error) // eslint-disable-line no-console
-			})
+		// refreshBidsDatasetsIndex(currentUser.uid)
+		// 	.then(() => {
+		// 		return
+		// 	})
+		// 	.catch(error => {
+		// 		throw error
+		// 	})
 
 		getDesktopsAndApps('private', currentUser.uid || '', [])
 			.then(data => setContainers(data))
@@ -187,6 +211,8 @@ export const AppStoreProvider = ({
 			selectedBidsDataset: [selectedBidsDataset, setSelectedBidsDataset],
 			selectedParticipants: [selectedParticipants, setSelectedParticipants],
 			selectedFiles: [selectedFiles, setSelectedFiles],
+			tabbedDesktops: [tabbedDesktops, setTabbedDesktops],
+			tabbedProjectDesktops: [tabbedProjectDesktops, setTabbedProjectDesktops],
 		}),
 		[
 			debug,
@@ -215,6 +241,10 @@ export const AppStoreProvider = ({
 			setSelectedParticipants,
 			selectedFiles,
 			setSelectedFiles,
+			tabbedDesktops,
+			setTabbedDesktops,
+			tabbedProjectDesktops,
+			setTabbedProjectDesktops,
 		]
 	)
 

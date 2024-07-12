@@ -65,7 +65,7 @@ const CenterDesktops = (): JSX.Element => {
 	}, [setContainers, user, showAdminView, getDesktops])
 
 	const handleOpenDesktop = (desktopId: string) => {
-		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
+		navigate(`${ROUTE_PREFIX}/centers/${params.centerId}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'private',
@@ -94,8 +94,8 @@ const CenterDesktops = (): JSX.Element => {
 
 		if (!modalRef.current) return
 		const reply = await modalRef.current.open(
-			'Quit desktop ?',
-			'Quit this desktop and all its applications?'
+			'Quit workbench ?',
+			'Quit this workbench and all its applications?'
 		)
 
 		if (reply) {
@@ -156,9 +156,9 @@ const CenterDesktops = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={'My Desktops'}
+				title={'My Workbenches'}
 				description={
-					'Desktops are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
+					'Workbenches are remote virtual computers running on a secure infrastructure where you can launch apps on your data.'
 				}
 				button={
 					<Box sx={{ display: 'flex' }}>
@@ -190,7 +190,7 @@ const CenterDesktops = (): JSX.Element => {
 								})
 							}}
 						>
-							Create Desktop
+							Create Workbench
 						</Button>
 					</Box>
 				}

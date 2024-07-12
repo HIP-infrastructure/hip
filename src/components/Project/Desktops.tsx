@@ -57,7 +57,7 @@ const ProjectDesktops = (): JSX.Element => {
 	}, [user, params.projectId, getDesktops])
 
 	const handleOpenDesktop = (desktopId: string) => {
-		navigate(`${ROUTE_PREFIX}/desktops/${desktopId}`, {
+		navigate(`${ROUTE_PREFIX}/projects/${project?.name}/desktops/${desktopId}`, {
 			state: {
 				from: location.pathname,
 				workspace: 'collab',
@@ -87,8 +87,8 @@ const ProjectDesktops = (): JSX.Element => {
 
 		if (!modalRef.current) return
 		const reply = await modalRef.current.open(
-			'Quit desktop ?',
-			'Quit this desktop and all its applications?'
+			'Quit workbench ?',
+			'Quit this workbench and all its applications?'
 		)
 
 		if (reply) {
@@ -153,9 +153,9 @@ const ProjectDesktops = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={`Desktops: ${project?.title || ''} `}
+				title={`Workbench: ${project?.title || ''} `}
 				description={
-					'Desktops are shared accross members and can be used to run applications on projects data.'
+					'Workbenches are shared accross members and can be used to run applications on projects data.'
 				}
 				button={
 					<Button
@@ -170,7 +170,7 @@ const ProjectDesktops = (): JSX.Element => {
 							})
 						}}
 					>
-						Create Desktop
+						Create Workbench
 					</Button>
 				}
 			/>

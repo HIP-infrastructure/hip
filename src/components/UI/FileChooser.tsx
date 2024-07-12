@@ -130,7 +130,6 @@ const FileChooser = ({
 									component='li'
 									key={f.path}
 									onClick={(
-										event: React.MouseEvent<HTMLDivElement, MouseEvent>
 									) => {
 										setSelectedFile(f)
 									}}

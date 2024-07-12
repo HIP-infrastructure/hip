@@ -25,6 +25,18 @@ export const publishDatasetToPublicSpace = async (path: string) => {
 		.catch(catchError)
 }
 
+export const createBidsDatasetsIndex = async () => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
+	fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			requesttoken: window.OC.requestToken,
+		},
+	})
+		.then(checkForError)
+		.catch(catchError)
+}
+
 export const refreshBidsDatasetsIndex = async (
 	owner?: string
 ): Promise<BIDSDataset[]> => {
