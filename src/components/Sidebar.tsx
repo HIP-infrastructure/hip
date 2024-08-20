@@ -493,7 +493,7 @@ const Sidebar = () => {
 			</List>
 
 			<Box component='footer' sx={{ ...footerStyle }}>
-				<p>Copyright © DIP {new Date().getFullYear()}</p>
+				<p>Copyright © CHORUS {new Date().getFullYear()}</p>
 			</Box>
 		</Drawer>
 	)

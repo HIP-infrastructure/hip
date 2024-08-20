@@ -54,9 +54,13 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('id.thehip.app');
 		$csp->addAllowedFrameDomain('dev.id.thehip.app');
 		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
-		if ($d = getenv('ALLOWED_FRAME_DOMAIN', true)) {
-			$csp->addAllowedFrameDomain($d);
+		if ($domains = getenv('ALLOWED_FRAME_DOMAINs', true)) {
+			$domainsArray = explode(' ', $domains); // Split the env variable by spaces
+			foreach ($domainsArray as $domain) {
+				$csp->addAllowedFrameDomain($domain);
+			}
 		}
+		
 
 		$csp->addAllowedConnectDomain('gpu1.thehip.app');
 		$csp->addAllowedConnectDomain('cpu1.thehip.app');
@@ -71,9 +75,13 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('id.thehip.app');
 		$csp->addAllowedConnectDomain('dev.id.thehip.app');
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
-		if ($d = getenv('ALLOWED_FRAME_DOMAIN', true)) {
-			$csp->addAllowedConnectDomain($d);
+		if ($domains = getenv('ALLOWED_FRAME_DOMAINS', true)) {
+			$domainsArray = explode(' ', $domains); // Split the env variable by spaces
+			foreach ($domainsArray as $domain) {
+				$csp->addAllowedConnectDomain($domain);
+			}
 		}
+		
 
 		$response->setContentSecurityPolicy($csp);
 
