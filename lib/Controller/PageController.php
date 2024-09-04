@@ -54,7 +54,7 @@ class PageController extends Controller
 		$csp->addAllowedFrameDomain('id.thehip.app');
 		$csp->addAllowedFrameDomain('dev.id.thehip.app');
 		$csp->addAllowedFrameDomain('hip-infrastructure.github.io');
-		if ($domains = getenv('ALLOWED_FRAME_DOMAINs', true)) {
+		if ($domains = getenv('ALLOWED_FRAME_DOMAINS', true)) {
 			$domainsArray = explode(' ', $domains); // Split the env variable by spaces
 			foreach ($domainsArray as $domain) {
 				$csp->addAllowedFrameDomain($domain);
