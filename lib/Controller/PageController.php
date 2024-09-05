@@ -58,6 +58,7 @@ class PageController extends Controller
 			$domainsArray = explode(' ', $domains); // Split the env variable by spaces
 			foreach ($domainsArray as $domain) {
 				$csp->addAllowedFrameDomain($domain);
+				$csp->addAllowedConnectDomain($domain);
 			}
 		}
 		
@@ -75,12 +76,6 @@ class PageController extends Controller
 		$csp->addAllowedConnectDomain('id.thehip.app');
 		$csp->addAllowedConnectDomain('dev.id.thehip.app');
 		$csp->addAllowedConnectDomain('stats.humanbrainproject.eu');
-		if ($domains = getenv('ALLOWED_FRAME_DOMAINS', true)) {
-			$domainsArray = explode(' ', $domains); // Split the env variable by spaces
-			foreach ($domainsArray as $domain) {
-				$csp->addAllowedConnectDomain($domain);
-			}
-		}
 		
 
 		$response->setContentSecurityPolicy($csp);
