@@ -24,6 +24,7 @@ class ApiController extends Controller
 
      /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @NoSameSiteCookieRequired
      */
     public function isloggedin()
@@ -33,6 +34,7 @@ class ApiController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @NoSameSiteCookieRequired
      */
     public function uid()
