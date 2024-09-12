@@ -21,6 +21,7 @@ class DocumentController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+     * @NoSameSiteCookieRequired
      */
     public function files(string $path)
     {
@@ -30,6 +31,7 @@ class DocumentController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+     * @NoSameSiteCookieRequired
      */
     public function file(string $path)
     {

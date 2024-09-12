@@ -24,6 +24,7 @@ class PageController extends Controller
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 *
 	 * @return TemplateResponse
 	 */
