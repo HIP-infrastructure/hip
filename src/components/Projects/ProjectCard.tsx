@@ -32,7 +32,7 @@ const ProjectCard = ({ project, users }: Props) => {
 				displayName: u,
 			}
 	)
-
+	// Description for collaborative projects in the all collab projects page
 	return (
 		<NavLink to={`${ROUTE_PREFIX}/projects/${project.name}`}>
 			<Card elevation={3} component={Paper} sx={{ width: 280, minHeight: 320 }}>
@@ -52,9 +52,6 @@ const ProjectCard = ({ project, users }: Props) => {
 							{project?.title[0]}
 						</Avatar>
 					</Box>
-					<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
-						{`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
-					</Typography>
 
 					<Typography
 						sx={{ mt: 2, mb: 2 }}
@@ -62,6 +59,10 @@ const ProjectCard = ({ project, users }: Props) => {
 						color='text.secondary'
 					>
 						{project?.description}
+					</Typography>
+					
+					<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
+						{`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
 					</Typography>
 
 					<Stack

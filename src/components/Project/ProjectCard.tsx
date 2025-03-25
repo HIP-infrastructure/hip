@@ -8,6 +8,10 @@ import {
 	CircularProgress,
 	Stack,
 	Typography,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
 } from '@mui/material'
 import { useAppStore } from '../../Store'
 import { API_GATEWAY } from '../../api/gatewayClientAPI'
@@ -16,19 +20,25 @@ import UserInfo from '../UI/UserInfo'
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { LoadingButton } from '@mui/lab'
 import { useEffect } from 'react'
+import { Clear } from '@mui/icons-material'
+import { SelectChangeEvent } from '@mui/material'
 
 interface Props {
 	project: HIPProject
 	handleRemoveProject: (id: string) => void
 	users: User[]
+	handleAddUserToProject: (userId: string) => void
+	handleRemoveUserFromProject: (userId: string) => void
 }
 
-const MainCard = ({ project, users, handleRemoveProject }: Props) => {
+const ProjectCard = ({ project, users, handleRemoveProject, handleAddUserToProject, handleRemoveUserFromProject }: Props) => {
 	const { trackEvent } = useMatomo()
 	const {
 		user: [user],
 	} = useAppStore()
 	const [loading, setLoading] = React.useState(false)
+	const [removeLoading, setRemoveLoading] = React.useState(false)
+	const [userToAdd, setUserToAdd] = React.useState('')
 
 	useEffect(() => {
 		setLoading(false)
@@ -60,30 +70,25 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 					/>
 
 					<CardContent>
-						<Box sx={{ mb: 2 }}>
-							<Typography variant='h5'>{project?.title}</Typography>
-							<Typography
-								sx={{ mt: 2 }}
-								gutterBottom
-								variant='body2'
-								color='text.secondary'
-							>
-								{project.description}
-							</Typography>
-						</Box>
-
 						<Stack spacing={1}>
+							{users === undefined && (
+								<CircularProgress
+									size={16}
+									color='secondary'
+									sx={{ top: 10, left: 10 }}
+								/>
+							)}
+
 							{project?.admins?.length === 0 && (
 								<Typography variant='subtitle2'>No admin yet</Typography>
 							)}
 							{[...(project?.admins || [])]
-								.map(
-									u =>
-										users.find(user => user.id === u) || {
-											id: u,
-											name: u,
-											displayName: u,
-										}
+								.map(u =>
+									users.find(user => user.id === u) || {
+										id: u,
+										name: u,
+										displayName: u,
+									}
 								)
 								.map(u => (
 									<Box
@@ -95,26 +100,100 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 										<UserInfo key={u.id} user={u} />
 									</Box>
 								))}
+
+							{user?.uid && project?.admins?.includes(user?.uid) && (
+								<LoadingButton
+									disabled={loading}
+									loading={loading}
+									onClick={() => {
+										setLoading(true)
+										handleRemoveProject(project.name)
+									}}
+									variant='outlined'
+									color="error"
+									fullWidth
+									size="small"
+								>
+									Delete Project
+								</LoadingButton>
+							)}
+
+							<Typography variant='h5' sx={{ mt: 2 }}>
+								Members
+							</Typography>
+
+							{[...(project?.members || [])]
+								.map(u =>
+									users?.find(user => user.id === u) || {
+										id: u,
+										name: u,
+										displayName: u,
+									}
+								)
+								.map(u => (
+									<Box
+										key={u.id}
+										display='flex'
+										justifyContent='space-between'
+										alignItems='center'
+									>
+										<UserInfo key={u.id} user={u} />
+										{user?.uid &&
+											project?.admins?.includes(user.uid) &&
+											user?.uid !== u.id && (
+												<LoadingButton
+													loading={removeLoading}
+													disabled={removeLoading}
+													onClick={() => {
+														setRemoveLoading(true)
+														handleRemoveUserFromProject(u.id)
+													}}
+												>
+													<Clear />
+												</LoadingButton>
+											)}
+									</Box>
+								))}
 						</Stack>
 					</CardContent>
+
 					<CardActions sx={{ p: 2 }}>
-						{user?.uid && project?.admins?.includes(user?.uid) && (
-							<LoadingButton
-								disabled={loading}
-								loading={loading}
-								onClick={() => {
-									setLoading(true)
-									handleRemoveProject(project.name)
-									trackEvent({
-										category: 'Project',
-										action: 'Remove project',
-										name: `project/${project.name}`,
-									})
-								}}
-								variant='outlined'
+						{user?.uid && project?.admins?.includes(user.uid) && (
+							<Box
+								display='flex'
+								justifyContent='space-between'
+								alignItems='center'
 							>
-								Delete Project
-							</LoadingButton>
+								<FormControl sx={{ m: 1, minWidth: 180 }}>
+									<InputLabel variant='outlined'>Select</InputLabel>
+									<Select
+										size={'small'}
+										onChange={(event: SelectChangeEvent<string>) => {
+											setUserToAdd(event.target.value)
+										}}
+									>
+										{users
+											?.filter(user => !project?.members?.includes(user.id))
+											.map(user => (
+												<MenuItem key={user.id} value={user.id}>
+													{user.displayName}
+												</MenuItem>
+											))}
+									</Select>
+								</FormControl>
+
+								<LoadingButton
+									disabled={loading}
+									onClick={() => {
+										setLoading(true)
+										handleAddUserToProject(userToAdd)
+									}}
+									variant='outlined'
+									loading={loading}
+								>
+									Add
+								</LoadingButton>
+							</Box>
 						)}
 					</CardActions>
 				</Card>
@@ -123,4 +202,4 @@ const MainCard = ({ project, users, handleRemoveProject }: Props) => {
 	)
 }
 
-export default MainCard
+export default ProjectCard

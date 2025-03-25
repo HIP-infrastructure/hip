@@ -91,6 +91,7 @@ export interface HIPProject {
 	name: string
 	title: string
 	isPublic: boolean
+	shortDescription: string
 	description?: string
 	isMember?: boolean
 	admins?: string[]
