@@ -17,6 +17,9 @@ const validationSchema = Yup.object().shape({
 		.min(2, 'Too Short!')
 		.max(50, 'Too Long!')
 		.required('Title is required'),
+	shortDescription: Yup.string()
+		.min(2, 'Too Short!')
+		.max(255, 'Too Long!'),
 	description: Yup.string(),
 	Name: Yup.string()
 		.min(2, 'Too Short!')
@@ -27,6 +30,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
 	title: '',
+	shortDescription: '',
 	description: '',
 	Name: '',
 	BIDSVersion: '1.1.4',
@@ -72,10 +76,11 @@ const CreateProject = () => {
 								setIsLoading(true)
 
 								const adminId = user.uid
-								const { title, description, ...datasetDescription } = values
+								const { title, shortDescription, description, ...datasetDescription } = values
 								const project = {
 									adminId,
 									title,
+									shortDescription,
 									description,
 									datasetDescription: {
 										...datasetDescription,
@@ -130,6 +135,19 @@ const CreateProject = () => {
 															? errors.title
 															: 'Title is required'
 													}
+												/>
+												<TextField
+													disabled={submitting}
+													size='small'
+													id='shortDescription'
+													fullWidth
+													name='shortDescription'
+													label='Project Short Description'
+													type='text'
+													minRows={3}
+													value={values.shortDescription}
+													onChange={handleChange}
+													onBlur={handleBlur}
 												/>
 												<TextField
 													disabled={submitting}
