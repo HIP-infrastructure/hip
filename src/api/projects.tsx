@@ -148,6 +148,19 @@ export const importDocument = async (
 		.then(checkForError)
 		.catch(catchError)
 
+export const importDocuments = async (
+	importDocumentsDto: {
+		sourceFilePath: string
+		targetDirPath: string
+	}[],
+	projectName: string
+): Promise<string[]> =>
+	Promise.all(
+		importDocumentsDto.map(documentDto =>
+			importDocument(documentDto, projectName)
+		)
+	)
+
 export const getProjectDatasets = async (
 	projectId: string
 ): Promise<BIDSDataset[]> =>

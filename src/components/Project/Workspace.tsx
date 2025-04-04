@@ -13,8 +13,8 @@ import { useNotification } from '../../hooks/useNotification'
 import { useAppStore } from '../../Store'
 import Modal, { ModalComponentHandle } from '../UI/Modal'
 import TitleBar from '../UI/titleBar'
-import MemberCard from './MemberCard'
 import ProjectCard from './ProjectCard'
+import DescriptionCard from './DescriptionCard'
 
 const ProjectDashboard = () => {
 	const navigate = useNavigate()
@@ -128,7 +128,7 @@ const ProjectDashboard = () => {
 					<Box
 						sx={{
 							display: 'grid',
-							gridTemplateColumns: '320px 320px 320px',
+							gridTemplateColumns: '320px 640px',
 							gap: 4,
 						}}
 					>
@@ -138,26 +138,15 @@ const ProjectDashboard = () => {
 									project={project}
 									handleRemoveProject={handleRemoveProject}
 									users={users}
+									handleAddUserToProject={handleAddUserToProject}
+									handleRemoveUserFromProject={handleRemoveUserFromProject}
 								/>
 							)}
 						</Box>
-
-						<>
-							<Box sx={{ gridColumn: '2', gridRow: '1' }}>
-								{users && (
-									<MemberCard
-										project={project}
-										users={users}
-										handleAddUserToProject={handleAddUserToProject}
-										handleRemoveUserFromProject={handleRemoveUserFromProject}
-									/>
-								)}
-							</Box>
-							<Box sx={{ gridColumn: '1', gridRow: '2' }}>
-								{/* <Tools /> */}
-							</Box>
-							<Box sx={{ gridColumn: '3', gridRow: '1 / 3' }}></Box>
-						</>
+						
+						<Box sx={{ gridColumn: '2', gridRow: '1' }}>
+							<DescriptionCard project={project} />
+						</Box>
 					</Box>
 				</Box>
 			</Box>

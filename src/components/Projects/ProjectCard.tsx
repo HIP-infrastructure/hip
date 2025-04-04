@@ -12,7 +12,7 @@ import {
 import { HIPProject, User } from '../../api/types'
 import * as React from 'react'
 import UserInfo from '../UI/UserInfo'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ROUTE_PREFIX } from '../../constants'
 import { Link } from '@mui/icons-material'
 
@@ -32,84 +32,76 @@ const ProjectCard = ({ project, users }: Props) => {
 				displayName: u,
 			}
 	)
-
+	// Description for collaborative projects in the all collab projects page
 	return (
-		<Card elevation={3} component={Paper} sx={{ width: 280 }}>
-			<CardContent>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Typography variant='h6'>{project?.title}</Typography>
-					<Avatar
-						sx={{ bgcolor: '#174040', width: 48, height: 48 }}
-						aria-label='project'
+		<NavLink to={`${ROUTE_PREFIX}/projects/${project.name}`}>
+			<Card elevation={3} component={Paper} sx={{ width: 280, minHeight: 320 }}>
+				<CardContent>
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}
 					>
-						{project?.title[0]}
-					</Avatar>
-				</Box>
-				<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
-					{`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
-				</Typography>
+						<Typography variant='h6'>{project?.title}</Typography>
+						<Avatar
+							sx={{ bgcolor: '#174040', width: 48, height: 48 }}
+							aria-label='project'
+						>
+							{project?.title[0]}
+						</Avatar>
+					</Box>
 
-				<Typography
-					sx={{ mt: 2, mb: 2 }}
-					variant='body2'
-					color='text.secondary'
-				>
-					{project?.description}
-				</Typography>
-
-				<Stack
-					sx={{
-						maxHeight: 240,
-						display: 'flex',
-						flexDirection: 'column',
-						overflowY: 'scroll',
-					}}
-				>
-					<Typography variant='subtitle1'>Members</Typography>
-					{project?.members?.length === 0 && (
-						<Typography variant='subtitle1'>No members yet</Typography>
-					)}
-					{[...(project?.members ?? [])]
-						.map(
-							u =>
-								users.find(user => user.id === u) ?? {
-									id: u,
-									name: u,
-									displayName: u,
-								}
-						)
-
-						.map(u => (
-							<Box
-								key={u.id}
-								display='flex'
-								justifyContent='space-between'
-								alignItems='center'
-							>
-								<UserInfo key={u.id} user={u} />
-							</Box>
-						))}
-				</Stack>
-			</CardContent>
-			<Box sx={{ flexGrow: 1 }}></Box>
-			<CardActions disableSpacing>
-				<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-					<IconButton
-						aria-label='go to project'
-						onClick={() => navigate(`${ROUTE_PREFIX}/projects/${project.name}`)}
+					<Typography
+						sx={{ mt: 2, mb: 2 }}
+						variant='body2'
+						color='text.secondary'
 					>
-						<Link />
-					</IconButton>
-					<Typography variant='body2'>Visit</Typography>
-				</Box>
-			</CardActions>
-		</Card>
+						{project?.description}
+					</Typography>
+					
+					<Typography sx={{ mb: 2 }} variant='body2' color='text.secondary'>
+						{`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
+					</Typography>
+
+					<Stack
+						sx={{
+							maxHeight: 240,
+							display: 'flex',
+							flexDirection: 'column',
+							overflowY: 'scroll',
+						}}
+					>
+						<Typography variant='subtitle1'>Members</Typography>
+						{project?.members?.length === 0 && (
+							<Typography variant='subtitle1'>No members yet</Typography>
+						)}
+						{[...(project?.members ?? [])]
+							.map(
+								u =>
+									users.find(user => user.id === u) ?? {
+										id: u,
+										name: u,
+										displayName: u,
+									}
+							)
+
+							.map(u => (
+								<Box
+									key={u.id}
+									display='flex'
+									justifyContent='space-between'
+									alignItems='center'
+								>
+									<UserInfo key={u.id} user={u} />
+								</Box>
+							))}
+					</Stack>
+				</CardContent>
+				<Box sx={{ flexGrow: 1 }}></Box>
+			</Card>
+		</NavLink>
 	)
 }
 

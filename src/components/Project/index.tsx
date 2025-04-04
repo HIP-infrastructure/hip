@@ -15,14 +15,15 @@ const Project = () => {
 
 		if (!project?.name || project?.name !== params.projectId) {
 			setProject(null)
-			getProject(params.projectId).then(project => {
-				setProject(project)
-			})
-			.catch(e => {
-				setProject(null)
-			})
+			getProject(params.projectId)
+				.then(project => {
+					setProject(project)
+				})
+				.catch(e => {
+					setProject(null)
+				})
 		} else setProject(project)
-	}, [params, project, setProject])
+	}, [params, setProject])
 
 	return <Outlet />
 }

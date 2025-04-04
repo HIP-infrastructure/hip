@@ -6,7 +6,7 @@ const spaces: Doc[] = [
 	{
 		label: 'About the HIP',
 		buttonLabel: 'More...',
-		url: 'https://www.humanbrainproject.eu/en/medicine/human-intracerebral-eeg-platform/',
+		url: 'https://www.ebrains.eu/tools/human-intracerebral-eeg-platform',
 		description:
 			'The HIP is an open-source platform designed for large scale and optimized collection, storage, curation, sharing and analysis of multiscale Human iEEG data at the international level',
 		image: 'public/media/discover_about.png',

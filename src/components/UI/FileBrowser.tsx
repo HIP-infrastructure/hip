@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { getFiles2, getGroupFolders, search } from '../../api/gatewayClientAPI'
 import { ISearch, Node } from '../../api/types'
 import { useAppStore } from '../../Store'
-import { DocumentSquare, MinusSquare, PlusSquare } from './Icons'
+import { MinusSquare, PlusSquare } from './Icons'
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
 	<TreeItem {...props} />
@@ -204,7 +204,6 @@ const FileBrowser = ({
 				defaultExpanded={[rootFile.path]}
 				defaultCollapseIcon={<MinusSquare />}
 				defaultExpandIcon={<PlusSquare />}
-				defaultEndIcon={<DocumentSquare />}
 				onNodeToggle={(_event, filesIds: string[]) => {
 					const clickedId = filesIds[0]
 					const directoryExists = files.find(f => f.parentPath === clickedId)

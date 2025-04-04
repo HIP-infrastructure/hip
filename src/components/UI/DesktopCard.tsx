@@ -55,7 +55,12 @@ const DesktopCard = ({
 					}}
 					component='img'
 					height='140'
-					src={`${API_GATEWAY}/public/media/session-thumbnail${(desktop.state === ContainerState.DESTROYED || desktop.state === ContainerState.PAUSED) ? '-empty': ''}.png`}
+					src={`${API_GATEWAY}/public/media/session-thumbnail${
+						desktop.state === ContainerState.DESTROYED ||
+						desktop.state === ContainerState.PAUSED
+							? '-empty'
+							: ''
+					}.png`}
 					alt={`Open ${desktop.name}`}
 					onClick={() =>
 						desktop.state === ContainerState.RUNNING &&

@@ -13,8 +13,8 @@ import {
 	BIDSDatasetsQueryResponse,
 } from './types'
 
-export const createBidsDatasetsIndex = async () => {
-	const url = `${API_GATEWAY}/tools/bids/datasets/create_index`
+export const publishDatasetToPublicSpace = async (path: string) => {
+	const url = `${API_GATEWAY}/tools/bids/datasets/publish?path=${path}`
 	fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',

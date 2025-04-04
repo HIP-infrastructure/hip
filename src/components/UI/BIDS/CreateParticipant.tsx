@@ -9,7 +9,7 @@ import {
 	IconButton,
 	TextField,
 	Typography,
-	InputAdornment
+	InputAdornment,
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
@@ -18,10 +18,10 @@ import {
 	BIDSDataset,
 	EditSubjectClinicalDto,
 	Participant,
-} from '../../api/types'
-import { useNotification } from '../../hooks/useNotification'
-import { useAppStore } from '../../Store'
-import { subEditClinical } from '../../api/bids'
+} from '../../../api/types'
+import { useNotification } from '../../../hooks/useNotification'
+import { useAppStore } from '../../../Store'
+import { subEditClinical } from '../../../api/bids'
 
 type IField = Record<string, string>
 
@@ -133,7 +133,6 @@ const CreateParticipant = ({
 									handleClose()
 								})
 						} else {
-
 							const { participant_id, ...other } = values as any
 
 							const participant = {
@@ -166,9 +165,17 @@ const CreateParticipant = ({
 													label={field}
 													value={(values as IField)[field]}
 													onChange={handleChange}
-													InputProps={field === 'participant_id' && !editMode &&  {
-														startAdornment: <InputAdornment position="start">sub-</InputAdornment>,
-													} || {}}
+													InputProps={
+														(field === 'participant_id' &&
+															!editMode && {
+																startAdornment: (
+																	<InputAdornment position='start'>
+																		sub-
+																	</InputAdornment>
+																),
+															}) ||
+														{}
+													}
 													error={
 														// eslint-disable-next-line @typescript-eslint/no-explicit-any
 														(touched as any)[field] && (errors as IField)[field]

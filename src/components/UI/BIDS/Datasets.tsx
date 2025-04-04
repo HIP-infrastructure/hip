@@ -24,11 +24,11 @@ import {
 	Typography,
 } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { queryBidsDatasets, refreshBidsDatasetsIndex } from '../../api/bids'
-import { BIDSDataset } from '../../api/types'
-import useDebounce from '../../hooks/useDebounce'
-import { useAppStore } from '../../Store'
-import TitleBar from '../UI/titleBar'
+import { queryBidsDatasets, refreshBidsDatasetsIndex } from '../../../api/bids'
+import { BIDSDataset } from '../../../api/types'
+import useDebounce from '../../../hooks/useDebounce'
+import { useAppStore } from '../../../Store'
+import TitleBar from '../../UI/titleBar'
 import CreateDataset from './CreateDataset'
 import DatasetCard from './DatasetCard'
 
@@ -53,7 +53,13 @@ const ageRangeMarks = [
 	{ value: 100, label: '100' },
 ]
 
-const Datasets = () => {
+const Datasets = ({
+	handleClickedDataset,
+	buttonTitle,
+}: {
+	handleClickedDataset?: (dataset: BIDSDataset) => void
+	buttonTitle?: string
+}) => {
 	const {
 		user: [user],
 	} = useAppStore()
@@ -296,7 +302,19 @@ const Datasets = () => {
 							}}
 						>
 							{datasets?.data?.map(dataset => (
-								<DatasetCard key={dataset.id} dataset={dataset} />
+								<DatasetCard key={dataset.id} dataset={dataset}>
+									{handleClickedDataset && (
+										<Button
+											size='small'
+											onClick={async e => {
+												e.preventDefault()
+												handleClickedDataset(dataset)
+											}}
+										>
+											{buttonTitle}
+										</Button>
+									)}
+								</DatasetCard>
 							))}
 						</Box>
 					</Box>

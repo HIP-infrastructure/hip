@@ -7,10 +7,10 @@ import {
 	CircularProgress,
 	Typography,
 } from '@mui/material'
-import { BIDSDataset, Container } from '../../api/types'
-import { API_GATEWAY } from '../../api/gatewayClientAPI'
+import { BIDSDataset, Container } from '../../../api/types'
+import { API_GATEWAY } from '../../../api/gatewayClientAPI'
 
-const Data = ({
+const DataCard = ({
 	bidsDatasets,
 	sessions,
 }: {
@@ -78,4 +78,4 @@ const Data = ({
 	)
 }
 
-export default Data
+export default DataCard
