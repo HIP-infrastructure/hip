@@ -136,7 +136,7 @@ const GettingStarted = (): JSX.Element => {
 							}
 							video='getting-started-upload.mp4'
 							link={
-								'https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_prepare_and_upload_data_to_the_HIP.html'
+								'https://hip-infrastructure.github.io/guides/GUIDE_How_to_prepare_and_upload_data_to_the_HIP.html'
 							}
 						/>
 						<GettingStartedCard
@@ -145,7 +145,7 @@ const GettingStarted = (): JSX.Element => {
 							subtitle='Use a Desktop App to process your data.'
 							description={'Use Desktops and run applications'}
 							img='gettingstarted-2.png'
-							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_Desktops_and_run_applications_from_the_App_Catalog.html'
+							link='https://hip-infrastructure.github.io/guides/GUIDE_How_to_use_Desktops_and_run_applications_from_the_App_Catalog.html'
 						/>
 						<GettingStartedCard
 							step={3}
@@ -161,7 +161,7 @@ const GettingStarted = (): JSX.Element => {
 								</Box>
 							}
 							img='gettingstarted-3.png'
-							link='https://hip-infrastructure.github.io/build/html/guides/GUIDE_How_to_use_the_HIP_spaces_and_share_data_with_other_users.html'
+							link='https://hip-infrastructure.github.io/guides/GUIDE_How_to_use_the_HIP_spaces_and_share_data_with_other_users.html'
 						/>
 					</Box>
 				</Box>
