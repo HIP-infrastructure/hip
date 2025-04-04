@@ -17,7 +17,7 @@ const spaces: Doc[] = [
 	{
 		label: 'Onboarding Guide',
 		buttonLabel: 'guide',
-		url: 'https://hip-infrastructure.github.io/build/html/hip_onboarding.html',
+		url: 'https://hip-infrastructure.github.io/user_doc.html',
 		description:
 			'See the onboarding guide for a quick overview of the platform.',
 		image: 'public/media/discover_onboarding.png',
@@ -59,7 +59,7 @@ const docs = [
 	{
 		label: 'HIP User Documentation',
 		buttonLabel: 'User Documentation',
-		url: `https://hip-infrastructure.github.io/`,
+		url: `https://hip-infrastructure.github.io/user_doc.html`,
 		description: 'HIP guides, tutorials, datasets, Troubleshooting and FAQ',
 		image: 'public/media/documentation_user.png',
 		credit:
