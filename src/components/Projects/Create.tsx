@@ -91,7 +91,7 @@ const CreateProject = () => {
 									},
 								}
 
-								const futureName = `HIP-${title.replace(/[^a-zA-Z0-9]+/g, '-')}`
+								const futureName = `${title.replace(/[^a-zA-Z0-9]+/g, '-')}`
 
 								trackEvent({
 									category: 'Project',

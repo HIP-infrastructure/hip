@@ -27,7 +27,7 @@ const Projects = () => {
 	return (
 		<>
 			<TitleBar
-				title={'Collaborative Workspaces Projects'}
+				title={'Collaborative Workspaces'}
 				description={
 					'Collaborate on projects with ease in our secure workspace. Sensitive data remains protected and accessible only to authorized members.'
 				}
