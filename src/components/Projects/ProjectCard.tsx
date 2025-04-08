@@ -35,8 +35,8 @@ const ProjectCard = ({ project, users }: Props) => {
 	// Description for collaborative projects in the all collab projects page
 	return (
 		<NavLink to={`${ROUTE_PREFIX}/projects/${project.name}`}>
-			<Card elevation={3} component={Paper} sx={{ width: 280, minHeight: 320 }}>
-				<CardContent>
+			<Card elevation={3} component={Paper} sx={{ width: 280, height: 340 }}>
+				<CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
 					<Box
 						sx={{
 							display: 'flex',
@@ -65,41 +65,53 @@ const ProjectCard = ({ project, users }: Props) => {
 						{`Owner: ${projectAdmins?.map(u => u.displayName).join(', ')}`}
 					</Typography>
 
-					<Stack
-						sx={{
-							maxHeight: 240,
-							display: 'flex',
-							flexDirection: 'column',
-							overflowY: 'scroll',
-						}}
-					>
+					<Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
 						<Typography variant='subtitle1'>Members</Typography>
-						{project?.members?.length === 0 && (
-							<Typography variant='subtitle1'>No members yet</Typography>
-						)}
-						{[...(project?.members ?? [])]
-							.map(
-								u =>
-									users.find(user => user.id === u) ?? {
-										id: u,
-										name: u,
-										displayName: u,
-									}
-							)
-
-							.map(u => (
-								<Box
-									key={u.id}
-									display='flex'
-									justifyContent='space-between'
-									alignItems='center'
-								>
-									<UserInfo key={u.id} user={u} />
-								</Box>
-							))}
-					</Stack>
+						<Stack
+							sx={{
+								flex: 1,
+								overflowY: 'auto',
+								'&::-webkit-scrollbar': {
+									width: '6px',
+								},
+								'&::-webkit-scrollbar-track': {
+									background: '#f1f1f1',
+									borderRadius: '10px',
+								},
+								'&::-webkit-scrollbar-thumb': {
+									background: '#888',
+									borderRadius: '10px',
+								},
+								'&::-webkit-scrollbar-thumb:hover': {
+									background: '#555',
+								},
+							}}
+						>
+							{project?.members?.length === 0 && (
+								<Typography variant='subtitle1'>No members yet</Typography>
+							)}
+							{[...(project?.members ?? [])]
+								.map(
+									u =>
+										users.find(user => user.id === u) ?? {
+											id: u,
+											name: u,
+											displayName: u,
+										}
+								)
+								.map(u => (
+									<Box
+										key={u.id}
+										display='flex'
+										justifyContent='space-between'
+										alignItems='center'
+									>
+										<UserInfo key={u.id} user={u} />
+									</Box>
+								))}
+						</Stack>
+					</Box>
 				</CardContent>
-				<Box sx={{ flexGrow: 1 }}></Box>
 			</Card>
 		</NavLink>
 	)
