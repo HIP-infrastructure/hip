@@ -196,6 +196,7 @@ const Sidebar = () => {
 								<ListItemText primary='Files' />
 							</ListItemButton>
 						</Tooltip>
+						{/* BIDS Tools section commented out
 						<Tooltip
 							title='BIDS Tools: Manage your datasets'
 							showTooltip={showTooltip}
@@ -216,6 +217,7 @@ const Sidebar = () => {
 								<ListItemText primary='BIDS Datasets' />
 							</ListItemButton>
 						</Tooltip>
+						*/}
 						{center.community?.url && (
 							<Tooltip title='Community chat' showTooltip={showTooltip}>
 								<ListItemButton
@@ -366,7 +368,7 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Files' />
 								</ListItemButton>
-								<ListItemButton
+								{/* <ListItemButton
 									sx={{ pl: 4 }}
 									selected={
 										`${ROUTE_PREFIX}/projects/${project.name}/datasets` ===
@@ -380,7 +382,7 @@ const Sidebar = () => {
 										<Assignment />
 									</ListItemIcon>
 									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
+								</ListItemButton> */}
 							</List>
 						</Collapse>
 						<Divider />
@@ -492,7 +494,7 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Files' />
 								</ListItemButton>
-								<ListItemButton
+								{/* <ListItemButton
 									sx={{ pl: 4 }}
 									selected={
 										`${ROUTE_PREFIX}/public/${project.name}/datasets` ===
@@ -506,7 +508,7 @@ const Sidebar = () => {
 										<Assignment />
 									</ListItemIcon>
 									<ListItemText primary='BIDS Dataset' />
-								</ListItemButton>
+								</ListItemButton> */}
 							</List>
 						</Collapse>
 						<Divider />
