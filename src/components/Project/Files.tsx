@@ -21,7 +21,7 @@ const Data = () => {
 
 	return (
 		<Box sx={{ mb: 2 }}>
-			<TitleBar title={`Files: ${selectedProject?.title || ''} `} />
+			<TitleBar title={`Files: ${selectedProject?.title.replace(/-/g, ' ') || ''} `} />
 
 			<Box sx={{ mt: 2 }}>
 				<Box elevation={2} component={Paper} sx={{ mt: 2, mb: 2 }}>
@@ -38,7 +38,7 @@ const Data = () => {
 				<Box sx={{ mt: 2 }}>
 					<Box elevation={2} component={Paper} sx={{ p: 1, flex: '1 0' }}>
 						<Typography variant='h6'>
-							{selectedProject?.title || ''} Files
+							{selectedProject?.title.replace(/-/g, ' ') || ''} Files
 						</Typography>
 
 						<Box

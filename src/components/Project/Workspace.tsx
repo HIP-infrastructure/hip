@@ -103,7 +103,7 @@ const ProjectDashboard = () => {
 		<>
 			<Modal ref={modalRef} />
 			<Box sx={{ mb: 2 }}>
-				<TitleBar title={`${project?.title || ''} `} />
+				<TitleBar title={`${project?.title.replace(/-/g, ' ') || ''} `} />
 
 				<Box
 					sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px 16px', mt: 2 }}

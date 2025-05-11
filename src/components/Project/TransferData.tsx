@@ -108,12 +108,12 @@ export default function TransferData() {
             ?.map(center => center.label)
             .join(', ') || null
 
-    const projectTitle = selectedProject?.title || ''
+    const projectTitle = selectedProject?.title.replace(/-/g, ' ') || ''
 
     return (
         <Box sx={{ mb: 2 }}>
             <TitleBar
-                title={`Transfer data to ${selectedProject?.title || ''} `}
+                title={`Transfer data to ${projectTitle} `}
                 description='Transfer center data to a project '
             />
 

@@ -314,7 +314,7 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
-							<ListItemText primary={`${project.title}`} />
+							<ListItemText primary={`${project.title.replace(/-/g, ' ')}`} />
 							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
 						</ListItemButton>
 						<Collapse
@@ -455,7 +455,7 @@ const Sidebar = () => {
 							<ListItemIcon>
 								<Folder />
 							</ListItemIcon>
-							<ListItemText primary={`${project.title}`} />
+							<ListItemText primary={`${project.title.replace(/-/g, ' ')}`} />
 							{openProjects[project.name] ? <ExpandLess /> : <ExpandMore />}
 						</ListItemButton>
 						<Collapse

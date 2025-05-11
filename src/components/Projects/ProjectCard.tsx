@@ -44,7 +44,7 @@ const ProjectCard = ({ project, users }: Props) => {
 							alignItems: 'center',
 						}}
 					>
-						<Typography variant='h6'>{project?.title}</Typography>
+						<Typography variant='h6'>{project?.title.replace(/-/g, ' ')}</Typography>
 						<Avatar
 							sx={{ bgcolor: '#174040', width: 48, height: 48 }}
 							aria-label='project'
