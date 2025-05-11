@@ -153,7 +153,7 @@ const ProjectDesktops = (): JSX.Element => {
 		<>
 			<Modal ref={modalRef} />
 			<TitleBar
-				title={`Desktops: ${project?.title || ''} `}
+				title={`Desktops: ${project?.title.replace(/-/g, ' ') || ''} `}
 				description={
 					'Desktops are shared accross members and can be used to run applications on projects data.'
 				}
