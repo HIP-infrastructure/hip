@@ -171,6 +171,22 @@ const ProjectCard = ({ project, users, handleRemoveProject, handleAddUserToProje
 										onChange={(event: SelectChangeEvent<string>) => {
 											setUserToAdd(event.target.value)
 										}}
+										MenuProps={{
+											PaperProps: {
+												style: {
+													maxHeight: 400,
+													zIndex: 1301 // Higher than AppBar's default z-index
+												}
+											},
+											anchorOrigin: {
+												vertical: 'bottom',
+												horizontal: 'left',
+											},
+											transformOrigin: {
+												vertical: 'top',
+												horizontal: 'left',
+											},
+										}}
 									>
 										{users
 											?.filter(user => !project?.members?.includes(user.id))
