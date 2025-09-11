@@ -97,6 +97,8 @@ export interface HIPProject {
 	admins?: string[]
 	members?: string[]
 	dataset?: BIDSDataset
+	hasDta?: boolean
+	hasEthics?: boolean
 }
 
 export interface ImportSubjectDto {

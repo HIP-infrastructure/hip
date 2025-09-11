@@ -1,7 +1,7 @@
 import { useMatomo } from '@jonkoops/matomo-tracker-react'
 import { Save } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Grid, TextField, Typography } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
 import { Form, Formik } from 'formik'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -41,6 +41,8 @@ const initialValues = {
 	Funding: '',
 	ReferencesAndLinks: '',
 	DatasetDOI: '',
+	hasDta: false,
+	hasEthics: false,
 }
 
 const CreateProject = () => {
@@ -76,12 +78,14 @@ const CreateProject = () => {
 								setIsLoading(true)
 
 								const adminId = user.uid
-								const { title, shortDescription, description, ...datasetDescription } = values
+								const { title, shortDescription, description, hasDta, hasEthics, ...datasetDescription } = values
 								const project = {
 									adminId,
 									title,
 									shortDescription,
 									description,
+									hasDta,
+									hasEthics,
 									datasetDescription: {
 										...datasetDescription,
 										Authors: datasetDescription.Authors.split(','),
@@ -135,19 +139,7 @@ const CreateProject = () => {
 															? errors.title
 															: 'Title is required'
 													}
-												/>
-												<TextField
-													disabled={submitting}
-													size='small'
-													id='shortDescription'
-													fullWidth
-													name='shortDescription'
-													label='Project Short Description'
-													type='text'
-													minRows={3}
-													value={values.shortDescription}
-													onChange={handleChange}
-													onBlur={handleBlur}
+													sx={{ mb: 2 }}
 												/>
 												<TextField
 													disabled={submitting}
@@ -163,6 +155,52 @@ const CreateProject = () => {
 													onChange={handleChange}
 													onBlur={handleBlur}
 												/>
+											</Grid>
+
+											<Grid item xs={6}>
+												<TextField
+													disabled={submitting}
+													size='small'
+													id='shortDescription'
+													fullWidth
+													name='shortDescription'
+													label='Project Short Description'
+													type='text'
+													minRows={3}
+													value={values.shortDescription}
+													onChange={handleChange}
+													onBlur={handleBlur}
+													sx={{ mb: 2 }}
+												/>
+												<Box>
+													<Typography variant='h6' sx={{ mb: 2 }}>
+														Permissions
+													</Typography>
+													<FormControlLabel
+														control={
+															<Checkbox
+																disabled={submitting}
+																name='hasDta'
+																checked={values.hasDta}
+																onChange={handleChange}
+															/>
+														}
+														label='Has Data Transfer Agreement'
+														sx={{ display: 'block', mb: 1 }}
+													/>
+													<FormControlLabel
+														control={
+															<Checkbox
+																disabled={submitting}
+																name='hasEthics'
+																checked={values.hasEthics}
+																onChange={handleChange}
+															/>
+														}
+														label='Has Ethics Approval'
+														sx={{ display: 'block' }}
+													/>
+												</Box>
 											</Grid>
 
 											<Grid item xs={12}>
@@ -357,6 +395,7 @@ const CreateProject = () => {
 													}
 												/>
 											</Grid>
+
 										</Grid>
 
 										<Grid item xs={12} sx={{ mt: 2 }}>

@@ -338,21 +338,23 @@ const Sidebar = () => {
 									</ListItemIcon>
 									<ListItemText primary='Desktops' />
 								</ListItemButton>
-								<ListItemButton
-									sx={{ pl: 4 }}
-									selected={
-										`${ROUTE_PREFIX}/projects/${project.name}/transfer` ===
-										pathname
-									}
-									onClick={() =>
-										handleClickNavigate(`/projects/${project.name}/transfer`)
-									}
-								>
-									<ListItemIcon>
-										<ContentCopy />
-									</ListItemIcon>
-									<ListItemText primary='Transfer' />
-								</ListItemButton>
+								{project.hasDta === true && project.hasEthics === true && (
+									<ListItemButton
+										sx={{ pl: 4 }}
+										selected={
+											`${ROUTE_PREFIX}/projects/${project.name}/transfer` ===
+											pathname
+										}
+										onClick={() =>
+											handleClickNavigate(`/projects/${project.name}/transfer`)
+										}
+									>
+										<ListItemIcon>
+											<ContentCopy />
+										</ListItemIcon>
+										<ListItemText primary='Transfer' />
+									</ListItemButton>
+								)}
 								<ListItemButton
 									sx={{ pl: 4 }}
 									selected={
